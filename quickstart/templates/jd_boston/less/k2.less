@@ -1,0 +1,491 @@
+/*
+ * @author JoomDev https: //www.joomdev.com/
+ * @copyright Copyright (C) 2008 - 2017 Joomdev.com. All rights reserved.
+ * @license http: //www.gnu.org/licenses/gpl-2.0.html GPLv2 or later
+*/
+
+/*----- START START K2  -----*/
+
+#k2Container {
+	padding: 0;
+	div.catItemView {
+		border: 1px solid #eee;
+		padding: 0 15px;
+		border-radius: 4px;
+		-moz-border-radius: 4px;
+		-webkit-border-radius: 4px;
+		background: #fff;
+	}
+
+	.catItemTitle {
+		a {
+			color: @major_color;
+			font-size: 30px;
+			font-weight: normal;
+			text-decoration: none;
+		}
+	}	
+
+	.catItemIntroText {	
+		p {
+			font-size: 18px;
+		}
+	}
+	
+	span.catItemEditLink a.modal {
+		color: #fff;
+		z-index: 999;
+		font-size: 20px;
+		position: relative;
+		background: #1abc9c;
+		font-weight: normal;
+	}
+	
+	.bottom-blog {
+		width: 100%;
+		display: flex;
+		font-size: 16px;
+		background: #fff;
+		margin-bottom: 15px;
+		border: 1px solid #f7f7f7;
+		
+		.catItemAuthor {
+			padding-left: 15px;
+		}
+		a {
+			color: #a0a0a0;
+			text-decoration: none;
+			&:hover {
+				color: #333;
+			}
+		}
+		
+		.catItemHeader {
+			width: 50%;
+			padding: 15px 0;
+			border-right: 2px solid #f7f7f7;
+			
+		}
+		.catItemLinks {
+			width: 50%;
+			margin: 0px;
+			color: #a0a0a0;
+			padding: 15px 0;
+			.catItemDateCreated {
+				float: right;
+				padding: 0 15px 0 5px;
+			}
+			.catItemCategory {
+				padding: 0;
+				float: right;
+			}
+		}
+	}
+	
+	ul.itemCommentsList {
+		.commentAuthorName {
+			font-size: 24px;
+			margin-left: 22px;
+			font-weight: normal;
+			color: @major_color;
+			a {
+				text-decoration: none;
+			}
+		}
+		.commentDate {
+			color: #999;
+			border: none;
+			font-size: 20px;
+			padding-left: 20px;
+			font-weight: normal;
+			&:before {
+				top: -4px;
+				width: 5px;
+				content:"";
+				left: -10px;
+				height: 5px;
+				position: relative;
+				display: inline-block;
+				background-color: #999;
+				transform: rotate(45deg);
+			}
+		}
+		.authorResponse {
+			background: none;
+		}
+		li { 
+			background: none;
+			padding: 30px 0;
+			border-bottom: 1px dashed #ddd;
+			&:last-child {border: none;}
+			p {
+				color: #999;
+				font-size: 14px;
+				margin-left: 100px;
+			}
+		}
+		
+	}
+	.itemAuthorBlock {
+		background: #fff;
+	}
+	
+	/*----- K2 Comments -----*/
+
+	.itemComments {
+		background: #fff;
+		div.itemCommentsForm form input#submitCommentButton {
+			background: @major_color;
+					border-radius: 2px;
+			-webkit-border-radius: 2px;
+			transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+			-moz-transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+			-webkit-transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+			&:hover , &:focus {
+				background: #262626;
+			}
+		}
+	}
+
+	.itemImageBlock {
+		margin: 0;
+		padding: 8px 0 0;
+	}
+
+	h2 {
+		font-weight: normal;
+		text-decoration: capitalize;
+	}
+
+	div.catItemIntroText {
+		font-size: 18px;
+	}
+
+	.catItemImageBlock {
+		margin: 0;
+		padding-bottom: 0;
+	}
+	
+	.catItemTitle {
+		margin: 10px 0;
+	}
+	
+	.catItemReadMore {
+		margin-bottom: 20px;
+		display: inline-block;
+		a.k2ReadMore {
+			font-size: 15px;
+			padding: 8px 21px;
+			line-height: normal;
+			text-decoration: none;
+			display: inline-block;
+			border: 1px solid @major_color;
+			&:hover , &:focus {
+				color: #fff;
+				background: @major_color;
+			}
+		}
+	}
+	.latestItemReadMore {
+		margin-bottom: 20px;
+		display: inline-block;
+		a.k2ReadMore {
+			border: 1px solid @major_color;
+			text-decoration: none;
+			display: inline-block;
+			padding: 7px 21px;
+			font-size: 15px;
+			line-height: normal;
+			&:hover , &:focus {
+				color: #fff;
+				background: @major_color;
+			}
+		}
+	}
+	.latestItemList .latestItemView {
+		padding: 0 15px;
+		background: #fff;
+		margin-bottom: 45px;
+		border: 1px solid #eee;
+	}
+	span.latestItemDateCreated { font-size: 16px; }
+	div.latestItemCategory { padding: 0; }
+	.latestItemBody {
+		padding-bottom: 0;
+		.latestItemIntroText { padding-bottom: 0; }
+	}
+	
+	/*----- Pagination -----*/
+	.k2Pagination {
+		.pagination {
+			float: none;
+			li {
+				&:first-child,&:last-child { display: none; }
+				&.active a { background: @major_color; color: #fff; border-color: @major_color; }
+				&.disabled a {
+					&:hover , &:focus { background: #fff; border-color: #ddd; color: #999; }
+				}
+				a {
+					padding: 7px 12px;
+					border-color: #ddd;
+					border-radius: 0px;
+					&:hover, &:focus { background: #262626; color: #fff; border-color: #262626; }
+				}
+			}
+		}
+	}
+	span.itemImage { text-align: left; }
+}
+
+div.itemTagsBlock ul.itemTags li a: before { display: none; }
+div.itemTagsBlock ul.itemTags li a: after { content: ","; }
+div.itemTagsBlock ul.itemTags li: last-child a: after { display: none; }
+
+#k2Frontend {
+	#toolbar-cancel a,#toolbar-save a {
+		background: none;
+		&:hover , &:focus {
+			background: none;
+		}
+	}
+}
+
+/*----- K2 Gridview start -----*/
+
+#k2Container.gridview {
+	text-align: center;
+	a {
+		color: #a0a0a0;
+		text-decoration: none;
+		&:hover {
+			color: #333;
+		}
+	}
+
+	.itemContainer {
+		padding: 0 1%;
+		.catItemView {
+			padding: 0;
+			border-radius: 0;
+		}
+		.catItemBody {
+			padding: 0;
+			.catItemImageBlock { padding: 0; }
+		}
+		.catItemTitle a {
+			display: block;
+			padding: 0 10px;
+			font-size: 25px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+	.catItemIntroText { padding: 10px; }
+	.catItemHeader {}
+	.catItemLinks {
+		padding: 10px 0;
+		span {
+			color: #a0a0a0;
+		}
+		.catItemDateCreated {
+		}
+		.catItemCategory {
+			padding: 0 5px 0;
+		}
+	}
+	div.catItemImageBlock {
+		margin-bottom: 0;
+		padding-bottom: 0;
+		.catItemImage { margin-bottom: 0; }
+	}
+	.bottom-info {
+		.catItemDateCreated, .catItemCategory { display: inline-block; }
+	}
+}
+
+.top-status-bar {
+	margin: 20px 0;
+	padding: 5px 0;
+	display: inline-block;
+	width: 100%;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	color: #a0a0a0;
+	line-height: 30px;
+	a {color: #a0a0a0; text-decoration: none;}
+	.itemAuthor {float: left;}
+	.itemDateCreated {
+		padding: 0 12px;
+		float: left;
+	}
+	.itemCategory { float: left;}
+	div.itemToolbar { 
+		background: transparent;
+		margin: 0;
+		padding: 0;
+		border-radius: 0;
+		a,.fa { font-size: 14px; }
+	}
+}
+
+.buttom-tools {
+	width: 100%;
+	margin-bottom: 15px;
+	display: inline-block;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	.itemSocialSharing {
+		float: left;
+		padding: 8px 0 0;
+		.itemTwitterButton { float: left; width: auto; }
+		.itemFacebookButton { float: left; width: auto; }
+		.itemGooglePlusOneButton { float: left; width: auto; }
+	}
+	.itemLinks { float: right; margin: 5px 0; }
+}
+
+div.itemHeader span.itemDateCreated { font-size: 14px; }
+
+div.itemHeader h2.itemTitle { text-transform: capitalize; font-weight: normal; }
+
+/*----- gridview end end  -----*/
+
+/*----- K2 END END -----*/
+
+
+/*----- K2 Category Styles -----*/
+
+div.k2CategoriesListBlock {
+	margin: 0 -21px -21px;
+	font-family: 'Raleway', sans-serif;
+	ul {
+		padding: 0;
+		li {
+			margin: 0;
+			padding: 7px 20px;
+			border-bottom: 1px solid #ddd;
+			&:last-child { border: none; }
+			a {
+				color: #262626;
+				text-decoration: none;
+				span { font-size: 18px; }
+			}
+			&.activeCategory, &:hover {
+				background: @major_color;
+				a { color: #fff; font-weight: normal; }
+			}
+			.catCounter { float: right; }
+		}
+	}
+}
+
+/*----- START START K2 Search ------*/
+
+div.k2SearchBlock {
+	form {
+		overflow: hidden;
+		input.inputbox {
+			float: left;
+			width: 100%;
+			height: auto;
+			box-shadow: none;
+			border-radius: 0;
+			padding: 5px 12px;
+			background: #efefef;
+			border: 2px solid #e4e4e4;
+		}
+		input.button {
+			color: #fff;
+			float: left;
+			position: absolute;
+			border: none;
+			right: 0;
+			box-shadow: none;
+			padding: 7px 22px 6px;
+			text-indent: -999999px;
+			background: @major_color url(../images/search-icon.png) no-repeat center center;
+		}
+	}
+}
+
+/*----- END END K2 Search ------*/
+
+/*----- START START k2 Tag Cloud Block -----*/
+
+div.k2TagCloudBlock {
+	a {
+		color: #262626;
+		background: none;
+		padding: 5px 10px;
+		margin-right: 5px;
+		margin-bottom: 5px;
+		line-height: normal;
+		text-decoration: none;
+		font-size: 15px !important;
+		border: 1px solid @major_color;
+		&:hover, &:focus {
+			color: #fff;
+			padding: 5px 10px;
+			background: @major_color;
+		}
+	}
+}
+
+/*----- k2 Tag Cloud Block END END -----*/
+
+/*----- START START k2 Items Block -----*/
+
+div.k2ItemsBlock {
+	ul {
+		padding: 0;
+		 li {
+			text-align: center;
+			margin-bottom: 15px;
+			padding: 15px 0 !important;
+			border-bottom: 1px solid #ddd;
+			div.moduleItemIntrotext {
+				a.moduleItemImage img { float: none; width: 100%; }
+			}
+			a.moduleItemTitle {
+				color: #a0a0a0;
+				font-weight: normal;
+				line-height: normal;
+				text-decoration: none;
+				font-size: 24px !important;
+				text-transform: capitalize;
+				&:hover {
+					color: @major_color;
+				}
+			}
+			&:last-child {
+				border: none;
+				margin-bottom: 0;
+				padding-bottom: 0 !important;
+			}
+		}
+	}
+}
+
+/*----- k2 Items Block END END -----*/
+
+
+/*----- START START K2 Responsive -----*/
+
+@media (max-width: 767px) {
+	#k2Container div.bottom-blog { display: block; }
+	#k2Container div.bottom-blog div.catItemHeader { width: 100%; border-bottom: 1px solid #f7f7f7; border-right: 0; }
+	#k2Container div.bottom-blog .catItemLinks { width: 100%; border-top: 1px solid #f7f7f7; border-right: 0; }
+	#k2Container div.bottom-blog .catItemLinks .catItemDateCreated,
+	#k2Container div.bottom-blog .catItemLinks .catItemCategory { float: left; }
+	.top-status-bar {
+		.itemAuthor, .itemDateCreated, .itemCategory, .itemToolbar { float: left; }
+	}
+	.buttom-tools {
+		div.itemSocialSharing , div.itemLinks { float: left; }
+	}
+	.container { width: 100%; }
+	.container > div.row { margin: 0; }
+}
+
+/*----- K2 Responsive END END -----*/

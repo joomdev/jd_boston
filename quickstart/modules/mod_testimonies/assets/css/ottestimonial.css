@@ -1,0 +1,372 @@
+.tabs{}
+.tabs .tab {
+    padding: 0.5em 0.5em 1em;
+    margin-bottom: 1em;
+    background-color:#f4f8fa;
+    position: relative;
+
+    display: inline-block;
+}
+.tabRemove{position: absolute; top: 2px; right: 2px;}
+.tabRemove > span {color: #bd362f;}
+.tabs .tab .col {
+    float: left;
+    margin: 5px 5px 15px 5px;
+}
+.tabs .tab label{
+    color: #686868;
+}
+.tabs .tab input[type="text"]{
+}
+.tabs .tab textarea{
+    width: 90%;
+}
+
+@media (max-width: 479px) {
+    .tabs .tab {margin-left: 0;}
+}
+
+.ot_info {
+    display: table-cell;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: top;
+    padding-bottom: 5px;
+
+}
+.ot_info .ot_image {
+    display: table-cell;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: top;
+}
+
+.ot_info .ot_image img {
+    border-radius: 50%;
+    border: 1px solid #efefef;
+    float: right;
+    height: 85px;
+    padding: 3px;
+    width: 85px;
+}
+.ot_info .ot_aditional {
+    display: table-cell;
+    padding-left: 10px;
+    vertical-align: middle;
+}
+.ot_testimonial  .ot_name {
+    font-weight: bold;
+}
+.ot_testimonial .ot_work {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+.ot_testimonial  .ot_email {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+.ot_testimonial.ot_website {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+.ot_ratting .glyphicon-star {
+    color: gold;
+    padding-right: 2px;
+}
+.ot_testimonial .ot_tcontent,.ot_tcontent1 {
+    font-style: italic;
+    padding: 10px 0 10px 0;
+
+    background: none repeat scroll 0 0 #f5f5f5;
+    color: #333333;
+
+
+}
+.ot_testimonial  .ot_title {
+    border-radius: 0;
+    margin-bottom: 10px;
+    position: relative;
+    font-style: italic;
+    padding: 20px 40px ;
+    text-shadow: 0 1px 0 #ecfbff;
+    font-size: 1.1em;
+
+}
+
+.ot_title:before, .ot_title:after {
+    color: #999;
+    content: "“";
+    font-size: 30px;
+    font-style: normal;
+    line-height: 1;
+    position: absolute;
+}
+.ot_title:before {
+    left: 10px;
+    top: 0;
+}
+.ot_title:after  {
+    bottom: -0.5em;
+    content: "”";
+    right: 10px;
+}
+
+.ot_testimonial {
+    line-height: 1px;
+    margin: 0;
+    position: relative;
+}
+.ot_testimonial .carousel-indicators {
+    list-style: none;
+    position: absolute;
+    right: 15px;
+    top: 105%;
+    z-index: 15;
+    margin-left: -30%;
+    bottom: 10px;
+    left: 50%;
+    text-align: center;
+    width: 60%;
+}
+.ot_testimonial .carousel-indicators li {
+    border: 1px solid lightgray;
+    display: inline-block;
+    float: none;
+    height: 12px;
+    margin: 1px 5px 1px 1px;
+    width: 12px;
+}
+.ot_testimonial .carousel-indicators .active {
+    background-color: #269abc;
+    border: 1px solid blue;
+    float: none;
+    height: 12px;
+    margin: 1px 5px 1px 1px;
+    width: 12px;
+}
+.ot_testimonial .carousel-indicators li:hover {
+
+    cursor: pointer;
+}
+
+.ot_testimonial .carousel {
+    line-height: 1.2;
+}
+
+
+.ot_testimonial .carousel-inner > .active.left {
+    left: -100%;
+}
+.ot_testimonial .carousel-inner > .active.right {
+    left: 100%;
+}
+
+
+
+
+.arrow-down {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 15px solid #f5f5f5;
+    height: 0;
+    margin: 0 0 0 47px;
+    width: 0;
+}
+.arrow-down1 {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid #f5f5f5;
+    height: 0;
+    margin: 0 0 0 35px;
+    width: 0;
+}
+.glyphicon-star:before {
+    content: "";
+}
+.glyphicon {
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    position: relative;
+    top: 1px;
+}
+@font-face {
+    font-family: "Glyphicons Halflings";
+    src: url("../fonts/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/glyphicons-halflings-regular.woff") format("woff"), url("../fonts/glyphicons-halflings-regular.ttf") format("truetype"), url("../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");
+}
+.ot_testimonial .ot_info1 {
+    display: block;
+    width: 100%;
+}
+.ot_testimonial .ot_aditional1 {
+    display: table-cell;
+    vertical-align: top;
+}
+.ot_testimonial .ot_image1 {
+     display: table-cell;
+    padding-left: 10px;
+    padding-right: 10px;
+    vertical-align: top;
+}
+.ot_testimonial .ot_image1 img {
+ border: 1px solid #efefef;
+    float: right;
+    height: 85px;
+    padding: 3px;
+    width: 85px;
+}
+.ot_testimonial .ot_tcontent1 {
+    display: block;
+    width: 100%;
+}
+
+.ot_testimonial .ot_left  {
+ margin: 2%;
+ width: 45%;
+ display: inline-block;
+ vertical-align: middle;
+ text-align: left;
+}
+@media  (max-width: 639px) {
+    .ot_testimonial .ot_left  { margin: 0 0 20px;
+    width: 99%;}
+}
+.ot_list {
+     margin-top: 25px;
+    padding-top: 25px;
+}
+.ot_image1 img {
+ border: 1px solid #efefef;
+    float: right;
+    height: 85px;
+    padding: 3px;
+    width: 85px;
+}
+#ot_wrapper {
+				
+				width: 100%;
+				top: 50px;
+			}
+			#carousel-wrapper {
+				padding-bottom: 10px;
+				position: relative;
+			}
+			#carousel, #thumbs {
+				overflow: hidden;
+			}
+
+			#carousel span, #carousel img,
+			#thumbs a, #thumbs img  {
+				display: block;
+				float: left;
+			}
+			#carousel span, #carousel a,
+			#thumbs span, #thumbs a {
+				position: relative;
+			}
+			#carousel img,
+			#thumbs img {
+				 border: 1px solid #efefef;
+			float: right;
+			height: 85px;
+			padding: 3px;
+			width: 85px;
+			opacity:0.4;
+			}
+			#thumbs .selected img  {
+			opacity:1;
+			}
+			
+			#carousel img.glare,
+			#thumbs img.glare {
+				width: 102%;
+				height: auto;
+			}
+
+		
+
+			#thumbs-wrapper {
+				padding: 10px 40px;
+				position: relative;
+			}
+			#thumbs a {
+				width: 150px;
+				height: 100px;
+				border-color:white;
+			
+			}
+			#thumbs a:hover, #thumbs a.selected {
+				border-color: #566;
+			}
+			
+			#wrapper img#shadow {
+				width: 100%;
+				position: absolute;
+				bottom: 0;
+			}
+
+			#prev, #next {
+				background: transparent url('../images/carousel_nav.png') no-repeat 0 0;
+				display: block;
+				width: 19px;
+				height: 20px;
+				margin-top: -10px;
+				position: absolute;
+				top: 50%;
+			}
+			#prev {
+				background-position: 0 0;
+				left: 10px;
+			}
+			#next {
+				background-position: -19px 0;
+				right: 10px;
+			}			
+			#prev:hover { 
+				background-position: 0 -20px;				
+			}
+			#next:hover {
+				background-position: -19px -20px;				
+			}
+			#prev.disabled, #next.disabled {
+				display: none !important;
+			}
+			#carousel span .ot_aditional {
+			margin-top:15px;
+			}
+			.omega-powered {
+				float:right;
+			}
+			.omega-powered  img {
+				margin:5px 0px;
+			}
+#carousel span .ot_aditional .ot_name,#carousel span .ot_aditional  .ot_work,#carousel span .ot_aditional .ot_email ,#carousel span .ot_aditional .ot_website,#carousel span .ot_aditional .ot_ratting {
+		font-size:1em !important;
+	    text-align: center;
+}
+#carousel span .ot_aditional .ot_email  span {
+ float:none;
+}
+.ot_testimonial .ot_left .ot_aditional1 .ot_work, .ot_testimonial .ot_left .ot_aditional1 .ot_website,.ot_testimonial .ot_left .ot_aditional1 .ot_ratting {
+    text-align: left;
+}
+@media  (max-width: 480px) {
+	#carousel-wrapper .caroufredsel_wrapper {
+				height: 300px !important;
+			}
+	#carousel {
+		height: 300px !important;
+	}
+}
+#thumbs a{
+	text-align:center;
+	margin: 0 15px;
+}
+.caroufredsel_wrapper .ot_tcontent .ot_title {
+	margin-bottom:0px !important;
+}
+.caroufredsel_wrapper .ot_tcontent  {
+	padding-bottom:0px !important;
+}

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: config.xml $ -->
+<config>
+    <fieldset
+        name="general"
+        label="General"
+        description="General"
+        >
+        <field
+            name="recipient_email"
+            type="text"
+            label="COM_TESTIMONIES_FIELD_EMAIL_RECIPIENT_LABEL"
+            description="COM_TESTIMONIES_FIELD_EMAIL_RECIPIENT_DESC"
+            default=""
+        />
+        <field
+            name="freetext"
+            type="textarea"
+            label="COM_TESTIMONIES_FIELD_FREETEXT_LABEL"
+            description="COM_TESTIMONIES_FIELD_FREETEXT_DESC"
+            default=""
+        /> 
+        <field
+            name="form_content"
+            type="textarea"
+            label="COM_TESTIMONIES_FIELD_FORMCONTENT_LABEL"
+            description="COM_TESTIMONIES_FIELD_FORMCONTENT_DESC"
+            default="On the right an example of a fornt-end submission form. It’s an easy way to receive testimonials from your clients, just create shortcode to display submission form in your page! And also you able to save and edit shortcodes."
+        />          
+        <field
+            name="captcha"
+            type="plugins"
+            folder="captcha"
+            default=""
+            label="COM_TESTIMONIES_FIELD_CAPTCHA_LABEL"
+            description="COM_TESTIMONIES_FIELD_CAPTCHA_DESC"
+            filter="cmd" >
+            <option
+                value="">JOPTION_USE_DEFAULT</option>
+            <option
+                value="0">JOPTION_DO_NOT_USE</option>
+        </field>  
+        <field
+            name="use_bootstrap"
+            type="radio"
+            class="btn-group btn-group-yesno"
+            default="1"
+            label="COM_TESTIMONIES_FIELD_USEBOOTSTRAP_LABEL"
+            description="COM_TESTIMONIES_FIELD_USEBOOTSTRAP_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>                 
+        <field
+            name="show_company"
+            type="radio"
+            class="btn-group btn-group-yesno"
+            default="1"
+            label="COM_TESTIMONIES_SHOW_COMPANY_LABEL"
+            description="COM_TESTIMONIES_SHOW_COMPANY_DESC">
+            <option value="1">JSHOW</option>
+            <option value="0">JHIDE</option>
+        </field> 
+        <field
+            name="show_position"
+            type="radio"
+            class="btn-group btn-group-yesno"
+            default="1"
+            label="COM_TESTIMONIES_SHOW_POSITION_LABEL"
+            description="COM_TESTIMONIES_SHOW_POSITION_LABEL">
+            <option value="1">JSHOW</option>
+            <option value="0">JHIDE</option>
+        </field>
+        <field
+            name="show_website"
+            type="radio"
+            class="btn-group btn-group-yesno"
+            default="1"
+            label="COM_TESTIMONIES_SHOW_WEBSITE_LABEL"
+            description="COM_TESTIMONIES_SHOW_WEBSITE_DESC">
+            <option value="1">JSHOW</option>
+            <option value="0">JHIDE</option>
+        </field> 
+        <field
+            name="show_rating"
+            type="radio"
+            class="btn-group btn-group-yesno"
+            default="1"
+            label="COM_TESTIMONIES_SHOW_RATING_LABEL"
+            description="COM_TESTIMONIES_SHOW_RATING_DESC">
+            <option value="1">JSHOW</option>
+            <option value="0">JHIDE</option>
+        </field>
+        <field
+            name="show_avatar"
+            type="radio"
+            class="btn-group btn-group-yesno"
+            default="1"
+            label="COM_TESTIMONIES_SHOW_AVATAR_LABEL"
+            description="COM_TESTIMONIES_SHOW_AVATAR_DESC">
+            <option value="1">JSHOW</option>
+            <option value="0">JHIDE</option>
+        </field>                                                                
+    </fieldset>
+	<fieldset
+		name="permissions"
+		label="JCONFIG_PERMISSIONS_LABEL"
+		description="JCONFIG_PERMISSIONS_DESC"
+		>
+
+		<field
+			name="rules"
+			type="rules"
+			label="JCONFIG_PERMISSIONS_LABEL"
+			class="inputbox"
+			filter="rules"
+			validate="rules"
+			component="com_testimonies"
+			section="component" />          
+	</fieldset>
+</config>

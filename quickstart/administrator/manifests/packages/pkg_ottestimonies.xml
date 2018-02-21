@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" version="3.6" method="upgrade">
+	<name>Ottestimonies Package</name>
+	<author>Omegatheme</author>
+	<creationDate>2016</creationDate>
+ 	<packagename>ottestimonies</packagename>
+	<copyright>Copyright (c)2010-2016 Omegatheme company</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>	
+	 <version>1.0.0</version>
+	 <url>https://www.omegatheme.com</url>
+	 <packager>KienNH</packager>
+	 <packagerurl>https://www.omegatheme.com</packagerurl>
+	 <description>OT Testimonies! Installer Package.</description>
+	 <files folder="packages">
+		 <file type="component" id="com_testimonies" >com_testimonies.zip</file>
+		 <file type="module" id="mod_testimonies" group="content">mod_testimonies.zip</file>
+	 </files>
+	 
+</extension>

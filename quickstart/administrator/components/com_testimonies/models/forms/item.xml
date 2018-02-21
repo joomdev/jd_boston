@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!-- $Id: banner.xml 21329 2011-05-11 04:15:59Z eddieajau $ -->
+<form>
+	<fieldset name="details"
+		addfieldpath="/administrator/components/com_testimonies/models/fields"
+	>
+		<field name="id" type="text" default="0"
+			readonly="true" class="readonly"
+			label="JGLOBAL_FIELD_ID_LABEL" 	description ="JGLOBAL_FIELD_ID_DESC" />
+			
+		
+		<field name="name" type="text"
+			label="COM_TESTIMONIES_FIELD_NAME_LABEL" 
+			description ="COM_TESTIMONIES_FIELD_NAME_DESC" 
+			required="true"  />
+
+		<field name="email" type="text"
+			label="COM_TESTIMONIES_FIELD_EMAIL_LABEL" 
+			description ="COM_TESTIMONIES_FIELD_EMAIL_DESC" 
+			 />
+        <field name="position" type="text"
+            label="COM_TESTIMONIES_FIELD_POSITION_LABEL" 
+            description ="COM_TESTIMONIES_FIELD_POSITION_DESC" 
+             />  
+        <field name="company_name" type="text"
+            label="COM_TESTIMONIES_FIELD_COMPANY_LABEL" 
+            description ="COM_TESTIMONIES_FIELD_COMPANY_DESC" 
+             />
+        <field name="avatar" type="file"
+            label="COM_TESTIMONIES_FIELD_AVATAR_LABEL" 
+            description ="COM_TESTIMONIES_FIELD_AVATAR_DESC" 
+             />                                      
+
+		<field name="rating" type="list"
+			label="COM_TESTIMONIES_FIELD_RATING_LABEL" 
+			description ="COM_TESTIMONIES_FIELD_RATING_DESC" class="inputbox" size="1" default="0">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </field>
+
+		<field name="website_url" type="text"
+			label="COM_TESTIMONIES_FIELD_WEBSITE_URL_LABEL" 
+			description ="COM_TESTIMONIES_FIELD_WEBSITE_URL_DESC" 
+			 />
+
+		<field name="comment" type="textarea"
+			label="COM_TESTIMONIES_FIELD_COMMENT_LABEL" 
+			description ="COM_TESTIMONIES_FIELD_COMMENT_DESC" 
+			 />
+
+		
+		<field name="state" type="list"
+			label="JSTATUS" description="COM_TESTIMONIES_FIELD_STATE_DESC"
+			class="inputbox" size="1" default="1" >
+			<option value="1">JPUBLISHED</option>
+			<option value="0">JUNPUBLISHED</option>
+			<option value="2">JARCHIVED</option>
+			<option value="-2">JTRASHED</option>
+		</field>
+        
+        <field name="featured" type="radio"
+            class="btn-group btn-group-yesno"
+            label="JFEATURED"
+            description="JFEATURED"
+            default="0"
+        >
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>      
+		
+		<field name="language" type="contentlanguage" label="JFIELD_LANGUAGE_LABEL"
+			description="COM_TESTIMONIES_FIELD_LANGUAGE_DESC" class="inputbox"
+		>
+			<option value="*">JALL</option>
+		</field>
+		
+		<field name="description" type="textarea" class="inputbox"
+			rows="3" cols="30" label="JGLOBAL_DESCRIPTION"
+			description="COM_TESTIMONIES_FIELD_DESCRIPTION_DESC" />
+            
+        <field name="created" type="calendar"
+            label="COM_TESTIMONIES_FIELD_CREATED_LABEL" description="COM_TESTIMONIES_FIELD_CREATED_DESC"
+            class="inputbox" size="22" format="%Y-%m-%d %H:%M:%S"
+            filter="user_utc" />            
+	</fieldset>
+
+	<fieldset name="publish"
+		label="COM_TESTIMONIES_GROUP_LABEL_PUBLISHING_DETAILS"
+	>
+
+		<field name="created" type="calendar"
+			label="COM_TESTIMONIES_FIELD_CREATED_LABEL" description="COM_TESTIMONIES_FIELD_CREATED_DESC"
+			class="inputbox" size="22" format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc" />
+
+		<field name="publish_up" type="calendar"
+			label="COM_TESTIMONIES_FIELD_PUBLISH_UP_LABEL" description="COM_TESTIMONIES_FIELD_PUBLISH_UP_DESC"
+			class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
+			filter="user_utc" />
+
+		<field name="publish_down" type="calendar"
+			label="COM_TESTIMONIES_FIELD_PUBLISH_DOWN_LABEL" description="COM_TESTIMONIES_FIELD_PUBLISH_DOWN_DESC"
+			class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
+			filter="user_utc" />
+
+	</fieldset>
+
+	<fieldset name="metadata"
+		label="JGLOBAL_FIELDSET_METADATA_OPTIONS"
+	>
+
+		<field name="metakey" type="textarea" class="inputbox"
+			rows="3" cols="30" label="JFIELD_META_KEYWORDS_LABEL"
+			description="COM_TESTIMONIES_FIELD_METAKEYWORDS_DESC" />
+
+		<field name="metadesc" type="textarea"
+			label="JFIELD_META_DESCRIPTION_LABEL" description="JFIELD_META_DESCRIPTION_DESC"
+			class="inputbox" rows="3" cols="30" />
+
+	</fieldset>
+
+</form>

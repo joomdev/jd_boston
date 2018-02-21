@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.0" method="upgrade">
+    <name>com_jd_team_showcase</name>
+    <creationDate>2016-08-15</creationDate>
+    <copyright>2016 Suraj Sharma</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <author>Suraj Sharma</author>
+    <authorEmail>surajmehta871@gmail.com</authorEmail>
+    <authorUrl>http://zubetasoft.com/</authorUrl>
+    <version>CVS: 1.0.0</version>
+    <description>JD Team Showcase</description>    
+    <install> <!-- Runs on install -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <update> <!-- Runs on update -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/update.mysql.utf8.sql</file>
+        </sql>
+    </update>
+    <uninstall> <!-- Runs on uninstall -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+	<files folder="site">     
+        
+    </files>
+    <administration>
+		<menu>COM_JD_TEAM_SHOWCASE</menu>
+        <files folder="administrator">
+            <filename>access.xml</filename>
+            <filename>config.xml</filename>
+            <filename>controller.php</filename>
+            <filename>index.html</filename>
+            <filename>jd_team_showcase.php</filename>
+            <folder>controllers</folder>
+            <folder>assets</folder>
+            <folder>helpers</folder>
+            <folder>models</folder>
+            <folder>sql</folder>
+            <folder>tables</folder>
+            <folder>views</folder>
+        </files>
+        <languages folder="languages/administrator">            
+			<language tag="en-GB">en-GB/en-GB.com_jd_team_showcase.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_jd_team_showcase.sys.ini</language>
+        </languages>
+    </administration>
+</extension>
+

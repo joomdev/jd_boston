@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+	<name>System - Virtuemart Cloud Zoom</name>
+	<author>Lamvt (Lamvt19792003@gmail.com)</author>
+	<creationDate>July, 2012</creationDate>
+	<copyright>(C) http://joomquery.com All rights reserved.</copyright>
+	<license>http://joomquery.com</license>
+	<authorEmail>lamvt19792003@gmail.com</authorEmail>
+	<authorUrl>http://joomquery.com</authorUrl>
+	<version>2.5.0</version>
+	<description>	
+	<![CDATA[Plugin Virtuemar Cloud Zoom developed by Lamvt (lamvt19792003@gmail.com) http://joomquery.com, Vinaora team ! <br/ >
+		<p><strong>Joomquery.com Free Joomla templates, free Joomla extensions<br />
+			We provide the best solutions for you to choice great templates - skins for your website.
+
+Templates - Skins are semi-designed websites for you to add your contents - site map so you're ready to start website. You can edite - customize your website with any ideas.
+		</strong></p>
+		<br />
+		<br />
+		<strong>Vinaora team products</strong>
+		<br />
+		<ul>
+			<li>
+				<a href="http://joomquery.com/en/home/our-products/73-vinaora-nivo-slider-joomla-mudule.html">Vinaora Nivo Slider - joomla mudule</a>
+			</li>
+			<li>
+				<a href="http://joomquery.com/en/home/our-products/71-vinaora-slick-slideshow-joomla-module.html">Vinaora Slick Slideshow - joomla module</a>
+			</li>
+			<li>	
+				<a href="http://joomquery.com/en/home/our-products/68-vinaora-cu3er-3d-slideshow-joomla-module.html">Vinaora Cu3er 3D Slideshow - joomla module</a>
+			</li>
+			<li>
+				<a href="http://joomquery.com/en/home/our-products/67-vinaora-visitors-counter-joomla-components-module.html">Vinaora Visitors Counter - joomla components module</a>
+			</li>
+			<li>
+				<a href="http://joomquery.com/en/home/our-products/64-vinaora-world-time-clock-joomla-module.html">Vinaora World Time Clock - joomla module</a>
+			</li>
+		</ul>
+		
+		]]>
+	</description>
+	<files>
+		<filename plugin="vmcloudzoom">vmcloudzoom.php</filename>
+		<filename>vmcloudzoom.xml</filename>
+    	<filename>index.html</filename>		
+    	<folder>css</folder>		
+    	<folder>js</folder>		
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="spacer2" type="spacer" label="Product images Settings:" description="You can choose between these options."/>
+				<field name="imageWidth" type="text" default="250" label="Main image Width:(px)" description="Set the Main image Width. Blank will use Auto"/>
+				<field name="imageHeight" type="text" default="250" label="Main image Height:(px)" description="Main image Height. Blank will use Auto"/>
+				<field name="thumbimageWidth" type="text" default="75" label="Thumb image Width:(px)" description="Set the Thumbnail image Width. Blank will use Auto"/>
+				<field name="thumbimageHeight" type="text" default="75" label="Thumb image Height:(px)" description="Set the Thumbnail image Height. Blank will use Auto"/>
+				<field name="spacer" type="spacer" label="Configuration options:" description="You can choose between these options."/>
+				<field name="zoomWidth" type="text" default="300" label="zoom Width:(px)" description="The popup window width showing the zoomed area."/>
+				<field name="zoomHeight" type="text" default="300" label="zoom Height:(px)" description="The popup window height showing the zoomed area."/>
+				<field name="xOffset" type="text" default="10" label="x Offset:" description="The popup window x offset from the small image. (always positive to move the popup window more on the right if position is 'right' or more on the left if position is 'left') "/>
+				<field name="yOffset" type="text" default="0" label="y Offset:" description="The popup window y offset from the small image. (always positive to move the popup window more on the top if position is 'top' or more on the bottom if position is 'bottom') "/>
+				<field name="position" type="list" default="right" label="position:" description="The popup window position.Admitted values:'right' ,'left' ,'top' ,'bottom'">
+					<option value="right">right</option>
+					<option value="left">left</option>
+					<option value="top">top</option>
+					<option value="bottom">bottom</option>
+					<option value="inside">inside</option>
+				</field>
+				<field name="tint" type="text" default="#aa00aa" label="Tint colour:" description="Specifies a tint colour which will cover the small image. Colours should be specified in hex format, e.g. '#aa00aa'. Does not work with softFocus."/>
+				<field name="tintOpacity" type="text" default="0.5" label="tint Opacity:" description="Opacity of the tint, where 0 is fully transparent, and 1 is fully opaque."/>
+				<field name="lensOpacity" type="text" default="0.5" label="lens Opacity:" description="Opacity of the lens mouse pointer, where 0 is fully transparent, and 1 is fully opaque. In tint and soft-focus modes, it will always be transparent."/>
+				<field name="softFocus" type="radio" default="0" label="soft Focus:" description="Applies a subtle blur effect to the small image. Set to YES or NO. Does not work with tint.">
+					<option value="1">YES</option>
+					<option value="0">NO</option>
+				</field>
+				<field name="smoothMove" type="text" default="3" label="smooth Move:" description="Amount of smoothness/drift of the zoom image as it moves. The higher the number, the smoother/more drifty the movement will be. 1 = no smoothing."/>
+				<field name="showTitle" type="radio" default="1" label="show Title:" description="Show a small title over the zoomed window it can be the anchor title and if not specified,it will get the small image title.">
+					<option value="1">YES</option>
+					<option value="0">NO</option>
+				</field>
+				<field name="titleOpacity" type="text" default="0.5" label="title Opacity:" description="Specifies the opacity of the title if displayed, where 0 is fully transparent, and 1 is fully opaque."/>
+			</fieldset>
+			<fieldset name="advanced">
+				<field name="show_jquery" type="list" default="1" label="Turn Jquery" description="Turn Jquery OFF when system exist Jquery library">
+					<option value="1">ON</option>
+					<option value="0">OFF</option>
+				</field>				<field name="turn_link" type="list" default="1" label="Author Link" description="Author Link">
+					<option value="1">ON</option>
+					<option value="0">OFF</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

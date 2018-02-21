@@ -1,0 +1,398 @@
+div.testimonies-freetext {
+    margin: 10px 0;
+    padding: 0 15px;
+}
+
+div.testimonies-form h3 {
+    text-transform: uppercase;
+}
+#testimonies-toggle {
+    border-top: #ddd 1px solid;
+    padding-top: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+#testimonies-toggle a{
+    cursor: pointer;
+    width: 225px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    background: #3f86c2;
+    display: block;
+    color: #fff;
+    padding-left: 10px;
+}
+#testimonies-toggle a:hover {
+    text-decoration: none;
+}
+#testimonies-toggle span {
+    top:3px;
+    padding-left: 5px;
+    font-size: 13px;
+}
+
+/* FORM */
+
+div.testimonies-form .form-horizontal .control-label {
+    width: 25%;
+}
+
+div.testimonies-form .form-horizontal .controls {
+    margin: 0;
+}
+div.testimonies-form input, div.testimonies-form textarea, div.testimonies-form select{
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;    
+    padding: 4px;
+    width: 100%;
+    height: auto;
+}
+
+/* Default layout */
+div.testimonies-default {
+    text-align: center;
+    color: #818181;
+    font-family: tahoma;
+}
+div.testimonies-default .items {
+    border-bottom: dashed 1px #dddddd; 
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+}
+div.testimonies-default .items:last-child{
+    border: none;
+}
+div.testimonies-default div.testimonies-avatar img {
+    border-radius: 50%;
+    width: 85px;
+    height: 85px;
+}
+div.testimonies-default div.testimonies-avatar {
+    margin-bottom: 20px;
+}
+div.testimonies-default div.testimonies-info ul {
+    padding: 0;
+    margin: 0;      
+}
+div.testimonies-default div.testimonies-info ul li {
+    list-style: none;
+    display: inline-block;
+    font-size: 12px;
+}
+div.testimonies-default div.testimonies-info ul li + li:before {
+    content: " | ";
+    padding: 0 2px;
+    font-style: italic;
+}
+div.testimonies-default .testimonies-comment {
+    font-size: 16px;
+    line-height: 30px;
+    margin-bottom: 20px;
+}
+div.testimonies-default .testimony-name {
+    font-weight: bold;
+    color: #daa520;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+div.testimonies-default .testimonies-info {
+    margin-bottom: 15px;
+}
+
+/* Quote list Layout */
+
+div.testimonies-quote_list {
+    text-align: left;
+    color: #818181;
+    font-family: tahoma;
+}
+div.testimonies-left {
+    text-align: center;
+}
+div.testimonies-quote_list .items {
+    border-bottom: dashed 1px #dddddd; 
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+}
+div.testimonies-quote_list .items:last-child{
+    border: none;
+}
+div.testimonies-quote_list div.testimonies-avatar img {
+    border-radius: 50%;
+    height: 76px;
+    width: 76px;
+    display: inline;
+}
+
+div.testimonies-quote_list div.testimonies-info ul {
+    padding: 0;
+    margin: 0;      
+}
+div.testimonies-quote_list div.testimonies-info ul li {
+    list-style: none;
+    font-size: 12px;
+    color: #8ad7f9;
+}
+div.testimonies-quote_list div.testimonies-info ul li + li:before {
+    padding: 0 2px;
+    font-style: italic;
+}
+div.testimonies-quote_list .testimonies-comment {
+    font-size: 14px;
+    line-height: 30px;
+    margin-bottom: 20px;
+    font-style: italic;
+    color: #525252;
+}
+span.testimonies-quote {
+    background: url("../images/quote.png") 0 1px no-repeat; 
+    width: 28px;
+    height: 24px;
+    display: inline-block;
+    margin-right: 10px;
+}
+div.testimonies-quote_list .testimony-name {
+    font-weight: bold;
+    color: #333333;
+    font-size: 14px;
+}
+div.testimonies-quote_list .testimonies-info {
+    margin-bottom: 5px;
+}
+
+/* Grid layout */
+div.testimonies-grid {
+    text-align: left;
+    color: #818181;
+    font-family: tahoma;
+}
+div.testimonies-grid .row {
+    border-bottom: dashed 1px #dddddd;
+    overflow: hidden;    
+}
+
+div.testimonies-grid .items {
+  border-right: dashed 1px #dddddd;  
+  padding: 25px 0;
+}
+div.testimonies-grid .row:last-child, div.testimonies-grid .items + .items{
+    border: none;
+}     
+div.testimonies-grid div.testimonies-avatar img {
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+    display: inline;
+}
+div.testimonies-grid div.testimonies-avatar {
+    margin-bottom: 20px;
+    text-align: center;
+}
+div.testimonies-grid div.testimonies-info ul {
+    padding: 0;
+    margin: 0;      
+}
+div.testimonies-grid div.testimonies-info ul li {
+    list-style: none;
+    display: inline-block;
+    font-size: 12px;
+}
+div.testimonies-grid div.testimonies-info ul li + li:before {
+    content: " | ";
+    padding: 0 2px;
+    font-style: italic;
+}
+div.testimonies-grid .testimonies-comment {
+    font-size: 14px;
+    line-height: 30px;
+    margin-bottom: 20px;
+}
+div.testimonies-grid .testimony-name {
+    font-weight: bold;
+    color: #daa520;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+div.testimonies-grid .testimonies-info {
+    margin-bottom: 10px;
+}
+
+/* Quote Grid layout */
+div.testimonies-quote_grid {
+    text-align: left;
+    color: #818181;
+    font-family: tahoma;
+}
+div.testimonies-quote_grid .row {
+    border-bottom: dashed 1px #dddddd;
+    overflow: hidden;    
+}
+
+div.testimonies-quote_grid .items {
+  border-right: dashed 1px #dddddd;  
+  padding: 25px 0;
+}
+div.testimonies-quote_grid .row:last-child, div.testimonies-quote_grid .items + .items{
+    border: none;
+}
+div.testimonies-quote_grid div.testimonies-avatar img {
+    border-radius: 50%;
+    height: 75px;
+    width: 75px;
+}
+div.testimonies-quote_grid div.testimonies-avatar {
+    margin-bottom: 20px;
+}
+div.testimonies-quote_grid div.testimonies-info ul {
+    padding: 0;
+    margin: 0;      
+}
+div.testimonies-quote_grid div.testimonies-info ul li {
+    list-style: none;
+    display: inline-block;
+    font-size: 12px;
+    color: #6dc1f1;
+}
+div.testimonies-quote_grid div.testimonies-info ul li + li:before {
+    content: " | ";
+    padding: 0 2px;
+    font-style: italic;
+}
+div.testimonies-quote_grid .testimonies-comment {
+    font-size: 14px;
+    line-height: 30px;
+    margin-bottom: 20px;
+    color: #525252;    
+    font-style: italic;    
+}
+div.testimonies-quote_grid .testimony-name {
+    font-weight: bold;
+    color: #333333;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+div.testimonies-quote_grid .testimonies-info {
+    margin-bottom: 10px;
+}
+
+/* Cardbox layout */
+div.testimonies-cardbox {
+    text-align: left;
+    color: #818181;
+    font-family: tahoma;
+}
+
+div.testimonies-cardbox .items { 
+      margin-bottom: 25px;
+}
+div.testimonies-cardbox .testimonies-left {
+    background: #f2eae1 url("../images/arrow.png") 100% 16px no-repeat; 
+    padding: 10px 0;
+}
+div.testimonies-cardbox .row:last-child, div.testimonies-cardbox .items:last-child{
+    border: none;
+}
+div.testimonies-cardbox div.testimonies-avatar img {
+    border-radius: 50%;
+    height: 75px;
+    width: 75px;
+}
+div.testimonies-cardbox div.testimonies-avatar {
+}
+div.testimonies-cardbox div.testimonies-info ul {
+    padding: 0;
+    margin: 0;      
+}
+div.testimonies-cardbox div.testimonies-info ul li {
+    list-style: none;
+    display: block;
+    font-size: 12px;
+}
+div.testimonies-cardbox div.testimonies-info ul li + li:before {
+    font-style: italic;
+}
+div.testimonies-cardbox .testimonies-comment {
+    font-size: 14px;
+    line-height: 26px;
+    color: #fff;    
+    font-style: italic;  
+    background: #bc645b; 
+    padding: 10px 15px;
+}
+div.testimonies-cardbox .testimony-name {
+    font-weight: bold;
+    color: #333333;
+    font-size: 14px;
+}
+
+
+/* Cardbox2 layout */
+div.testimonies-cardbox2 {
+    text-align: center;
+    color: #818181;
+    font-family: tahoma;
+}
+
+div.testimonies-cardbox2 .items { 
+      margin-bottom: 25px;
+}
+div.testimonies-cardbox2 .testimonies-left {
+    background: #f2eae1 url("../images/arrow_ver.png") 50% 0 no-repeat;
+    padding: 15px 0;
+}
+div.testimonies-cardbox2 .row:last-child, div.testimonies-cardbox2 .items:last-child{
+    border: none;
+}
+div.testimonies-cardbox2 div.testimonies-avatar img {
+    border-radius: 5px;
+    height: 75px;
+    width: 75px;
+}
+
+div.testimonies-cardbox2 div.testimonies-info ul {
+    padding: 0;
+    margin: 0;      
+}
+div.testimonies-cardbox2 div.testimonies-info ul li {
+    list-style: none;
+    display: block;
+    font-size: 12px;       
+}
+div.testimonies-cardbox2 div.testimonies-info ul li + li:before {
+    font-style: italic;
+}
+div.testimonies-cardbox2 .testimonies-comment {
+    font-size: 13px;
+    line-height: 26px;
+    color: #fff;    
+    font-style: italic;  
+    background: #bc645b;         
+    padding: 10px 15px;
+}
+div.testimonies-cardbox2 .testimony-name {
+    font-weight: bold;
+    color: #333333;
+    font-size: 14px;
+}
+
+/*Thank you page*/
+
+div.testimonies-thankyou {
+    text-align: center;
+    font-family: Calibri;
+}
+
+div.testimonies-thankyou-title {
+    font-size: 48px;
+    line-height: 48px;
+    color: #636363;
+    margin: 43px 0 59px 0;
+}
+div.testimonies-thankyou-content {
+    font-size: 30px;
+    color: #9f9f9f;
+    line-height: 30px;
+}

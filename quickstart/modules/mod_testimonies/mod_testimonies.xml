@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="3.4" client="site" method="upgrade">
+	<name>OT Testimonies</name>
+	<author>Omegatheme.com</author>
+	<creationDate>August 2016</creationDate>
+	<copyright>Copyright (c) 2016 testimonies. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>services@omegatheme.com</authorEmail>
+    <authorUrl>http://www.omegatheme.com</authorUrl>
+	<version>1.0.0</version>
+	<description>
+	<![CDATA[
+	Display Testimonies wwith multi layout
+	]]>
+	</description>
+
+	<files>
+		<filename module="mod_testimonies">mod_testimonies.php</filename>
+		<filename>mod_testimonies.xml</filename>
+        <filename>index.html</filename>
+        <filename>helper.php</filename>
+        <folder>assets</folder>
+        <folder>tmpl</folder>
+        <folder>language</folder>
+	</files>
+
+    <languages folder="language">
+        <language tag="en-GB">en-GB/en-GB.mod_testimonies.ini</language>
+        <language tag="en-GB">en-GB/en-GB.mod_testimonies.sys.ini</language>
+	</languages>	
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+                 <field type="radio" class="btn-group" name="ot_testimonies_style" label="MOD_TESTIMONIES_LAYOUT" description="MOD_TESTIMONIES_LAYOUT_DESC" default="1" >
+                    <option value="1">MOD_TESTIMONIES_SLIDEDER_1_COLUMN</option>
+                    <option value="2">MOD_TESTIMONIES_SLIDEDER_2_COLUMN</option>
+                    <option value="3">MOD_TESTIMONIES_SLIDEDER_WITH_THUMBNAILS</option>
+                    <option value="4">MOD_TESTIMONIES_SLIDEDER_GRID</option>
+                    <option value="5">MOD_TESTIMONIES_SLIDEDER_LIST</option> 
+                 </field>	
+				 <field
+					name="ot_speed" 
+					type="text" 
+					default="3000"
+					label="Speed slider (ms):"  
+					description="Speed slider"
+				 />
+				  
+                <field name="include_bootstrap" type="list"
+                       label="Include Bootstrap3"
+                       description="Include Bootstrap3"
+                       default="0"
+                >                
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field> 				 
+				<field
+					name="count"
+					type="text"
+					default="5"
+					label="Limit"
+					description="Limit" />
+				<field
+					name="show_featured"
+					type="list"
+					default="0"
+					label="Show Featured"
+					description="Only show featured testimonies">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field
+					name="show_avatar"
+					type="list"
+					default="1"
+					label="Show Avatar"
+					description="Show Avatar">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>	
+				<field
+					name="show_name"
+					type="list"
+					default="1"
+					label="Show Name"
+					description="Show Name">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field
+					name="show_position"
+					type="list"
+					default="1"
+					label="Show Position"
+					description="Show Position">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>				
+				<field
+					name="show_company"
+					type="list"
+					default="1"
+					label="Show Company"
+					description="Show Company">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+				<field
+					name="show_phone"
+					type="list"
+					default="1"
+					label="Show Phone"
+					description="Show Phone">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>	
+				<field
+					name="show_email"
+					type="list"
+					default="1"
+					label="Show Email"
+					description="Show Email">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>				
+				<field
+					name="show_website_url"
+					type="list"
+					default="1"
+					label="Show Website"
+					description="Show Website">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>	
+				<field
+					name="show_rating"
+					type="list"
+					default="1"
+					label="Show Rating"
+					description="Show Rating">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>				
+				<field
+					name="add_testimonies"
+					type="list"
+					default="0"
+					label="Add Testimonies Button"
+					description="Show Add Testimonies Button">
+					<option value="1">Yes</option>
+					<option value="0">No</option>
+				</field>
+
+			</fieldset>
+
+			<fieldset name="advanced">
+
+				<field
+					name="moduleclass_sfx"
+					type="text"
+					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+					description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"
+				/>
+
+				<field
+					name="cache"
+					type="list"
+					default="1"
+					label="COM_MODULES_FIELD_CACHING_LABEL"
+					description="COM_MODULES_FIELD_CACHING_DESC"
+				>
+					<option value="1">JGLOBAL_USE_GLOBAL</option>
+					<option value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+				</field>
+
+				<field
+					name="cache_time"
+					type="text"
+					default="900"
+					label="COM_MODULES_FIELD_CACHE_TIME_LABEL"
+					description="COM_MODULES_FIELD_CACHE_TIME_DESC"
+				/>
+
+				<field
+					name="cachemode"
+					type="hidden"
+					default="static"
+				>
+					<option value="static"></option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

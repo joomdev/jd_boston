@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <fieldset>
+    <field name="id" type="text" readonly="true" class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC"/>
+    <field name="ordering"/>
+    <field name="state" default="1" type="list" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="inputbox" size="1">
+      <option value="1">JPUBLISHED</option>
+      <option value="0">JUNPUBLISHED</option>
+      <option value="2">JARCHIVED</option>
+      <option value="-2">JTRASHED</option>
+    </field>
+    <field name="checked_out" type="hidden" filter="unset"/>
+    <field name="checked_out_time" default="0000-00-00 00:00:00" type="hidden" filter="unset"/>
+    <field name="created_by" default="0" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_CREATED_BY" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_CREATED_BY" hidden="true" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_CREATED_BY"/>
+    <field name="modified_by" default="0" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_MODIFIED_BY" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_MODIFIED_BY" hidden="true" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_MODIFIED_BY"/>
+    <field name="member_name" required="true" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_MEMBER_NAME" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_MEMBER_NAME" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_MEMBER_NAME"/>
+    
+	<field type="media" name="member_image" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_MEMBER_IMAGE" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_MEMBER_IMAGE" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_MEMBER_IMAGE"/>
+	
+    <field name="member_bio" style="border:solid 1px red;" type="editor" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_MEMBER_BIO" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_MEMBER_BIO" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_MEMBER_BIO"/> 
+
+    <field name="department" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_DEPARTMENT" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_DEPARTMENT" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_DEPARTMENT"/>
+    <field name="job_title" required="true"   label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_JOB_TITLE" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_JOB_TITLE" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_JOB_TITLE"/>
+	
+	<field name="is_email" type="radio" default="1" label="Show Email" description="" class="btn-group btn-group-yesno">
+		<option value="1">JYES</option>
+		<option value="0">JNO</option>
+	</field>
+	
+    <field name="email_address"  showon="is_email:1" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_EMAIL_ADDRESS" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_EMAIL_ADDRESS" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_EMAIL_ADDRESS"/>
+	
+	<field name="is_facebook" type="radio" default="1" label="Show Facebook" description="" class="btn-group btn-group-yesno">
+		<option value="1">JYES</option>
+		<option value="0">JNO</option>
+	</field>
+				
+    <field name="facebook_url"  showon="is_facebook:1" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_FACEBOOK_URL" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_FACEBOOK_URL" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_FACEBOOK_URL"/>
+	
+	<field name="is_twitter" type="radio" default="1" label="Show Twitter" description="" class="btn-group btn-group-yesno">
+		<option value="1">JYES</option>
+		<option value="0">JNO</option>
+	</field>			
+    <field name="twitter_url"  showon="is_twitter:1" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_TWITTER_URL" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_TWITTER_URL" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_TWITTER_URL"/>
+	
+	<field name="is_linkedin" type="radio" default="1" label="Show Linkedin" description="" class="btn-group btn-group-yesno">
+		<option value="1">JYES</option>
+		<option value="0">JNO</option>
+	</field>			
+    <field name="linkedin_url"  showon="is_linkedin:1" label="Linkedin URL" description="Linkedin URL" hint="Linkedin URL"/>
+	
+	<field name="is_googlepluse" type="radio" default="1" label="Show Google+" description="" class="btn-group btn-group-yesno">
+		<option value="1">JYES</option>
+		<option value="0">JNO</option>
+	</field>			
+    <field name="googlepluse_url"  showon="is_googlepluse:1" label="Google+ URL" description="Google+ URL" hint="Google+ URL"/>
+	
+	<field name="is_instagram" type="radio" default="1" label="Show Instagram" description="" class="btn-group btn-group-yesno">
+		<option value="1">JYES</option>
+		<option value="0">JNO</option>
+	</field>	
+    <field name="instagram_url"  showon="is_instagram:1"  label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_INSTAGRAM_URL" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_INSTAGRAM_URL" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_INSTAGRAM_URL"/>
+	
+	
+	<field name="is_pintrest" type="radio" default="1" label="Show Pintrest" description="" class="btn-group btn-group-yesno">
+		<option value="1">JYES</option>
+		<option value="0">JNO</option>
+	</field>
+    <field name="pintrest_url" showon="is_pintrest:1" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_PINTREST_URL" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_PINTREST_URL" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_PINTREST_URL"/>
+	
+	<field name="is_telephone" type="radio" default="1" label="Show Telephone" description="" class="btn-group btn-group-yesno">
+		<option value="1">JYES</option>
+		<option value="0">JNO</option>
+	</field>
+    <field name="telephone_number"  showon="is_telephone:1" label="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_TELEPHONE_NUMBER" description="COM_JD_TEAM_SHOWCASE_FORM_DESC_TEAMMEMBER_TELEPHONE_NUMBER" hint="COM_JD_TEAM_SHOWCASE_FORM_LBL_TEAMMEMBER_TELEPHONE_NUMBER"/>
+	
+	
+	
+    <field name="version_note"  type="text" label="JGLOBAL_FIELD_VERSION_NOTE_LABEL" description="JGLOBAL_FIELD_VERSION_NOTE_DESC" class="inputbox" size="45" labelclass="control-label"/>
+  </fieldset>
+</form>

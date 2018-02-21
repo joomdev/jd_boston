@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="3.1" client="site" method="upgrade">
+	<name>JD Team Showcase</name>
+	<author>JoomDev</author>
+	<creationDate>October 2016</creationDate>
+	<copyright>Copyright (C) 2010 - 2016 joomdev.com. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>info@joomdev.com</authorEmail>
+	<authorUrl>www.joomdev.com</authorUrl>
+	<version>1.0</version>
+	<description>JD Team Showcase</description>
+	
+	<files>
+		<filename module="mod_jd_team_showcase">mod_jd_team_showcase.php</filename>
+		<folder>tmpl</folder>
+		<filename>helper.php</filename>
+		<filename>index.html</filename>
+		<folder>assets</folder>
+	</files>
+	<help key="JHELP_EXTENSIONS_MODULE_MANAGER_FOOTER" />
+	<config>
+		<fields name="params">
+			<fieldset name="advanced">			
+				<field
+					name="moduleclass_sfx"
+					type="textarea"
+					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+					description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"
+					rows="3"
+				/>
+			</fieldset>
+			<fieldset name="basic">
+			<field name="layout" type="list" default="" label="Select Template Style" description="Select Template Style to front view">
+					<option value="carousel">Carousel </option>
+					<option value="grid">Grid</option>
+					<option value="grid_circles">Grid Circles</option>
+					<option value="grid_circles_new">Grid Circles 2</option>
+					<option value="stacked">Stacked</option>
+			</field>
+			<field name="team_member_in_row" type="list" default="" label="Team member in a row" description="Select numbers of Team member to show in a row">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>					
+					<option value="5">5</option>					
+					<option value="6">6</option>					
+					<option value="7">7</option>					
+					<option value="8">8</option>					
+					<option value="9">9</option>					
+					<option value="10">10</option>					
+			</field>
+			<field name="text_color" type="color" default="#eee"
+				label="Select Text Color"
+				description="Select text color" />
+			<field name="link_color" type="color" default="#eee"
+				label="Select background color"
+				description="Select background color of icons" />
+			<field name="socail_color" type="color" default="#eee"
+				label="Select Social icon Color"
+				description="Select background color of Social icon" />
+			<field
+				name="cachemode"
+				type="hidden"
+				default="static"
+				>
+				<option value="static"></option>
+			</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

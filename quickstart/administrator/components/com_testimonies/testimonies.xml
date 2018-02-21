@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.4" method="upgrade">
+	<name>COM_TESTIMONIES</name>
+	<creationDate>August 15, 2016</creationDate>
+	<author>Kien Nguyen</author>
+	<authorEmail>nguyenhuykien@xipat.com</authorEmail>
+	<authorUrl>www.omegatheme.com</authorUrl>
+	<copyright>Copyright (C) 2016 Omegatheme.com. All Rights Reserved</copyright>
+	<license>GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html</license>
+	<version>1.0</version>
+	<description><![CDATA[
+		<h1>Testimonies Extension (v.1.0)</h1>
+		<div style="clear: both;"></div>
+		<p>Testimonies. <strong>Built for Joomla 3.x.</strong></p>
+		<p>Created by <a href="//www.omegatheme.com" target="_blank">www.omegatheme.com</a>
+	]]></description>
+
+	<!-- Runs on install; New in Joomla 1.5 -->
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+
+	<!-- Runs on uninstall; New in Joomla 1.5 -->
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+
+	<files folder="site">
+		<filename>controller.php</filename>
+		<filename>index.html</filename>
+		<filename>router.php</filename>
+		<filename>testimonies.php</filename>
+		<folder>html</folder>
+		<folder>helpers</folder>
+		<folder>models</folder>
+		<folder>views</folder>
+	</files>
+	<administration>
+		<menu>COM_TESTIMONIES</menu>
+		<files folder="admin">
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<filename>testimonies.php</filename>
+			<folder>html</folder>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+		</files>
+
+		<languages folder="admin">
+			<language tag="en-GB">language/en-GB/en-GB.com_testimonies.ini</language>
+			<language tag="en-GB">language/en-GB/en-GB.com_testimonies.sys.ini</language>
+		</languages>
+		<languages folder="site">
+			<language tag="en-GB">language/en-GB/en-GB.com_testimonies.ini</language>
+		</languages>
+
+	</administration>
+</extension>

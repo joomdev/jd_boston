@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: metadata.xml $ -->
+<metadata>
+	<layout title="com_testimonies_list_view_default_title" option="com_testimonies_list_view_default_option">
+		<message>
+			<![CDATA[com_testimonies_list_view_default_desc]]>
+		</message>
+	</layout>
+    <fields name="params">
+        <fieldset name="advanced" label="JGLOBAL_LIST_LAYOUT_OPTIONS"> 
+            <field name="testimonies_layout" type="list"
+                description="JGLOBAL_FIELD_LAYOUT_DESC"
+                label="JGLOBAL_FIELD_LAYOUT_LABEL" default="default"
+            >
+                <option value="default">Default</option>
+                <option value="quote_list">Quote List</option>
+                <option value="grid">Grid</option>
+                <option value="quote_grid">Quote Grid</option>
+                <option value="cardbox">Cardbox</option>
+                <option value="cardbox2">Cardbox2</option>
+            </field> 
+                
+        </fieldset>
+    </fields>
+</metadata>
