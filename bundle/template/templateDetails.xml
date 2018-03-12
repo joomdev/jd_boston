@@ -12,7 +12,11 @@
 
     <languages>
         <language tag="en-GB">en-GB.tpl_jd_boston.ini</language>
-        <language tag="en-GB">es-ES.tpl_jd_boston.ini</language>
+        <language tag="es-ES">es-ES.tpl_jd_boston.ini</language>
+        <language tag="fr-FR">fr-FR.tpl_jd_boston.ini</language>
+        <language tag="ru-RU">ru-RU.tpl_jd_boston.ini</language>
+        <language tag="de-DE">de-DE.tpl_jd_boston.ini</language>
+        <language tag="it-IT">it-IT.tpl_jd_boston.ini</language>
     </languages>
 
     <positions>
