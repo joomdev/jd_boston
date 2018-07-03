@@ -1,5 +1,0 @@
-<root>
-    <params name="layout-sets" label="Layout sets" type="naked">
-        <param type="list" name="sets" default=""/>
-    </params>
-</root>

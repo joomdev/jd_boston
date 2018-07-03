@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -23,9 +23,20 @@ class cpanelClass extends acymailingClass{
 	}
 
 	function save($configObject){
+		if(is_array($configObject)) {
+			if (isset($configObject['anonymous_tracking']) && empty($configObject['anonymous_tracking'])) {
+				$configObject['anonymizeold'] = 1;
+			}
+		}elseif(is_object($configObject)){
+			if (isset($configObject->anonymous_tracking) && empty($configObject->anonymous_tracking)) {
+				$configObject->anonymizeold = 1;
+			}
+		}
+
 		$query = 'REPLACE INTO '.acymailing_table('config').' (namekey,value) VALUES ';
 		$params = array();
 		$i = 0;
+
 		foreach($configObject as $namekey => $value){
 			if(strpos($namekey,'password') !== false && !empty($value) && trim($value,'*') == '') continue;
 			$i++;

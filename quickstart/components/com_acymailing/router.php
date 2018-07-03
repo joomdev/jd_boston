@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -43,7 +43,8 @@ function AcymailingBuildRoute(&$query){
 	if(empty($query)) return $segments;
 
 	foreach($query as $name => $value){
-		if(in_array($name, array('option', 'Itemid', 'start', 'format', 'limitstart', 'no_html', 'val', 'key', 'acyformname', 'subid', 'tmpl', 'lang', 'limit'))) continue;
+		if(in_array($name, array('option', 'Itemid', 'start', 'format', 'limitstart', 'no_html', 'val', 'key', 'acyformname', 'subid', 'tmpl', 'lang', 'limit', 'acm', 'idU'))) continue;
+		if(strlen($name) > 25) continue;
 
 		if($ctrl == 'user' && $name == 'mailid') continue;
 

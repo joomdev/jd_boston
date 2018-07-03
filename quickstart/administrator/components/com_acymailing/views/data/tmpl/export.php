@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -113,7 +113,7 @@ defined('_JEXEC') or die('Restricted access');
 							<?php echo $this->charset->display('exportformat', $this->config->get('export_format', 'UTF-8')); ?>
 						</td>
 					</tr>
-					<tr class="<?php echo "row$k"; ?>" id="userField_separator">
+					<tr class="<?php echo "row$k"; $k = 1 - $k; ?>" id="userField_separator">
 						<td>
 							<?php echo acymailing_translation('ACY_SEPARATOR'); ?>
 						</td>
@@ -124,6 +124,14 @@ defined('_JEXEC') or die('Restricted access');
 							if($data == 'colon') $data = 'comma';
 							echo acymailing_radio($values, 'exportseparator', '', 'value', 'text', $data);
 							?>
+						</td>
+					</tr>
+					<tr class="<?php echo "row$k"; ?>" id="userField_excel">
+						<td>
+							<?php echo acymailing_tooltip(acymailing_translation('ACY_EXCEL_SECURITY_DESC'), acymailing_translation('ACY_EXCEL_SECURITY'), '', acymailing_translation('ACY_EXCEL_SECURITY')); ?>
+						</td>
+						<td align="center" style="text-align:center">
+							<?php echo acymailing_boolean("export_excelsecurity", '', $this->config->get('export_excelsecurity', 0) == 1 ? 1 : 0); ?>
 						</td>
 					</tr>
 				</table>

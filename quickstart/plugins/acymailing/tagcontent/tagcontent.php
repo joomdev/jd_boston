@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -1154,6 +1154,7 @@ class plgAcymailingTagcontent extends JPlugin{
 				$contentText = strip_tags($contentText, '<p><br><span><ul><li><h1><h2><h3><h4><a>');
 			}
 
+			$varFields['{picthtml}'] = '';
 			if(ACYMAILING_J16 && !empty($article->images) && !empty($tag->pict) && empty($tag->nomainimage)){
 				$picthtml = '';
 				$images = json_decode($article->images);
@@ -1182,7 +1183,7 @@ class plgAcymailingTagcontent extends JPlugin{
 				$tag->custom = explode(',', $tag->custom);
 				acymailing_arrayToInteger($tag->custom);
 
-				$articleCFValues = acymailing_loadObjectList('SELECT fv.value, f.id, f.fieldparams, f.params, f.type, f.label, f.default_value 
+				$articleCFValues = acymailing_loadObjectList('SELECT fv.value, f.id, f.fieldparams, f.params, f.type, f.label, f.name, f.default_value 
 																FROM #__fields AS f 
 																LEFT JOIN #__fields_values AS fv ON fv.field_id = f.id AND fv.item_id = '.intval($tag->id).' 
 																WHERE  f.id IN ('.implode(',', $tag->custom).')');
@@ -1261,6 +1262,8 @@ class plgAcymailingTagcontent extends JPlugin{
 
 					$replaceme = trim(implode(', ', $oneField['values']), ', ');
 					if(empty($replaceme)) continue;
+
+					$varFields['{custom:'.$oneField['field']->name.'}'] = $replaceme;
 
 					if($oneField['field']->params['showlabel'] == '1'){
 						$label = $oneField['field']->label.': ';

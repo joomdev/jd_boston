@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -122,7 +122,7 @@ class acyupdateHelper{
 
 	function installFields(){
 		$query = "INSERT IGNORE INTO `#__acymailing_fields` (`fieldname`, `namekey`, `type`, `value`, `published`, `ordering`, `options`, `core`, `required`, `backend`, `frontcomp`, `default`, `listing`, `frontlisting`, `frontform`) VALUES
-		('NAMECAPTION', 'name', 'text', '', 1, 1, '', 1, 1, 1, 1, '',1,1,1),
+		('NAMECAPTION', 'name', 'text', '', 1, 1, '', 1, 0, 1, 1, '',1,1,1),
 		('EMAILCAPTION', 'email', 'text', '', 1, 2, '', 1, 1, 1, 1, '',1,1,1),
 		('RECEIVE', 'html', 'radio', '0::JOOMEXT_TEXT\n1::HTML', 1, 3, '', 1, 1, 1, 1, '1',1,0,1);";
 		acymailing_query($query);
@@ -452,11 +452,7 @@ class acyupdateHelper{
 	}
 
 	function initList(){
-
 		$query = 'UPDATE IGNORE '.acymailing_table($this->cmsUserVars->table, false).' as b, '.acymailing_table('subscriber').' as a SET a.email = b.'.$this->cmsUserVars->email.', a.name = b.'.$this->cmsUserVars->name.' WHERE a.userid = b.'.$this->cmsUserVars->id.' AND a.userid > 0';
-		acymailing_query($query);
-
-		$query = 'INSERT IGNORE INTO `#__acymailing_subscriber` (`email`,`name`,`confirmed`,`userid`,`created`,`enabled`,`accept`,`html`) SELECT `'.$this->cmsUserVars->email.'`,`'.$this->cmsUserVars->name.'`,1-`'.$this->cmsUserVars->blocked.'`,`'.$this->cmsUserVars->id.'`,UNIX_TIMESTAMP(`'.$this->cmsUserVars->registered.'`),1-`'.$this->cmsUserVars->blocked.'`,1,1 FROM '.acymailing_table($this->cmsUserVars->table, false);
 		acymailing_query($query);
 
 		$nbLists = acymailing_loadResult('SELECT COUNT(*) FROM `#__acymailing_list`');
@@ -464,11 +460,6 @@ class acyupdateHelper{
 		if(!empty($nbLists)) return true;
 
 		acymailing_query("INSERT INTO `#__acymailing_list` (`name`, `description`, `ordering`, `published`, `alias`, `color`, `visible`, `type`,`userid`) VALUES ('Newsletters','Receive our latest news','1','1','mailing_list','#3366ff','1','list',".(int)acymailing_currentUserId().")");
-		$listid = acymailing_insertID();
-
-
-		$time = time();
-		acymailing_query('INSERT IGNORE INTO `#__acymailing_listsub` (`listid`, `subid`, `subdate`, `status`) SELECT '.$listid.', subid, '.$time.',1 FROM `#__acymailing_subscriber`');
 	}
 
 
@@ -539,10 +530,10 @@ class acyupdateHelper{
 		$extensioninfo['plg_acymailing_tagsubscription'] = array('AcyMailing Tag : Manage the Subscription', 1, 1);
 		$extensioninfo['plg_acymailing_tagtime'] = array('AcyMailing Tag : Date / Time', 5, 1);
 		$extensioninfo['plg_acymailing_taguser'] = array('AcyMailing Tag : Joomla User Information', 3, 1);
-		$extensioninfo['plg_acymailing_template'] = array('AcyMailing Template Class Replacer', 25, 1);
+		$extensioninfo['plg_acymailing_template'] = array('AcyMailing Template Class Replacer', 52, 1);
 		$extensioninfo['plg_acymailing_urltracker'] = array('AcyMailing : Handle Click tracking part1', 24, 1);
 		$extensioninfo['plg_system_acymailingurltracker'] = array('AcyMailing : Handle Click tracking part2', 1, 1);
-		$extensioninfo['plg_system_regacymailing'] = array('AcyMailing : (auto)Subscribe during Joomla registration', 0, 1);
+		$extensioninfo['plg_system_regacymailing'] = array('AcyMailing : (auto)Subscribe during Joomla registration', 0, 0);
 		$extensioninfo['plg_editors_acyeditor'] = array('AcyMailing Editor', 5, 1);
 		$extensioninfo['plg_acymailing_geolocation'] = array('AcyMailing Geolocation : Tag and filter', 10, 1);
 		$extensioninfo['plg_acymailing_plginboxactions'] = array('AcyMailing : Inbox actions', 0, 1);

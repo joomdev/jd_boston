@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -633,7 +633,7 @@ class acyQuery{
 	}
 
 	function addFlag($id){
-		if(!empty($this->orderBy) || !empty($this->limit) || $id == 200000) {
+		if(!empty($this->orderBy) || !empty($this->limit)) {
 			$flagQuery = 'UPDATE ' . acymailing_table('subscriber');
 			$flagQuery .= ' SET filterflags = CONCAT(filterflags, "f' . intval($id) . 'f")';
 			$flagQuery .= ' WHERE subid IN (
@@ -643,7 +643,6 @@ class acyQuery{
 			if(!empty($this->where)) $flagQuery .= ' WHERE (' . implode(') AND (', $this->where) . ')';
 			if(!empty($this->orderBy)) $flagQuery .= ' ORDER BY ' . $this->orderBy;
 			if(!empty($this->limit)) $flagQuery .= ' LIMIT ' . $this->limit;
-			elseif($id == 200000) $flagQuery .= ' LIMIT 20';
 			$flagQuery .= ') tmp);';
 		}else{
 			$flagQuery = 'UPDATE ' . acymailing_table('subscriber') . ' AS sub ';

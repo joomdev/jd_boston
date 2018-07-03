@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -193,6 +193,17 @@ class plgAcymailingTagsubscriber extends JPlugin{
 
 		if(strpos($filter['value'], '{time}') !== false && !in_array($filter['map'], array('created', 'confirmed_date', 'lastclick_date', 'lastopen_date', 'lastsent_date'))){
 			$value = strftime('%Y-%m-%d', $value);
+		}
+
+		if(strpos($filter['value'], '{date:') !== false){
+			$found = preg_match_all('#(?:{|%7B)date:(.+)(?:}|%7D)#Ui', $filter['value'], $results);
+			if($found){
+				$toReplace = array();
+				foreach($results[0] as $i => $tag){
+					$toReplace[$tag] = date('Y-m-d', strtotime(date("Y-m-d", time()).' '.$results[1][$i]));
+				}
+				$filter['value'] = str_replace(array_keys($toReplace), $toReplace, $filter['value']);
+			}
 		}
 
 		if(in_array($filter['map'], array('created', 'confirmed_date', 'lastclick_date', 'lastopen_date', 'lastsent_date'))){

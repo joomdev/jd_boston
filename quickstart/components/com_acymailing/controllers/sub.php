@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -465,7 +465,7 @@ class SubController extends acymailingController{
 	function _checkRedirectUrl($redirectUrl){
 		$config = acymailing_config();
 		$regex = trim(preg_replace('#[^a-z0-9\|\.]#i','',$config->get('module_redirect')),'|');
-		if(empty($regex) || $regex == 'all' || empty($redirectUrl)) return;
+		if(empty($regex) || $regex == 'all' || empty($redirectUrl) || 'joomla' != 'joomla') return;
 
 		preg_match('#^(https?://)?(www.)?([^/]*)#i',$redirectUrl,$resultsurl);
 		$domainredirect = preg_replace('#[^a-z0-9\.]#i','',@$resultsurl[3]);

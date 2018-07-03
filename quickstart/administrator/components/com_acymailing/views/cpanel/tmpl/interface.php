@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -146,27 +146,6 @@ defined('_JEXEC') or die('Restricted access');
 		</table>
 	</div>
 	<?php } ?>
-	<div class="onelineblockoptions">
-		<span class="acyblocktitle"><?php echo acymailing_translation('TRACKING'); ?></span>
-		<table class="acymailing_table" cellspacing="1">
-			<tr>
-				<td class="acykey">
-					<?php echo acymailing_translation('TRACKINGSYSTEM'); ?>
-				</td>
-				<td>
-					<?php echo $this->elements->tracking_system; ?>
-				</td>
-			</tr>
-			<tr>
-				<td class="acykey">
-					<?php echo acymailing_translation('ACY_TRACKINGSYSTEM_EXTERNAL_LINKS'); ?>
-				</td>
-				<td>
-					<?php echo $this->elements->tracking_system_external_website; ?>
-				</td>
-			</tr>
-		</table>
-	</div>
 	<?php if(!empty($this->elements->acymailing_menu)) { ?>
 		<div class="onelineblockoptions">
 			<span class="acyblocktitle"><?php echo acymailing_translation('MENU'); ?></span>

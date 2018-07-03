@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -113,7 +113,7 @@ if(acymailing_isAllowed($this->config->get('acl_newsletters_lists', 'all')) || a
 				echo '<tr>
 					<td class="paramlist_key">'.acymailing_translation('FAVICON').'</td><td class="paramlist_value">';
 				if(!empty($this->mail->favicon) && !empty($this->mail->favicon->filename)){
-					echo '<div id="attach_favicon">'.$this->mail->favicon->filename.' ('.(round($this->mail->favicon->size / 1000, 1)).' Ko)';
+					echo '<div id="attach_favicon" style="text-overflow: ellipsis; overflow: hidden; width: 200px;">'.$this->mail->favicon->filename.' ('.(round($this->mail->favicon->size / 1000, 1)).' Ko)';
 					echo $this->toggleClass->delete('attach_favicon', $this->mail->mailid.'_favicon', 'favicon');
 					echo '</div>';
 				}

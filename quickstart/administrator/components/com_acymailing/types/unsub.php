@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -24,7 +24,7 @@ class unsubType extends acymailingClass{
 		$js = "function changeMessage(idField,value){
 			linkEdit = idField+'_edit';
 			if(value>0){
-				window.document.getElementById(linkEdit).onclick = function(){acymailing.openpopup('".acymailing_completeLink((acymailing_isAdmin() ? '' : 'front')."email&task=edit", true)."&mailid='+value, 800, 500);return false;};
+				window.document.getElementById(linkEdit).onclick = function(){acymailing.openpopup('".acymailing_completeLink((acymailing_isAdmin() ? '' : 'front')."email&task=edit", true, true)."&mailid='+value, 800, 500);return false;};
 				window.document.getElementById(linkEdit).style.display = 'inline';
 			}else{
 				window.document.getElementById(linkEdit).style.display = 'none';

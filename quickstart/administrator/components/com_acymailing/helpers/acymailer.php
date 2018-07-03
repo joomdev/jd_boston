@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -461,23 +461,8 @@ class acymailerHelper extends acymailingPHPMailer{
 			}
 		}
 
-		if(!empty($this->parameters)){
-			$this->generateAllParams();
-			$keysparams = array_keys($this->parameters);
-			$this->Subject = str_replace($keysparams, $this->parameters, $this->Subject);
-			$this->Body = str_replace($keysparams, $this->parameters, $this->Body);
-			if(!empty($this->AltBody)) $this->AltBody = str_replace($keysparams, $this->parameters, $this->AltBody);
+		$this->replaceParams();
 
-			if(!empty($this->From)) str_replace($keysparams, $this->parameters, $this->From);
-			if(!empty($this->FromName)) str_replace($keysparams, $this->parameters, $this->FromName);
-			if(!empty($this->ReplyTo)){
-				foreach($this->ReplyTo as $i => $replyto){
-					foreach($replyto as $a => $oneval){
-						$this->ReplyTo[$i][$a] = str_replace($keysparams, $this->parameters, $this->ReplyTo[$i][$a]);
-					}
-				}
-			}
-		}
 		if(!empty($this->introtext)){
 			$this->Body = $this->introtext.$this->Body;
 			$this->AltBody = $this->textVersion($this->introtext).$this->AltBody;
@@ -503,6 +488,8 @@ class acymailerHelper extends acymailingPHPMailer{
 		$this->template = @$this->defaultMail[$mailid]->template;
 		$this->language = @$this->defaultMail[$mailid]->language;
 		$this->favicon = @$this->defaultMail[$mailid]->favicon;
+
+		$this->replaceParams();
 
 		if(empty($receiver->key) && !empty($receiver->subid)){
 			$receiver->key = acymailing_generateKey(14);
@@ -532,6 +519,30 @@ class acymailerHelper extends acymailingPHPMailer{
 			$this->trackEmail = false;
 		}
 		return $status;
+	}
+
+	private function replaceParams(){
+		if(empty($this->parameters)) return;
+
+		$this->generateAllParams();
+		$keysparams = array_keys($this->parameters);
+		$this->Subject = str_replace($keysparams, $this->parameters, $this->Subject);
+		$this->Body = str_replace($keysparams, $this->parameters, $this->Body);
+		if(!empty($this->AltBody)) $this->AltBody = str_replace($keysparams, $this->parameters, $this->AltBody);
+
+
+		if(!empty($this->From)) str_replace($keysparams, $this->parameters, $this->From);
+		if(!empty($this->FromName)) str_replace($keysparams, $this->parameters, $this->FromName);
+
+		if(!empty($this->replyname)) $this->replyname = str_replace($keysparams, $this->parameters, $this->replyname);
+		if(!empty($this->replyemail)) $this->replyemail = str_replace($keysparams, $this->parameters, $this->replyemail);
+		if(!empty($this->ReplyTo)){
+			foreach($this->ReplyTo as $i => $replyto){
+				foreach($replyto as $a => $oneval){
+					$this->ReplyTo[$i][$a] = str_replace($keysparams, $this->parameters, $this->ReplyTo[$i][$a]);
+				}
+			}
+		}
 	}
 
 	protected function embedImages(){

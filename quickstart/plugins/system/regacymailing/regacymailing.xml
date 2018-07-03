@@ -2,12 +2,12 @@
 
 <extension type="plugin" version="2.5" method="upgrade" group="system">
 	<name>AcyMailing : (auto)Subscribe during Joomla registration</name>
-	<creationDate>February 2018</creationDate>
-	<version>5.9.1</version>
+	<creationDate>June 2018</creationDate>
+	<version>5.10.2</version>
 	<author>Acyba</author>
 	<authorEmail>dev@acyba.com</authorEmail>
 	<authorUrl>http://www.acyba.com</authorUrl>
-	<copyright>Copyright (C) 2009-2017 ACYBA SAS - All rights reserved.</copyright>
+	<copyright>Copyright (C) 2009-2018 ACYBA SAS - All rights reserved.</copyright>
 	<license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<description>Automatically subscribe the user to AcyMailing during the Joomla registration process</description>
 	<files>
@@ -41,7 +41,7 @@
 			<option value="0">JOOMEXT_NO</option>
 			<option value="1">JOOMEXT_YES</option>
 		</param>
-		<param name="forceconf" type="radio" default="0" label="Force double opt-in" description="The registration process may already have its confirmation e-mail... Do you want Acy to send its own confirmation e-mail (so in addition to the Joomla one)?">
+		<param name="forceconf" type="radio" default="1" label="Force double opt-in" description="The registration process may already have its confirmation e-mail... Do you want Acy to send its own confirmation e-mail (so in addition to the Joomla one)?">
 			<option value="0">JOOMEXT_NO</option>
 			<option value="1">JOOMEXT_YES</option>
 		</param>
@@ -87,7 +87,7 @@
 					<option value="0">JOOMEXT_NO</option>
 					<option value="1">JOOMEXT_YES</option>
 				</field>
-				<field name="forceconf" type="radio" default="0" label="Force double opt-in" description="The registration process may already have its confirmation e-mail... Do you want Acy to send its own confirmation e-mail (so in addition to the Joomla one)?">
+				<field name="forceconf" type="radio" default="1" label="Force double opt-in" description="The registration process may already have its confirmation e-mail... Do you want Acy to send its own confirmation e-mail (so in addition to the Joomla one)?">
 					<option value="0">JOOMEXT_NO</option>
 					<option value="1">JOOMEXT_YES</option>
 				</field>

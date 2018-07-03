@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -42,12 +42,14 @@ if(!ACYMAILING_J16){
 		var $type = 'termscontent';
 
 		function getInput() {
-			$link = 'index.php?option=com_content&amp;view=articles&amp;layout=modal&amp;tmpl=component&amp;object=content&amp;function=acySelectArticle';
+			$method = 'acySelectArticle'.rand(1000, 9000);
+
+			$link = 'index.php?option=com_content&amp;view=articles&amp;layout=modal&amp;tmpl=component&amp;object=content&amp;function='.$method;
 			$text = '<input class="inputbox" id="termscontent" name="'.$this->name.'" type="text" style="width:100px" value="'.$this->value.'">';
 			$text .= acymailing_popup($link, '<button class="btn" onclick="return false">'.acymailing_translation('SELECT').'</button>', '', 650, 375, 'termscontent');
 
-			$js = "window.acySelectArticle = function(id, title,catid, object) {
-					document.getElementById('termscontent').value = id;
+			$js = "window.".$method." = function(id, title, catid, object) {
+					document.querySelector('input[name=\"".$this->name."\"]').value = id;
 					acymailing.closeBox(true);
 				}";
 			acymailing_addScript(true, $js);

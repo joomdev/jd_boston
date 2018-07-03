@@ -1,6 +1,6 @@
 /**
  * @package    AcyMailing for Joomla!
- * @version    5.9.1
+ * @version    5.10.2
  * @author     acyba.com
  * @copyright  (C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license    GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -9,7 +9,7 @@
 function checkChangeForm(){
 	var varform = document['adminForm'];
 	nameField = varform.elements['data[subscriber][name]'];
-	if(nameField && typeof acymailingModule != 'undefined' && (((typeof acymailingModule['level'] == 'undefined' || acymailingModule['level'] != 'enterprise') && (nameField.value == acymailingModule['NAMECAPTION'] || nameField.value.replace(/ /g, "").length < 2)) || (typeof acymailingModule['level'] != 'undefined' && acymailingModule['level'] == 'enterprise' && typeof acymailingModule['reqFieldsComp'] != 'undefined' && acymailingModule['reqFieldsComp'].indexOf('name') >= 0 && (nameField.value == acymailingModule['NAMECAPTION'] || nameField.value.replace(/ /g, "").length < 2)))){
+	if(nameField && typeof acymailingModule != 'undefined' && ((typeof acymailingModule['reqFieldsComp'] != 'undefined' && acymailingModule['reqFieldsComp'].indexOf('name') >= 0 && (nameField.value == acymailingModule['NAMECAPTION'] || nameField.value.replace(/ /g, "").length < 2)))){
 		alert(acymailingModule['NAME_MISSING']);
 		nameField.className = nameField.className + ' invalid';
 		return false;

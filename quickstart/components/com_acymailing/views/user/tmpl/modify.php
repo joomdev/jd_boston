@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -21,7 +21,7 @@ defined('_JEXEC') or die('Restricted access');
 			<legend><span><?php echo acymailing_translation( 'USER_INFORMATIONS' ); ?></span></legend>
 			<div id="acyuserinfo">
 			<?php if(acymailing_level(3)){
-				if(!empty($this->subscriber->email)) $this->fieldsClass->currentUser = $this->subscriber;
+				$this->fieldsClass->currentUserEmail = empty($this->subscriber->email) ? '' : $this->subscriber->email;
 				$tmpCatId = array();
 				$tmpCatTag = array();
 				foreach($this->extraFields as $fieldName => $oneExtraField) {
@@ -105,6 +105,38 @@ defined('_JEXEC') or die('Restricted access');
 			}
 	?>
 			</div>
+			<?php
+			$exportButton = $this->config->get('gdpr_export', 0);
+			$deleteButton = $this->config->get('gdpr_delete', 0);
+			if(!empty($this->subscriber->subid) && !(empty($exportButton) && empty($deleteButton))){
+				?>
+			<div style="clear: both; padding-top: 5px;">
+				<table cellpadding="0">
+					<tr>
+						<?php
+						if($exportButton == 1) {
+							?>
+							<td id="acybutton_subscriber_download_data" <?php if($deleteButton == 1){ echo 'style="padding-right: 10px;"'; } ?>>
+								<a class="acymailing_button_grey" onclick="acymailing.submitbutton('exportdata'); return false;" href="#">
+									<?php echo acymailing_translation('ACY_EXPORT_MY_DATA'); ?>
+								</a>
+							</td>
+							<?php
+						}
+						if($deleteButton == 1) {
+							?>
+							<td id="acybutton_subscriber_delete_data">
+								<a class="acymailing_button_grey" onclick="if(confirm('<?php echo acymailing_translation('ACY_DELETE_MY_DATA_CONFIRM', true)."\\n".acymailing_translation('ACY_DELETE_MY_DATA_CONFIRM2', true); ?>')){acymailing.submitbutton('delete');} return false;" href="#">
+									<?php echo acymailing_translation('ACY_DELETE_MY_DATA'); ?>
+								</a>
+							</td>
+							<?php
+						}
+						?>
+					</tr>
+				</table>
+			</div>
+			<?php } ?>
 		</fieldset>
 		<?php if($this->displayLists){?>
 		<fieldset class="adminform acy_subscription_list">
@@ -127,6 +159,7 @@ defined('_JEXEC') or die('Restricted access');
 		<input type="hidden" name="subid" value="<?php echo $this->subscriber->subid; ?>" />
 		<?php if(acymailing_getVar('cmd', 'tmpl') == 'component'){ ?><input type="hidden" name="tmpl" value="component" /><?php } ?>
 		<input type="hidden" name="key" value="<?php echo $this->subscriber->key; ?>" />
+		<?php if(!empty($this->Itemid)) echo '<input type="hidden" name="Itemid" value="'.$this->Itemid.'" />'; ?>
 		<p class="acymodifybutton">
 			<input class="button btn btn-primary" type="submit" onclick="document.adminForm.task.value='savechanges';return checkChangeForm();" value="<?php echo empty($this->subscriber->subid) ? $this->escape(acymailing_translation('SUBSCRIBE')) :  $this->escape(acymailing_translation('SAVE_CHANGES'))?>"/>
 		</p>

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -324,7 +324,7 @@ class UserController extends acymailingController{
 				$allUsers = explode(' ', trim(str_replace(array(';', ','), ' ', $notifyUsers)));
 				foreach($allUsers as $oneUser){
 					if(empty($oneUser)) continue;
-					$mailer->sendOne('notification_unsuball', $oneUser);
+					$mailer->sendOne($notifToSend, $oneUser);
 				}
 			}
 		}
@@ -396,5 +396,33 @@ class UserController extends acymailingController{
 
 		if($subscriberClass->identify(true)) return $this->modify();
 		return $this->subscribe();
+	}
+
+	function exportdata(){
+		acymailing_checkToken();
+
+		$subscriberClass = acymailing_get('class.subscriber');
+		$subscriber = $subscriberClass->identify(true);
+
+		if(empty($subscriber->subid)) acymailing_redirect(acymailing_rootURI());
+
+		$userHelper = acymailing_get('helper.user');
+		$userHelper->exportdata($subscriber->subid);
+	}
+
+	function delete(){
+		acymailing_checkToken();
+
+		$subscriberClass = acymailing_get('class.subscriber');
+		$subscriber = $subscriberClass->identify(true);
+
+		if(empty($subscriber->subid)) acymailing_redirect(acymailing_rootURI());
+
+		if($subscriberClass->delete($subscriber->subid)){
+			acymailing_enqueueMessage(acymailing_translation('ACY_DATA_DELETED'), 'success');
+		}else{
+			acymailing_enqueueMessage(acymailing_translation('ACY_ERROR_DELETE_DATA'), 'error');
+		}
+		acymailing_redirect(acymailing_rootURI());
 	}
 }

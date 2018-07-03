@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -14,6 +14,49 @@ if(!include_once(rtrim(JPATH_ADMINISTRATOR, DIRECTORY_SEPARATOR).DIRECTORY_SEPAR
 	echo 'This module can not work without the AcyMailing Component';
 	return;
 };
+
+
+if(!function_exists('acymailing_getArticleURL')) {
+	function acymailing_getArticleURL($id, $params, $text)
+	{
+		if (is_numeric($id)) {
+			if (!ACYMAILING_J16) {
+				$query = 'SELECT a.id,a.alias,a.catid,a.sectionid, c.alias as catalias, s.alias as secalias FROM #__content as a ';
+				$query .= ' LEFT JOIN #__categories AS c ON c.id = a.catid ';
+				$query .= ' LEFT JOIN #__sections AS s ON s.id = a.sectionid ';
+				$query .= 'WHERE a.id = '.$id.' LIMIT 1';
+				$article = acymailing_loadObject($query);
+
+				$section = $article->sectionid.(!empty($article->secalias) ? ':'.$article->secalias : '');
+				$category = $article->catid.(!empty($article->catalias) ? ':'.$article->catalias : '');
+				$articleid = $article->id.(!empty($article->alias) ? ':'.$article->alias : '');
+				$url = ContentHelperRoute::getArticleRoute($articleid, $category, $section);
+			} else {
+				$query = 'SELECT a.id,a.alias,a.catid, c.alias as catalias FROM #__content as a ';
+				$query .= ' LEFT JOIN #__categories AS c ON c.id = a.catid ';
+				$query .= 'WHERE a.id = '.$id.' LIMIT 1';
+				$article = acymailing_loadObject($query);
+
+				$category = $article->catid.(!empty($article->catalias) ? ':'.$article->catalias : '');
+				$articleid = $article->id.(!empty($article->alias) ? ':'.$article->alias : '');
+
+				$url = ContentHelperRoute::getArticleRoute($articleid, $category);
+			}
+			$url .= (strpos($url, '?') ? '&' : '?').'tmpl=component';
+		} else {
+			$url = $id;
+		}
+
+		if ($params->get('showtermspopup', 1) == 1) {
+			$acypop = acymailing_get('helper.acypopup');
+			$url = $acypop->display(acymailing_translation($text), acymailing_translation($text, true), $url, $articleid, 0, 0, '', '', 'text');
+		} else {
+			$url = '<a title="'.acymailing_translation($text, true).'"  href="'.$url.'" target="_blank">'.acymailing_translation($text).'</a>';
+		}
+
+		return $url;
+	}
+}
 
 $config = acymailing_config();
 $overridedesign = preg_replace('#[^a-z0-9_]#i', '', acymailing_getVar('cmd', 'design'));
@@ -226,42 +269,28 @@ if($params->get('effect') == 'mootools-slide'){
 if($params->get('showterms', false)){
 	require_once JPATH_SITE.DS.'components'.DS.'com_content'.DS.'helpers'.DS.'route.php';
 	$termsIdContent = $params->get('termscontent', 0);
-	if(empty($termsIdContent)){
+	$privacyIdContent = $params->get('privacypolicy', 0);
+
+	$termsURL = null;
+	$privacyURL = null;
+
+	if(!empty($termsIdContent)){
+		$termsURL = acymailing_getArticleURL($termsIdContent, $params, 'JOOMEXT_TERMS');
+	}
+
+	if(!empty($privacyIdContent)){
+		$privacyURL = acymailing_getArticleURL($privacyIdContent, $params, 'ACY_PRIVACY_POLICY');
+	}
+
+	if(empty($termsURL) && empty($privacyURL)){
 		$termslink = acymailing_translation('JOOMEXT_TERMS');
 	}else{
-		if(is_numeric($termsIdContent)){
-			if(!ACYMAILING_J16){
-				$query = 'SELECT a.id,a.alias,a.catid,a.sectionid, c.alias as catalias, s.alias as secalias FROM #__content as a ';
-				$query .= ' LEFT JOIN #__categories AS c ON c.id = a.catid ';
-				$query .= ' LEFT JOIN #__sections AS s ON s.id = a.sectionid ';
-				$query .= 'WHERE a.id = '.$termsIdContent.' LIMIT 1';
-				$article = acymailing_loadObject($query);
-
-				$section = $article->sectionid.(!empty($article->secalias) ? ':'.$article->secalias : '');
-				$category = $article->catid.(!empty($article->catalias) ? ':'.$article->catalias : '');
-				$articleid = $article->id.(!empty($article->alias) ? ':'.$article->alias : '');
-				$url = ContentHelperRoute::getArticleRoute($articleid, $category, $section);
-			}else{
-				$query = 'SELECT a.id,a.alias,a.catid, c.alias as catalias FROM #__content as a ';
-				$query .= ' LEFT JOIN #__categories AS c ON c.id = a.catid ';
-				$query .= 'WHERE a.id = '.$termsIdContent.' LIMIT 1';
-				$article = acymailing_loadObject($query);
-
-				$category = $article->catid.(!empty($article->catalias) ? ':'.$article->catalias : '');
-				$articleid = $article->id.(!empty($article->alias) ? ':'.$article->alias : '');
-
-				$url = ContentHelperRoute::getArticleRoute($articleid, $category);
-			}
-			$url .= (strpos($url, '?') ? '&' : '?').'tmpl=component';
+		if(empty($privacyURL)){
+			$termslink = acymailing_translation_sprintf('ACY_I_AGREE_TERMS', $termsURL);
+		}elseif(empty($termsURL)){
+			$termslink = acymailing_translation_sprintf('ACY_I_AGREE_PRIVACY', $privacyURL);
 		}else{
-			$url = $termsIdContent;
-		}
-
-		if($params->get('showtermspopup', 1) == 1){
-			$acypop = acymailing_get('helper.acypopup');
-			$termslink = $acypop->display(acymailing_translation('JOOMEXT_TERMS'), acymailing_translation('JOOMEXT_TERMS', true), $url, $articleid, 650, 375, '', '', 'text');
-		}else{
-			$termslink = '<a title="'.acymailing_translation('JOOMEXT_TERMS', true).'"  href="'.$url.'" target="_blank">'.acymailing_translation('JOOMEXT_TERMS').'</a>';
+			$termslink = acymailing_translation_sprintf('ACY_I_AGREE', $termsURL, $privacyURL);
 		}
 	}
 }

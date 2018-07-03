@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -13,7 +13,11 @@ defined('_JEXEC') or die('Restricted access');
 class listmailClass extends acymailingClass{
 
 	function getLists($mailid){
-		$query = 'SELECT a.*,b.mailid FROM '.acymailing_table('list').' as a LEFT JOIN '.acymailing_table('listmail').' as b on a.listid = b.listid AND b.mailid = '.intval($mailid).' WHERE a.type = \'list\' ORDER BY b.mailid DESC, a.ordering ASC';
+		$query = 'SELECT a.*,b.mailid 
+				FROM '.acymailing_table('list').' as a 
+				LEFT JOIN '.acymailing_table('listmail').' as b on a.listid = b.listid AND b.mailid = '.intval($mailid).' 
+				WHERE a.type = \'list\' 
+				ORDER BY b.mailid DESC, a.ordering ASC';
 		return acymailing_loadObjectList($query);
 	}
 

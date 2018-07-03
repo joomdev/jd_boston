@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -336,7 +336,7 @@ class plgSystemRegacymailing extends JPlugin{
 		if(!empty($this->components[$option]['edittasks']) && in_array($this->view, $this->components[$option]['edittasks']) && $currentUserId != 0){
 			$userClass = acymailing_get('class.subscriber');
 			$acyUserData = $userClass->get($userClass->subid($currentUserId));
-			if(!empty($acyUserData->email)) $fieldsClass->currentUser = $acyUserData;
+			$fieldsClass->currentUserEmail = empty($acyUserData->email) ? '' : $acyUserData->email;
 		}
 
 		foreach($newOrdering as $fieldName){

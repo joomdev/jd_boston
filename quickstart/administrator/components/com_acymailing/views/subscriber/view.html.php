@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -165,6 +165,8 @@ class SubscriberViewSubscriber extends acymailingView{
 					$rows[$onesub->subid]->subscription->$sublistid = $onesub;
 				}
 			}
+		}else{
+			acymailing_enqueueMessage(acymailing_translation_sprintf('ACY_NO_USER_IMPORT', '<a href="'.acymailing_completeLink('data&task=import').'">'.strtolower(acymailing_translation('IMPORT')).'</a>'), 'info');
 		}
 
 		if(empty($pageInfo->limit->value)){
@@ -308,14 +310,20 @@ class SubscriberViewSubscriber extends acymailingView{
 			$subscriber->confirmed = 1;
 			$subscriber->blocked = 0;
 			$subscriber->accept = 1;
-			$subscriber->enabled = 1;
-			$iphelper = acymailing_get('helper.user');
-			$subscriber->ip = $iphelper->getIP();
+			$subscriber->enabled = 1;                                   
+			if($config->get('anonymous_tracking', 0) == 0) {
+				$iphelper = acymailing_get('helper.user');
+				$subscriber->ip = $iphelper->getIP();
+			}else{
+				$subscriber->ip = '';
+			}
 		}
 
 		if(acymailing_isAdmin()){
 			$acyToolbar = acymailing_get('helper.toolbar');
 			$acyToolbar->setTitle(acymailing_translation('ACY_USER'), 'subscriber&task=edit&subid='.$subid);
+			$acyToolbar->custom('exportdata', acymailing_translation('ACY_EXPORT_ALL_DATA'), 'export', false);
+			$acyToolbar->divider();
 		}
 
 
@@ -402,6 +410,22 @@ class SubscriberViewSubscriber extends acymailingView{
 			$acyToolbar->display();
 		}
 
+		$script = '
+			document.addEventListener("DOMContentLoaded", function(){
+				acymailing.submitbutton = function(pressbutton) {
+					var form = document.adminForm;
+					if(pressbutton != \'cancel\' && form.email){
+						form.email.value = form.email.value.replace(/ /g, "");
+						var filter = /^'.acymailing_getEmailRegex(true).'$/i;
+						if(!filter.test(form.email.value)){
+							alert("'.acymailing_translation('VALID_EMAIL', true).'");
+							return false;
+						}
+					}
+					acymailing.submitform(pressbutton, form);
+				};
+			 });';
+		acymailing_addScript(true, $script);
 
 		$filters = new stdClass();
 		$quickstatusType = acymailing_get('type.statusquick');

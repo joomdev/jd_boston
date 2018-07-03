@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -16,6 +16,7 @@ define('ACYMAILING_UPDATEURL', 'https://www.acyba.com/index.php?option=com_updat
 define('ACYMAILING_SPAMURL', 'https://www.acyba.com/index.php?option=com_updateme&ctrl=spamsystem&task=');
 define('ACYMAILING_HELPURL', 'https://www.acyba.com/index.php?option=com_updateme&ctrl=doc&component='.ACYMAILING_NAME.'&page=');
 define('ACYMAILING_REDIRECT', 'https://www.acyba.com/index.php?option=com_updateme&ctrl=redirect&page=');
+define('ACYMAILING_PLUGINURL', 'https://www.acyba.com/media/com_updateme/xmlfiles/');
 
 if(!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 include_once(rtrim(dirname(__DIR__),DS).DS.'compat'.DS.'joomla.php');
@@ -95,11 +96,14 @@ function acymailing_navigationTabs(){
     }
     if(empty($pages[$page])) return;
 
+	$config = acymailing_config();
     $navigationTabs = array();
     foreach($pages[$page] as $text => $oneCtrl){
         $active = false;
 
         if($oneCtrl['ctrl'] == $ctrl && (empty($oneCtrl['task']) || $oneCtrl['task'] == $task || (empty($task) && $oneCtrl['task'] == 'listing'))) $active = true;
+
+		if($text == 'DETAILED_STATISTICS' && $config->get('anonymous_tracking', 0) == 1) continue;
 
         $navigationTabs[] = '<li'.($active ? ' class="active"' : '').'><a href="' . acymailing_completeLink($oneCtrl['ctrl']). (empty($oneCtrl['task']) ? '' : '&task='.$oneCtrl['task']) . '">' . acymailing_translation($text) . '</a></li>';
     }

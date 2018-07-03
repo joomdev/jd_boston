@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -272,5 +272,23 @@ class dataViewdata extends acymailingView{
 			$geolocFields = acymailing_getColumns('#__acymailing_geolocation');
 			$this->geolocfields = $geolocFields;
 		}
+
+		$script = '
+			document.addEventListener("DOMContentLoaded", function(){
+				acymailing.submitbutton = function(pressbutton) {
+					if(pressbutton == \'doexport\'){
+						var selectedFields = document.querySelectorAll("input[name^=\"exportdata\"]:checked");
+						for(var i = 0 ; i < selectedFields.length ; i++){
+							if(selectedFields[i].value == 1) break;
+							if(i == selectedFields.length-1){
+								alert("'.acymailing_translation('ACY_EXPORT_SELECT_FIELD', true).'");
+								return false;
+							}
+						}
+					}
+					acymailing.submitform(pressbutton, document.adminForm);
+				};
+			 });';
+		acymailing_addScript(true, $script);
 	}
 }

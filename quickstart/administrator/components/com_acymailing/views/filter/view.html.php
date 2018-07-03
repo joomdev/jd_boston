@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -168,10 +168,12 @@ class FilterViewFilter extends acymailingView{
 			if(empty($filter->$datatype)) continue;
 			$blockNum = 0;
 			$dataNum = 0;
+
 			foreach($filter->{$datatype}['type'] as $block => $oneFilter){
 				if($datatype == 'action'){
 					$jsFunction = 'addAction();';
 				}else{
+					$js .= 'if(!document.getElementById(\'addButton_'.$blockNum.'\')) addOrBlock();';
 					$jsFunction = '
 						if(!document.getElementById(\'addButton_'.$blockNum.'\')) addOrBlock();
 						document.getElementById(\'addButton_'.$blockNum.'\').click();';

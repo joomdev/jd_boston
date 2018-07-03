@@ -703,9 +703,9 @@ class acymailingPHPMailer
         //Can't use additional_parameters in safe_mode, calling mail() with null params breaks
         //@link http://php.net/manual/en/function.mail.php
        if (ini_get('safe_mode') or !$this->UseSendmailOptions or is_null($params)) {
-            $result = mail($to, $subject, $body, $header);
+            $result = @mail($to, $subject, $body, $header);
         } else {
-            $result = mail($to, $subject, $body, $header, $params);
+            $result = @mail($to, $subject, $body, $header, $params);
         }
         return $result;
     }

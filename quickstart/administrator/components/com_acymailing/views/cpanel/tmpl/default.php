@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -29,6 +29,10 @@ defined('_JEXEC') or die('Restricted access');
 
 		echo $this->tabs->startPanel(acymailing_translation('INTERFACE'), 'config_interface');
 		include(dirname(__FILE__).DS.'interface.php');
+		echo $this->tabs->endPanel();
+
+		echo $this->tabs->startPanel(acymailing_translation('ACY_DATA_COLLECTION'), 'config_data');
+		include(dirname(__FILE__).DS.'data_collection.php');
 		echo $this->tabs->endPanel();
 
 		echo $this->tabs->startPanel(acymailing_translation('SECURITY'), 'config_security');

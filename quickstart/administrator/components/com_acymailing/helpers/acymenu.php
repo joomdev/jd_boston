@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -125,7 +125,7 @@ class acymenuHelper{
 			$mainmenu['stats'] = array(acymailing_translation('STATISTICS'), acymailing_completeLink('stats'), 'acyicon-statistic');
 			$submenu['stats'] = array();
 			$submenu['stats'][] = array(acymailing_translation('STATISTICS'), acymailing_completeLink('stats'), 'acyicon-statistic');
-			$submenu['stats'][] = array(acymailing_translation('DETAILED_STATISTICS'), acymailing_completeLink('stats&task=detaillisting'), 'acyicon-detailed-stat');
+			if($config->get('anonymous_tracking', 0) == 0) $submenu['stats'][] = array(acymailing_translation('DETAILED_STATISTICS'), acymailing_completeLink('stats&task=detaillisting'), 'acyicon-detailed-stat');
 			if(acymailing_level(1)) $submenu['stats'][] = array(acymailing_translation('CLICK_STATISTICS'), acymailing_completeLink('statsurl'), 'acyicon-click');
 			if(acymailing_level(1)) $submenu['stats'][] = array(acymailing_translation('CHARTS'), acymailing_completeLink('diagram'), 'acyicon-chart');
 		}
@@ -186,9 +186,9 @@ class acymenuHelper{
 		$latestVersion = $config->get('latestversion', '');
 		$versionPlugin = $config->get('pluginNeedUpdate', '');
 
-		if(($currentVersion >= $latestVersion) && empty($versionPlugin)){
+		if(version_compare($currentVersion, $latestVersion, '>=') && empty($versionPlugin)){
 			$menu .= '<div class="acyversion_uptodate myacymailingbuttons">'.acymailing_translation('ACY_LATEST_VERSION_OK').'</div>';
-		}elseif(!empty($versionPlugin) && $currentVersion >= $latestVersion){ // If there is a new plugin version
+		}elseif(!empty($versionPlugin) && version_compare($currentVersion, $latestVersion, '>=')){ // If there is a new plugin version
 			$menu .= '<div class="acyversion_needtoupdate myacymailingbuttons"><a onclick="onButtonNewVersionPlugin()" class="acy_updateversion" href="'.acymailing_completeLink('cpanel#config_plugins').'" ><i class="acyicon-import"></i>'.acymailing_translation('ACY_PLUGIN_NEED_UPDATE').'</a></div>';
 		}elseif(!empty($latestVersion)){
 			$menu .= '<div class="acyversion_needtoupdate myacymailingbuttons"><a class="acy_updateversion" href="'.ACYMAILING_REDIRECT.'update-acymailing-'.$config->get('level').'" target="_blank"><i class="acyicon-import"></i>'.acymailing_translation_sprintf('ACY_UPDATE_NOW', $latestVersion).'</a></div>';

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -187,7 +187,13 @@ function acymailing_getGroupsByUser($userid = null, $recursive = null){
 
 function acymailing_getGroups(){
     $groups = acymailing_loadObjectList('SELECT a.*, a.title as text, a.id as value, COUNT(ugm.user_id) AS nbusers FROM #__usergroups AS a LEFT JOIN #__user_usergroup_map ugm ON a.id = ugm.group_id GROUP BY a.id', 'id');
+    uasort($groups, 'acymailing_compareGroups');
     return $groups;
+}
+
+function acymailing_compareGroups($a, $b){
+	if(empty($a->lft) || empty($b->lft)) return 0;
+	return ($a->lft < $b->lft) ? -1 : 1;
 }
 
 function acymailing_getLanguages($installed = false){
@@ -352,7 +358,14 @@ function acymailing_getCMSConfig($varname, $default = null){
 function acymailing_redirect($url, $msg = '', $msgType = 'message'){
     $acyapp = acymailing_getGlobal('app');
 
-    return $acyapp->redirect($url, $msg, $msgType);
+    if(ACYMAILING_J40){
+        if(!empty($msg)){
+            acymailing_enqueueMessage($msg, $msgType);
+        }
+        return $acyapp->redirect($url);
+    }else{
+        return $acyapp->redirect($url, $msg, $msgType);
+    }
 }
 
 function acymailing_getLanguageTag(){
@@ -385,7 +398,11 @@ function acymailing_generatePassword($length = 8){
     return JUserHelper::genrandompassword($length);
 }
 
-function acymailing_currentUserId(){
+function acymailing_currentUserId($email = null){
+    if(!empty($email)){
+        return acymailing_loadResult('SELECT id FROM '.acymailing_table('users', false).' WHERE email = '.acymailing_escapeDB($email));
+    }
+
     $acymy = JFactory::getUser();
 
     return $acymy->id;
@@ -621,10 +638,12 @@ function acymailing_cmsACL(){
     if(!ACYMAILING_J16 || !acymailing_authorised('core.admin', 'com_acymailing')) return '';
 
     $return = urlencode(base64_encode((string)JUri::getInstance()));
-    return '<div class="onelineblockoptions">
+    return '
         <span class="acyblocktitle">'.acymailing_translation('ACY_JOOMLA_PERMISSIONS').'</span>
         <a class="acymailing_button_grey" style="color:#666;" target="_blank" href="index.php?option=com_config&view=component&component=com_acymailing&path=&return='.$return.'">'.acymailing_translation('JTOOLBAR_OPTIONS').'</a><br/>
-    </div>';
+    </div>
+    <div class="onelineblockoptions">
+		<span class="acyblocktitle">'.acymailing_translation('ACY_ACL').'</span>';
 }
 
 function acymailing_isDebug(){

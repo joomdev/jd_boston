@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -27,6 +27,8 @@ class listsubClass extends acymailingClass{
 		$result = true;
 		$time = time();
 
+		$historyClass = acymailing_get('class.acyhistory');
+		$listClass = acymailing_get('class.list');
 		$listHelper = acymailing_get('helper.list');
 		$listHelper->sendNotif = $this->sendNotif;
 		$listHelper->sendConf = $this->sendConf;
@@ -51,6 +53,12 @@ class listsubClass extends acymailingClass{
 			}elseif($status == -1){
 				$listHelper->unsubscribe($subid, $listids);
 			}
+
+			foreach($listids as $oneListId) {
+				$list = $listClass->get($oneListId);
+				if(empty($list)) continue;
+				$historyClass->insert($subid, $status == -1 ? 'unsubscribed' : 'subscribed', array('List n°'.$oneListId.': '.$list->name));
+			}
 		}
 
 		return $result;
@@ -61,6 +69,16 @@ class listsubClass extends acymailingClass{
 		acymailing_arrayToInteger($listids);
 		$query = 'DELETE FROM '.acymailing_table('listsub').' WHERE subid = '.intval($subid).' AND listid IN ('.implode(',', $listids).')';
 		acymailing_query($query);
+
+		$historyClass = acymailing_get('class.acyhistory');
+		$listClass = acymailing_get('class.list');
+		foreach($listids as $oneListId) {
+			$list = $listClass->get($oneListId);
+			if (empty($list)) {
+				continue;
+			}
+			$historyClass->insert($subid, 'removedsubscription', array('List n°'.$oneListId.': '.$list->name));
+		}
 
 		$listHelper = acymailing_get('helper.list');
 		$listHelper->sendNotif = $this->sendNotif;
@@ -77,6 +95,7 @@ class listsubClass extends acymailingClass{
 		$time = time();
 		$subid = intval($subid);
 
+		$historyClass = acymailing_get('class.acyhistory');
 		$listHelper = acymailing_get('helper.list');
 		$listHelper->campaigndelay = $this->campaigndelay;
 		$listHelper->skipedfollowups = $this->skipedfollowups;
@@ -84,11 +103,17 @@ class listsubClass extends acymailingClass{
 		$listHelper->sendConf = $this->sendConf;
 		$listHelper->forceConf = $this->forceConf;
 
+		$historyStatus = array(
+			'-1' => 'unsubscribed',
+			'1' => 'subscribed',
+			'2' => 'waiting'
+		);
+
 		foreach($lists as $status => $listids){
 			$status = intval($status);
 			acymailing_arrayToInteger($listids);
 
-			$allResults = acymailing_loadObjectList('SELECT `listid`,`access_sub` FROM '.acymailing_table('list').' WHERE `listid` IN ('.implode(',', $listids).') AND `type` = \'list\'', 'listid');
+			$allResults = acymailing_loadObjectList('SELECT `listid`,`access_sub`, `name` FROM '.acymailing_table('list').' WHERE `listid` IN ('.implode(',', $listids).') AND `type` = \'list\'', 'listid');
 			$listids = array_keys($allResults);
 
 			if($status == '-1'){
@@ -104,6 +129,8 @@ class listsubClass extends acymailingClass{
 					}
 				}
 				$values[] = intval($listid).','.$subid.','.$status.','.$time;
+
+				$historyClass->insert($subid, $historyStatus[$status], array('List n°'.$listid.': '.$allResults[$listid]->name));
 			}
 
 			if(empty($values)) continue;

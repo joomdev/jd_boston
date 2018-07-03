@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -9,10 +9,8 @@
 
 defined('_JEXEC') or die('Restricted access');
 ?><div id="page-acl">
-	<?php echo acymailing_cmsACL(); ?>
 	<div class="onelineblockoptions">
-		<span class="acyblocktitle"><?php echo acymailing_translation('ACY_ACL'); ?></span>
-		<?php
+		<?php echo acymailing_cmsACL();
 		if(!acymailing_level(3)){
 			echo '<a target="_blank" href="'.ACYMAILING_REDIRECT.'acymailing-features#mail">'.acymailing_translation('ONLY_FROM_ENTERPRISE').'</a>';
 		}else{ ?>

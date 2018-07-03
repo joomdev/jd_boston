@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -12,7 +12,7 @@ defined('_JEXEC') or die('Restricted access');
 
 class acyexportHelper{
 
-	function addHeaders($fileName = 'export'){
+	function addHeaders($fileName = 'export', $extension = 'csv'){
 		$fileName = substr(preg_replace('#[^a-z0-9_-]#i','_',$fileName),0,50);
  		@ob_clean();
 
@@ -24,7 +24,7 @@ class acyexportHelper{
 		header("Content-Type: application/octet-stream");
 		header("Content-Type: application/download");
 
-		header("Content-Disposition: attachment; filename=".$fileName.".csv");
+		header("Content-Disposition: attachment; filename=".$fileName.".".$extension);
 
 		header("Content-Transfer-Encoding: binary");
 	}

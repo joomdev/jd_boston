@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -344,6 +344,16 @@ class mailClass extends acymailingClass{
 			if(!empty($mail->params['lastgenerateddate']) && !is_numeric($mail->params['lastgenerateddate'])){
 				$mail->params['lastgenerateddate'] = acymailing_getTime($mail->params['lastgenerateddate']);
 			}
+
+			if(!empty($mail->mailid)) {
+				$oldMail = $this->get($mail->mailid);
+				if(!empty($oldMail->params)){
+					foreach($oldMail->params as $key => $val){
+						if(!isset($mail->params[$key])) $mail->params[$key] = $val;
+					}
+				}
+			}
+
 			$mail->params = serialize($mail->params);
 		}
 

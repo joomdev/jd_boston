@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -144,7 +144,8 @@ defined('_JEXEC') or die('Restricted access');
 						$linkStart .= "parent.document.getElementById('".$this->map."preview').src = '".acymailing_rootURI().str_replace(DS, '/', $this->uploadFolder)."/$file'; ";
 					}else{
 						$linkStart .= "parent.document.getElementById('".$this->map."selection').innerHTML = '$file'; ";
-						$linkStart .= "parent.document.getElementById('".$this->map."suppr').style.display = 'inline';";
+						$linkStart .= "parent.document.getElementById('".$this->map."selection').title = '$file'; ";
+						$linkStart .= "if(parent.document.getElementById('".$this->map."suppr')){parent.document.getElementById('".$this->map."suppr').style.display = 'inline';}";
 					}
 					$linkStart .= 'window.parent.acymailing.closeBox();}">';
 

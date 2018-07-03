@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -399,5 +399,83 @@ class CpanelController extends acymailingController{
 		}else{
 			echo '<span style="color:green;">Custom fields OK</span>';
 		}
+	}
+
+	function anonymize(){
+		acymailing_checkToken();
+		$config = acymailing_config();
+		if($config->get('anonymous_tracking', 0) == 0 || $config->get('anonymizeold', 1) == 0) acymailing_redirect(acymailing_completeLink('cpanel', false, true));
+
+		acymailing_increasePerf();
+
+		if($config->get('anonymizeoldstep', 0) > 0) {
+			$newConfig = new stdClass();
+			$newConfig->anonymizeoldtake = $config->get('anonymizeoldtake', 0)+1;
+			$config->save($newConfig);
+		}
+
+		if($config->get('anonymizeoldstep', 0) <= 1) {
+			$newConfig = new stdClass();
+			$newConfig->anonymizeoldstep = 1;
+			$config->save($newConfig);
+
+			acymailing_query('UPDATE #__acymailing_subscriber SET ip = NULL, confirmed_ip = NULL, lastopen_date = 0, lastopen_ip = NULL, lastclick_date = 0');
+		}
+
+		if($config->get('anonymizeoldstep') <= 2) {
+			$newConfig = new stdClass();
+			$newConfig->anonymizeoldstep = 2;
+			$config->save($newConfig);
+
+			acymailing_query('UPDATE #__acymailing_geolocation SET geolocation_subid = 0, geolocation_ip = ""');
+		}
+
+		if($config->get('anonymizeoldstep') <= 3) {
+			$newConfig = new stdClass();
+			$newConfig->anonymizeoldstep = 3;
+			$config->save($newConfig);
+
+			acymailing_query('UPDATE #__acymailing_history SET ip = "", source = ""');
+		}
+
+		if($config->get('anonymizeoldstep') <= 4) {
+			$newConfig = new stdClass();
+			$newConfig->anonymizeoldstep = 4;
+			$config->save($newConfig);
+
+			acymailing_query('UPDATE #__acymailing_forward SET ip = ""');
+		}
+
+		if($config->get('anonymizeoldstep') <= 5) {
+			$newConfig = new stdClass();
+			$newConfig->anonymizeoldstep = 5;
+			$config->save($newConfig);
+
+			$clickStats = acymailing_loadObjectList('SELECT urlid, mailid, SUM(click) AS nbclicks FROM #__acymailing_urlclick GROUP BY urlid');
+			if(!empty($clickStats)) {
+
+				$insert = array();
+				foreach($clickStats as $stats){
+					$insert[] = '('.$stats->urlid.', '.$stats->mailid.', '.$stats->nbclicks.', 0)';
+				}
+
+				acymailing_query('DELETE FROM #__acymailing_urlclick');
+				acymailing_query('INSERT INTO #__acymailing_urlclick (urlid, mailid, click, subid) VALUES '.implode(',', $insert));
+			}
+		}
+
+		$newConfig = new stdClass();
+		$newConfig->anonymizeoldstep = 6;
+		$config->save($newConfig);
+
+		acymailing_query('UPDATE #__acymailing_userstats SET open = 0, opendate = 0, ip = NULL, browser = NULL, browser_version = NULL, is_mobile = NULL, mobile_os = NULL, user_agent = NULL');
+
+		$newConfig = new stdClass();
+		$newConfig->anonymizeold = 0;
+		$newConfig->anonymizeoldstep = 0;
+		$newConfig->anonymizeoldtake = 0;
+		$config->save($newConfig);
+
+		acymailing_redirect(acymailing_completeLink('cpanel', false, true), acymailing_translation('ACY_DATA_ANONYMIZE_SUCCESS'), 'success');
 	}
 }

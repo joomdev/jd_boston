@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -172,22 +172,28 @@ defined('_JEXEC') or die('Restricted access');
 					</p>
 				</div>
 			<?php
-			if(!empty($fieldsClass->excludeValue)){
-				$js = "\n"."acymailingModule['excludeValues".$formName."'] = Array();";
-				foreach($fieldsClass->excludeValue as $namekey => $value){
-					$js .= "\n"."acymailingModule['excludeValues".$formName."']['".$namekey."'] = '".$value."';";
-				}
-				$js .= "\n";
-				if($params->get('includejs','header') == 'header'){
-					acymailing_addScript(true, $js);
-				}else{
-					echo "<script type=\"text/javascript\">
-							<!--
-							$js
-							//-->
-							</script>";
-				}
+			if(empty($fieldsClass->excludeValue)){
+				$fieldsClass = new stdClass();
+				$fieldsClass->excludeValue = array();
+				$fieldsClass->excludeValue['name'] = $nameCaption;
+				$fieldsClass->excludeValue['email'] = $emailCaption;
 			}
+
+			$js = "\n"."acymailingModule['excludeValues".$formName."'] = Array();";
+			foreach($fieldsClass->excludeValue as $namekey => $value){
+				$js .= "\n"."acymailingModule['excludeValues".$formName."']['".$namekey."'] = '".$value."';";
+			}
+			$js .= "\n";
+			if($params->get('includejs','header') == 'header'){
+				acymailing_addScript(true, $js);
+			}else{
+				echo "<script type=\"text/javascript\">
+						<!--
+						$js
+						//-->
+						</script>";
+			}
+
 			if(!empty($postText)) echo '<div class="acymailing_finaltext">'.$postText.'</div>';
 			$ajax = ($params->get('redirectmode') == '3') ? 1 : 0;?>
 			<input type="hidden" name="ajax" value="<?php echo $ajax; ?>"/>

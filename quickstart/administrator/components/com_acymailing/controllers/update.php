@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -119,14 +119,24 @@ class UpdateController extends acymailingController{
 			foreach($plugins as $plugin){
 				if(ACYMAILING_J16) {
 					$manifest = json_decode($plugin->mc);
-					if(empty($manifest->version)) $manifest = simplexml_load_file(JURI::root().'/plugins/'.$plugin->folder.'/'.$plugin->element.'/'.$plugin->element.'.xml');
+					if(empty($manifest->version)){
+						if(!file_exists(ACYMAILING_ROOT.'plugins'.DS.$plugin->folder.DS.$plugin->element.DS.$plugin->element.'.xml')) continue;
+						$manifest = simplexml_load_file(JURI::root().'/plugins/'.$plugin->folder.'/'.$plugin->element.'/'.$plugin->element.'.xml');
+					}
 				}else{
+					if(!file_exists(ACYMAILING_ROOT.'plugins'.DS.$plugin->folder.DS.$plugin->element.'.xml')) continue;
 					$manifest = simplexml_load_file(JURI::root().'/plugins/'.$plugin->folder.'/'.$plugin->element.'.xml');
 				}
-				$actualVersion = (string)$manifest->version;
+
+				$currentVersion = (string)$manifest->version;
+				if(empty($currentVersion)) continue;
 
 				$pluginOnServer = @simplexml_load_file(ACYMAILING_PLUGINURL.$plugin->element.'.xml');
-				if(empty($pluginOnServer) || $actualVersion >= (string)$pluginOnServer->update[0]->version) continue;
+				if(empty($pluginOnServer)) continue;
+
+				$latestVersion = (string)$pluginOnServer->update[0]->version;
+				if(empty($latestVersion) || version_compare($currentVersion, $latestVersion, '>=')) continue;
+				
 				$listPluginNeedToUpDate[] = $plugin->id;
 			}
 		}

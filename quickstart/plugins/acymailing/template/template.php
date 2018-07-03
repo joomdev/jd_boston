@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -300,7 +300,7 @@ class plgAcymailingTemplate extends JPlugin{
 		$body = str_replace(array_keys($replace), $replace, $body);
 	}
 
-	function checkThumbnailYoutube($mail){
+	function checkThumbnailYoutube(&$mail){
 		$acypluginsHelper = acymailing_get('helper.acyplugins');
 		$mail->body = $acypluginsHelper->replaceVideos($mail->body);
 	}

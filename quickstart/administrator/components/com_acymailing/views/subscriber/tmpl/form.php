@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -51,27 +51,11 @@ $backend = acymailing_isAdmin(); ?>
 	} ?>
 
 </style>
-<script language="javascript" type="text/javascript">
-	document.addEventListener("DOMContentLoaded", function(){
-		acymailing.submitbutton = function(pressbutton){
-			var form = document.adminForm;
-			if(pressbutton != 'cancel' && form.email){
-				form.email.value = form.email.value.replace(/ /g, "");
-				var filter = /^<?php echo acymailing_getEmailRegex(true); ?>$/i;'
-				if(!filter.test(form.email.value)){
-					alert("<?php echo acymailing_translation('VALID_EMAIL', true); ?>");
-					return false;
-				}
-			}
-			acymailing.submitform(pressbutton, form);
-		};
-	});
-</script>
 <?php
 $config = acymailing_config();
 $google_map_api_key = $config->get('google_map_api_key');
 if(empty($google_map_api_key) && acymailing_isAdmin()){
-	acymailing_display('<a href="'.acymailing_completeLink('cpanel').'" onclick="localStorage.setItem(\'acyconfig_tab\', \'config_subscription\');">'.acymailing_translation('ACY_NEED_GOOGLE_MAP_API_KEY').'</a>', 'info');
+	acymailing_display('<a href="'.acymailing_completeLink('cpanel').'" onclick="localStorage.setItem(\'acyconfig_tab\', \'config_data\');">'.acymailing_translation('ACY_NEED_GOOGLE_MAP_API_KEY').'</a>', 'info');
 }
 
 if(!empty($this->geoloc) && !empty($google_map_api_key)){ ?>
@@ -258,7 +242,7 @@ if(!empty($this->geoloc) && !empty($google_map_api_key)){ ?>
 		</div>
 		<?php
 		if(!empty($this->extraFields)){
-			$this->fieldsClass->currentUser = $this->subscriber;
+			$this->fieldsClass->currentUserEmail = empty($this->subscriber->email) ? '' : $this->subscriber->email;
 			include(dirname(__FILE__).DS.'extrafields.'.basename(__FILE__));
 		} ?>
 		<div class="onelineblockoptions" style="clear:both;<?php echo $this->isAdmin ? '' : 'max-width:700px;'; ?>">
@@ -642,7 +626,7 @@ if(!empty($this->geoloc) && !empty($google_map_api_key)){ ?>
 											if(!empty($row->mailid)) echo '<b>'.acymailing_translation('NEWSLETTER').' : </b>'.$this->escape($row->subject).' ( '.acymailing_translation('ACY_ID').' : '.$row->mailid.' )<br />';
 											foreach($data as $value){
 												if(!strpos($value, '::')){
-													echo $value;
+													echo $value.'<br />';
 													continue;
 												}
 												list($part1, $part2) = explode("::", $value);

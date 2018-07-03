@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -102,6 +102,214 @@ class acyuserHelper{
 			$groups = acymailing_loadObjectList('SELECT gid AS id, userType AS title FROM '.acymailing_table($this->cmsUserVars->table, false).' WHERE '.$this->cmsUserVars->id.' = '.intval($userid));
 		}
 		return $groups;
+	}
+
+	function exportdata($id){
+		if(empty($id)) die('No user found');
+
+		$subscriberClass = acymailing_get('class.subscriber');
+		$subscriber = $subscriberClass->get($id);
+		if(empty($subscriber)) die('No user found');
+		$subscriber = get_object_vars($subscriber);
+
+		acymailing_displayErrors();
+
+		$dateFields = array('created', 'confirmed_date', 'lastopen_date', 'lastclick_date', 'lastsent_date', 'userstats_opendate', 'userstats_senddate', 'urlclick_date', 'hist_date');
+		$excludedFields = array('userid', 'subid', 'html', 'key', 'source', 'filterflags');
+
+        $exportFiles = array();
+
+		$xml = new SimpleXMLElement('<xml/>');
+		$userNode = $xml->addChild('user');
+
+        $fields = acymailing_loadObjectList('SELECT namekey, type, value, options FROM #__acymailing_fields', 'namekey');
+        $uploadFolder = trim(acymailing_cleanPath(html_entity_decode(acymailing_getFilesFolder())), DS.' ').DS;
+
+		foreach($subscriber as $column => $value){
+			if(in_array($column, $excludedFields) || strlen($value) == 0) continue;
+			if(in_array($column, $dateFields)){
+				if(empty($value)) continue;
+				$value = acymailing_getDate($value, '%Y-%m-%d %H:%M:%S');
+			}
+
+            if(empty($fields[$column])){
+			    $userNode->addChild($column, htmlspecialchars($value));
+                continue;
+            }
+
+			if(in_array($fields[$column]->type, array("singledropdown", "multipledropdown", "radio", "checkbox"))){
+				$selectedValues = explode(',', $value);
+
+                if(!empty($fields[$column]->value)) {
+                    $options = explode("\n", $fields[$column]->value);
+                    foreach ($options as $i => $oneOption) {
+                        $options[$i] = explode('::', $oneOption);
+                    }
+                }else{
+                    $fields[$column]->options = unserialize($fields[$column]->options);
+
+                    if(!empty($fields[$column]->options['dbName']) && !empty($fields[$column]->options['tableName']) && !empty($fields[$column]->options['valueFromDb']) && !empty($fields[$column]->options['titleFromDb'])) {
+                        $valueField = acymailing_secureField($fields[$column]->options['valueFromDb']);
+                        $titleField = acymailing_secureField($fields[$column]->options['titleFromDb']);
+                        $fieldsClass = acymailing_get('class.fields');
+                        $options = $fieldsClass->_getDataFromDB($fields[$column], $valueField, $titleField);
+                    }
+                }
+
+				foreach($selectedValues as &$oneValue){
+                    foreach($options as $oneOption){
+                        if(is_object($oneOption)){
+                            if ($oneValue == $oneOption->$valueField) {
+                                $oneValue = $oneOption->$titleField;
+                                break;
+                            }
+                        }else {
+                            if ($oneValue == $oneOption[0]) {
+                                $oneValue = $oneOption[1];
+                                break;
+                            }
+                        }
+                    }
+				}
+
+                $value = implode(',', $selectedValues);
+			}elseif(in_array($fields[$column]->type, array('gravatar', 'file'))){
+				$data = acymailing_fileGetContent(ACYMAILING_ROOT.$uploadFolder.'userfiles'.DS.$value);
+		        $value = str_replace('_', ' ', substr($value, strpos($value, '_')));
+				$exportFiles[] = array('name' => $value, 'data' => $data);
+                continue;
+            }
+
+			$userNode->addChild($column, htmlspecialchars($value));
+		}
+
+		$subscription = acymailing_loadObjectList('SELECT list.name, list.listid, sub.subdate, sub.unsubdate, sub.status FROM #__acymailing_listsub AS sub JOIN #__acymailing_list AS list ON list.listid = sub.listid WHERE sub.subid = '.intval($id));
+		if(!empty($subscription)){
+			$dateFields = array('subdate', 'unsubdate');
+			$subscriptionNode = $xml->addChild('subscription');
+
+			foreach($subscription as $oneSubscription){
+				$list = $subscriptionNode->addChild('list');
+
+				$oneSubscription = get_object_vars($oneSubscription);
+				foreach($oneSubscription as $column => $value){
+					if(strlen($value) == 0) continue;
+					if(in_array($column, $dateFields)){
+						if(empty($value)) continue;
+						$value = acymailing_getDate($value, '%Y-%m-%d %H:%M:%S');
+					}
+
+					if($column == 'subdate') $column = 'subscription_date';
+					if($column == 'unsubdate') $column = 'unsubscription_date';
+					if($column == 'status') $value = str_replace(array('-1', '1', '2'), array('Unsubscribed', 'Subscribed', 'Waiting for confirmation'), $value);
+					$list->addChild($column, htmlspecialchars($value));
+				}
+			}
+		}
+
+		$geolocation = acymailing_loadObjectList('SELECT * FROM #__acymailing_geolocation WHERE geolocation_subid = '.intval($id));
+		if(!empty($geolocation)){
+			$dateFields = array('geolocation_created');
+			$excludedFields = array('geolocation_id', 'geolocation_subid');
+			$geolocNode = $xml->addChild('geolocation');
+
+			foreach($geolocation as $onePosition){
+				$position = $geolocNode->addChild('position');
+
+				$onePosition = get_object_vars($onePosition);
+				foreach($onePosition as $column => $value){
+					if(in_array($column, $excludedFields) || strlen($value) == 0) continue;
+					if(in_array($column, $dateFields)){
+						if(empty($value)) continue;
+						$value = acymailing_getDate($value, '%Y-%m-%d %H:%M:%S');
+					}
+
+					if($column == 'geolocation_created') $column = 'date';
+					if($column == 'geolocation_type') $column = 'event';
+					$position->addChild(str_replace('geolocation_', '', $column), htmlspecialchars($value));
+				}
+			}
+		}
+
+		$history = acymailing_loadObjectList('SELECT h.action, h.date, h.ip, h.data, h.source, m.subject AS newsletter 
+												FROM #__acymailing_history AS h 
+												LEFT JOIN #__acymailing_mail AS m ON h.mailid = m.mailid 
+												WHERE h.subid = '.intval($id));
+		if(!empty($history)){
+			$dateFields = array('date');
+			$historyNode = $xml->addChild('history');
+
+			foreach($history as $oneEvent){
+				$event = $historyNode->addChild('event');
+
+				$oneEvent = get_object_vars($oneEvent);
+				foreach($oneEvent as $column => $value){
+					if(empty($value)) continue;
+					if(in_array($column, $dateFields)){
+						if(empty($value)) continue;
+						$value = acymailing_getDate($value, '%Y-%m-%d %H:%M:%S');
+					}
+
+					$event->addChild($column, htmlspecialchars($value));
+				}
+			}
+		}
+
+		$statistics = acymailing_loadObjectList('SELECT mail.subject, stats.* FROM #__acymailing_userstats AS stats JOIN #__acymailing_mail AS mail ON mail.mailid = stats.mailid WHERE stats.subid = '.intval($id));
+		if(!empty($statistics)){
+			$dateFields = array('senddate', 'opendate');
+			$excludedFields = array('subid');
+			$statisticsNode = $xml->addChild('statistics');
+
+			foreach($statistics as $oneStat){
+				$detailedStat = $statisticsNode->addChild('email');
+
+				$oneStat = get_object_vars($oneStat);
+				foreach($oneStat as $column => $value){
+					if(in_array($column, $excludedFields) || strlen($value) == 0) continue;
+					if(in_array($column, $dateFields)){
+						if(empty($value)) continue;
+						$value = acymailing_getDate($value, '%Y-%m-%d %H:%M:%S');
+					}
+
+					$detailedStat->addChild($column, htmlspecialchars($value));
+				}
+			}
+		}
+
+		$clickStats = acymailing_loadObjectList('SELECT url.url, click.date, click.ip FROM #__acymailing_urlclick AS click JOIN #__acymailing_url AS url ON url.urlid = click.urlid WHERE click.subid = '.intval($id));
+		if(!empty($clickStats)){
+			$dateFields = array('date');
+			$clickStatsNode = $xml->addChild('click_statistics');
+
+			foreach($clickStats as $oneClick){
+				$click = $clickStatsNode->addChild('click');
+
+				$oneClick = get_object_vars($oneClick);
+				foreach($oneClick as $column => $value){
+					if(strlen($value) == 0) continue;
+					if(in_array($column, $dateFields)){
+						if(empty($value)) continue;
+						$value = acymailing_getDate($value, '%Y-%m-%d %H:%M:%S');
+					}
+
+					$click->addChild($column, htmlspecialchars($value));
+				}
+			}
+		}
+
+        $exportFiles[] = array('name' => 'user_data.xml', 'data' => $xml->asXML());
+
+        $tempFolder = ACYMAILING_MEDIA.'tmp'.DS;
+        acymailing_createArchive($tempFolder.'export_data_user_'.$id, $exportFiles);
+
+		$exportHelper = acymailing_get('helper.export');
+		$exportHelper->addHeaders('export_data_user_'.$id, 'zip');
+        readfile($tempFolder.'export_data_user_'.$id.'.zip');
+
+        ignore_user_abort(true);
+        unlink($tempFolder.'export_data_user_'.$id.'.zip');
+		exit;
 	}
 }
 

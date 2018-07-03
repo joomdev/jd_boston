@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -28,7 +28,7 @@ defined('_JEXEC') or die('Restricted access');
 		<input type="hidden" name="mailid" value="<?php echo $this->mailid; ?>"/>
 
 		<div class="onelineblockoptions">
-			<?php echo acymailing_translation_sprintf('ABTESTING_PART_RECEIVER', '<input type="text" id="abTesting_prct" name="abTesting_prct" style="width:20px;" value="'.$this->abTestDetail['prct'].'" oninput="updateReceivers(this)">%'); ?>
+			<?php echo acymailing_translation_sprintf('ABTESTING_PART_RECEIVER', '<input type="text" id="abTesting_prct" name="abTesting_prct" style="width:30px;" value="'.$this->abTestDetail['prct'].'" oninput="updateReceivers(this)">%'); ?>
 			<div class="abtesting_mails">
 				<table class="acymailing_smalltable">
 					<?php
@@ -123,7 +123,7 @@ defined('_JEXEC') or die('Restricted access');
 			<?php echo acymailing_translation_sprintf('ABTESTING_MODIFY_RECEIVERS', '<a target="_blank" href="'.acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'newsletter&task=edit&mailid='.$this->mailsdetails[0]->mailid).'">'.$this->mailsdetails[0]->subject.'</a>'); ?>
 		</div>
 		<div class="onelineblockoptions">
-			<?php echo acymailing_translation_sprintf('ABTESTING_DELAY_ACTION', '<input type="text" id="abTesting_delay" name="abTesting_delay" style="width:20px;" value="'.$this->abTestDetail['delay'].'">'); ?>
+			<?php echo acymailing_translation_sprintf('ABTESTING_DELAY_ACTION', '<input type="text" id="abTesting_delay" name="abTesting_delay" style="width:30px;" value="'.$this->abTestDetail['delay'].'">'); ?>
 			<div class="abtesting_actions">
 				<div style="margin-bottom: 5px;"><input type="radio" name="abTesting_action" id="abTesting_action_manual" value="manual" <?php echo ($this->abTestDetail['action'] == 'manual') ? 'checked="checked"' : ''; ?>><label for="abTesting_action_manual" class="radiobtn"><?php echo acymailing_translation('DO_NOTHING'); ?></label></div>
 				<div style="margin-bottom: 5px;"><input type="radio" name="abTesting_action" id="abTesting_action_open" value="open" <?php echo ($this->abTestDetail['action'] == 'open') ? 'checked="checked"' : ''; ?>><label for="abTesting_action_open" class="radiobtn"><?php echo acymailing_translation('ABTESTING_ACTION_GENERATE_OPEN'); ?></label></div>

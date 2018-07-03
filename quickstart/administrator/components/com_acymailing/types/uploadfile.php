@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -15,7 +15,7 @@ class uploadfileType extends acymailingClass{
 		if(!$picture){
 			$result = '<input type="hidden" name="'.$map.'[]" id="'.$map.$value.'" />';
 			$result .= acymailing_popup(acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'file', true).'&task=select&id='.$map.$value, acymailing_translation('SELECT'), 'acyupload acymailing_button_grey', 850, 600);
-			$result .= '<span id="'.$map.$value.'selection"></span>';
+			$result .= '<span id="'.$map.$value.'selection" class="acy_selected_attachment"></span>';
 			return $result;
 		}
 

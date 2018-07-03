@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -392,7 +392,7 @@ class templateClass extends acymailingClass{
 		return true;
 	}
 
-	function displayPreview($idArea, $tempid, $newslettersubject = ''){
+	function displayPreview($idArea, $tempid, $newslettersubject = '', $additionalStyles = null, $additionalScrips = null){
 
 		if(isset($_SERVER["REQUEST_URI"])){
 			$requestUri = $_SERVER["REQUEST_URI"];
@@ -536,6 +536,39 @@ class templateClass extends acymailingClass{
 					link1.href =  '".(rtrim(acymailing_rootURI(), '/').'/').ACYMAILING_MEDIA_FOLDER."/templates/css/template_".$tempid.".css?v=".@filemtime(ACYMAILING_MEDIA.'templates'.DS.'css'.DS.'template_'.$tempid.'.css')."';
 					head.appendChild(link1);
 				";
+		}
+
+		if(!empty($additionalStyles)){
+			$i = 2;
+			foreach($additionalStyles as $oneStyle){
+				$js .= "var addstyle = d.createElement(\"link\");
+						addstyle.type = \"text/css\";
+						addstyle.rel = \"stylesheet\";
+						addstyle.href =  '".(ACYMAILING_CSS.$oneStyle."?v=".@filemtime(ACYMAILING_MEDIA.'css'.DS.str_replace('/', DS, $oneStyle)))."';
+						head.appendChild(addstyle);
+					";
+				$i++;
+			}
+		}
+
+		if(!empty($additionalScrips)){
+			$i = 2;
+			foreach($additionalScrips as $oneScript){
+				if(substr($oneScript, -3) == '.js') {
+					$js .= "var addscript = d.createElement(\"script\");
+						addscript.type = \"text/javascript\";
+						addscript.src =  '".(ACYMAILING_JS.$oneScript."?v=".@filemtime(ACYMAILING_MEDIA.'js'.DS.str_replace('/', DS, $oneScript)))."';
+						head.appendChild(addscript);
+					";
+				}else{
+					$js .= "var addscript = d.createElement(\"script\");
+						addscript.innerText =  '".$oneScript."';
+						head.appendChild(addscript);
+					";
+				}
+
+				$i++;
+			}
 		}
 
 		$js .= "var style1 = d.createElement(\"style\");

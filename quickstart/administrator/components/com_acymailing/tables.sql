@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `#__acymailing_history` (
 	`data` text,
 	`source` text,
 	`mailid` mediumint unsigned DEFAULT NULL,
-	PRIMARY KEY `subid` (`subid`,`date`),
+	PRIMARY KEY (`subid`,`date`),
 	KEY `dateindex` (`date`),
 	KEY `actionindex` (`action`,`mailid`)
 ) /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci*/;

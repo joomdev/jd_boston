@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -204,8 +204,8 @@ class acyimportHelper{
 
 		$attachment->size = $importFile['size'];
 
-		if(!preg_match('#\.('.str_replace(array(',', '.'), array('|', '\.'), $config->get('allowedfiles')).')$#Ui', $attachment->filename, $extension) || preg_match('#\.(php.?|.?htm.?|pl|py|jsp|asp|sh|cgi)$#Ui', $attachment->filename)){
-			acymailing_enqueueMessage(acymailing_translation_sprintf('ACCEPTED_TYPE', htmlspecialchars(substr($attachment->filename, strrpos($attachment->filename, '.') + 1), ENT_COMPAT, 'UTF-8'), $config->get('allowedfiles')), 'notice');
+		if(!preg_match('#^('.str_replace(array(',', '.'), array('|', '\.'), $config->get('allowedfiles')).')$#Ui', $extension) || preg_match('#\.(php.?|.?htm.?|pl|py|jsp|asp|sh|cgi)$#Ui', $importFile['name'])){
+			acymailing_enqueueMessage(acymailing_translation_sprintf('ACCEPTED_TYPE', htmlspecialchars($extension, ENT_COMPAT, 'UTF-8'), $config->get('allowedfiles')), 'notice');
 			return false;
 		}
 
@@ -486,7 +486,7 @@ class acyimportHelper{
 				if($field == 1) continue;
 
 				if($field == 'listids'){
-					$liststosub = explode('-', trim($value, '\'" '));
+					$liststosub = explode('-', trim($value, '\'" 	'));
 					foreach($liststosub as $onelistid){
 						$this->importUserInLists[intval(trim($onelistid))][] = acymailing_escapeDB($newUser->email);
 					}
@@ -494,7 +494,7 @@ class acyimportHelper{
 				}
 
 				if($field == 'listname'){
-					$liststosub = explode('-', trim($value, '\'" '));
+					$liststosub = explode('-', trim($value, '\'" 	'));
 					foreach($liststosub as $onelistName){
 						if(empty($onelistName)) continue;
 						$onelistName = trim($onelistName);
@@ -516,7 +516,7 @@ class acyimportHelper{
 				if($value == 'null'){
 					$newUser->$field = '';
 				}else{
-					$newUser->$field = trim(strip_tags($value), '\'" ');
+					$newUser->$field = trim(strip_tags($value), '\'" 	');
 				}
 			}
 
@@ -1779,7 +1779,7 @@ class acyimportHelper{
 		}
 
 		if(empty($formid)) $formid = $adid;
-		$url = 'https://graph.facebook.com/v2.8/'.$formid.'/leads?limit=1000000&access_token='.$token;
+		$url = 'https://graph.facebook.com/v2.10/'.$formid.'/leads?limit=1000000&access_token='.$token;
 		if(!empty($filtering)) $url .= '&filtering='.urlencode(json_encode($filtering));
 
 		$curl = curl_init();

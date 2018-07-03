@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -60,9 +60,16 @@ class subscriberClass extends acymailingClass{
 			$subscriber->subid = $this->subid($subscriber->email);
 		}
 
+		if(empty($subscriber->userid) && !empty($subscriber->email)){
+			$cmsId = acymailing_currentUserId($subscriber->email);
+			if(!empty($cmsId)){
+				$subscriber->userid = $cmsId;
+			}
+		}
+
 		if(empty($subscriber->subid)){
 			if(empty($subscriber->created)) $subscriber->created = time();
-			if(empty($subscriber->ip)){
+			if(empty($subscriber->ip) && $config->get('anonymous_tracking', 0) == 0){       
 				$ipClass = acymailing_get('helper.user');
 				$subscriber->ip = $ipClass->getIP();
 			}
@@ -514,8 +521,13 @@ class subscriberClass extends acymailingClass{
 		$historyClass = acymailing_get('class.acyhistory');
 		$historyClass->insert($subid, 'confirmed');
 
-		$userHelper = acymailing_get('helper.user');
-		$ip = $userHelper->getIP();
+		$userHelper = acymailing_get('helper.user');                                 
+		$config = acymailing_config();
+		if($config->get('anonymous_tracking', 0) == 0) {
+			$ip = $userHelper->getIP();
+		}else{
+			$ip = '';
+		}
 
 		$res = acymailing_query('UPDATE '.acymailing_table('subscriber').' SET `confirmed` = 1, `confirmed_date` = '.time().', `confirmed_ip` = '.acymailing_escapeDB($ip).' WHERE `subid` = '.intval($subid).' LIMIT 1');
 		if($res === false){
@@ -569,4 +581,33 @@ class subscriberClass extends acymailingClass{
 		return $userIdentified;
 	}
 
+	function delete($elements){
+		$fileFields = acymailing_loadResultArray('SELECT namekey FROM #__acymailing_fields WHERE type = "file" OR type = "gravatar"');
+		if(!empty($fileFields)){
+			if(!is_array($elements)){
+				$elements = array($elements);
+			}
+
+			if(empty($elements)) return 0;
+			$column = is_numeric(reset($elements)) ? $this->pkey : $this->namekey;
+
+			$selection = array();
+			foreach($elements as $key => $val){
+				$selection[$key] = acymailing_escapeDB($val);
+			}
+
+			$uploadFolder = trim(acymailing_cleanPath(html_entity_decode(acymailing_getFilesFolder())), DS.' ').DS;
+
+			$files = acymailing_loadObjectList('SELECT '.implode(', ', $fileFields).' FROM #__acymailing_subscriber WHERE '.acymailing_secureField($column).' IN ('.implode(',', $selection).')');
+			foreach($files as $oneUserFiles){
+				foreach($fileFields as $oneField){
+					if(!empty($oneUserFiles->$oneField) && file_exists(ACYMAILING_ROOT.$uploadFolder.'userfiles'.DS.$oneUserFiles->$oneField)){
+						acymailing_deleteFile(ACYMAILING_ROOT.$uploadFolder.'userfiles'.DS.$oneUserFiles->$oneField);
+					}
+				}
+			}
+		}
+
+		return parent::delete($elements);
+	}
 }

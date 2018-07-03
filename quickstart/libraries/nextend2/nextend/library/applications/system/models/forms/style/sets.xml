@@ -1,5 +1,0 @@
-<root>
-    <params name="style-sets" label="Style sets" type="naked">
-        <param type="list" name="sets" default=""/>
-    </params>
-</root>

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -141,7 +141,7 @@ class DataController extends acymailingController{
 		$listsToExport = acymailing_getVar('none', 'exportlists');
 
 		$fieldsToExport = acymailing_getVar('none', 'exportdata');
-		if(!in_array('1', array_values($fieldsToExport))) return $this->exportError('Please select at least one field to export');
+		if(!in_array('1', array_values($fieldsToExport))) return $this->exportError(acymailing_translation('ACY_EXPORT_SELECT_FIELD'));
 		$tableFields = acymailing_getColumns('#__acymailing_subscriber');
 		$notAllowedFields = array_diff_key($fieldsToExport, $tableFields);
 		if(!empty($notAllowedFields)) return $this->exportError('The field '.implode(', ', array_keys($notAllowedFields)).' is not in the allowed fields: '.implode(', ', array_keys($tableFields)));
@@ -210,6 +210,7 @@ class DataController extends acymailingController{
 		$newConfig->export_fields = implode(',', array_merge($exportFields, $exportFieldsOthers, $exportFieldsList, $exportFieldsGeoloc));
 		$newConfig->export_lists = implode(',', $exportLists);
 		$newConfig->export_separator = acymailing_getVar('string', 'exportseparator');
+		$newConfig->export_excelsecurity = acymailing_getVar('int', 'export_excelsecurity', 0);
 		$newConfig->export_format = $exportFormat;
 		$filterActive = array();
 		foreach($filtersExport as $filterKey => $value){
@@ -359,7 +360,18 @@ class DataController extends acymailingController{
 
 
 			foreach($allData as $subid => &$oneUser){
-				$dataexport = implode($separator, get_object_vars($oneUser));
+				$data = get_object_vars($oneUser);
+
+				if($newConfig->export_excelsecurity == 1){
+					foreach ($data as &$oneData){
+						$firstcharacter = substr($oneData, 0, 1);
+						if(in_array($firstcharacter, array('=', '+', '-', '@'))){
+							$oneData = '	'.$oneData;
+						}
+					}
+				}
+
+				$dataexport = implode($separator, $data);
 				echo $before.$encodingClass->change($dataexport, 'UTF-8', $exportFormat).$after.$eol;
 			}
 

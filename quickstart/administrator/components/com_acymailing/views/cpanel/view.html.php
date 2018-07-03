@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -31,6 +31,44 @@ class CpanelViewCpanel extends acymailingView{
 				acymailing_enqueueMessage(acymailing_translation('UPDATE_LANGUAGE').' '.$loadLink.' '.$notremind, 'warning');
 			}
 		}
+
+		if($config->get('wronghttpsoption', 1) && $config->get('ssl_links', 1) == 0){
+			if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
+				$notremind = '<small style="'.$styleRemind.'">'.$toggleClass->delete('acymailing_messages_error', 'wronghttpsoption_0', 'config', false, acymailing_translation('DONT_REMIND')).'</small>';
+				acymailing_enqueueMessage(acymailing_translation_sprintf('ACY_HTTPS_ERROR', acymailing_translation('ACY_SSLCHOICE')).$notremind, 'error');
+			}
+		}
+
+		if($config->get('anonymizeold', 1) && $config->get('anonymous_tracking', 0) == 1) {
+			if ($config->get('anonymizeoldstep', 0) > 0) {
+				acymailing_enqueueMessage(acymailing_translation('ACY_ANONYMIZE_FAIL'), 'warning');
+				if ($config->get('anonymizeoldtake', 0) < 2) {
+					$js = '
+						var xhr = new XMLHttpRequest();
+						xhr.open("GET", "'.acymailing_prepareAjaxURL('cpanel').'&task=anonymize");
+						xhr.send();
+					';
+					acymailing_addScript(true, $js);
+					acymailing_enqueueMessage(acymailing_translation('ACY_ANONYMIZE_RETRY'), 'warning');
+				}else{
+					$newConfig = new stdClass();
+					$newConfig->anonymizeold = 0;
+					$newConfig->anonymizeoldstep = 0;
+					$newConfig->anonymizeoldtake = 0;
+					$config->save($newConfig);
+				}
+			} else {
+				$notremind = '<small style="'.$styleRemind.'">'.$toggleClass->delete('acymailing_messages_info', 'anonymizeold_0', 'config', false, acymailing_translation('DONT_REMIND')).'</small>';
+				acymailing_enqueueMessage(acymailing_translation_sprintf('ACY_ANONYMIZE_OLD', '<a href="'.acymailing_completeLink('cpanel&task=anonymize&'.acymailing_getFormToken()).'" onclick="return confirm(\''.acymailing_translation('ACY_DELETE_MY_DATA_CONFIRM', true).' '.acymailing_translation('ACY_ANONYMIZE_OLD_CONFIRM', true).'\');">'.acymailing_translation('ACY_HERE').'</a>').$notremind, 'info');
+			}
+		}
+
+		if($config->get('anonymoustrackinginfo', 0) == 0 && $config->get('anonymous_tracking', 0) == 0) {
+			$notremind = '<small style="'.$styleRemind.'">'.$toggleClass->delete('acymailing_messages_info', 'anonymoustrackinginfo_1', 'config', false, acymailing_translation('DONT_REMIND')).'</small>';
+			acymailing_enqueueMessage(acymailing_translation_sprintf('ACY_ANONYMIZE_WARNING_OLD', acymailing_translation('ACY_ANONYMOUS_TRACKING'), acymailing_translation('ACY_DATA_COLLECTION')).$notremind, 'info');
+		}
+
+
 
 		$indexes = array('listsub', 'stats', 'list', 'mail', 'userstats', 'urlclick', 'history', 'template', 'queue', 'subscriber');
 		$addIndexes = array('We recently optimized our database...');

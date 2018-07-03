@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.2
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -45,22 +45,22 @@ class NewsletterController extends acymailingController{
 	}
 
 	function store(){
-		if(!$this->isAllowed($this->aclCat, 'manage')) return;
-		acymailing_checkToken();
-		header('X-XSS-Protection:0');
+			if(!$this->isAllowed($this->aclCat, 'manage')) return;
+			acymailing_checkToken();
+			header('X-XSS-Protection:0');
 
-		$mailClass = acymailing_get('class.mail');
-		$status = $mailClass->saveForm();
-		if($status){
-			acymailing_enqueueMessage(acymailing_translation('JOOMEXT_SUCC_SAVED'), 'message');
-		}else{
-			acymailing_enqueueMessage(acymailing_translation('ERROR_SAVING'), 'error');
-			if(!empty($mailClass->errors)){
-				foreach($mailClass->errors as $oneError){
-					acymailing_enqueueMessage($oneError, 'error');
+			$mailClass = acymailing_get('class.mail');
+			$status = $mailClass->saveForm();
+			if($status){
+				acymailing_enqueueMessage(acymailing_translation('JOOMEXT_SUCC_SAVED'), 'message');
+			}else{
+				acymailing_enqueueMessage(acymailing_translation('ERROR_SAVING'), 'error');
+				if(!empty($mailClass->errors)){
+					foreach($mailClass->errors as $oneError){
+						acymailing_enqueueMessage($oneError, 'error');
+					}
 				}
 			}
-		}
 	}
 
 	function unschedule(){
