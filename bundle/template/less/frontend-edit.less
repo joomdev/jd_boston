@@ -3,13 +3,13 @@
  *======= 	  Fronted edit	   ============
  *=======================================*/
 
-.layout-edit {
+ .layout-edit {
 
-	@import "bootstrap-legacy/variables";
-	@import "bootstrap-legacy/mixins";
-	@import "bootstrap-legacy/forms.less";
-	@import "bootstrap-legacy/wells.less";
-	@import "bootstrap-legacy/accordion.less";
+	@import "legacy/variables";
+	@import "legacy/mixins";
+	@import "legacy/forms.less";
+	@import "legacy/wells.less";
+	@import "legacy/accordion.less";
 
 	//Edit
 	select.inputbox,
@@ -136,6 +136,18 @@ iframe, svg {
 		width: 350px;
 		height: 100px;
 	}
+	
+	.input-prepend.input-append{
+		.media-preview.add-on {
+				height: 34px;
+				line-height: 26px;
+		}
+		.modal.btn{
+			position: relative;
+			background: #ccc;
+		}
+	}
+	
 }
 
 // Module edit

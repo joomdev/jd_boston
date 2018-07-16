@@ -1,4 +1,4 @@
-a:4:{s:4:"root";s:62:"D:\xampp7\htdocs\jdboston\templates/jd_boston/less/master.less";s:8:"compiled";s:145720:".form-control {
+a:4:{s:4:"root";s:64:"E:\xampp717\htdocs\boston22\templates/jd_boston/less/master.less";s:8:"compiled";s:146049:".form-control {
   display: block;
   height: 34px;
   padding: 6px 12px;
@@ -2008,6 +2008,9 @@ textarea.uneditable-input {
   font-weight: 700;
   color: #000;
 }
+.backface-visible {
+  backface-visibility: hidden;
+}
 #sp-top-bar {
   padding: 8px 0;
 }
@@ -2414,12 +2417,20 @@ article.item {
 .entry-quote {
   margin-bottom: 50px;
 }
+.pull-right.entry-image {
+  margin: 0 0 18px 20px;
+}
+.entry-status,
+.entry-quote {
+  margin-bottom: 50px;
+}
 .entry-header {
   position: relative;
   margin-bottom: 30px;
 }
 .entry-header.has-post-format {
   margin-left: 68px;
+  display: inline-block;
 }
 .entry-header h2 {
   margin: 8px 0 0;
@@ -3418,6 +3429,15 @@ table.category tbody >tr td {
     font-size: 90%;
   }
 }
+@media (min-width: 768px) {
+  .sppb-col-sm-offset-6 {
+    margin-left: 50%;
+  }
+}
+.sppb-testimonial-pro .sppb-item img {
+  display: inline-block;
+  margin-bottom: 10px;
+}
 article.item {
   margin: 0;
 }
@@ -3629,6 +3649,7 @@ section#sp-top-bar .sp-contact-info a {
 #sp-menu .sp-megamenu-parent li.sp-menu-item .sp-dropdown .sp-dropdown-inner .sp-group-title {
   color: #000;
   font-size: 14px;
+  text-transform: none;
   border-bottom: 1px solid #ddd;
 }
 #sp-menu .sp-megamenu-parent li.sp-menu-item .sp-dropdown .sp-dropdown-inner .sp-group-title:hover {
@@ -3760,12 +3781,10 @@ section#sp-top-bar .sp-contact-info a {
 .skill-count-item strong {
   font-size: 20px;
   font-weight: normal;
-  text-transform: capitalize;
 }
 .skill-count-item h2,
 .skill-count-item p {
   margin-bottom: 0;
-  font-family: arial;
 }
 .border-skillset .skill-count-item {
   margin-bottom: 10px;
@@ -6609,4 +6628,4 @@ p.dropcap:first-letter {
   margin-top: 2px;
   padding-right: 8px;
 }
-";s:5:"files";a:18:{s:72:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\legacy\bootstrap.less";i:1508802354;s:72:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\legacy\variables.less";i:1508802354;s:69:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\legacy\mixins.less";i:1508802354;s:67:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\legacy\grid.less";i:1508802354;s:68:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\legacy\forms.less";i:1508802354;s:68:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\legacy\wells.less";i:1508802354;s:72:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\legacy\accordion.less";i:1508802354;s:90:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\legacy\responsive-767px-max.joomla.less";i:1508802354;s:62:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\master.less";i:1508807624;s:65:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\variables.less";i:1508802354;s:62:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\mixins.less";i:1508802354;s:63:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\icomoon.less";i:1508802354;s:60:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\menu.less";i:1508802354;s:61:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\theme.less";i:1508802354;s:62:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\custom.less";i:1519196790;s:58:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\k2.less";i:1508821150;s:66:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\virtuemart.less";i:1508802354;s:66:"D:\xampp7\htdocs\jdboston\templates\jd_boston\less\typography.less";i:1508802354;}s:7:"updated";i:1530640546;}
+";s:5:"files";a:10:{s:64:"E:\xampp717\htdocs\boston22\templates\jd_boston\less\master.less";i:1508807624;s:67:"E:\xampp717\htdocs\boston22\templates\jd_boston\less\variables.less";i:1508802354;s:64:"E:\xampp717\htdocs\boston22\templates\jd_boston\less\mixins.less";i:1508802354;s:65:"E:\xampp717\htdocs\boston22\templates\jd_boston\less\icomoon.less";i:1508802354;s:62:"E:\xampp717\htdocs\boston22\templates\jd_boston\less\menu.less";i:1531425803;s:63:"E:\xampp717\htdocs\boston22\templates\jd_boston\less\theme.less";i:1531425748;s:64:"E:\xampp717\htdocs\boston22\templates\jd_boston\less\custom.less";i:1531429099;s:60:"E:\xampp717\htdocs\boston22\templates\jd_boston\less\k2.less";i:1508821150;s:68:"E:\xampp717\htdocs\boston22\templates\jd_boston\less\virtuemart.less";i:1508802354;s:68:"E:\xampp717\htdocs\boston22\templates\jd_boston\less\typography.less";i:1508802354;}s:7:"updated";i:1531429100;}

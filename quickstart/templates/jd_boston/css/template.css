@@ -2008,6 +2008,9 @@ textarea.uneditable-input {
   font-weight: 700;
   color: #000;
 }
+.backface-visible {
+  backface-visibility: hidden;
+}
 #sp-top-bar {
   padding: 8px 0;
 }
@@ -2414,12 +2417,20 @@ article.item {
 .entry-quote {
   margin-bottom: 50px;
 }
+.pull-right.entry-image {
+  margin: 0 0 18px 20px;
+}
+.entry-status,
+.entry-quote {
+  margin-bottom: 50px;
+}
 .entry-header {
   position: relative;
   margin-bottom: 30px;
 }
 .entry-header.has-post-format {
   margin-left: 68px;
+  display: inline-block;
 }
 .entry-header h2 {
   margin: 8px 0 0;
@@ -3418,6 +3429,15 @@ table.category tbody >tr td {
     font-size: 90%;
   }
 }
+@media (min-width: 768px) {
+  .sppb-col-sm-offset-6 {
+    margin-left: 50%;
+  }
+}
+.sppb-testimonial-pro .sppb-item img {
+  display: inline-block;
+  margin-bottom: 10px;
+}
 article.item {
   margin: 0;
 }
@@ -3629,6 +3649,7 @@ section#sp-top-bar .sp-contact-info a {
 #sp-menu .sp-megamenu-parent li.sp-menu-item .sp-dropdown .sp-dropdown-inner .sp-group-title {
   color: #000;
   font-size: 14px;
+  text-transform: none;
   border-bottom: 1px solid #ddd;
 }
 #sp-menu .sp-megamenu-parent li.sp-menu-item .sp-dropdown .sp-dropdown-inner .sp-group-title:hover {
@@ -3760,12 +3781,10 @@ section#sp-top-bar .sp-contact-info a {
 .skill-count-item strong {
   font-size: 20px;
   font-weight: normal;
-  text-transform: capitalize;
 }
 .skill-count-item h2,
 .skill-count-item p {
   margin-bottom: 0;
-  font-family: arial;
 }
 .border-skillset .skill-count-item {
   margin-bottom: 10px;

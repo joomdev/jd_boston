@@ -33,16 +33,15 @@ if(isset($attribs->spfeatured_image) && $attribs->spfeatured_image != '') {
 ?>
 
 <?php if(!empty($intro_image) || (isset($images->image_intro) && !empty($images->image_intro))) { ?>
-
-<div class="entry-image intro-image">
+<?php $imgfloat = empty($images->float_intro) ? $params->get('float_intro') : $images->float_intro; ?>
+<div class="pull-<?php echo htmlspecialchars($imgfloat, ENT_COMPAT, 'UTF-8'); ?> entry-image intro-image">
 	<?php if ($params->get('link_titles') && $params->get('access-view')) { ?>
 		<a href="<?php echo JRoute::_(ContentHelperRoute::getArticleRoute($displayData->slug, $displayData->catid, $displayData->language)); ?>">
 	<?php } ?>
-
 	<img
 	<?php if ($images->image_intro_caption):
 			echo 'class="caption"' . ' title="' . htmlspecialchars($images->image_intro_caption) . '"';
-			endif; ?>
+	endif; ?>
 	src="<?php echo htmlspecialchars($intro_image); ?>" alt="<?php echo htmlspecialchars($images->image_intro_alt); ?>" itemprop="thumbnailUrl"/>
 
 	<?php if ($params->get('link_titles') && $params->get('access-view')) { ?>
