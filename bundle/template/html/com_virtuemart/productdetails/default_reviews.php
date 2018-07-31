@@ -77,13 +77,14 @@ if ($this->allowRating or $this->allowReview) {
 
 				$reviewJavascript = "
 		jQuery(function($) {
-			var steps = ".$maxrating.";
-			var parentPos= $('.rating .ratingbox').position();
-			var boxWidth = $('.rating .ratingbox').width();// nbr of total pixels
-			var starSize = (boxWidth/steps);
-			var ratingboxPos= $('.rating .ratingbox').offset();
-
 			jQuery('.rating .ratingbox').mousemove( function(e){
+				
+				var steps = ".$maxrating.";
+				var parentPos= $(this).position();
+				var boxWidth = $(this).width();// nbr of total pixels
+				var starSize = (boxWidth/steps);
+				var ratingboxPos= $(this).offset();
+				
 				var span = jQuery(this).children();
 				var dif = e.pageX-ratingboxPos.left; // nbr of pixels
 				difRatio = Math.floor(dif/boxWidth* steps )+1; //step

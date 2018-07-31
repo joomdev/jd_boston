@@ -7,8 +7,8 @@
     <authorUrl>https://www.joomdev.com/</authorUrl>
     <copyright>Copyright (C) 2008 - 2018 Joomdev.com. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GPLv2 or later</license>
-    <version>2.2</version>
-    <description>JD Boston Template</description>
+    <version>2.3</version>
+    <description>JD Boston - Free Business &amp; eCommerce Joomla Template </description>
 
     <languages>
         <language tag="en-GB">en-GB.tpl_jd_boston.ini</language>
@@ -218,7 +218,7 @@
                     <option value="after">HELIX_FEATURE_LOAD_POS_AFTER</option>
                 </field>
 
-                <field name="copyright" class="child copyright copyright_1" type="textarea" rows="6" cols="30" default="© 2017 Your Company. All Rights Reserved. Designed By Joomdev" label="HELIX_COMPYRIGHT_TEXT" description="HELIX_COMPYRIGHT_TEXT_DESC" filter="raw" />
+                <field name="copyright" class="child copyright copyright_1" type="textarea" rows="6" cols="30" default="© {year} Your Company. All Rights Reserved. Designed By Joomdev" label="HELIX_COMPYRIGHT_TEXT" description="HELIX_COMPYRIGHT_TEXT_DESC" filter="raw" />
 
                 <!--Social Icons-->
                 <field type="group" title="HELIX_SOCIAL_ICONS" />

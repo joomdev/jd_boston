@@ -2,8 +2,8 @@
 
 <extension type="plugin" version="2.5" method="upgrade" group="acymailing">
 	<name>AcyMailing Tag : Subscriber information</name>
-	<creationDate>June 2018</creationDate>
-	<version>5.10.2</version>
+	<creationDate>July 2018</creationDate>
+	<version>5.10.3</version>
 	<author>Acyba</author>
 	<authorEmail>dev@acyba.com</authorEmail>
 	<authorUrl>http://www.acyba.com</authorUrl>

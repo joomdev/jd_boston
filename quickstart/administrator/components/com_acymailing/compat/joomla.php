@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.10.2
+ * @version	5.10.3
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -28,7 +28,7 @@ define('ACYMAILING_TEMPLATE', ACYMAILING_MEDIA.'templates'.DS);
 define('ACYMAILING_LANGUAGE', ACYMAILING_ROOT.'language'.DS);
 define('ACYMAILING_INC', ACYMAILING_FRONT.'inc'.DS);
 
-define('ACYMAILING_MEDIA_URL', acymailing_rootURI().'/media/'.ACYMAILING_COMPONENT.'/');
+define('ACYMAILING_MEDIA_URL', rtrim(acymailing_rootURI(), '/').'/media/'.ACYMAILING_COMPONENT.'/');
 define('ACYMAILING_IMAGES', ACYMAILING_MEDIA_URL.'images/');
 define('ACYMAILING_CSS', ACYMAILING_MEDIA_URL.'css/');
 define('ACYMAILING_JS', ACYMAILING_MEDIA_URL.'js/');

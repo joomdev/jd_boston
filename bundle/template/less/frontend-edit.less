@@ -118,7 +118,8 @@ iframe, svg {
 		font-size: 18px;
 		margin-top: 0;
 	}
-	input[type="text"] {
+	input[type="text"],
+	input[type="email"] {
 		height: auto !important;
 	}
 }
@@ -175,3 +176,12 @@ iframe, svg {
 				}
 		}
 }
+
+/* *** Joomla 3.7 Compatibility *** */
+.edit.item-page .modal {
+	position: initial;
+ }
+ .edit.item-page .media-preview.add-on {
+	height: 34px;
+	line-height: 28px;
+ } 

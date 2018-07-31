@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.9.1
+ * @version	5.10.3
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -61,7 +61,7 @@ defined('_JEXEC') or die('Restricted access');
 							<?php echo acymailing_gridSort(acymailing_translation('CLICKED_LINK'), 'clickprct', $this->pageInfo->filter->order->dir, $this->pageInfo->filter->order->value, 'listing'); ?>
 						</th>
 					<?php } ?>
-					<?php if($this->menuparams->get('efficiency', '1') == 1){ ?>
+					<?php if($this->menuparams->get('efficiency', '1') == 1 && $this->config->get('anonymous_tracking', 0) == 0){ ?>
 						<th class="title titletoggle">
 							<?php echo acymailing_gridSort(acymailing_translation('ACY_CLICK_EFFICIENCY'), 'efficiencyprct', $this->pageInfo->filter->order->dir, $this->pageInfo->filter->order->value, 'listing'); ?>
 						</th>
@@ -72,7 +72,7 @@ defined('_JEXEC') or die('Restricted access');
 						<?php echo acymailing_gridSort(acymailing_translation('UNSUBSCRIBE'), 'unsubprct', $this->pageInfo->filter->order->dir, $this->pageInfo->filter->order->value, 'listing'); ?>
 					</th>
 				<?php } ?>
-				<?php if(acymailing_level(1) && $this->menuparams->get('forward', '1') == 1){ ?>
+				<?php if(acymailing_level(1) && $this->menuparams->get('forward', '1') == 1 && $this->config->get('anonymous_tracking', 0) == 0){ ?>
 					<th class="title titletoggle">
 						<?php echo acymailing_gridSort(acymailing_translation('FORWARDED'), 'a.forward', $this->pageInfo->filter->order->dir, $this->pageInfo->filter->order->value, 'listing'); ?>
 					</th>
@@ -136,7 +136,7 @@ defined('_JEXEC') or die('Restricted access');
 					</td>
 					<td>
 						<?php
-						if(acymailing_level(2)) {
+						if(acymailing_level(2) && $this->config->get('anonymous_tracking', 0) == 0) {
 							echo acymailing_popup(acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'diagram&task=mailing&mailid='.$row->mailid, true), '<i class="acyicon-statistic"></i><span class="acy_stat_subject">'.acymailing_tooltip('<b>'.acymailing_translation('JOOMEXT_ALIAS').' : </b>'.$row->alias, '', '', $row->subject).'</span>', '', 800, 590);
 						}else{
 							echo '<span class="acy_stat_subject">'.acymailing_tooltip('<b>'.acymailing_translation('JOOMEXT_ALIAS').' : </b>'.$row->alias, ' ', '', $row->subject).'</span>';
@@ -147,11 +147,15 @@ defined('_JEXEC') or die('Restricted access');
 						<td align="center" style="text-align:center">
 							<?php
 							if(!empty($row->senthtml)){
-								$text = '<b>'.acymailing_translation('OPEN_UNIQUE').' : </b>'.$row->openunique.' / '.$cleanSent;
-								$text .= '<br /><b>'.acymailing_translation('OPEN_TOTAL').' : </b>'.$row->opentotal;
-								$pourcent = ($cleanSent == 0 ? '0%' : (substr($row->openunique / $cleanSent * 100, 0, 5)).'%');
-								$title = acymailing_translation_sprintf('PERCENT_OPEN', $pourcent);
-								echo acymailing_tooltip($text, $title, '', $pourcent, acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&task=detaillisting&filter_status=open&filter_mail='.$row->mailid));
+								if($this->config->get('anonymous_tracking', 0) == 0){
+									$text = '<b>'.acymailing_translation('OPEN_UNIQUE').' : </b>'.$row->openunique.' / '.$cleanSent;
+									$text .= '<br /><b>'.acymailing_translation('OPEN_TOTAL').' : </b>'.$row->opentotal;
+									$pourcent = ($cleanSent == 0 ? '0%' : (substr($row->openunique / $cleanSent * 100, 0, 5)).'%');
+									$title = acymailing_translation_sprintf('PERCENT_OPEN', $pourcent);
+									echo acymailing_tooltip($text, $title, '', $pourcent, $this->config->get('anonymous_tracking', 0) == 0 ? acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&task=detaillisting&filter_status=open&filter_mail='.$row->mailid) : '');
+								}else{
+									echo $row->opentotal;
+								}
 							}
 							?>
 						</td>
@@ -161,16 +165,20 @@ defined('_JEXEC') or die('Restricted access');
 							<td align="center" style="text-align:center">
 								<?php
 								if(!empty($row->senthtml)){
-									$text = '<b>'.acymailing_translation('UNIQUE_HITS').' : </b>'.$row->clickunique.' / '.$cleanSent;
-									$text .= '<br /><b>'.acymailing_translation('TOTAL_HITS').' : </b>'.$row->clicktotal;
-									$pourcent = ($cleanSent == 0 ? '0%' : (substr($row->clickunique / $cleanSent * 100, 0, 5)).'%');
-									$title = acymailing_translation_sprintf('PERCENT_CLICK', $pourcent);
-									echo acymailing_tooltip($text, $title, '', $pourcent, acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'statsurl&filter_mail='.$row->mailid));
+									if($this->config->get('anonymous_tracking', 0) == 0) {
+										$text = '<b>'.acymailing_translation('UNIQUE_HITS').' : </b>'.$row->clickunique.' / '.$cleanSent;
+										$text .= '<br /><b>'.acymailing_translation('TOTAL_HITS').' : </b>'.$row->clicktotal;
+										$pourcent = ($cleanSent == 0 ? '0%' : (substr($row->clickunique / $cleanSent * 100, 0, 5)).'%');
+										$title = acymailing_translation_sprintf('PERCENT_CLICK', $pourcent);
+										echo acymailing_tooltip($text, $title, '', $pourcent, acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'statsurl&filter_mail='.$row->mailid));
+									}else{
+										echo $row->clickunique;
+									}
 								}
 								?>
 							</td>
 						<?php } ?>
-						<?php if($this->menuparams->get('efficiency', '1') == 1){ ?>
+						<?php if($this->menuparams->get('efficiency', '1') == 1 && $this->config->get('anonymous_tracking', 0) == 0){ ?>
 							<td align="center" style="text-align:center">
 								<?php
 								if(!empty($row->senthtml)){
@@ -187,15 +195,19 @@ defined('_JEXEC') or die('Restricted access');
 					<?php if($this->menuparams->get('unsubscribe', '1') == 1){ ?>
 						<td align="center" style="text-align:center">
 							<?php
-							echo acymailing_popup(acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&task=unsubchart&mailid='.$row->mailid, true), '<i class="acyicon-statistic"></i>', '', 800, 590);
 							$pourcent = ($cleanSent == 0) ? '0%' : (substr($row->unsub / $cleanSent * 100, 0, 5)).'%';
 							$text = $row->unsub.' / '.$cleanSent;
 							$title = acymailing_translation('UNSUBSCRIBE');
-							echo acymailing_popup(acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&start=0&task=unsubscribed&filter_mail='.$row->mailid, true), acymailing_tooltip($text, $title, '', $pourcent), '', 800, 590);
+							if($this->config->get('anonymous_tracking', 0) == 0) {
+								echo acymailing_popup(acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&task=unsubchart&mailid='.$row->mailid, true), '<i class="acyicon-statistic"></i>', '', 800, 590);
+								echo acymailing_popup(acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&start=0&task=unsubscribed&filter_mail='.$row->mailid, true), acymailing_tooltip($text, $title, '', $pourcent), '', 800, 590);
+							}else{
+								echo acymailing_tooltip($text, $title, '', $pourcent);
+							}
 							?>
 						</td>
 					<?php } ?>
-					<?php if(acymailing_level(1) && $this->menuparams->get('forward', '1') == 1){ ?>
+					<?php if(acymailing_level(1) && $this->menuparams->get('forward', '1') == 1 && $this->config->get('anonymous_tracking', 0) == 0){ ?>
 						<td align="center" style="text-align:center">
 							<?php echo acymailing_popup(acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&start=0&task=forward&filter_mail='.$row->mailid, true), $row->forward, '', 800, 590); ?>
 						</td>
@@ -205,7 +217,7 @@ defined('_JEXEC') or die('Restricted access');
 							<?php $text = '<b>'.acymailing_translation('HTML').' : </b>'.$row->senthtml;
 							$text .= '<br /><b>'.acymailing_translation('JOOMEXT_TEXT').' : </b>'.$row->senttext;
 							$title = acymailing_translation('ACY_SENT');
-							echo acymailing_tooltip($text, $title, '', $row->senthtml + $row->senttext, acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&task=detaillisting&filter_status=0&filter_mail='.$row->mailid)); ?>
+							echo acymailing_tooltip($text, $title, '', $row->senthtml + $row->senttext, $this->config->get('anonymous_tracking', 0) == 0 ? acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&task=detaillisting&filter_status=0&filter_mail='.$row->mailid) : ''); ?>
 						</td>
 					<?php } ?>
 					<?php if(acymailing_level(3) && $this->menuparams->get('bounces', '1') == 1){ ?>
@@ -214,14 +226,17 @@ defined('_JEXEC') or die('Restricted access');
 							$text = $row->bounceunique.' / '.($row->senthtml + $row->senttext);
 							$title = acymailing_translation('BOUNCES');
 							$pourcent = (empty($row->senthtml) AND empty($row->senttext)) ? '0%' : (substr($row->bounceunique / ($row->senthtml + $row->senttext) * 100, 0, 5)).'%';
-							echo acymailing_tooltip($text, $title, '', $pourcent, acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&task=detaillisting&filter_status=bounce&filter_mail='.$row->mailid)); ?>
+							echo acymailing_tooltip($text, $title, '', $pourcent, $this->config->get('anonymous_tracking', 0) == 0 ? acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&task=detaillisting&filter_status=bounce&filter_mail='.$row->mailid) : ''); ?>
 						</td>
 					<?php } ?>
 					<?php if($this->menuparams->get('failed', '1') == 1){ ?>
 						<td align="center" style="text-align:center">
-							<a href="<?php echo acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&task=detaillisting&filter_status=failed&filter_mail='.$row->mailid); ?>">
-								<?php echo $row->fail; ?>
-							</a>
+							<?php
+							if($this->config->get('anonymous_tracking', 0) == 0){
+								$row->fail = '<a href="'.acymailing_completeLink((acymailing_isAdmin() ? '' : 'front').'stats&task=detaillisting&filter_status=failed&filter_mail='.$row->mailid).'">'.$row->fail.'</a>';
+							}
+							echo $row->fail;
+							?>
 						</td>
 					<?php } ?>
 					<?php if(acymailing_level(3) && acymailing_isAdmin()){ ?>

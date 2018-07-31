@@ -2,8 +2,8 @@
 <!DOCTYPE install SYSTEM "http://dev.joomla.org/xml/1.5/plugin-install.dtd">
 <install type="plugin" version="1.5" method="upgrade" group="system">
 	<name>AcyMailing JCE integration</name>
-	<creationDate>June 2018</creationDate>
-	<version>5.10.2</version>
+	<creationDate>July 2018</creationDate>
+	<version>5.10.3</version>
 	<author>Acyba</author>
 	<authorEmail>dev@acyba.com</authorEmail>
 	<authorUrl>http://www.acyba.com</authorUrl>

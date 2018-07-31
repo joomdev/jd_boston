@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	AcyMailing for Joomla!
- * @version	5.10.2
+ * @version	5.10.3
  * @author	acyba.com
  * @copyright	(C) 2009-2018 ACYBA S.A.R.L. All rights reserved.
  * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -316,7 +316,7 @@ class SubController extends acymailingController{
 			$mailer->autoAddUser = true;
 			$mailer->checkConfirmField = false;
 			$mailer->report = false;
-			foreach($user as $field => $value) $mailer->addParam('user:'.$field,$value);
+			foreach($user as $field => $value) $mailer->addParam('user:'.$field, nl2br($value));
 			$mailer->addParam('user:subscription',$listsubClass->getSubscriptionString($user->subid));
 			$mailer->addParam('user:subscriptiondates',$listsubClass->getSubscriptionString($user->subid, true));
 			$mailer->addParam('user:ip',$userHelper->getIP());

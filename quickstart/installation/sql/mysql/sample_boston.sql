@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 16, 2018 at 02:11 PM
+-- Generation Time: Jul 31, 2018 at 08:28 AM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 7.1.7
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `boston22`
+-- Database: `boston_v23`
 --
 
 -- --------------------------------------------------------
@@ -28,6 +28,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `#__acymailing_action`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_action`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_action` (
   `action_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
@@ -64,6 +65,7 @@ TRUNCATE TABLE `#__acymailing_action`;
 -- Table structure for table `#__acymailing_config`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_config`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_config` (
   `namekey` varchar(200) NOT NULL,
   `value` text,
@@ -148,9 +150,9 @@ INSERT INTO `#__acymailing_config` (`namekey`, `value`) VALUES
 ('indexFollow', '1'),
 ('installcomplete', '1'),
 ('itemid', '0'),
-('lastlicensecheck', '1530637582'),
+('lastlicensecheck', '1533016833'),
 ('last_maxexec_check', '1508760572'),
-('latestversion', '5.10.2'),
+('latestversion', '5.10.3'),
 ('level', 'Starter'),
 ('mailer_method', 'phpmail'),
 ('max_execution_time', '0'),
@@ -211,8 +213,8 @@ INSERT INTO `#__acymailing_config` (`namekey`, `value`) VALUES
 ('unsub_survey', '1'),
 ('uploadfolder', 'media/com_acymailing/upload'),
 ('use_sef', '0'),
-('version', '5.10.2'),
-('website', 'http://localhost/jdboston/'),
+('version', '5.10.3'),
+('website', 'http://localhost/boston/v2.3/'),
 ('welcome_message', '1'),
 ('word_wrapping', '150');
 
@@ -222,6 +224,7 @@ INSERT INTO `#__acymailing_config` (`namekey`, `value`) VALUES
 -- Table structure for table `#__acymailing_fields`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_fields`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_fields` (
   `fieldid` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fieldname` varchar(250) NOT NULL,
@@ -249,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `#__acymailing_fields` (
   PRIMARY KEY (`fieldid`),
   UNIQUE KEY `namekey` (`namekey`),
   KEY `orderingindex` (`published`,`ordering`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
 -- Truncate table before insert `#__acymailing_fields`
@@ -271,6 +274,7 @@ INSERT INTO `#__acymailing_fields` (`fieldid`, `fieldname`, `namekey`, `type`, `
 -- Table structure for table `#__acymailing_filter`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_filter`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_filter` (
   `filid` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(250) DEFAULT NULL,
@@ -296,6 +300,7 @@ TRUNCATE TABLE `#__acymailing_filter`;
 -- Table structure for table `#__acymailing_forward`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_forward`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_forward` (
   `subid` int(10) UNSIGNED NOT NULL,
   `mailid` mediumint(8) UNSIGNED NOT NULL,
@@ -316,6 +321,7 @@ TRUNCATE TABLE `#__acymailing_forward`;
 -- Table structure for table `#__acymailing_geolocation`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_geolocation`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_geolocation` (
   `geolocation_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `geolocation_subid` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -348,6 +354,7 @@ TRUNCATE TABLE `#__acymailing_geolocation`;
 -- Table structure for table `#__acymailing_history`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_history`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_history` (
   `subid` int(10) UNSIGNED NOT NULL,
   `date` int(10) UNSIGNED NOT NULL,
@@ -372,6 +379,7 @@ TRUNCATE TABLE `#__acymailing_history`;
 -- Table structure for table `#__acymailing_list`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_list`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_list` (
   `name` varchar(250) NOT NULL,
   `description` text,
@@ -414,6 +422,7 @@ INSERT INTO `#__acymailing_list` (`name`, `description`, `ordering`, `listid`, `
 -- Table structure for table `#__acymailing_listcampaign`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_listcampaign`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_listcampaign` (
   `campaignid` smallint(5) UNSIGNED NOT NULL,
   `listid` smallint(5) UNSIGNED NOT NULL,
@@ -431,6 +440,7 @@ TRUNCATE TABLE `#__acymailing_listcampaign`;
 -- Table structure for table `#__acymailing_listmail`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_listmail`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_listmail` (
   `listid` smallint(5) UNSIGNED NOT NULL,
   `mailid` mediumint(8) UNSIGNED NOT NULL,
@@ -448,6 +458,7 @@ TRUNCATE TABLE `#__acymailing_listmail`;
 -- Table structure for table `#__acymailing_listsub`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_listsub`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_listsub` (
   `listid` smallint(5) UNSIGNED NOT NULL,
   `subid` int(10) UNSIGNED NOT NULL,
@@ -477,6 +488,7 @@ INSERT INTO `#__acymailing_listsub` (`listid`, `subid`, `subdate`, `unsubdate`, 
 -- Table structure for table `#__acymailing_mail`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_mail`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_mail` (
   `mailid` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `subject` text,
@@ -545,6 +557,7 @@ INSERT INTO `#__acymailing_mail` (`mailid`, `subject`, `body`, `altbody`, `publi
 -- Table structure for table `#__acymailing_queue`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_queue`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_queue` (
   `senddate` int(10) UNSIGNED NOT NULL,
   `subid` int(10) UNSIGNED NOT NULL,
@@ -569,6 +582,7 @@ TRUNCATE TABLE `#__acymailing_queue`;
 -- Table structure for table `#__acymailing_rules`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_rules`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_rules` (
   `ruleid` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(250) NOT NULL,
@@ -593,6 +607,7 @@ TRUNCATE TABLE `#__acymailing_rules`;
 -- Table structure for table `#__acymailing_stats`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_stats`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_stats` (
   `mailid` mediumint(8) UNSIGNED NOT NULL,
   `senthtml` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -622,6 +637,7 @@ TRUNCATE TABLE `#__acymailing_stats`;
 -- Table structure for table `#__acymailing_subscriber`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_subscriber`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_subscriber` (
   `subid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `email` varchar(200) NOT NULL,
@@ -666,6 +682,7 @@ INSERT INTO `#__acymailing_subscriber` (`subid`, `email`, `userid`, `name`, `cre
 -- Table structure for table `#__acymailing_tag`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_tag`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_tag` (
   `tagid` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(250) NOT NULL,
@@ -685,6 +702,7 @@ TRUNCATE TABLE `#__acymailing_tag`;
 -- Table structure for table `#__acymailing_tagmail`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_tagmail`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_tagmail` (
   `tagid` smallint(5) UNSIGNED NOT NULL,
   `mailid` mediumint(8) UNSIGNED NOT NULL,
@@ -702,6 +720,7 @@ TRUNCATE TABLE `#__acymailing_tagmail`;
 -- Table structure for table `#__acymailing_template`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_template`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_template` (
   `tempid` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(250) DEFAULT NULL,
@@ -728,7 +747,7 @@ CREATE TABLE IF NOT EXISTS `#__acymailing_template` (
   PRIMARY KEY (`tempid`),
   UNIQUE KEY `namekey` (`namekey`),
   KEY `orderingindex` (`ordering`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 --
 -- Truncate table before insert `#__acymailing_template`
@@ -751,6 +770,7 @@ INSERT INTO `#__acymailing_template` (`tempid`, `name`, `description`, `body`, `
 -- Table structure for table `#__acymailing_url`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_url`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_url` (
   `urlid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(250) NOT NULL,
@@ -770,6 +790,7 @@ TRUNCATE TABLE `#__acymailing_url`;
 -- Table structure for table `#__acymailing_urlclick`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_urlclick`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_urlclick` (
   `urlid` int(10) UNSIGNED NOT NULL,
   `mailid` mediumint(8) UNSIGNED NOT NULL,
@@ -794,6 +815,7 @@ TRUNCATE TABLE `#__acymailing_urlclick`;
 -- Table structure for table `#__acymailing_userstats`
 --
 
+DROP TABLE IF EXISTS `#__acymailing_userstats`;
 CREATE TABLE IF NOT EXISTS `#__acymailing_userstats` (
   `mailid` mediumint(8) UNSIGNED NOT NULL,
   `subid` int(10) UNSIGNED NOT NULL,
@@ -827,6 +849,7 @@ TRUNCATE TABLE `#__acymailing_userstats`;
 -- Table structure for table `#__assets`
 --
 
+DROP TABLE IF EXISTS `#__assets`;
 CREATE TABLE IF NOT EXISTS `#__assets` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
   `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set parent.',
@@ -991,6 +1014,7 @@ INSERT INTO `#__assets` (`id`, `parent_id`, `lft`, `rgt`, `level`, `name`, `titl
 -- Table structure for table `#__associations`
 --
 
+DROP TABLE IF EXISTS `#__associations`;
 CREATE TABLE IF NOT EXISTS `#__associations` (
   `id` int(11) NOT NULL COMMENT 'A reference to the associated item.',
   `context` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'The context of the associated item.',
@@ -1010,6 +1034,7 @@ TRUNCATE TABLE `#__associations`;
 -- Table structure for table `#__banners`
 --
 
+DROP TABLE IF EXISTS `#__banners`;
 CREATE TABLE IF NOT EXISTS `#__banners` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cid` int(11) NOT NULL DEFAULT '0',
@@ -1064,6 +1089,7 @@ TRUNCATE TABLE `#__banners`;
 -- Table structure for table `#__banner_clients`
 --
 
+DROP TABLE IF EXISTS `#__banner_clients`;
 CREATE TABLE IF NOT EXISTS `#__banner_clients` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -1095,6 +1121,7 @@ TRUNCATE TABLE `#__banner_clients`;
 -- Table structure for table `#__banner_tracks`
 --
 
+DROP TABLE IF EXISTS `#__banner_tracks`;
 CREATE TABLE IF NOT EXISTS `#__banner_tracks` (
   `track_date` datetime NOT NULL,
   `track_type` int(10) UNSIGNED NOT NULL,
@@ -1117,6 +1144,7 @@ TRUNCATE TABLE `#__banner_tracks`;
 -- Table structure for table `#__categories`
 --
 
+DROP TABLE IF EXISTS `#__categories`;
 CREATE TABLE IF NOT EXISTS `#__categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `asset_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'FK to the #__assets table.',
@@ -1180,6 +1208,7 @@ INSERT INTO `#__categories` (`id`, `asset_id`, `parent_id`, `lft`, `rgt`, `level
 -- Table structure for table `#__chronoengine_acls`
 --
 
+DROP TABLE IF EXISTS `#__chronoengine_acls`;
 CREATE TABLE IF NOT EXISTS `#__chronoengine_acls` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `aco` varchar(255) NOT NULL DEFAULT '',
@@ -1201,6 +1230,7 @@ TRUNCATE TABLE `#__chronoengine_acls`;
 -- Table structure for table `#__chronoengine_extensions`
 --
 
+DROP TABLE IF EXISTS `#__chronoengine_extensions`;
 CREATE TABLE IF NOT EXISTS `#__chronoengine_extensions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `addon_id` int(11) NOT NULL,
@@ -1231,6 +1261,7 @@ INSERT INTO `#__chronoengine_extensions` (`id`, `addon_id`, `name`, `title`, `en
 -- Table structure for table `#__chronoengine_forms6`
 --
 
+DROP TABLE IF EXISTS `#__chronoengine_forms6`;
 CREATE TABLE IF NOT EXISTS `#__chronoengine_forms6` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(200) NOT NULL,
@@ -1267,6 +1298,7 @@ INSERT INTO `#__chronoengine_forms6` (`id`, `title`, `alias`, `published`, `publ
 -- Table structure for table `#__chronoengine_forms6_blocks`
 --
 
+DROP TABLE IF EXISTS `#__chronoengine_forms6_blocks`;
 CREATE TABLE IF NOT EXISTS `#__chronoengine_forms6_blocks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -1309,6 +1341,7 @@ INSERT INTO `#__chronoengine_forms6_blocks` (`id`, `title`, `block_id`, `desc`, 
 -- Table structure for table `#__contact_details`
 --
 
+DROP TABLE IF EXISTS `#__contact_details`;
 CREATE TABLE IF NOT EXISTS `#__contact_details` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1375,6 +1408,7 @@ TRUNCATE TABLE `#__contact_details`;
 -- Table structure for table `#__content`
 --
 
+DROP TABLE IF EXISTS `#__content`;
 CREATE TABLE IF NOT EXISTS `#__content` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `asset_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'FK to the #__assets table.',
@@ -1467,6 +1501,7 @@ INSERT INTO `#__content` (`id`, `asset_id`, `title`, `alias`, `introtext`, `full
 -- Table structure for table `#__contentitem_tag_map`
 --
 
+DROP TABLE IF EXISTS `#__contentitem_tag_map`;
 CREATE TABLE IF NOT EXISTS `#__contentitem_tag_map` (
   `type_alias` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `core_content_id` int(10) UNSIGNED NOT NULL COMMENT 'PK from the core content table',
@@ -1498,6 +1533,7 @@ INSERT INTO `#__contentitem_tag_map` (`type_alias`, `core_content_id`, `content_
 -- Table structure for table `#__content_frontpage`
 --
 
+DROP TABLE IF EXISTS `#__content_frontpage`;
 CREATE TABLE IF NOT EXISTS `#__content_frontpage` (
   `content_id` int(11) NOT NULL DEFAULT '0',
   `ordering` int(11) NOT NULL DEFAULT '0',
@@ -1515,6 +1551,7 @@ TRUNCATE TABLE `#__content_frontpage`;
 -- Table structure for table `#__content_rating`
 --
 
+DROP TABLE IF EXISTS `#__content_rating`;
 CREATE TABLE IF NOT EXISTS `#__content_rating` (
   `content_id` int(11) NOT NULL DEFAULT '0',
   `rating_sum` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -1534,6 +1571,7 @@ TRUNCATE TABLE `#__content_rating`;
 -- Table structure for table `#__content_types`
 --
 
+DROP TABLE IF EXISTS `#__content_types`;
 CREATE TABLE IF NOT EXISTS `#__content_types` (
   `type_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -1578,6 +1616,7 @@ INSERT INTO `#__content_types` (`type_id`, `type_title`, `type_alias`, `table`, 
 -- Table structure for table `#__core_log_searches`
 --
 
+DROP TABLE IF EXISTS `#__core_log_searches`;
 CREATE TABLE IF NOT EXISTS `#__core_log_searches` (
   `search_term` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `hits` int(10) UNSIGNED NOT NULL DEFAULT '0'
@@ -1594,6 +1633,7 @@ TRUNCATE TABLE `#__core_log_searches`;
 -- Table structure for table `#__extensions`
 --
 
+DROP TABLE IF EXISTS `#__extensions`;
 CREATE TABLE IF NOT EXISTS `#__extensions` (
   `extension_id` int(11) NOT NULL AUTO_INCREMENT,
   `package_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Parent package ID for extensions installed as a package.',
@@ -1660,7 +1700,7 @@ INSERT INTO `#__extensions` (`extension_id`, `package_id`, `name`, `type`, `elem
 (31, 0, 'com_ajax', 'component', 'com_ajax', '', 1, 1, 1, 1, '{\"name\":\"com_ajax\",\"type\":\"component\",\"creationDate\":\"August 2013\",\"author\":\"Joomla! Project\",\"copyright\":\"(C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.2.0\",\"description\":\"COM_AJAX_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"ajax\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (32, 0, 'com_postinstall', 'component', 'com_postinstall', '', 1, 1, 1, 1, '{\"name\":\"com_postinstall\",\"type\":\"component\",\"creationDate\":\"September 2013\",\"author\":\"Joomla! Project\",\"copyright\":\"(C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.2.0\",\"description\":\"COM_POSTINSTALL_XML_DESCRIPTION\",\"group\":\"\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (102, 0, 'LIB_PHPUTF8', 'library', 'phputf8', '', 0, 1, 1, 1, '{\"name\":\"LIB_PHPUTF8\",\"type\":\"library\",\"creationDate\":\"2006\",\"author\":\"Harry Fuecks\",\"copyright\":\"Copyright various authors\",\"authorEmail\":\"hfuecks@gmail.com\",\"authorUrl\":\"http:\\/\\/sourceforge.net\\/projects\\/phputf8\",\"version\":\"0.5\",\"description\":\"LIB_PHPUTF8_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"phputf8\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(103, 0, 'LIB_JOOMLA', 'library', 'joomla', '', 0, 1, 1, 1, '{\"name\":\"LIB_JOOMLA\",\"type\":\"library\",\"creationDate\":\"2008\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"https:\\/\\/www.joomla.org\",\"version\":\"13.1\",\"description\":\"LIB_JOOMLA_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"joomla\"}', '{\"mediaversion\":\"44f92f1d3daf4de81a12b031791d1796\"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(103, 0, 'LIB_JOOMLA', 'library', 'joomla', '', 0, 1, 1, 1, '{\"name\":\"LIB_JOOMLA\",\"type\":\"library\",\"creationDate\":\"2008\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"https:\\/\\/www.joomla.org\",\"version\":\"13.1\",\"description\":\"LIB_JOOMLA_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"joomla\"}', '{\"mediaversion\":\"69dbf0cfa64950d3b87676a8b1f54a45\"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (104, 0, 'LIB_IDNA', 'library', 'idna_convert', '', 0, 1, 1, 1, '{\"name\":\"LIB_IDNA\",\"type\":\"library\",\"creationDate\":\"2004\",\"author\":\"phlyLabs\",\"copyright\":\"2004-2011 phlyLabs Berlin, http:\\/\\/phlylabs.de\",\"authorEmail\":\"phlymail@phlylabs.de\",\"authorUrl\":\"http:\\/\\/phlylabs.de\",\"version\":\"0.8.0\",\"description\":\"LIB_IDNA_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"idna_convert\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (105, 0, 'FOF', 'library', 'fof', '', 0, 1, 1, 1, '{\"name\":\"FOF\",\"type\":\"library\",\"creationDate\":\"2015-04-22 13:15:32\",\"author\":\"Nicholas K. Dionysopoulos \\/ Akeeba Ltd\",\"copyright\":\"(C)2011-2015 Nicholas K. Dionysopoulos\",\"authorEmail\":\"nicholas@akeebabackup.com\",\"authorUrl\":\"https:\\/\\/www.akeebabackup.com\",\"version\":\"2.4.3\",\"description\":\"LIB_FOF_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"fof\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (106, 0, 'LIB_PHPASS', 'library', 'phpass', '', 0, 1, 1, 1, '{\"name\":\"LIB_PHPASS\",\"type\":\"library\",\"creationDate\":\"2004-2006\",\"author\":\"Solar Designer\",\"copyright\":\"\",\"authorEmail\":\"solar@openwall.com\",\"authorUrl\":\"http:\\/\\/www.openwall.com\\/phpass\\/\",\"version\":\"0.3\",\"description\":\"LIB_PHPASS_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"phpass\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
@@ -1755,9 +1795,9 @@ INSERT INTO `#__extensions` (`extension_id`, `package_id`, `name`, `type`, `elem
 (449, 0, 'plg_authentication_cookie', 'plugin', 'cookie', 'authentication', 0, 1, 1, 0, '{\"name\":\"plg_authentication_cookie\",\"type\":\"plugin\",\"creationDate\":\"July 2013\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.0.0\",\"description\":\"PLG_AUTH_COOKIE_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"cookie\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (450, 0, 'plg_twofactorauth_yubikey', 'plugin', 'yubikey', 'twofactorauth', 0, 0, 1, 0, '{\"name\":\"plg_twofactorauth_yubikey\",\"type\":\"plugin\",\"creationDate\":\"September 2013\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.2.0\",\"description\":\"PLG_TWOFACTORAUTH_YUBIKEY_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"yubikey\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (451, 0, 'plg_search_tags', 'plugin', 'tags', 'search', 0, 1, 1, 0, '{\"name\":\"plg_search_tags\",\"type\":\"plugin\",\"creationDate\":\"March 2014\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.0.0\",\"description\":\"PLG_SEARCH_TAGS_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"tags\"}', '{\"search_limit\":\"50\",\"show_tagged_items\":\"1\"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(452, 0, 'plg_system_updatenotification', 'plugin', 'updatenotification', 'system', 0, 1, 1, 0, '{\"name\":\"plg_system_updatenotification\",\"type\":\"plugin\",\"creationDate\":\"May 2015\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.5.0\",\"description\":\"PLG_SYSTEM_UPDATENOTIFICATION_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"updatenotification\"}', '{\"lastrun\":1531722693}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(452, 0, 'plg_system_updatenotification', 'plugin', 'updatenotification', 'system', 0, 1, 1, 0, '{\"name\":\"plg_system_updatenotification\",\"type\":\"plugin\",\"creationDate\":\"May 2015\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.5.0\",\"description\":\"PLG_SYSTEM_UPDATENOTIFICATION_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"updatenotification\"}', '{\"lastrun\":1533016615}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (453, 0, 'plg_editors-xtd_module', 'plugin', 'module', 'editors-xtd', 0, 1, 1, 0, '{\"name\":\"plg_editors-xtd_module\",\"type\":\"plugin\",\"creationDate\":\"October 2015\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.5.0\",\"description\":\"PLG_MODULE_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"module\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(454, 0, 'plg_system_stats', 'plugin', 'stats', 'system', 0, 1, 1, 0, '{\"name\":\"plg_system_stats\",\"type\":\"plugin\",\"creationDate\":\"November 2013\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.5.0\",\"description\":\"PLG_SYSTEM_STATS_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"stats\"}', '{\"mode\":1,\"lastrun\":1531739255,\"unique_id\":\"fc2a17fef3e557ab41a41707bec09dcb3f5e8b60\",\"interval\":12}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(454, 0, 'plg_system_stats', 'plugin', 'stats', 'system', 0, 1, 1, 0, '{\"name\":\"plg_system_stats\",\"type\":\"plugin\",\"creationDate\":\"November 2013\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.5.0\",\"description\":\"PLG_SYSTEM_STATS_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"stats\"}', '{\"mode\":1,\"lastrun\":1533016621,\"unique_id\":\"fc2a17fef3e557ab41a41707bec09dcb3f5e8b60\",\"interval\":12}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (455, 0, 'plg_installer_packageinstaller', 'plugin', 'packageinstaller', 'installer', 0, 1, 1, 1, '{\"name\":\"plg_installer_packageinstaller\",\"type\":\"plugin\",\"creationDate\":\"May 2016\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.6.0\",\"description\":\"PLG_INSTALLER_PACKAGEINSTALLER_PLUGIN_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"packageinstaller\"}', '', '', '', 0, '0000-00-00 00:00:00', 1, 0),
 (456, 0, 'PLG_INSTALLER_FOLDERINSTALLER', 'plugin', 'folderinstaller', 'installer', 0, 1, 1, 1, '{\"name\":\"PLG_INSTALLER_FOLDERINSTALLER\",\"type\":\"plugin\",\"creationDate\":\"May 2016\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.6.0\",\"description\":\"PLG_INSTALLER_FOLDERINSTALLER_PLUGIN_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"folderinstaller\"}', '', '', '', 0, '0000-00-00 00:00:00', 2, 0),
 (457, 0, 'PLG_INSTALLER_URLINSTALLER', 'plugin', 'urlinstaller', 'installer', 0, 1, 1, 1, '{\"name\":\"PLG_INSTALLER_URLINSTALLER\",\"type\":\"plugin\",\"creationDate\":\"May 2016\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.6.0\",\"description\":\"PLG_INSTALLER_URLINSTALLER_PLUGIN_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"urlinstaller\"}', '', '', '', 0, '0000-00-00 00:00:00', 3, 0),
@@ -1771,7 +1811,7 @@ INSERT INTO `#__extensions` (`extension_id`, `package_id`, `name`, `type`, `elem
 (601, 0, 'English (en-GB)', 'language', 'en-GB', '', 1, 1, 1, 1, '{\"name\":\"English (en-GB)\",\"type\":\"language\",\"creationDate\":\"June 2018\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.8.10\",\"description\":\"en-GB administrator language\",\"group\":\"\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (700, 0, 'files_joomla', 'file', 'joomla', '', 0, 1, 1, 1, '{\"name\":\"files_joomla\",\"type\":\"file\",\"creationDate\":\"June 2018\",\"author\":\"Joomla! Project\",\"copyright\":\"(C) 2005 - 2018 Open Source Matters. All rights reserved\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.8.10\",\"description\":\"FILES_JOOMLA_XML_DESCRIPTION\",\"group\":\"\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (802, 0, 'English (en-GB) Language Pack', 'package', 'pkg_en-GB', '', 0, 1, 1, 1, '{\"name\":\"English (en-GB) Language Pack\",\"type\":\"package\",\"creationDate\":\"June 2018\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.8.10.1\",\"description\":\"en-GB language pack\",\"group\":\"\",\"filename\":\"pkg_en-GB\"}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(10004, 0, 'AcyMailing', 'component', 'com_acymailing', '', 1, 1, 0, 0, '{\"name\":\"AcyMailing\",\"type\":\"component\",\"creationDate\":\"June 2018\",\"author\":\"Acyba\",\"copyright\":\"Copyright (C) 2009-2018 ACYBA SAS - All rights reserved.\",\"authorEmail\":\"dev@acyba.com\",\"authorUrl\":\"http:\\/\\/www.acyba.com\",\"version\":\"5.10.2\",\"description\":\"Manage your Mailing lists, Newsletters, e-mail marketing campaigns\",\"group\":\"\",\"filename\":\"acymailing_j3\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(10004, 0, 'AcyMailing', 'component', 'com_acymailing', '', 1, 1, 0, 0, '{\"name\":\"AcyMailing\",\"type\":\"component\",\"creationDate\":\"July 2018\",\"author\":\"Acyba\",\"copyright\":\"Copyright (C) 2009-2018 ACYBA SAS - All rights reserved.\",\"authorEmail\":\"dev@acyba.com\",\"authorUrl\":\"http:\\/\\/www.acyba.com\",\"version\":\"5.10.3\",\"description\":\"Manage your Mailing lists, Newsletters, e-mail marketing campaigns\",\"group\":\"\",\"filename\":\"acymailing_j3\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (10005, 0, 'AcyMailing : trigger Joomla Content plugins', 'plugin', 'contentplugin', 'acymailing', 0, 0, 1, 0, '{\"version\":\"3.7.0\",\"author\":\"Acyba\",\"creationDate\":\"November 2009\"}', '', '', '', 0, '0000-00-00 00:00:00', 15, 0),
 (10006, 0, 'AcyMailing Manage text', 'plugin', 'managetext', 'acymailing', 0, 1, 1, 0, '{\"version\":\"1.0.0\",\"author\":\"Acyba\",\"creationDate\":\"October 2010\"}', '', '', '', 0, '0000-00-00 00:00:00', 10, 0),
 (10007, 0, 'AcyMailing Tag : Website links', 'plugin', 'online', 'acymailing', 0, 1, 1, 0, '{\"version\":\"3.7.0\",\"author\":\"Acyba\",\"creationDate\":\"September 2009\"}', '', '', '', 0, '0000-00-00 00:00:00', 6, 0),
@@ -1869,8 +1909,8 @@ INSERT INTO `#__extensions` (`extension_id`, `package_id`, `name`, `type`, `elem
 (10194, 0, 'plg_fields_usergrouplist', 'plugin', 'usergrouplist', 'fields', 0, 0, 1, 0, '{\"name\":\"plg_fields_usergrouplist\",\"type\":\"plugin\",\"creationDate\":\"March 2016\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.7.0\",\"description\":\"PLG_FIELDS_USERGROUPLIST_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"usergrouplist\"}', '{\"multiple\":\"0\"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (10195, 0, 'plg_quickicon_phpversioncheck', 'plugin', 'phpversioncheck', 'quickicon', 0, 0, 1, 0, '{\"name\":\"plg_quickicon_phpversioncheck\",\"type\":\"plugin\",\"creationDate\":\"August 2016\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.7.0\",\"description\":\"PLG_QUICKICON_PHPVERSIONCHECK_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"phpversioncheck\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (10196, 0, 'plg_system_fields', 'plugin', 'fields', 'system', 0, 0, 1, 0, '{\"name\":\"plg_system_fields\",\"type\":\"plugin\",\"creationDate\":\"March 2016\",\"author\":\"Joomla! Project\",\"copyright\":\"Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.\",\"authorEmail\":\"admin@joomla.org\",\"authorUrl\":\"www.joomla.org\",\"version\":\"3.7.0\",\"description\":\"PLG_SYSTEM_FIELDS_XML_DESCRIPTION\",\"group\":\"\",\"filename\":\"fields\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(10198, 0, 'Helix3 - Ajax', 'plugin', 'helix3', 'ajax', 0, 1, 1, 0, '{\"name\":\"Helix3 - Ajax\",\"type\":\"plugin\",\"creationDate\":\"Jan 2015\",\"author\":\"JoomShaper.com\",\"copyright\":\"Copyright (C) 2010 - 2017 JoomShaper. All rights reserved.\",\"authorEmail\":\"support@joomshaper.com\",\"authorUrl\":\"www.joomshaper.com\",\"version\":\"2.5.4\",\"description\":\"Helix3 Framework - Joomla Template Framework by JoomShaper\",\"group\":\"\",\"filename\":\"helix3\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(10199, 0, 'System - Helix3 Framework', 'plugin', 'helix3', 'system', 0, 1, 1, 0, '{\"name\":\"System - Helix3 Framework\",\"type\":\"plugin\",\"creationDate\":\"Jan 2015\",\"author\":\"JoomShaper.com\",\"copyright\":\"Copyright (C) 2010 - 2017 JoomShaper. All rights reserved.\",\"authorEmail\":\"support@joomshaper.com\",\"authorUrl\":\"www.joomshaper.com\",\"version\":\"2.5.4\",\"description\":\"Helix3 Framework - Joomla Template Framework by JoomShaper\",\"group\":\"\",\"filename\":\"helix3\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0);
+(10198, 0, 'Helix3 - Ajax', 'plugin', 'helix3', 'ajax', 0, 1, 1, 0, '{\"name\":\"Helix3 - Ajax\",\"type\":\"plugin\",\"creationDate\":\"Jan 2015\",\"author\":\"JoomShaper.com\",\"copyright\":\"Copyright (C) 2010 - 2017 JoomShaper. All rights reserved.\",\"authorEmail\":\"support@joomshaper.com\",\"authorUrl\":\"www.joomshaper.com\",\"version\":\"2.5.5\",\"description\":\"Helix3 Framework - Joomla Template Framework by JoomShaper\",\"group\":\"\",\"filename\":\"helix3\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(10199, 0, 'System - Helix3 Framework', 'plugin', 'helix3', 'system', 0, 1, 1, 0, '{\"name\":\"System - Helix3 Framework\",\"type\":\"plugin\",\"creationDate\":\"Jan 2015\",\"author\":\"JoomShaper.com\",\"copyright\":\"Copyright (C) 2010 - 2017 JoomShaper. All rights reserved.\",\"authorEmail\":\"support@joomshaper.com\",\"authorUrl\":\"www.joomshaper.com\",\"version\":\"2.5.5\",\"description\":\"Helix3 Framework - Joomla Template Framework by JoomShaper\",\"group\":\"\",\"filename\":\"helix3\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0);
 INSERT INTO `#__extensions` (`extension_id`, `package_id`, `name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`, `params`, `custom_data`, `system_data`, `checked_out`, `checked_out_time`, `ordering`, `state`) VALUES
 (10209, 0, 'SP Simple Portfolio Module', 'module', 'mod_spsimpleportfolio', '', 0, 1, 0, 0, '{\"name\":\"SP Simple Portfolio Module\",\"type\":\"module\",\"creationDate\":\"December 2014\",\"author\":\"JoomShaper\",\"copyright\":\"Copyright (C) 2010 - 2017 JoomShaper. All rights reserved.\",\"authorEmail\":\"support@joomshaper.com\",\"authorUrl\":\"www.joomshaper.com\",\"version\":\"1.5\",\"description\":\"Module to display latest item from SP Simple Portfolio\",\"group\":\"\",\"filename\":\"mod_spsimpleportfolio\"}', '{\"show_filter\":\"1\",\"category_id\":\"\",\"layout_type\":\"default\",\"columns\":\"3\",\"thumbnail_type\":\"masonry\",\"popup_image\":\"default\",\"limit\":\"12\",\"cache\":\"1\",\"cache_time\":\"900\"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (10211, 0, 'SP Simple Portfolio', 'component', 'com_spsimpleportfolio', '', 1, 1, 0, 0, '{\"name\":\"SP Simple Portfolio\",\"type\":\"component\",\"creationDate\":\"December 2015\",\"author\":\"JoomShaper\",\"copyright\":\"Copyright (c) 2010- 2018 JoomShaper. All rights reserved.\",\"authorEmail\":\"support@joomshaper.com\",\"authorUrl\":\"http:\\/\\/www.joomshaper.com\",\"version\":\"1.6\",\"description\":\"Simple Portfolio Component for Joomla 3.3+\",\"group\":\"\",\"filename\":\"spsimpleportfolio\"}', '{\"square\":\"600x600\",\"rectangle\":\"600x400\",\"tower\":\"600X800\"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
@@ -1879,7 +1919,7 @@ INSERT INTO `#__extensions` (`extension_id`, `package_id`, `name`, `type`, `elem
 (10216, 0, 'ChronoForms6 Package', 'package', 'pkg_chronoforms6', '', 0, 1, 1, 0, '{\"name\":\"ChronoForms6 Package\",\"type\":\"package\",\"creationDate\":\"2017\",\"author\":\"ChronoEngine.com Team\",\"copyright\":\"\",\"authorEmail\":\"\",\"authorUrl\":\"\",\"version\":\"6.0\",\"description\":\"ChronoForms6 extension package (Component + CEGCore2 library)\",\"group\":\"\",\"filename\":\"pkg_chronoforms6\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (10218, 10216, 'ChronoengineGcore2', 'plugin', 'chronoengine_gcore2', 'system', 0, 1, 1, 0, '{\"name\":\"ChronoengineGcore2\",\"type\":\"plugin\",\"creationDate\":\"2017\",\"author\":\"chronoengine.com\",\"copyright\":\"2017 chronoengine.com All rights reserved.\",\"authorEmail\":\"chronoengine.com\",\"authorUrl\":\"chronoengine.com\",\"version\":\"1.0\",\"description\":\"Load the ChronoEngine GCore2 framework, this plugin must be enabled for the Chrono extensions to function properly.\",\"group\":\"\",\"filename\":\"chronoengine_gcore2\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (10226, 0, 'plg_installer_smartslider3', 'plugin', 'smartslider3', 'installer', 0, 1, 1, 0, '{\"name\":\"plg_installer_smartslider3\",\"type\":\"plugin\",\"creationDate\":\"2017.08.03.\",\"author\":\"Nextendweb\",\"copyright\":\"Copyright (C) 2017 Nextendweb. All rights reserved\",\"authorEmail\":\"support@nextendweb.com\",\"authorUrl\":\"http:\\/\\/smartslider3.com\",\"version\":\"3.3.1\",\"description\":\"Smart Slider 3 updater plugin\",\"group\":\"\",\"filename\":\"smartslider3\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
-(10227, 0, 'jd_boston', 'template', 'jd_boston', '', 0, 1, 1, 0, '{\"name\":\"jd_boston\",\"type\":\"template\",\"creationDate\":\"Oct 2016\",\"author\":\"Joomdev.com\",\"copyright\":\"Copyright (C) 2008 - 2018 Joomdev.com. All rights reserved.\",\"authorEmail\":\"support@joomdev.com\",\"authorUrl\":\"https:\\/\\/www.joomdev.com\\/\",\"version\":\"2.2\",\"description\":\"JD Boston Template\",\"group\":\"\",\"filename\":\"templateDetails\"}', '{\"preloader\":\"0\",\"preloader_animation\":\"circle\",\"preloader_bg\":\"#f5f5f5\",\"preloader_tx\":\"#333333\",\"goto_top\":\"0\",\"sticky_header\":\"1\",\"boxed_layout\":\"0\",\"logo_type\":\"image\",\"logo_position\":\"logo\",\"logo_load_pos\":\"default\",\"body_bg_repeat\":\"inherit\",\"body_bg_size\":\"inherit\",\"body_bg_attachment\":\"inherit\",\"body_bg_position\":\"0 0\",\"enabled_copyright\":\"1\",\"copyright_position\":\"footer1\",\"copyright_load_pos\":\"default\",\"copyright\":\"\\u00a9 2015 Your Company. All Rights Reserved. Designed By JoomShaper\",\"show_social_icons\":\"1\",\"social_position\":\"top1\",\"social_load_pos\":\"default\",\"enable_contactinfo\":\"1\",\"contact_position\":\"top2\",\"comingsoon_mode\":\"0\",\"comingsoon_title\":\"Coming Soon Title\",\"comingsoon_date\":\"5-10-2018\",\"comingsoon_content\":\"Coming soon content\",\"preset\":\"preset1\",\"preset1_bg\":\"#ffffff\",\"preset1_text\":\"#000000\",\"preset1_major\":\"#26aae1\",\"preset1_megabg\":\"#ffffff\",\"preset1_megatx\":\"#333333\",\"preset2_bg\":\"#ffffff\",\"preset2_text\":\"#000000\",\"preset2_major\":\"#3d449a\",\"preset2_megabg\":\"#ffffff\",\"preset2_megatx\":\"#333333\",\"preset3_bg\":\"#ffffff\",\"preset3_text\":\"#000000\",\"preset3_major\":\"#2bb673\",\"preset3_megabg\":\"#ffffff\",\"preset3_megatx\":\"#333333\",\"preset4_bg\":\"#ffffff\",\"preset4_text\":\"#000000\",\"preset4_major\":\"#eb4947\",\"preset4_megabg\":\"#ffffff\",\"preset4_megatx\":\"#333333\",\"menu\":\"mainmenu\",\"menu_type\":\"mega_offcanvas\",\"menu_animation\":\"menu-fade\",\"offcanvas_animation\":\"default\",\"enable_body_font\":\"1\",\"body_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"300\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h1_font\":\"1\",\"h1_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"800\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h2_font\":\"1\",\"h2_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"600\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h3_font\":\"1\",\"h3_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"regular\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h4_font\":\"1\",\"h4_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"regular\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h5_font\":\"1\",\"h5_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"600\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h6_font\":\"1\",\"h6_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"600\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_navigation_font\":\"0\",\"enable_custom_font\":\"0\",\"compress_css\":\"0\",\"compress_js\":\"0\",\"lessoption\":\"0\",\"show_post_format\":\"1\",\"commenting_engine\":\"disabled\",\"disqus_devmode\":\"0\",\"intensedebate_acc\":\"\",\"fb_width\":\"500\",\"fb_cpp\":\"10\",\"comments_count\":\"0\",\"social_share\":\"1\",\"image_small\":\"0\",\"image_small_size\":\"100X100\",\"image_thumbnail\":\"1\",\"image_thumbnail_size\":\"200X200\",\"image_medium\":\"0\",\"image_medium_size\":\"300X300\",\"image_large\":\"0\",\"image_large_size\":\"600X600\",\"blog_list_image\":\"default\"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+(10227, 0, 'jd_boston', 'template', 'jd_boston', '', 0, 1, 1, 0, '{\"name\":\"jd_boston\",\"type\":\"template\",\"creationDate\":\"Oct 2016\",\"author\":\"Joomdev.com\",\"copyright\":\"Copyright (C) 2008 - 2018 Joomdev.com. All rights reserved.\",\"authorEmail\":\"support@joomdev.com\",\"authorUrl\":\"https:\\/\\/www.joomdev.com\\/\",\"version\":\"2.3\",\"description\":\"JD Boston Template\",\"group\":\"\",\"filename\":\"templateDetails\"}', '{\"preloader\":\"0\",\"preloader_animation\":\"circle\",\"preloader_bg\":\"#f5f5f5\",\"preloader_tx\":\"#333333\",\"goto_top\":\"0\",\"sticky_header\":\"1\",\"boxed_layout\":\"0\",\"logo_type\":\"image\",\"logo_position\":\"logo\",\"logo_load_pos\":\"default\",\"body_bg_repeat\":\"inherit\",\"body_bg_size\":\"inherit\",\"body_bg_attachment\":\"inherit\",\"body_bg_position\":\"0 0\",\"enabled_copyright\":\"1\",\"copyright_position\":\"footer1\",\"copyright_load_pos\":\"default\",\"copyright\":\"\\u00a9 2015 Your Company. All Rights Reserved. Designed By JoomShaper\",\"show_social_icons\":\"1\",\"social_position\":\"top1\",\"social_load_pos\":\"default\",\"enable_contactinfo\":\"1\",\"contact_position\":\"top2\",\"comingsoon_mode\":\"0\",\"comingsoon_title\":\"Coming Soon Title\",\"comingsoon_date\":\"5-10-2018\",\"comingsoon_content\":\"Coming soon content\",\"preset\":\"preset1\",\"preset1_bg\":\"#ffffff\",\"preset1_text\":\"#000000\",\"preset1_major\":\"#26aae1\",\"preset1_megabg\":\"#ffffff\",\"preset1_megatx\":\"#333333\",\"preset2_bg\":\"#ffffff\",\"preset2_text\":\"#000000\",\"preset2_major\":\"#3d449a\",\"preset2_megabg\":\"#ffffff\",\"preset2_megatx\":\"#333333\",\"preset3_bg\":\"#ffffff\",\"preset3_text\":\"#000000\",\"preset3_major\":\"#2bb673\",\"preset3_megabg\":\"#ffffff\",\"preset3_megatx\":\"#333333\",\"preset4_bg\":\"#ffffff\",\"preset4_text\":\"#000000\",\"preset4_major\":\"#eb4947\",\"preset4_megabg\":\"#ffffff\",\"preset4_megatx\":\"#333333\",\"menu\":\"mainmenu\",\"menu_type\":\"mega_offcanvas\",\"menu_animation\":\"menu-fade\",\"offcanvas_animation\":\"default\",\"enable_body_font\":\"1\",\"body_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"300\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h1_font\":\"1\",\"h1_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"800\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h2_font\":\"1\",\"h2_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"600\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h3_font\":\"1\",\"h3_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"regular\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h4_font\":\"1\",\"h4_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"regular\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h5_font\":\"1\",\"h5_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"600\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_h6_font\":\"1\",\"h6_font\":\"{\\\"fontFamily\\\":\\\"Open Sans\\\",\\\"fontWeight\\\":\\\"600\\\",\\\"fontSubset\\\":\\\"latin\\\",\\\"fontSize\\\":\\\"\\\"}\",\"enable_navigation_font\":\"0\",\"enable_custom_font\":\"0\",\"compress_css\":\"0\",\"compress_js\":\"0\",\"lessoption\":\"0\",\"show_post_format\":\"1\",\"commenting_engine\":\"disabled\",\"disqus_devmode\":\"0\",\"intensedebate_acc\":\"\",\"fb_width\":\"500\",\"fb_cpp\":\"10\",\"comments_count\":\"0\",\"social_share\":\"1\",\"image_small\":\"0\",\"image_small_size\":\"100X100\",\"image_thumbnail\":\"1\",\"image_thumbnail_size\":\"200X200\",\"image_medium\":\"0\",\"image_medium_size\":\"300X300\",\"image_large\":\"0\",\"image_large_size\":\"600X600\",\"blog_list_image\":\"default\"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
 (10232, 10216, 'CEGCore2', 'library', 'cegcore2', '', 0, 1, 1, 0, '{\"name\":\"CEGCore2\",\"type\":\"library\",\"creationDate\":\"2017\",\"author\":\"ChronoEngine.com\",\"copyright\":\"Copyright (C) 2017\",\"authorEmail\":\"webmaster@chronoengine.com\",\"authorUrl\":\"www.chronoengine.com\",\"version\":\"2.0.9\",\"description\":\"The G2 framework classes!\",\"group\":\"\",\"filename\":\"cegcore2\"}', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0);
 
 -- --------------------------------------------------------
@@ -1888,6 +1928,7 @@ INSERT INTO `#__extensions` (`extension_id`, `package_id`, `name`, `type`, `elem
 -- Table structure for table `#__fields`
 --
 
+DROP TABLE IF EXISTS `#__fields`;
 CREATE TABLE IF NOT EXISTS `#__fields` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `asset_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -1933,6 +1974,7 @@ TRUNCATE TABLE `#__fields`;
 -- Table structure for table `#__fields_categories`
 --
 
+DROP TABLE IF EXISTS `#__fields_categories`;
 CREATE TABLE IF NOT EXISTS `#__fields_categories` (
   `field_id` int(11) NOT NULL DEFAULT '0',
   `category_id` int(11) NOT NULL DEFAULT '0',
@@ -1950,6 +1992,7 @@ TRUNCATE TABLE `#__fields_categories`;
 -- Table structure for table `#__fields_groups`
 --
 
+DROP TABLE IF EXISTS `#__fields_groups`;
 CREATE TABLE IF NOT EXISTS `#__fields_groups` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `asset_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -1988,6 +2031,7 @@ TRUNCATE TABLE `#__fields_groups`;
 -- Table structure for table `#__fields_values`
 --
 
+DROP TABLE IF EXISTS `#__fields_values`;
 CREATE TABLE IF NOT EXISTS `#__fields_values` (
   `field_id` int(10) UNSIGNED NOT NULL,
   `item_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Allow references to items which have strings as ids, eg. none db systems.',
@@ -2007,6 +2051,7 @@ TRUNCATE TABLE `#__fields_values`;
 -- Table structure for table `#__finder_filters`
 --
 
+DROP TABLE IF EXISTS `#__finder_filters`;
 CREATE TABLE IF NOT EXISTS `#__finder_filters` (
   `filter_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -2036,6 +2081,7 @@ TRUNCATE TABLE `#__finder_filters`;
 -- Table structure for table `#__finder_links`
 --
 
+DROP TABLE IF EXISTS `#__finder_links`;
 CREATE TABLE IF NOT EXISTS `#__finder_links` (
   `link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `url` varchar(255) NOT NULL,
@@ -2076,6 +2122,7 @@ TRUNCATE TABLE `#__finder_links`;
 -- Table structure for table `#__finder_links_terms0`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_terms0`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_terms0` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2096,6 +2143,7 @@ TRUNCATE TABLE `#__finder_links_terms0`;
 -- Table structure for table `#__finder_links_terms1`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_terms1`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_terms1` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2116,6 +2164,7 @@ TRUNCATE TABLE `#__finder_links_terms1`;
 -- Table structure for table `#__finder_links_terms2`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_terms2`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_terms2` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2136,6 +2185,7 @@ TRUNCATE TABLE `#__finder_links_terms2`;
 -- Table structure for table `#__finder_links_terms3`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_terms3`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_terms3` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2156,6 +2206,7 @@ TRUNCATE TABLE `#__finder_links_terms3`;
 -- Table structure for table `#__finder_links_terms4`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_terms4`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_terms4` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2176,6 +2227,7 @@ TRUNCATE TABLE `#__finder_links_terms4`;
 -- Table structure for table `#__finder_links_terms5`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_terms5`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_terms5` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2196,6 +2248,7 @@ TRUNCATE TABLE `#__finder_links_terms5`;
 -- Table structure for table `#__finder_links_terms6`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_terms6`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_terms6` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2216,6 +2269,7 @@ TRUNCATE TABLE `#__finder_links_terms6`;
 -- Table structure for table `#__finder_links_terms7`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_terms7`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_terms7` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2236,6 +2290,7 @@ TRUNCATE TABLE `#__finder_links_terms7`;
 -- Table structure for table `#__finder_links_terms8`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_terms8`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_terms8` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2256,6 +2311,7 @@ TRUNCATE TABLE `#__finder_links_terms8`;
 -- Table structure for table `#__finder_links_terms9`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_terms9`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_terms9` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2276,6 +2332,7 @@ TRUNCATE TABLE `#__finder_links_terms9`;
 -- Table structure for table `#__finder_links_termsa`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_termsa`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_termsa` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2296,6 +2353,7 @@ TRUNCATE TABLE `#__finder_links_termsa`;
 -- Table structure for table `#__finder_links_termsb`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_termsb`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_termsb` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2316,6 +2374,7 @@ TRUNCATE TABLE `#__finder_links_termsb`;
 -- Table structure for table `#__finder_links_termsc`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_termsc`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_termsc` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2336,6 +2395,7 @@ TRUNCATE TABLE `#__finder_links_termsc`;
 -- Table structure for table `#__finder_links_termsd`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_termsd`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_termsd` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2356,6 +2416,7 @@ TRUNCATE TABLE `#__finder_links_termsd`;
 -- Table structure for table `#__finder_links_termse`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_termse`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_termse` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2376,6 +2437,7 @@ TRUNCATE TABLE `#__finder_links_termse`;
 -- Table structure for table `#__finder_links_termsf`
 --
 
+DROP TABLE IF EXISTS `#__finder_links_termsf`;
 CREATE TABLE IF NOT EXISTS `#__finder_links_termsf` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `term_id` int(10) UNSIGNED NOT NULL,
@@ -2396,6 +2458,7 @@ TRUNCATE TABLE `#__finder_links_termsf`;
 -- Table structure for table `#__finder_taxonomy`
 --
 
+DROP TABLE IF EXISTS `#__finder_taxonomy`;
 CREATE TABLE IF NOT EXISTS `#__finder_taxonomy` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `parent_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -2422,6 +2485,7 @@ TRUNCATE TABLE `#__finder_taxonomy`;
 -- Table structure for table `#__finder_taxonomy_map`
 --
 
+DROP TABLE IF EXISTS `#__finder_taxonomy_map`;
 CREATE TABLE IF NOT EXISTS `#__finder_taxonomy_map` (
   `link_id` int(10) UNSIGNED NOT NULL,
   `node_id` int(10) UNSIGNED NOT NULL,
@@ -2441,6 +2505,7 @@ TRUNCATE TABLE `#__finder_taxonomy_map`;
 -- Table structure for table `#__finder_terms`
 --
 
+DROP TABLE IF EXISTS `#__finder_terms`;
 CREATE TABLE IF NOT EXISTS `#__finder_terms` (
   `term_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `term` varchar(75) NOT NULL,
@@ -2469,6 +2534,7 @@ TRUNCATE TABLE `#__finder_terms`;
 -- Table structure for table `#__finder_terms_common`
 --
 
+DROP TABLE IF EXISTS `#__finder_terms_common`;
 CREATE TABLE IF NOT EXISTS `#__finder_terms_common` (
   `term` varchar(75) NOT NULL,
   `language` varchar(3) NOT NULL,
@@ -2608,6 +2674,7 @@ INSERT INTO `#__finder_terms_common` (`term`, `language`) VALUES
 -- Table structure for table `#__finder_tokens`
 --
 
+DROP TABLE IF EXISTS `#__finder_tokens`;
 CREATE TABLE IF NOT EXISTS `#__finder_tokens` (
   `term` varchar(75) NOT NULL,
   `stem` varchar(75) NOT NULL,
@@ -2631,6 +2698,7 @@ TRUNCATE TABLE `#__finder_tokens`;
 -- Table structure for table `#__finder_tokens_aggregate`
 --
 
+DROP TABLE IF EXISTS `#__finder_tokens_aggregate`;
 CREATE TABLE IF NOT EXISTS `#__finder_tokens_aggregate` (
   `term_id` int(10) UNSIGNED NOT NULL,
   `map_suffix` char(1) NOT NULL,
@@ -2658,6 +2726,7 @@ TRUNCATE TABLE `#__finder_tokens_aggregate`;
 -- Table structure for table `#__finder_types`
 --
 
+DROP TABLE IF EXISTS `#__finder_types`;
 CREATE TABLE IF NOT EXISTS `#__finder_types` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
@@ -2688,6 +2757,7 @@ INSERT INTO `#__finder_types` (`id`, `title`, `mime`) VALUES
 -- Table structure for table `#__jd_team_members`
 --
 
+DROP TABLE IF EXISTS `#__jd_team_members`;
 CREATE TABLE IF NOT EXISTS `#__jd_team_members` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `ordering` int(11) NOT NULL,
@@ -2746,6 +2816,7 @@ INSERT INTO `#__jd_team_members` (`id`, `ordering`, `state`, `checked_out`, `che
 -- Table structure for table `#__k2_attachments`
 --
 
+DROP TABLE IF EXISTS `#__k2_attachments`;
 CREATE TABLE IF NOT EXISTS `#__k2_attachments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `itemID` int(11) NOT NULL,
@@ -2768,6 +2839,7 @@ TRUNCATE TABLE `#__k2_attachments`;
 -- Table structure for table `#__k2_categories`
 --
 
+DROP TABLE IF EXISTS `#__k2_categories`;
 CREATE TABLE IF NOT EXISTS `#__k2_categories` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -2817,6 +2889,7 @@ INSERT INTO `#__k2_categories` (`id`, `name`, `alias`, `description`, `parent`, 
 -- Table structure for table `#__k2_comments`
 --
 
+DROP TABLE IF EXISTS `#__k2_comments`;
 CREATE TABLE IF NOT EXISTS `#__k2_comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `itemID` int(11) NOT NULL,
@@ -2846,6 +2919,7 @@ TRUNCATE TABLE `#__k2_comments`;
 -- Table structure for table `#__k2_extra_fields`
 --
 
+DROP TABLE IF EXISTS `#__k2_extra_fields`;
 CREATE TABLE IF NOT EXISTS `#__k2_extra_fields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -2871,6 +2945,7 @@ TRUNCATE TABLE `#__k2_extra_fields`;
 -- Table structure for table `#__k2_extra_fields_groups`
 --
 
+DROP TABLE IF EXISTS `#__k2_extra_fields_groups`;
 CREATE TABLE IF NOT EXISTS `#__k2_extra_fields_groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -2888,6 +2963,7 @@ TRUNCATE TABLE `#__k2_extra_fields_groups`;
 -- Table structure for table `#__k2_items`
 --
 
+DROP TABLE IF EXISTS `#__k2_items`;
 CREATE TABLE IF NOT EXISTS `#__k2_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -3005,6 +3081,7 @@ INSERT INTO `#__k2_items` (`id`, `title`, `alias`, `catid`, `published`, `introt
 -- Table structure for table `#__k2_log`
 --
 
+DROP TABLE IF EXISTS `#__k2_log`;
 CREATE TABLE IF NOT EXISTS `#__k2_log` (
   `status` int(11) NOT NULL,
   `response` text NOT NULL,
@@ -3029,6 +3106,7 @@ INSERT INTO `#__k2_log` (`status`, `response`, `timestamp`) VALUES
 -- Table structure for table `#__k2_rating`
 --
 
+DROP TABLE IF EXISTS `#__k2_rating`;
 CREATE TABLE IF NOT EXISTS `#__k2_rating` (
   `itemID` int(11) NOT NULL DEFAULT '0',
   `rating_sum` int(11) UNSIGNED NOT NULL DEFAULT '0',
@@ -3060,6 +3138,7 @@ INSERT INTO `#__k2_rating` (`itemID`, `rating_sum`, `rating_count`, `lastip`) VA
 -- Table structure for table `#__k2_tags`
 --
 
+DROP TABLE IF EXISTS `#__k2_tags`;
 CREATE TABLE IF NOT EXISTS `#__k2_tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -3092,6 +3171,7 @@ INSERT INTO `#__k2_tags` (`id`, `name`, `published`) VALUES
 -- Table structure for table `#__k2_tags_xref`
 --
 
+DROP TABLE IF EXISTS `#__k2_tags_xref`;
 CREATE TABLE IF NOT EXISTS `#__k2_tags_xref` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tagID` int(11) NOT NULL,
@@ -3144,6 +3224,7 @@ INSERT INTO `#__k2_tags_xref` (`id`, `tagID`, `itemID`) VALUES
 -- Table structure for table `#__k2_users`
 --
 
+DROP TABLE IF EXISTS `#__k2_users`;
 CREATE TABLE IF NOT EXISTS `#__k2_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userID` int(11) NOT NULL,
@@ -3160,7 +3241,7 @@ CREATE TABLE IF NOT EXISTS `#__k2_users` (
   PRIMARY KEY (`id`),
   KEY `userID` (`userID`),
   KEY `group` (`group`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Truncate table before insert `#__k2_users`
@@ -3172,7 +3253,8 @@ TRUNCATE TABLE `#__k2_users`;
 --
 
 INSERT INTO `#__k2_users` (`id`, `userID`, `userName`, `gender`, `description`, `image`, `url`, `group`, `plugins`, `ip`, `hostname`, `notes`) VALUES
-(1, 45, 'Jones', 'm', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nos exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.', '1.jpg', '', 1, '', '127.0.0.1', 'joomdev-PC', '');
+(1, 45, 'Jones', 'm', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nos exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.', '1.jpg', '', 1, '', '127.0.0.1', 'joomdev-PC', ''),
+(2, 872, 'Super User', 'm', '', NULL, NULL, 1, '', '127.0.0.1', 'chandan-PC', '');
 
 -- --------------------------------------------------------
 
@@ -3180,6 +3262,7 @@ INSERT INTO `#__k2_users` (`id`, `userID`, `userName`, `gender`, `description`, 
 -- Table structure for table `#__k2_user_groups`
 --
 
+DROP TABLE IF EXISTS `#__k2_user_groups`;
 CREATE TABLE IF NOT EXISTS `#__k2_user_groups` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -3206,6 +3289,7 @@ INSERT INTO `#__k2_user_groups` (`id`, `name`, `permissions`) VALUES
 -- Table structure for table `#__languages`
 --
 
+DROP TABLE IF EXISTS `#__languages`;
 CREATE TABLE IF NOT EXISTS `#__languages` (
   `lang_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `asset_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -3246,6 +3330,7 @@ INSERT INTO `#__languages` (`lang_id`, `asset_id`, `lang_code`, `title`, `title_
 -- Table structure for table `#__menu`
 --
 
+DROP TABLE IF EXISTS `#__menu`;
 CREATE TABLE IF NOT EXISTS `#__menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `menutype` varchar(24) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'The type of menu this item belongs to. FK to #__menu_types.menutype',
@@ -3279,7 +3364,7 @@ CREATE TABLE IF NOT EXISTS `#__menu` (
   KEY `idx_alias` (`alias`(100)),
   KEY `idx_path` (`path`(100)),
   KEY `idx_language` (`language`)
-) ENGINE=InnoDB AUTO_INCREMENT=332 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=341 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Truncate table before insert `#__menu`
@@ -3368,31 +3453,31 @@ INSERT INTO `#__menu` (`id`, `menutype`, `title`, `alias`, `note`, `path`, `link
 (275, 'mainmenu', 'Box Layout', 'box-layout', '', 'home/box-layout', 'index.php?option=com_content&view=featured', 'component', 1, 101, 2, 22, 0, '0000-00-00 00:00:00', 0, 1, ' ', 14, '{\"featured_categories\":[\"\"],\"layout_type\":\"blog\",\"num_leading_articles\":\"\",\"num_intro_articles\":\"\",\"num_columns\":\"\",\"num_links\":\"\",\"multi_column_order\":\"\",\"orderby_pri\":\"\",\"orderby_sec\":\"\",\"order_date\":\"\",\"show_pagination\":\"\",\"show_pagination_results\":\"\",\"show_title\":\"\",\"link_titles\":\"\",\"show_intro\":\"\",\"info_block_position\":\"\",\"info_block_show_title\":\"\",\"show_category\":\"\",\"link_category\":\"\",\"show_parent_category\":\"\",\"link_parent_category\":\"\",\"show_associations\":\"\",\"show_author\":\"\",\"link_author\":\"\",\"show_create_date\":\"\",\"show_modify_date\":\"\",\"show_publish_date\":\"\",\"show_item_navigation\":\"\",\"show_vote\":\"\",\"show_readmore\":\"\",\"show_readmore_title\":\"\",\"show_icons\":\"\",\"show_print_icon\":\"\",\"show_email_icon\":\"\",\"show_hits\":\"\",\"show_tags\":\"\",\"show_noauth\":\"\",\"show_feed_link\":\"\",\"feed_summary\":\"\",\"menu-anchor_title\":\"\",\"menu-anchor_css\":\"\",\"menu_image\":\"\",\"menu_image_css\":\"\",\"menu_text\":1,\"menu_show\":1,\"page_title\":\"\",\"show_page_heading\":\"\",\"page_heading\":\"\",\"pageclass_sfx\":\" hide-body-padding\",\"menu-meta_description\":\"\",\"menu-meta_keywords\":\"\",\"robots\":\"\",\"secure\":0,\"dropdown_position\":\"right\",\"showmenutitle\":\"1\",\"icon\":\"\",\"class\":\"\",\"enable_page_title\":\"0\",\"page_title_alt\":\"\",\"page_subtitle\":\"\",\"page_title_bg_color\":\"\",\"page_title_bg_image\":\"\"}', 4, 5, 0, '*', 0),
 (276, 'mainmenu', 'Full Width', 'full-width', '', 'home/full-width', 'index.php?Itemid=', 'alias', 1, 101, 2, 0, 0, '0000-00-00 00:00:00', 0, 1, ' ', 0, '{\"aliasoptions\":\"101\",\"menu-anchor_title\":\"\",\"menu-anchor_css\":\"\",\"menu_image\":\"\",\"menu_image_css\":\"\",\"menu_text\":1,\"menu_show\":1,\"dropdown_position\":\"right\",\"showmenutitle\":\"1\",\"icon\":\"\",\"class\":\"\",\"enable_page_title\":\"0\",\"page_title_alt\":\"\",\"page_subtitle\":\"\",\"page_title_bg_color\":\"\",\"page_title_bg_image\":\"\"}', 2, 3, 0, '*', 0),
 (292, 'main', 'COM_SPSIMPLEPORTFOLIO', 'com-spsimpleportfolio', '', 'com-spsimpleportfolio', 'index.php?option=com_spsimpleportfolio', 'component', 1, 1, 1, 10211, 0, '0000-00-00 00:00:00', 0, 1, 'class:component', 0, '{}', 149, 150, 0, '', 1),
-(305, 'main', 'AcyMailing', 'acymailing', '', 'acymailing', 'index.php?option=com_acymailing', 'component', 1, 1, 1, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-acymailing.png', 0, '{}', 151, 166, 0, '', 1),
-(306, 'main', 'Users', 'users', '', 'acymailing/users', 'index.php?option=com_acymailing&ctrl=subscriber', 'component', 1, 305, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-users.png', 0, '{}', 152, 153, 0, '', 1),
-(307, 'main', 'Lists', 'lists', '', 'acymailing/lists', 'index.php?option=com_acymailing&ctrl=list', 'component', 1, 305, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-acylist.png', 0, '{}', 154, 155, 0, '', 1),
-(308, 'main', 'Newsletters', 'newsletters', '', 'acymailing/newsletters', 'index.php?option=com_acymailing&ctrl=newsletter', 'component', 1, 305, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-newsletter.png', 0, '{}', 156, 157, 0, '', 1),
-(309, 'main', 'Templates', 'templates', '', 'acymailing/templates', 'index.php?option=com_acymailing&ctrl=template', 'component', 1, 305, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-acytemplate.png', 0, '{}', 158, 159, 0, '', 1),
-(310, 'main', 'Queue', 'queue', '', 'acymailing/queue', 'index.php?option=com_acymailing&ctrl=queue', 'component', 1, 305, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-process.png', 0, '{}', 160, 161, 0, '', 1),
-(311, 'main', 'Statistics', 'statistics', '', 'acymailing/statistics', 'index.php?option=com_acymailing&ctrl=stats', 'component', 1, 305, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-stats.png', 0, '{}', 162, 163, 0, '', 1),
-(312, 'main', 'Configuration', 'configuration', '', 'acymailing/configuration', 'index.php?option=com_acymailing&ctrl=cpanel', 'component', 1, 305, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-acyconfig.png', 0, '{}', 164, 165, 0, '', 1),
-(313, 'main', 'COM_CHRONOFORMS6', 'com-chronoforms6', '', 'com-chronoforms6', 'index.php?option=com_chronoforms6', 'component', 1, 1, 1, 10215, 0, '0000-00-00 00:00:00', 0, 1, 'class:component', 0, '{}', 167, 172, 0, '', 1),
-(314, 'main', 'COM_CHRONOFORMS6', 'com-chronoforms6', '', 'com-chronoforms6/com-chronoforms6', 'index.php?option=com_chronoforms6', 'component', 1, 313, 2, 10215, 0, '0000-00-00 00:00:00', 0, 1, 'class:component', 0, '{}', 168, 169, 0, '', 1),
-(315, 'main', 'COM_CHRONOFORMS6_VALIDATE', 'com-chronoforms6-validate', '', 'com-chronoforms6/com-chronoforms6-validate', 'index.php?option=com_chronoforms6&act=validateinstall', 'component', 1, 313, 2, 10215, 0, '0000-00-00 00:00:00', 0, 1, 'class:component', 0, '{}', 170, 171, 0, '', 1),
-(317, 'main', 'COM_VIRTUEMART', 'com-virtuemart', '', 'com-virtuemart', 'index.php?option=com_virtuemart', 'component', 1, 1, 1, 10056, 0, '0000-00-00 00:00:00', 0, 1, '../components/com_virtuemart/assets/images/vmgeneral/menu_icon.png', 0, '{}', 173, 198, 0, '', 1),
-(318, 'main', 'COM_VIRTUEMART_CONTROL_PANEL', 'com-virtuemart-control-panel', '', 'com-virtuemart/com-virtuemart-control-panel', 'index.php?option=com_virtuemart&view=virtuemart', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-report.png', 0, '{}', 174, 175, 0, '', 1),
-(319, 'main', 'COM_VIRTUEMART_MENU_CATEGORIES', 'com-virtuemart-menu-categories', '', 'com-virtuemart/com-virtuemart-menu-categories', 'index.php?option=com_virtuemart&view=category', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-categories.png', 0, '{}', 176, 177, 0, '', 1),
-(320, 'main', 'COM_VIRTUEMART_MENU_PRODUCTS', 'com-virtuemart-menu-products', '', 'com-virtuemart/com-virtuemart-menu-products', 'index.php?option=com_virtuemart&view=product', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-products.png', 0, '{}', 178, 179, 0, '', 1),
-(321, 'main', 'COM_VIRTUEMART_MENU_ORDERS', 'com-virtuemart-menu-orders', '', 'com-virtuemart/com-virtuemart-menu-orders', 'index.php?option=com_virtuemart&view=orders', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-orders.png', 0, '{}', 180, 181, 0, '', 1),
-(322, 'main', 'COM_VIRTUEMART_MENU_REPORT', 'com-virtuemart-menu-report', '', 'com-virtuemart/com-virtuemart-menu-report', 'index.php?option=com_virtuemart&view=report', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-report.png', 0, '{}', 182, 183, 0, '', 1),
-(323, 'main', 'COM_VIRTUEMART_MENU_USERS', 'com-virtuemart-menu-users', '', 'com-virtuemart/com-virtuemart-menu-users', 'index.php?option=com_virtuemart&view=user', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-shoppers.png', 0, '{}', 184, 185, 0, '', 1),
-(324, 'main', 'COM_VIRTUEMART_MENU_MANUFACTURERS', 'com-virtuemart-menu-manufacturers', '', 'com-virtuemart/com-virtuemart-menu-manufacturers', 'index.php?option=com_virtuemart&view=manufacturer', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-manufacturers.png', 0, '{}', 186, 187, 0, '', 1),
-(325, 'main', 'COM_VIRTUEMART_MENU_STORE', 'com-virtuemart-menu-store', '', 'com-virtuemart/com-virtuemart-menu-store', 'index.php?option=com_virtuemart&view=user&task=editshop', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-shop.png', 0, '{}', 188, 189, 0, '', 1),
-(326, 'main', 'COM_VIRTUEMART_MENU_MEDIAFILES', 'com-virtuemart-menu-mediafiles', '', 'com-virtuemart/com-virtuemart-menu-mediafiles', 'index.php?option=com_virtuemart&view=media', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-media.png', 0, '{}', 190, 191, 0, '', 1),
-(327, 'main', 'COM_VIRTUEMART_MENU_SHIPMENTMETHODS', 'com-virtuemart-menu-shipmentmethods', '', 'com-virtuemart/com-virtuemart-menu-shipmentmethods', 'index.php?option=com_virtuemart&view=shipmentmethod', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-shipmentmethods.png', 0, '{}', 192, 193, 0, '', 1),
-(328, 'main', 'COM_VIRTUEMART_MENU_PAYMENTMETHODS', 'com-virtuemart-menu-paymentmethods', '', 'com-virtuemart/com-virtuemart-menu-paymentmethods', 'index.php?option=com_virtuemart&view=paymentmethod', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-paymentmethods.png', 0, '{}', 194, 195, 0, '', 1),
-(329, 'main', 'COM_VIRTUEMART_MENU_CONFIGURATION', 'com-virtuemart-menu-configuration', '', 'com-virtuemart/com-virtuemart-menu-configuration', 'index.php?option=com_virtuemart&view=config', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-config.png', 0, '{}', 196, 197, 0, '', 1),
-(331, 'main', 'COM_SMARTSLIDER3', 'com-smartslider3', '', 'com-smartslider3', 'index.php?option=com_smartslider3', 'component', 1, 1, 1, 10030, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_smartslider3/icon16.png', 0, '{}', 199, 200, 0, '', 1);
+(313, 'main', 'COM_CHRONOFORMS6', 'com-chronoforms6', '', 'com-chronoforms6', 'index.php?option=com_chronoforms6', 'component', 1, 1, 1, 10215, 0, '0000-00-00 00:00:00', 0, 1, 'class:component', 0, '{}', 151, 156, 0, '', 1),
+(314, 'main', 'COM_CHRONOFORMS6', 'com-chronoforms6', '', 'com-chronoforms6/com-chronoforms6', 'index.php?option=com_chronoforms6', 'component', 1, 313, 2, 10215, 0, '0000-00-00 00:00:00', 0, 1, 'class:component', 0, '{}', 152, 153, 0, '', 1),
+(315, 'main', 'COM_CHRONOFORMS6_VALIDATE', 'com-chronoforms6-validate', '', 'com-chronoforms6/com-chronoforms6-validate', 'index.php?option=com_chronoforms6&act=validateinstall', 'component', 1, 313, 2, 10215, 0, '0000-00-00 00:00:00', 0, 1, 'class:component', 0, '{}', 154, 155, 0, '', 1),
+(317, 'main', 'COM_VIRTUEMART', 'com-virtuemart', '', 'com-virtuemart', 'index.php?option=com_virtuemart', 'component', 1, 1, 1, 10056, 0, '0000-00-00 00:00:00', 0, 1, '../components/com_virtuemart/assets/images/vmgeneral/menu_icon.png', 0, '{}', 157, 182, 0, '', 1),
+(318, 'main', 'COM_VIRTUEMART_CONTROL_PANEL', 'com-virtuemart-control-panel', '', 'com-virtuemart/com-virtuemart-control-panel', 'index.php?option=com_virtuemart&view=virtuemart', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-report.png', 0, '{}', 158, 159, 0, '', 1),
+(319, 'main', 'COM_VIRTUEMART_MENU_CATEGORIES', 'com-virtuemart-menu-categories', '', 'com-virtuemart/com-virtuemart-menu-categories', 'index.php?option=com_virtuemart&view=category', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-categories.png', 0, '{}', 160, 161, 0, '', 1),
+(320, 'main', 'COM_VIRTUEMART_MENU_PRODUCTS', 'com-virtuemart-menu-products', '', 'com-virtuemart/com-virtuemart-menu-products', 'index.php?option=com_virtuemart&view=product', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-products.png', 0, '{}', 162, 163, 0, '', 1),
+(321, 'main', 'COM_VIRTUEMART_MENU_ORDERS', 'com-virtuemart-menu-orders', '', 'com-virtuemart/com-virtuemart-menu-orders', 'index.php?option=com_virtuemart&view=orders', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-orders.png', 0, '{}', 164, 165, 0, '', 1),
+(322, 'main', 'COM_VIRTUEMART_MENU_REPORT', 'com-virtuemart-menu-report', '', 'com-virtuemart/com-virtuemart-menu-report', 'index.php?option=com_virtuemart&view=report', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-report.png', 0, '{}', 166, 167, 0, '', 1),
+(323, 'main', 'COM_VIRTUEMART_MENU_USERS', 'com-virtuemart-menu-users', '', 'com-virtuemart/com-virtuemart-menu-users', 'index.php?option=com_virtuemart&view=user', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-shoppers.png', 0, '{}', 168, 169, 0, '', 1),
+(324, 'main', 'COM_VIRTUEMART_MENU_MANUFACTURERS', 'com-virtuemart-menu-manufacturers', '', 'com-virtuemart/com-virtuemart-menu-manufacturers', 'index.php?option=com_virtuemart&view=manufacturer', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-manufacturers.png', 0, '{}', 170, 171, 0, '', 1),
+(325, 'main', 'COM_VIRTUEMART_MENU_STORE', 'com-virtuemart-menu-store', '', 'com-virtuemart/com-virtuemart-menu-store', 'index.php?option=com_virtuemart&view=user&task=editshop', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-shop.png', 0, '{}', 172, 173, 0, '', 1),
+(326, 'main', 'COM_VIRTUEMART_MENU_MEDIAFILES', 'com-virtuemart-menu-mediafiles', '', 'com-virtuemart/com-virtuemart-menu-mediafiles', 'index.php?option=com_virtuemart&view=media', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-media.png', 0, '{}', 174, 175, 0, '', 1),
+(327, 'main', 'COM_VIRTUEMART_MENU_SHIPMENTMETHODS', 'com-virtuemart-menu-shipmentmethods', '', 'com-virtuemart/com-virtuemart-menu-shipmentmethods', 'index.php?option=com_virtuemart&view=shipmentmethod', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-shipmentmethods.png', 0, '{}', 176, 177, 0, '', 1),
+(328, 'main', 'COM_VIRTUEMART_MENU_PAYMENTMETHODS', 'com-virtuemart-menu-paymentmethods', '', 'com-virtuemart/com-virtuemart-menu-paymentmethods', 'index.php?option=com_virtuemart&view=paymentmethod', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-paymentmethods.png', 0, '{}', 178, 179, 0, '', 1),
+(329, 'main', 'COM_VIRTUEMART_MENU_CONFIGURATION', 'com-virtuemart-menu-configuration', '', 'com-virtuemart/com-virtuemart-menu-configuration', 'index.php?option=com_virtuemart&view=config', 'component', 1, 317, 2, 10056, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_virtuemart/assets/images/icon_16/menu-icon16-config.png', 0, '{}', 180, 181, 0, '', 1),
+(332, 'main', 'AcyMailing', 'acymailing', '', 'acymailing', 'index.php?option=com_acymailing', 'component', 1, 1, 1, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-acymailing.png', 0, '{}', 183, 198, 0, '', 1),
+(333, 'main', 'Users', 'users', '', 'acymailing/users', 'index.php?option=com_acymailing&ctrl=subscriber', 'component', 1, 332, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-users.png', 0, '{}', 184, 185, 0, '', 1),
+(334, 'main', 'Lists', 'lists', '', 'acymailing/lists', 'index.php?option=com_acymailing&ctrl=list', 'component', 1, 332, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-acylist.png', 0, '{}', 186, 187, 0, '', 1),
+(335, 'main', 'Newsletters', 'newsletters', '', 'acymailing/newsletters', 'index.php?option=com_acymailing&ctrl=newsletter', 'component', 1, 332, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-newsletter.png', 0, '{}', 188, 189, 0, '', 1),
+(336, 'main', 'Templates', 'templates', '', 'acymailing/templates', 'index.php?option=com_acymailing&ctrl=template', 'component', 1, 332, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-acytemplate.png', 0, '{}', 190, 191, 0, '', 1),
+(337, 'main', 'Queue', 'queue', '', 'acymailing/queue', 'index.php?option=com_acymailing&ctrl=queue', 'component', 1, 332, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-process.png', 0, '{}', 192, 193, 0, '', 1),
+(338, 'main', 'Statistics', 'statistics', '', 'acymailing/statistics', 'index.php?option=com_acymailing&ctrl=stats', 'component', 1, 332, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-stats.png', 0, '{}', 194, 195, 0, '', 1),
+(339, 'main', 'Configuration', 'configuration', '', 'acymailing/configuration', 'index.php?option=com_acymailing&ctrl=cpanel', 'component', 1, 332, 2, 10004, 0, '0000-00-00 00:00:00', 0, 1, '../media/com_acymailing/images/icons/icon-16-acyconfig.png', 0, '{}', 196, 197, 0, '', 1),
+(340, 'main', 'COM_SMARTSLIDER3', 'com-smartslider3', '', 'com-smartslider3', 'index.php?option=com_smartslider3', 'component', 1, 1, 1, 10030, 0, '0000-00-00 00:00:00', 0, 1, 'components/com_smartslider3/icon16.png', 0, '{}', 199, 200, 0, '', 1);
 
 -- --------------------------------------------------------
 
@@ -3400,6 +3485,7 @@ INSERT INTO `#__menu` (`id`, `menutype`, `title`, `alias`, `note`, `path`, `link
 -- Table structure for table `#__menu_types`
 --
 
+DROP TABLE IF EXISTS `#__menu_types`;
 CREATE TABLE IF NOT EXISTS `#__menu_types` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `asset_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -3430,6 +3516,7 @@ INSERT INTO `#__menu_types` (`id`, `asset_id`, `menutype`, `title`, `description
 -- Table structure for table `#__messages`
 --
 
+DROP TABLE IF EXISTS `#__messages`;
 CREATE TABLE IF NOT EXISTS `#__messages` (
   `message_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id_from` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -3455,6 +3542,7 @@ TRUNCATE TABLE `#__messages`;
 -- Table structure for table `#__messages_cfg`
 --
 
+DROP TABLE IF EXISTS `#__messages_cfg`;
 CREATE TABLE IF NOT EXISTS `#__messages_cfg` (
   `user_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
   `cfg_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -3473,6 +3561,7 @@ TRUNCATE TABLE `#__messages_cfg`;
 -- Table structure for table `#__modules`
 --
 
+DROP TABLE IF EXISTS `#__modules`;
 CREATE TABLE IF NOT EXISTS `#__modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `asset_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'FK to the #__assets table.',
@@ -3567,6 +3656,7 @@ INSERT INTO `#__modules` (`id`, `asset_id`, `title`, `note`, `content`, `orderin
 -- Table structure for table `#__modules_menu`
 --
 
+DROP TABLE IF EXISTS `#__modules_menu`;
 CREATE TABLE IF NOT EXISTS `#__modules_menu` (
   `moduleid` int(11) NOT NULL DEFAULT '0',
   `menuid` int(11) NOT NULL DEFAULT '0',
@@ -3707,6 +3797,7 @@ INSERT INTO `#__modules_menu` (`moduleid`, `menuid`) VALUES
 -- Table structure for table `#__newsfeeds`
 --
 
+DROP TABLE IF EXISTS `#__newsfeeds`;
 CREATE TABLE IF NOT EXISTS `#__newsfeeds` (
   `catid` int(11) NOT NULL DEFAULT '0',
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -3759,6 +3850,7 @@ TRUNCATE TABLE `#__newsfeeds`;
 -- Table structure for table `#__nextend2_image_storage`
 --
 
+DROP TABLE IF EXISTS `#__nextend2_image_storage`;
 CREATE TABLE IF NOT EXISTS `#__nextend2_image_storage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL,
@@ -3802,6 +3894,7 @@ INSERT INTO `#__nextend2_image_storage` (`id`, `hash`, `image`, `value`) VALUES
 -- Table structure for table `#__nextend2_section_storage`
 --
 
+DROP TABLE IF EXISTS `#__nextend2_section_storage`;
 CREATE TABLE IF NOT EXISTS `#__nextend2_section_storage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `application` varchar(20) NOT NULL,
@@ -3813,7 +3906,7 @@ CREATE TABLE IF NOT EXISTS `#__nextend2_section_storage` (
   PRIMARY KEY (`id`),
   KEY `application` (`application`,`section`,`referencekey`),
   KEY `application_2` (`application`,`section`)
-) ENGINE=InnoDB AUTO_INCREMENT=10042 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10048 DEFAULT CHARSET=utf8;
 
 --
 -- Truncate table before insert `#__nextend2_section_storage`
@@ -3843,11 +3936,11 @@ INSERT INTO `#__nextend2_section_storage` (`id`, `application`, `section`, `refe
 (10035, 'cache', 'notweb/n2-ss-4', 'variations.manifest', '1', 0, 1),
 (10036, 'cache', 'notweb/n2-ss-4', 'slider1.manifest', '{\"hash\":\"\",\"nextCacheRefresh\":1791242495,\"currentPath\":\"87a46db8a0457d1ad7ae4ad40c3e32f4\",\"version\":\"3.3.4\"}', 0, 1),
 (10037, 'cache', 'notweb/n2-ss-4', 'slider1', '{\"html\":\"<style>div#n2-ss-4{width:900px;float:left;margin:0px 0px 0px 0px;}html[dir=\\\"rtl\\\"] div#n2-ss-4{float:right;}div#n2-ss-4 .n2-ss-slider-1{position:relative;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;height:93px;border-style:solid;border-width:0px;border-color:#3e3e3e;border-color:RGBA(62,62,62,1);border-radius:0px;background-clip:padding-box;background-repeat:repeat;background-position:50% 50%;background-size:cover;background-attachment:scroll;}div#n2-ss-4 .n2-ss-slider-background-video-container{position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden;}div#n2-ss-4 .n2-ss-slider-2{position:relative;width:100%;height:100%;}.x-firefox div#n2-ss-4 .n2-ss-slider-2{opacity:0.99999;}div#n2-ss-4 .n2-ss-slider-3{position:relative;width:100%;height:100%;overflow:hidden;outline:1px solid rgba(0,0,0,0);z-index:10;}div#n2-ss-4 .n2-ss-slide-backgrounds,div#n2-ss-4 .n2-ss-slider-3 > .n-particles-js-canvas-el,div#n2-ss-4 .n2-ss-slider-3 > .n2-ss-divider{position:absolute;left:0;top:0;width:100%;height:100%;}div#n2-ss-4 .n2-ss-slide-backgrounds{z-index:10;}div#n2-ss-4 .n2-ss-slider-3 > .n-particles-js-canvas-el{z-index:12;}div#n2-ss-4 .n2-ss-slide-backgrounds > *{overflow:hidden;}div#n2-ss-4 .n2-ss-slide{position:absolute;top:0;left:0;width:100%;height:100%;z-index:20;display:block;-webkit-backface-visibility:hidden;}div#n2-ss-4 .n2-ss-layers-container{position:relative;width:900px;height:93px;}div#n2-ss-4 .n2-ss-parallax-clip > .n2-ss-layers-container{position:absolute;right:0;}div#n2-ss-4 .n2-ss-slide{-webkit-perspective:1500px;perspective:1500px;}div#n2-ss-4 .n2-ss-slide-active{z-index:21;}<\\/style><div class=\\\"n2-ss-margin\\\" style=\\\"margin: 40px 0px 40px 0px;\\\"><div id=\\\"n2-ss-4-align\\\" class=\\\"n2-ss-align\\\"><div class=\\\"n2-padding\\\"><div id=\\\"n2-ss-4\\\" data-creator=\\\"Smart Slider 3\\\" class=\\\"n2-ss-slider n2-ow n2-has-hover n2notransition n2-ss-load-fade \\\" data-minFontSizedesktopPortrait=\\\"4\\\" data-minFontSizedesktopLandscape=\\\"4\\\" data-minFontSizetabletPortrait=\\\"4\\\" data-minFontSizetabletLandscape=\\\"4\\\" data-minFontSizemobilePortrait=\\\"4\\\" data-minFontSizemobileLandscape=\\\"4\\\" style=\\\"font-size: 16px;\\\" data-fontsize=\\\"16\\\">\\r\\n        <div class=\\\"n2-ss-slider-1 n2-ss-swipe-element n2-ow\\\" style=\\\"\\\">\\r\\n                        <div class=\\\"n2-ss-slider-2 n2-ow\\\">\\r\\n                                <div class=\\\"n2-ss-slider-3 n2-ow\\\" style=\\\"\\\">\\r\\n\\r\\n                    <div class=\\\"n2-ss-slide-backgrounds\\\"><\\/div><div data-first=\\\"1\\\" data-slide-duration=\\\"0\\\" data-id=\\\"23\\\" style=\\\"\\\" class=\\\"n2-ss-slide n2-ss-canvas n2-ow  n2-ss-slide-23\\\"><div class=\\\"n2-ss-slide-background n2-ow\\\" data-mode=\\\"fit\\\"><\\/div><div class=\\\"n2-ss-layers-container n2-ow\\\" data-csstextalign=\\\"center\\\" style=\\\"\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-pm=\\\"content\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"content\\\" data-hasbackground=\\\"0\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"1\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-section-main-content n2-ss-layer-content n2-ow\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"center\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-frontend-fullwidth=\\\"1\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-csstextalign=\\\"inherit\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitgutter=\\\"20\\\" data-desktopportraitwrapafter=\\\"0\\\" data-mobileportraitwrapafter=\\\"1\\\" data-mobilelandscapewrapafter=\\\"1\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"row\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-row \\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\"><div class=\\\"n2-ss-layer-row-inner \\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/github.png\\\" id=\\\"n2-ss-4item1\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/google.png\\\" id=\\\"n2-ss-4item2\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/joomla.png\\\" id=\\\"n2-ss-4item3\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/jquery.png\\\" id=\\\"n2-ss-4item4\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/less.png\\\" id=\\\"n2-ss-4item5\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/sass.png\\\" id=\\\"n2-ss-4item6\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><div data-slide-duration=\\\"0\\\" data-id=\\\"25\\\" style=\\\"\\\" class=\\\"n2-ss-slide n2-ss-canvas n2-ow  n2-ss-slide-25\\\"><div class=\\\"n2-ss-slide-background n2-ow\\\" data-mode=\\\"fit\\\"><\\/div><div class=\\\"n2-ss-layers-container n2-ow\\\" data-csstextalign=\\\"center\\\" style=\\\"\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-pm=\\\"content\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"content\\\" data-hasbackground=\\\"0\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"1\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-section-main-content n2-ss-layer-content n2-ow\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"center\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-frontend-fullwidth=\\\"1\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-csstextalign=\\\"inherit\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitgutter=\\\"20\\\" data-desktopportraitwrapafter=\\\"0\\\" data-mobileportraitwrapafter=\\\"1\\\" data-mobilelandscapewrapafter=\\\"1\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"row\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-row \\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\"><div class=\\\"n2-ss-layer-row-inner \\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/jquery.png\\\" id=\\\"n2-ss-4item7\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/less.png\\\" id=\\\"n2-ss-4item8\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/sass.png\\\" id=\\\"n2-ss-4item9\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/github.png\\\" id=\\\"n2-ss-4item10\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/google.png\\\" id=\\\"n2-ss-4item11\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 16.7%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"16.7\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\" n2-ss-img-wrapper n2-ow\\\" style=\\\"overflow:hidden;\\\"><img src=\\\"\\/boston22\\/images\\/client\\/joomla.png\\\" id=\\\"n2-ss-4item12\\\" alt=\\\"Image is not available\\\" style=\\\"display: inline-block; max-width: 100%; width: auto;height: auto;\\\" class=\\\" n2-ow\\\" data-no-lazy=\\\"1\\\" \\/><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div>                <\\/div>\\r\\n            <\\/div>\\r\\n                    <\\/div>\\r\\n        <\\/div><div class=\\\"n2-clear\\\"><\\/div><div id=\\\"n2-ss-4-spinner\\\" style=\\\"display: none;\\\"><div><div class=\\\"n2-ss-spinner-simple-white-container\\\"><div class=\\\"n2-ss-spinner-simple-white\\\"><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><div id=\\\"n2-ss-4-placeholder\\\" style=\\\"position: relative;z-index:2;background-color:RGBA(0,0,0,0);max-height:3000px; background-color:RGBA(255,255,255,0);\\\"><img style=\\\"width: 100%; max-width:3000px; display: block;opacity:0;\\\" class=\\\"n2-ow\\\" src=\\\"data:image\\/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMCIgd2lkdGg9IjkwMCIgaGVpZ2h0PSI5MyIgPjwvc3ZnPg==\\\" alt=\\\"Slider\\\" \\/><\\/div>\",\"assets\":{\"css\":{\"staticGroup\":{\"smartslider\":\"E:\\\\xampp717\\\\htdocs\\\\boston22\\/media\\/n2\\/ss3\\/smartslider.min.css\"},\"files\":[],\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[\".n2-ss-spinner-simple-white-container {\\r\\n    position: absolute;\\r\\n    top: 50%;\\r\\n    left: 50%;\\r\\n    margin: -20px;\\r\\n    background: #fff;\\r\\n    width: 20px;\\r\\n    height: 20px;\\r\\n    padding: 10px;\\r\\n    border-radius: 50%;\\r\\n    z-index: 1000;\\r\\n}\\r\\n\\r\\n.n2-ss-spinner-simple-white {\\r\\n  outline: 1px solid RGBA(0,0,0,0);\\r\\n  width:100%;\\r\\n  height: 100%;\\r\\n}\\r\\n\\r\\n.n2-ss-spinner-simple-white:before {\\r\\n    position: absolute;\\r\\n    top: 50%;\\r\\n    left: 50%;\\r\\n    width: 20px;\\r\\n    height: 20px;\\r\\n    margin-top: -11px;\\r\\n    margin-left: -11px;\\r\\n}\\r\\n\\r\\n.n2-ss-spinner-simple-white:not(:required):before {\\r\\n    content: \'\';\\r\\n    border-radius: 50%;\\r\\n    border-top: 2px solid #333;\\r\\n    border-right: 2px solid transparent;\\r\\n    animation: n2SimpleWhite .6s linear infinite;\\r\\n    -webkit-animation: n2SimpleWhite .6s linear infinite;\\r\\n}\\r\\n@keyframes n2SimpleWhite {\\r\\n    to {transform: rotate(360deg);}\\r\\n}\\r\\n\\r\\n@-webkit-keyframes n2SimpleWhite {\\r\\n    to {-webkit-transform: rotate(360deg);}\\r\\n}\"],\"globalInline\":[]},\"less\":{\"staticGroup\":[],\"files\":[],\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[],\"globalInline\":[]},\"js\":{\"staticGroup\":{\"smartslider-simple-type-frontend\":\"E:\\\\xampp717\\\\htdocs\\\\boston22\\/media\\/n2\\/ss3\\/plugins\\\\type\\\\simple\\\\simple\\/dist\\/smartslider-simple-type-frontend.min.js\"},\"files\":[],\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[\"N2R([\\\"nextend-frontend\\\",\\\"smartslider-frontend\\\",\\\"nextend-gsap\\\",\\\"smartslider-simple-type-frontend\\\"],function(){new N2Classes.SmartSliderSimple(\'#n2-ss-4\', {\\\"admin\\\":false,\\\"translate3d\\\":1,\\\"callbacks\\\":\\\"\\\",\\\"background.video.mobile\\\":1,\\\"align\\\":\\\"normal\\\",\\\"isDelayed\\\":0,\\\"load\\\":{\\\"fade\\\":1,\\\"scroll\\\":0},\\\"playWhenVisible\\\":1,\\\"playWhenVisibleAt\\\":0.5,\\\"responsive\\\":{\\\"desktop\\\":1,\\\"tablet\\\":1,\\\"mobile\\\":1,\\\"onResizeEnabled\\\":true,\\\"type\\\":\\\"auto\\\",\\\"downscale\\\":1,\\\"upscale\\\":1,\\\"minimumHeight\\\":0,\\\"maximumHeight\\\":3000,\\\"maximumSlideWidth\\\":3000,\\\"maximumSlideWidthLandscape\\\":3000,\\\"maximumSlideWidthTablet\\\":3000,\\\"maximumSlideWidthTabletLandscape\\\":3000,\\\"maximumSlideWidthMobile\\\":3000,\\\"maximumSlideWidthMobileLandscape\\\":3000,\\\"maximumSlideWidthConstrainHeight\\\":0,\\\"forceFull\\\":0,\\\"forceFullOverflowX\\\":\\\"body\\\",\\\"forceFullHorizontalSelector\\\":\\\"\\\",\\\"constrainRatio\\\":1,\\\"verticalOffsetSelectors\\\":\\\"\\\",\\\"decreaseSliderHeight\\\":0,\\\"focusUser\\\":0,\\\"focusAutoplay\\\":0,\\\"deviceModes\\\":{\\\"desktopPortrait\\\":1,\\\"desktopLandscape\\\":0,\\\"tabletPortrait\\\":1,\\\"tabletLandscape\\\":0,\\\"mobilePortrait\\\":1,\\\"mobileLandscape\\\":0},\\\"normalizedDeviceModes\\\":{\\\"unknownUnknown\\\":[\\\"unknown\\\",\\\"Unknown\\\"],\\\"desktopPortrait\\\":[\\\"desktop\\\",\\\"Portrait\\\"],\\\"desktopLandscape\\\":[\\\"desktop\\\",\\\"Portrait\\\"],\\\"tabletPortrait\\\":[\\\"tablet\\\",\\\"Portrait\\\"],\\\"tabletLandscape\\\":[\\\"tablet\\\",\\\"Portrait\\\"],\\\"mobilePortrait\\\":[\\\"mobile\\\",\\\"Portrait\\\"],\\\"mobileLandscape\\\":[\\\"mobile\\\",\\\"Portrait\\\"]},\\\"verticalRatioModifiers\\\":{\\\"unknownUnknown\\\":1,\\\"desktopPortrait\\\":1,\\\"desktopLandscape\\\":1,\\\"tabletPortrait\\\":1,\\\"tabletLandscape\\\":1,\\\"mobilePortrait\\\":1,\\\"mobileLandscape\\\":1},\\\"minimumFontSizes\\\":{\\\"desktopPortrait\\\":4,\\\"desktopLandscape\\\":4,\\\"tabletPortrait\\\":4,\\\"tabletLandscape\\\":4,\\\"mobilePortrait\\\":4,\\\"mobileLandscape\\\":4},\\\"ratioToDevice\\\":{\\\"Portrait\\\":{\\\"tablet\\\":0.7,\\\"mobile\\\":0.5},\\\"Landscape\\\":{\\\"tablet\\\":0,\\\"mobile\\\":0}},\\\"sliderWidthToDevice\\\":{\\\"desktopPortrait\\\":900,\\\"desktopLandscape\\\":900,\\\"tabletPortrait\\\":630,\\\"tabletLandscape\\\":0,\\\"mobilePortrait\\\":450,\\\"mobileLandscape\\\":0},\\\"basedOn\\\":\\\"combined\\\",\\\"orientationMode\\\":\\\"width_and_height\\\",\\\"scrollFix\\\":0,\\\"overflowHiddenPage\\\":0,\\\"desktopPortraitScreenWidth\\\":1200,\\\"tabletPortraitScreenWidth\\\":800,\\\"mobilePortraitScreenWidth\\\":440,\\\"tabletLandscapeScreenWidth\\\":800,\\\"mobileLandscapeScreenWidth\\\":440},\\\"controls\\\":{\\\"scroll\\\":0,\\\"drag\\\":1,\\\"touch\\\":\\\"horizontal\\\",\\\"keyboard\\\":1,\\\"tilt\\\":0},\\\"lazyLoad\\\":0,\\\"lazyLoadNeighbor\\\":0,\\\"blockrightclick\\\":0,\\\"maintainSession\\\":0,\\\"autoplay\\\":{\\\"enabled\\\":1,\\\"start\\\":1,\\\"duration\\\":5000,\\\"autoplayToSlide\\\":-1,\\\"autoplayToSlideIndex\\\":-1,\\\"allowReStart\\\":0,\\\"pause\\\":{\\\"click\\\":1,\\\"mouse\\\":\\\"0\\\",\\\"mediaStarted\\\":1},\\\"resume\\\":{\\\"click\\\":0,\\\"mouse\\\":0,\\\"mediaEnded\\\":1,\\\"slidechanged\\\":0}},\\\"perspective\\\":1500,\\\"layerMode\\\":{\\\"playOnce\\\":0,\\\"playFirstLayer\\\":1,\\\"mode\\\":\\\"skippable\\\",\\\"inAnimation\\\":\\\"mainInEnd\\\"},\\\"background.parallax.tablet\\\":0,\\\"background.parallax.mobile\\\":0,\\\"initCallbacks\\\":[],\\\"allowBGImageAttachmentFixed\\\":false,\\\"bgAnimationsColor\\\":\\\"RGBA(51,51,51,1)\\\",\\\"bgAnimations\\\":0,\\\"mainanimation\\\":{\\\"type\\\":\\\"horizontal\\\",\\\"duration\\\":800,\\\"delay\\\":0,\\\"ease\\\":\\\"easeOutQuad\\\",\\\"parallax\\\":0,\\\"shiftedBackgroundAnimation\\\":0},\\\"carousel\\\":1,\\\"dynamicHeight\\\":0});});\"],\"globalInline\":[]},\"googleFonts\":{\"staticGroup\":[],\"files\":[],\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[],\"globalInline\":[]},\"image\":{\"images\":[\"\\/boston22\\/images\\/client\\/github.png\",\"\\/boston22\\/images\\/client\\/google.png\",\"\\/boston22\\/images\\/client\\/joomla.png\",\"\\/boston22\\/images\\/client\\/jquery.png\",\"\\/boston22\\/images\\/client\\/less.png\",\"\\/boston22\\/images\\/client\\/sass.png\"]}}}', 0, 1),
-(10038, 'cache', 'notweb/n2-ss-1', 'data.manifest', '{\"generator\":[]}', 0, 1),
-(10039, 'cache', 'notweb/n2-ss-1', 'variations.manifest', '1', 0, 1),
-(10040, 'cache', 'notweb/n2-ss-1', 'slider1.manifest', '{\"hash\":\"\",\"nextCacheRefresh\":1762931968,\"currentPath\":\"87a46db8a0457d1ad7ae4ad40c3e32f4\",\"version\":\"3.3.4\"}', 0, 1);
+(10044, 'cache', 'notweb/n2-ss-1', 'data.manifest', '{\"generator\":[]}', 0, 1),
+(10045, 'cache', 'notweb/n2-ss-1', 'variations.manifest', '1', 0, 1),
+(10046, 'cache', 'notweb/n2-ss-1', 'slider1.manifest', '{\"hash\":\"\",\"nextCacheRefresh\":1762931968,\"currentPath\":\"7373fe80fd712db50c1663bd8505d9b7\",\"version\":\"3.3.4\"}', 0, 1);
 INSERT INTO `#__nextend2_section_storage` (`id`, `application`, `section`, `referencekey`, `value`, `system`, `editable`) VALUES
-(10041, 'cache', 'notweb/n2-ss-1', 'slider1', '{\"html\":\"<style>div#n2-ss-1{width:1200px;float:left;margin:0px 0px 0px 0px;}html[dir=\\\"rtl\\\"] div#n2-ss-1{float:right;}div#n2-ss-1 .n2-ss-slider-1{position:relative;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;height:450px;border-style:solid;border-width:0px;border-color:#3e3e3e;border-color:RGBA(62,62,62,1);border-radius:0px;background-clip:padding-box;background-repeat:repeat;background-position:50% 50%;background-size:cover;background-attachment:scroll;}div#n2-ss-1 .n2-ss-slider-background-video-container{position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden;}div#n2-ss-1 .n2-ss-slider-2{position:relative;width:100%;height:100%;}.x-firefox div#n2-ss-1 .n2-ss-slider-2{opacity:0.99999;}div#n2-ss-1 .n2-ss-slider-3{position:relative;width:100%;height:100%;overflow:hidden;outline:1px solid rgba(0,0,0,0);z-index:10;}div#n2-ss-1 .n2-ss-slide-backgrounds,div#n2-ss-1 .n2-ss-slider-3 > .n-particles-js-canvas-el,div#n2-ss-1 .n2-ss-slider-3 > .n2-ss-divider{position:absolute;left:0;top:0;width:100%;height:100%;}div#n2-ss-1 .n2-ss-slide-backgrounds{z-index:10;}div#n2-ss-1 .n2-ss-slider-3 > .n-particles-js-canvas-el{z-index:12;}div#n2-ss-1 .n2-ss-slide-backgrounds > *{overflow:hidden;}div#n2-ss-1 .n2-ss-slide{position:absolute;top:0;left:0;width:100%;height:100%;z-index:20;display:block;-webkit-backface-visibility:hidden;}div#n2-ss-1 .n2-ss-layers-container{position:relative;width:1200px;height:450px;}div#n2-ss-1 .n2-ss-parallax-clip > .n2-ss-layers-container{position:absolute;right:0;}div#n2-ss-1 .n2-ss-slide{-webkit-perspective:1500px;perspective:1500px;}div#n2-ss-1 .n2-ss-slide-active{z-index:21;}div#n2-ss-1 .n2-ss-button-container,div#n2-ss-1 .n2-ss-button-container a{display:inline-block;}div#n2-ss-1 .n2-ss-button-container.n2-ss-fullwidth,div#n2-ss-1 .n2-ss-button-container.n2-ss-fullwidth a{display:block;}div#n2-ss-1 .n2-ss-button-container.n2-ss-nowrap{white-space:nowrap;}div#n2-ss-1 .n2-ss-button-container a div{display:inline;font-size:inherit;text-decoration:inherit;color:inherit;line-height:inherit;font-family:inherit;font-weight:inherit;}div#n2-ss-1 .n2-ss-button-container a > div{display:inline-flex;align-items:center;vertical-align:top;}div#n2-ss-1 .n2-ss-button-container i{font-size:100%;vertical-align:baseline;}div#n2-ss-1 .n2-ss-button-container a[data-iconplacement=\\\"left\\\"] i{margin-right:0.3em;}div#n2-ss-1 .n2-ss-button-container a[data-iconplacement=\\\"right\\\"] i{margin-left:0.3em;}div#n2-ss-1 .n2-ss-control-bullet{visibility:hidden;text-align:center;justify-content:center;}div#n2-ss-1 .n2-ss-control-bullet-horizontal.n2-ss-control-bullet-fullsize{width:100%;}div#n2-ss-1 .n2-ss-control-bullet-vertical.n2-ss-control-bullet-fullsize{height:100%;flex-flow:column;}div#n2-ss-1 .nextend-bullet-bar{display:inline-flex;visibility:visible;align-items:center;flex-wrap:wrap;}div#n2-ss-1 .n2-bar-justify-content-left{justify-content:flex-start;}div#n2-ss-1 .n2-bar-justify-content-center{justify-content:center;}div#n2-ss-1 .n2-bar-justify-content-right{justify-content:flex-end;}div#n2-ss-1 .n2-ss-control-bullet-vertical > .nextend-bullet-bar{flex-flow:column;}div#n2-ss-1 .n2-ss-control-bullet-fullsize > .nextend-bullet-bar{display:flex;}div#n2-ss-1 .n2-ss-control-bullet-horizontal.n2-ss-control-bullet-fullsize > .nextend-bullet-bar{flex:1 1 auto;}div#n2-ss-1 .n2-ss-control-bullet-vertical.n2-ss-control-bullet-fullsize > .nextend-bullet-bar{height:100%;}div#n2-ss-1 .nextend-bullet-bar > div{display:inline-block;cursor:pointer;transition:background-color 0.4s;vertical-align:top;}div#n2-ss-1 .nextend-bullet-bar > div.n2-active{cursor:default;}div#n2-ss-1 div.n2-ss-bullet-thumbnail-container{position:absolute;opacity:0;z-index:10000000;}div#n2-ss-1 .n2-ss-bullet-thumbnail-container .n2-ss-bullet-thumbnail{background-size:cover;background-repeat:no-repeat;background-position:center;}div#n2-ss-1 .n2-ss-layer .n2-font-0e6b5340c2296afbf06e7db7fd784bf2-hover{font-family: \'Raleway\',\'Arial\';color: #ffffff;font-size:312.5%;text-shadow: none;line-height: normal;font-weight: bold;font-style: normal;text-decoration: none;text-align: center;letter-spacing: normal;word-spacing: normal;text-transform: none;}div#n2-ss-1 .n2-style-a6ed84f0cd0c7e4f774251e22f90cdcd-heading{background: #ffffff;background: RGBA(255,255,255,0);opacity:1;padding:0px 0px 0px 0px ;box-shadow: none;border-width: 0px;border-style: solid;border-color: #000000; border-color: RGBA(0,0,0,1);border-radius:0px;}div#n2-ss-1 .n2-ss-layer .n2-font-d5d28b7f4812b94c75328acf93b4d36e-hover{font-family: \'Raleway\',\'Arial\';color: #ffffff;font-size:237.5%;text-shadow: none;line-height: normal;font-weight: normal;font-style: normal;text-decoration: none;text-align: center;letter-spacing: normal;word-spacing: normal;text-transform: none;font-weight:100}div#n2-ss-1 .n2-font-f125b413d95a7608207943e6e0e130ad-link a{font-family: \'Raleway\',\'Arial\';color: #ffffff;font-size:150%;text-shadow: none;line-height: normal;font-weight: normal;font-style: normal;text-decoration: none;text-align: center;letter-spacing: normal;word-spacing: normal;text-transform: none;}div#n2-ss-1 .n2-font-f125b413d95a7608207943e6e0e130ad-link a:HOVER, div#n2-ss-1 .n2-font-f125b413d95a7608207943e6e0e130ad-link a:ACTIVE, div#n2-ss-1 .n2-font-f125b413d95a7608207943e6e0e130ad-link a:FOCUS{color: #ffffff;}div#n2-ss-1 .n2-style-2dc0dd587706f0378a4280341d0cbb46-heading{background: #000000;background: RGBA(0,0,0,0);opacity:1;padding:4% 9% 4% 9% ;box-shadow: none;border-width: 2px;border-style: solid;border-color: #14a9cc; border-color: RGBA(20,169,204,1);border-radius:2px;transition:all 0.3s ease}div#n2-ss-1 .n2-style-2dc0dd587706f0378a4280341d0cbb46-heading:Hover, div#n2-ss-1 .n2-style-2dc0dd587706f0378a4280341d0cbb46-heading:ACTIVE, div#n2-ss-1 .n2-style-2dc0dd587706f0378a4280341d0cbb46-heading:FOCUS{background: #14a9cc;border-width: 2px;border-style: solid;border-color: #14a9cc; border-color: RGBA(20,169,204,1);}div#n2-ss-1 .n2-style-71f8992c8fa2aba15e7858625601a6fa-dot{background: #ffffff;background: RGBA(255,255,255,0.5);opacity:1;padding:5px 5px 5px 5px ;box-shadow: none;border-width: 0px;border-style: solid;border-color: #000000; border-color: RGBA(0,0,0,1);border-radius:50px;margin: 4px;}div#n2-ss-1 .n2-style-71f8992c8fa2aba15e7858625601a6fa-dot.n2-active, div#n2-ss-1 .n2-style-71f8992c8fa2aba15e7858625601a6fa-dot:HOVER{background: #ffffff;}<\\/style><div id=\\\"n2-ss-1-align\\\" class=\\\"n2-ss-align\\\"><div class=\\\"n2-padding\\\"><div id=\\\"n2-ss-1\\\" data-creator=\\\"Smart Slider 3\\\" class=\\\"n2-ss-slider n2-ow n2-has-hover n2notransition n2-ss-load-fade \\\" data-minFontSizedesktopPortrait=\\\"4\\\" data-minFontSizedesktopLandscape=\\\"4\\\" data-minFontSizetabletPortrait=\\\"4\\\" data-minFontSizetabletLandscape=\\\"4\\\" data-minFontSizemobilePortrait=\\\"4\\\" data-minFontSizemobileLandscape=\\\"4\\\" style=\\\"font-size: 16px;\\\" data-fontsize=\\\"16\\\">\\r\\n        <div class=\\\"n2-ss-slider-1 n2-ss-swipe-element n2-ow\\\" style=\\\"\\\">\\r\\n                        <div class=\\\"n2-ss-slider-2 n2-ow\\\">\\r\\n                                <div class=\\\"n2-ss-slider-3 n2-ow\\\" style=\\\"\\\">\\r\\n\\r\\n                    <div class=\\\"n2-ss-slide-backgrounds\\\"><\\/div><div data-first=\\\"1\\\" data-slide-duration=\\\"0\\\" data-id=\\\"3\\\" style=\\\"\\\" class=\\\"n2-ss-slide n2-ss-canvas n2-ow  n2-ss-slide-3\\\"><div class=\\\"n2-ss-slide-background n2-ow\\\" data-mode=\\\"fill\\\"><img data-hash=\\\"fa32c4bbcd5c64e23e01191ddd9f036b\\\" data-desktop=\\\"\\/boston22\\/images\\/slider\\/slide1.jpg\\\" data-blur=\\\"0\\\" data-opacity=\\\"100\\\" data-x=\\\"50\\\" data-y=\\\"50\\\" src=\\\"\\/boston22\\/images\\/slider\\/slide1.jpg\\\" alt=\\\"\\\" \\/><\\/div><div class=\\\"n2-ss-layers-container n2-ow\\\" data-csstextalign=\\\"center\\\" style=\\\"\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-pm=\\\"content\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"content\\\" data-hasbackground=\\\"0\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"1\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-section-main-content n2-ss-layer-content n2-ow\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"center\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-frontend-fullwidth=\\\"1\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-csstextalign=\\\"inherit\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitgutter=\\\"20\\\" data-desktopportraitwrapafter=\\\"0\\\" data-mobileportraitwrapafter=\\\"1\\\" data-mobilelandscapewrapafter=\\\"1\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"row\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-row \\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\"><div class=\\\"n2-ss-layer-row-inner \\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 100%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"100\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 1.25em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|20|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h2 id=\\\"n2-ss-1item1\\\" class=\\\"n2-font-0e6b5340c2296afbf06e7db7fd784bf2-hover n2-style-a6ed84f0cd0c7e4f774251e22f90cdcd-heading   n2-ow\\\" style=\\\"display:block;\\\">OUR COMPANY CAN BOAST THE REPUTATION<\\/h2><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 2.5em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|40|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h5 id=\\\"n2-ss-1item2\\\" class=\\\"n2-font-d5d28b7f4812b94c75328acf93b4d36e-hover   n2-ow\\\" style=\\\"display:block;\\\">OF THE TRUSTED PARTNER KNOWN WORLDWIDE.<\\/h5><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-mobileportraitfontsize=\\\"140\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-button-container n2-ow n2-font-f125b413d95a7608207943e6e0e130ad-link  n2-ss-nowrap\\\"><a class=\\\"n2-style-2dc0dd587706f0378a4280341d0cbb46-heading  n2-ow \\\" onclick=\\\"return false;\\\" href=\\\"#\\\"><div><div>Learn more<\\/div><\\/div><\\/a><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><div data-slide-duration=\\\"0\\\" data-id=\\\"22\\\" style=\\\"\\\" class=\\\"n2-ss-slide n2-ss-canvas n2-ow  n2-ss-slide-22\\\"><div class=\\\"n2-ss-slide-background n2-ow\\\" data-mode=\\\"fill\\\"><img data-hash=\\\"5e904d9d7069def50e5941d76c4ab994\\\" data-desktop=\\\"\\/boston22\\/images\\/slider\\/slide2.jpg\\\" data-blur=\\\"0\\\" data-opacity=\\\"100\\\" data-x=\\\"50\\\" data-y=\\\"50\\\" src=\\\"\\/boston22\\/images\\/slider\\/slide2.jpg\\\" alt=\\\"\\\" \\/><\\/div><div class=\\\"n2-ss-layers-container n2-ow\\\" data-csstextalign=\\\"center\\\" style=\\\"\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-pm=\\\"content\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"content\\\" data-hasbackground=\\\"0\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"1\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-section-main-content n2-ss-layer-content n2-ow\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"center\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-frontend-fullwidth=\\\"1\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-csstextalign=\\\"inherit\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitgutter=\\\"20\\\" data-desktopportraitwrapafter=\\\"0\\\" data-mobileportraitwrapafter=\\\"1\\\" data-mobilelandscapewrapafter=\\\"1\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"row\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-row \\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\"><div class=\\\"n2-ss-layer-row-inner \\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 100%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"100\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 1.25em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|20|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h2 id=\\\"n2-ss-1item4\\\" class=\\\"n2-font-0e6b5340c2296afbf06e7db7fd784bf2-hover n2-style-a6ed84f0cd0c7e4f774251e22f90cdcd-heading   n2-ow\\\" style=\\\"display:block;\\\">THE LEADING COMPANY DELIVERING<\\/h2><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 2.5em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|40|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h5 id=\\\"n2-ss-1item5\\\" class=\\\"n2-font-d5d28b7f4812b94c75328acf93b4d36e-hover   n2-ow\\\" style=\\\"display:block;\\\">SERVICES OF THE HIGHEST QUALITY.<\\/h5><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-mobileportraitfontsize=\\\"140\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-button-container n2-ow n2-font-f125b413d95a7608207943e6e0e130ad-link  n2-ss-nowrap\\\"><a class=\\\"n2-style-2dc0dd587706f0378a4280341d0cbb46-heading  n2-ow \\\" onclick=\\\"return false;\\\" href=\\\"#\\\"><div><div>Learn more<\\/div><\\/div><\\/a><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><div data-slide-duration=\\\"0\\\" data-id=\\\"21\\\" style=\\\"\\\" class=\\\"n2-ss-slide n2-ss-canvas n2-ow  n2-ss-slide-21\\\"><div class=\\\"n2-ss-slide-background n2-ow\\\" data-mode=\\\"fill\\\"><img data-hash=\\\"df7f5c3556a4057e3ffec5678cdde907\\\" data-desktop=\\\"\\/boston22\\/images\\/slider\\/slide3.jpg\\\" data-blur=\\\"0\\\" data-opacity=\\\"100\\\" data-x=\\\"50\\\" data-y=\\\"50\\\" src=\\\"\\/boston22\\/images\\/slider\\/slide3.jpg\\\" alt=\\\"\\\" \\/><\\/div><div class=\\\"n2-ss-layers-container n2-ow\\\" data-csstextalign=\\\"center\\\" style=\\\"\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-pm=\\\"content\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"content\\\" data-hasbackground=\\\"0\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"1\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-section-main-content n2-ss-layer-content n2-ow\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"center\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-frontend-fullwidth=\\\"1\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-csstextalign=\\\"inherit\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitgutter=\\\"20\\\" data-desktopportraitwrapafter=\\\"0\\\" data-mobileportraitwrapafter=\\\"1\\\" data-mobilelandscapewrapafter=\\\"1\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"row\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-row \\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\"><div class=\\\"n2-ss-layer-row-inner \\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 100%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"100\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 1.25em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|20|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h2 id=\\\"n2-ss-1item7\\\" class=\\\"n2-font-0e6b5340c2296afbf06e7db7fd784bf2-hover n2-style-a6ed84f0cd0c7e4f774251e22f90cdcd-heading   n2-ow\\\" style=\\\"display:block;\\\">WELCOME TO THE ONE OF THE WORLD\'S BEST<\\/h2><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 2.5em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|40|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h5 id=\\\"n2-ss-1item8\\\" class=\\\"n2-font-d5d28b7f4812b94c75328acf93b4d36e-hover   n2-ow\\\" style=\\\"display:block;\\\">KNOWN COMPANY IN THE INDUSTRY!<\\/h5><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-mobileportraitfontsize=\\\"140\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-button-container n2-ow n2-font-f125b413d95a7608207943e6e0e130ad-link  n2-ss-nowrap\\\"><a class=\\\"n2-style-2dc0dd587706f0378a4280341d0cbb46-heading  n2-ow \\\" onclick=\\\"return false;\\\" href=\\\"#\\\"><div><div>Learn more<\\/div><\\/div><\\/a><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div>                <\\/div>\\r\\n            <\\/div>\\r\\n            <div data-ssleft=\\\"width\\/2-bulletwidth\\/2\\\" data-ssbottom=\\\"0+10\\\" data-offset=\\\"10\\\" class=\\\"n2-ss-widget n2-ss-widget-display-desktop n2-ss-widget-display-tablet n2-ss-widget-display-mobile  n2-flex n2-ss-control-bullet n2-ss-control-bullet-horizontal\\\" style=\\\"position: absolute;\\\"><div class=\\\" nextend-bullet-bar n2-ow n2-bar-justify-content-center\\\"><div class=\\\"n2-ow n2-style-71f8992c8fa2aba15e7858625601a6fa-dot \\\" tabindex=\\\"0\\\"><\\/div><div class=\\\"n2-ow n2-style-71f8992c8fa2aba15e7858625601a6fa-dot \\\" tabindex=\\\"0\\\"><\\/div><div class=\\\"n2-ow n2-style-71f8992c8fa2aba15e7858625601a6fa-dot \\\" tabindex=\\\"0\\\"><\\/div><\\/div><\\/div>\\n        <\\/div>\\r\\n        <\\/div><div class=\\\"n2-clear\\\"><\\/div><div id=\\\"n2-ss-1-spinner\\\" style=\\\"display: none;\\\"><div><div class=\\\"n2-ss-spinner-simple-white-container\\\"><div class=\\\"n2-ss-spinner-simple-white\\\"><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><div id=\\\"n2-ss-1-placeholder\\\" style=\\\"position: relative;z-index:2;background-color:RGBA(0,0,0,0);max-height:3000px; background-color:RGBA(255,255,255,0);\\\"><img style=\\\"width: 100%; max-width:3000px; display: block;opacity:0;\\\" class=\\\"n2-ow\\\" src=\\\"data:image\\/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMCIgd2lkdGg9IjEyMDAiIGhlaWdodD0iNDUwIiA+PC9zdmc+\\\" alt=\\\"Slider\\\" \\/><\\/div>\",\"assets\":{\"css\":{\"staticGroup\":{\"smartslider\":\"E:\\\\xampp717\\\\htdocs\\\\boston22\\/media\\/n2\\/ss3\\/smartslider.min.css\"},\"files\":[],\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[\".n2-ss-spinner-simple-white-container {\\r\\n    position: absolute;\\r\\n    top: 50%;\\r\\n    left: 50%;\\r\\n    margin: -20px;\\r\\n    background: #fff;\\r\\n    width: 20px;\\r\\n    height: 20px;\\r\\n    padding: 10px;\\r\\n    border-radius: 50%;\\r\\n    z-index: 1000;\\r\\n}\\r\\n\\r\\n.n2-ss-spinner-simple-white {\\r\\n  outline: 1px solid RGBA(0,0,0,0);\\r\\n  width:100%;\\r\\n  height: 100%;\\r\\n}\\r\\n\\r\\n.n2-ss-spinner-simple-white:before {\\r\\n    position: absolute;\\r\\n    top: 50%;\\r\\n    left: 50%;\\r\\n    width: 20px;\\r\\n    height: 20px;\\r\\n    margin-top: -11px;\\r\\n    margin-left: -11px;\\r\\n}\\r\\n\\r\\n.n2-ss-spinner-simple-white:not(:required):before {\\r\\n    content: \'\';\\r\\n    border-radius: 50%;\\r\\n    border-top: 2px solid #333;\\r\\n    border-right: 2px solid transparent;\\r\\n    animation: n2SimpleWhite .6s linear infinite;\\r\\n    -webkit-animation: n2SimpleWhite .6s linear infinite;\\r\\n}\\r\\n@keyframes n2SimpleWhite {\\r\\n    to {transform: rotate(360deg);}\\r\\n}\\r\\n\\r\\n@-webkit-keyframes n2SimpleWhite {\\r\\n    to {-webkit-transform: rotate(360deg);}\\r\\n}\"],\"globalInline\":[]},\"less\":{\"staticGroup\":[],\"files\":[],\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[],\"globalInline\":[]},\"js\":{\"staticGroup\":{\"smartslider-simple-type-frontend\":\"E:\\\\xampp717\\\\htdocs\\\\boston22\\/media\\/n2\\/ss3\\/plugins\\\\type\\\\simple\\\\simple\\/dist\\/smartslider-simple-type-frontend.min.js\"},\"files\":[],\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[\"N2R([\\\"nextend-frontend\\\",\\\"smartslider-frontend\\\",\\\"nextend-gsap\\\",\\\"smartslider-simple-type-frontend\\\"],function(){new N2Classes.SmartSliderSimple(\'#n2-ss-1\', {\\\"admin\\\":false,\\\"translate3d\\\":1,\\\"callbacks\\\":\\\"\\\",\\\"background.video.mobile\\\":1,\\\"align\\\":\\\"normal\\\",\\\"isDelayed\\\":0,\\\"load\\\":{\\\"fade\\\":1,\\\"scroll\\\":0},\\\"playWhenVisible\\\":1,\\\"playWhenVisibleAt\\\":0.5,\\\"responsive\\\":{\\\"desktop\\\":1,\\\"tablet\\\":1,\\\"mobile\\\":1,\\\"onResizeEnabled\\\":true,\\\"type\\\":\\\"fullwidth\\\",\\\"downscale\\\":1,\\\"upscale\\\":1,\\\"minimumHeight\\\":0,\\\"maximumHeight\\\":3000,\\\"maximumSlideWidth\\\":3000,\\\"maximumSlideWidthLandscape\\\":3000,\\\"maximumSlideWidthTablet\\\":3000,\\\"maximumSlideWidthTabletLandscape\\\":3000,\\\"maximumSlideWidthMobile\\\":3000,\\\"maximumSlideWidthMobileLandscape\\\":3000,\\\"maximumSlideWidthConstrainHeight\\\":0,\\\"forceFull\\\":1,\\\"forceFullOverflowX\\\":\\\"body\\\",\\\"forceFullHorizontalSelector\\\":\\\"body\\\",\\\"constrainRatio\\\":1,\\\"verticalOffsetSelectors\\\":\\\"\\\",\\\"decreaseSliderHeight\\\":0,\\\"focusUser\\\":0,\\\"focusAutoplay\\\":0,\\\"deviceModes\\\":{\\\"desktopPortrait\\\":1,\\\"desktopLandscape\\\":0,\\\"tabletPortrait\\\":1,\\\"tabletLandscape\\\":0,\\\"mobilePortrait\\\":1,\\\"mobileLandscape\\\":0},\\\"normalizedDeviceModes\\\":{\\\"unknownUnknown\\\":[\\\"unknown\\\",\\\"Unknown\\\"],\\\"desktopPortrait\\\":[\\\"desktop\\\",\\\"Portrait\\\"],\\\"desktopLandscape\\\":[\\\"desktop\\\",\\\"Portrait\\\"],\\\"tabletPortrait\\\":[\\\"tablet\\\",\\\"Portrait\\\"],\\\"tabletLandscape\\\":[\\\"tablet\\\",\\\"Portrait\\\"],\\\"mobilePortrait\\\":[\\\"mobile\\\",\\\"Portrait\\\"],\\\"mobileLandscape\\\":[\\\"mobile\\\",\\\"Portrait\\\"]},\\\"verticalRatioModifiers\\\":{\\\"unknownUnknown\\\":1,\\\"desktopPortrait\\\":1,\\\"desktopLandscape\\\":1,\\\"tabletPortrait\\\":1,\\\"tabletLandscape\\\":1,\\\"mobilePortrait\\\":1,\\\"mobileLandscape\\\":1},\\\"minimumFontSizes\\\":{\\\"desktopPortrait\\\":4,\\\"desktopLandscape\\\":4,\\\"tabletPortrait\\\":4,\\\"tabletLandscape\\\":4,\\\"mobilePortrait\\\":4,\\\"mobileLandscape\\\":4},\\\"ratioToDevice\\\":{\\\"Portrait\\\":{\\\"tablet\\\":0.7,\\\"mobile\\\":0.5},\\\"Landscape\\\":{\\\"tablet\\\":0,\\\"mobile\\\":0}},\\\"sliderWidthToDevice\\\":{\\\"desktopPortrait\\\":1200,\\\"desktopLandscape\\\":1200,\\\"tabletPortrait\\\":840,\\\"tabletLandscape\\\":0,\\\"mobilePortrait\\\":600,\\\"mobileLandscape\\\":0},\\\"basedOn\\\":\\\"combined\\\",\\\"orientationMode\\\":\\\"width_and_height\\\",\\\"scrollFix\\\":0,\\\"overflowHiddenPage\\\":0,\\\"desktopPortraitScreenWidth\\\":1200,\\\"tabletPortraitScreenWidth\\\":800,\\\"mobilePortraitScreenWidth\\\":440,\\\"tabletLandscapeScreenWidth\\\":800,\\\"mobileLandscapeScreenWidth\\\":440},\\\"controls\\\":{\\\"scroll\\\":0,\\\"drag\\\":1,\\\"touch\\\":\\\"horizontal\\\",\\\"keyboard\\\":1,\\\"tilt\\\":0},\\\"lazyLoad\\\":0,\\\"lazyLoadNeighbor\\\":0,\\\"blockrightclick\\\":0,\\\"maintainSession\\\":0,\\\"autoplay\\\":{\\\"enabled\\\":0,\\\"start\\\":1,\\\"duration\\\":8000,\\\"autoplayToSlide\\\":-1,\\\"autoplayToSlideIndex\\\":-1,\\\"allowReStart\\\":0,\\\"pause\\\":{\\\"click\\\":1,\\\"mouse\\\":\\\"0\\\",\\\"mediaStarted\\\":1},\\\"resume\\\":{\\\"click\\\":0,\\\"mouse\\\":0,\\\"mediaEnded\\\":1,\\\"slidechanged\\\":0}},\\\"perspective\\\":1500,\\\"layerMode\\\":{\\\"playOnce\\\":0,\\\"playFirstLayer\\\":1,\\\"mode\\\":\\\"skippable\\\",\\\"inAnimation\\\":\\\"mainInEnd\\\"},\\\"background.parallax.tablet\\\":0,\\\"background.parallax.mobile\\\":0,\\\"initCallbacks\\\":[\\\"N2D(\\\\\\\"SmartSliderWidgetBulletTransition\\\\\\\",function(t,i){function e(i,e){this.slider=i,this.slider.started(t.proxy(this.start,this,e))}return e.prototype.start=function(i){if(this.slider.sliderElement.data(\\\\\\\"bullet\\\\\\\"))return!1;this.slider.sliderElement.data(\\\\\\\"bullet\\\\\\\",this),this.axis=\\\\\\\"horizontal\\\\\\\",this.offset=0,this.parameters=i,this.bar=this.slider.sliderElement.find(\\\\\\\".nextend-bullet-bar\\\\\\\");var e=\\\\\\\"universalclick\\\\\\\";if(\\\\\\\"mouseenter\\\\\\\"==i.action&&(e=\\\\\\\"mouseenter\\\\\\\"),this.originalDots=this.dots=this.bar.find(\\\\\\\"div\\\\\\\").on(e,t.proxy(this.onDotClick,this)),this.slider.isShuffled){for(var s=[],o=[],a=0;this.slider.realSlides.length>a;a++){var r=this.slider.realSlides[a];s.push(this.dots.get(r.originalIndex)),o.push(this.parameters.thumbnails[r.originalIndex]),i.numeric&&this.dots.eq(r.originalIndex).html(a+1)}this.originalDots=this.dots=t(s).appendTo(this.dots.parent()),this.parameters.thumbnails=o}if(this.slider.sliderElement.on({slideCountChanged:t.proxy(this.onSlideCountChanged,this),sliderSwitchTo:t.proxy(this.onSlideSwitch,this)}),this.slider.firstSlideReady.done(t.proxy(this.onFirstSlideSet,this)),0==i.overlay){var n=!1;switch(i.area){case 1:n=\\\\\\\"Top\\\\\\\";break;case 12:n=\\\\\\\"Bottom\\\\\\\";break;case 5:n=\\\\\\\"Left\\\\\\\",this.axis=\\\\\\\"vertical\\\\\\\";break;case 8:n=\\\\\\\"Right\\\\\\\",this.axis=\\\\\\\"vertical\\\\\\\"}n&&(this.offset=parseFloat(this.bar.data(\\\\\\\"offset\\\\\\\")),this.slider.responsive.addStaticMargin(n,this))}this.initThumbnails()},e.prototype.onFirstSlideSet=function(t){this.dots.eq(t.index).addClass(\\\\\\\"n2-active\\\\\\\")},e.prototype.onDotClick=function(i){this.slider.directionalChangeToReal(this.originalDots.index(i.currentTarget)),t(i.target).blur()},e.prototype.onSlideSwitch=function(t,i){this.dots.filter(\\\\\\\".n2-active\\\\\\\").removeClass(\\\\\\\"n2-active\\\\\\\"),this.dots.eq(i).addClass(\\\\\\\"n2-active\\\\\\\")},e.prototype.isVisible=function(){return this.bar.is(\\\\\\\":visible\\\\\\\")},e.prototype.getSize=function(){return\\\\\\\"horizontal\\\\\\\"==this.axis?this.bar.height()+this.offset:this.bar.width()+this.offset},e.prototype.initThumbnails=function(){this.parameters.thumbnails.length>0&&this.dots.each(t.proxy(function(i,e){\\\\\\\"\\\\\\\"!=this.parameters.thumbnails[i]&&t(e).on({universalenter:t.proxy(this.showThumbnail,this,i)},{leaveOnSecond:!0})},this))},e.prototype.showThumbnail=function(i,e){var s=this.getThumbnail(i);NextendTween.to(s,.3,{opacity:1}).play(),this.originalDots.eq(i).on(\\\\\\\"universalleave.thumbnailleave\\\\\\\",t.proxy(this.hideThumbnail,this,i,s))},e.prototype.hideThumbnail=function(t,i,e){e.stopPropagation(),this.originalDots.eq(t).off(\\\\\\\"universalleave.thumbnailleave\\\\\\\"),NextendTween.to(i,.3,{opacity:0,onComplete:function(){i.remove()}}).play()},e.prototype.getThumbnail=function(i){var e=this.originalDots.eq(i),s=this.slider.sliderElement.offset(),o=e.offset(),a=e.outerWidth(),r=e.outerHeight(),n=t(\\\\\\\"<div\\\\\\/>\\\\\\\").append(t(\\\\\\\"<div\\\\\\/>\\\\\\\").css({width:this.parameters.thumbnailWidth,height:this.parameters.thumbnailHeight,backgroundImage:\'url(\\\\\\\"\'+this.parameters.thumbnails[i]+\'\\\\\\\")\'}).addClass(\\\\\\\"n2-ss-bullet-thumbnail\\\\\\\")).addClass(this.parameters.thumbnailStyle).addClass(\\\\\\\"n2-ss-bullet-thumbnail-container\\\\\\\").appendTo(this.slider.sliderElement);switch(this.parameters.thumbnailPosition){case\\\\\\\"right\\\\\\\":n.css({left:o.left-s.left+a,top:o.top-s.top+r\\\\\\/2-n.outerHeight(!0)\\\\\\/2});break;case\\\\\\\"left\\\\\\\":n.css({left:o.left-s.left-n.outerWidth(!0),top:o.top-s.top+r\\\\\\/2-n.outerHeight(!0)\\\\\\/2});break;case\\\\\\\"top\\\\\\\":n.css({left:o.left-s.left+a\\\\\\/2-n.outerWidth(!0)\\\\\\/2,top:o.top-s.top-n.outerHeight(!0)});break;case\\\\\\\"bottom\\\\\\\":n.css({left:o.left-s.left+a\\\\\\/2-n.outerWidth(!0)\\\\\\/2,top:o.top-s.top+r})}return e.data(\\\\\\\"thumbnail\\\\\\\",n),n},e.prototype.onSlideCountChanged=function(i,e,s){this.dots=t();for(var o=0;this.originalDots.length>o;o++)o%s==0?this.dots=this.dots.add(this.originalDots.eq(o).css(\\\\\\\"display\\\\\\\",\\\\\\\"\\\\\\\")):this.originalDots.eq(o).css(\\\\\\\"display\\\\\\\",\\\\\\\"none\\\\\\\");this.parameters.numeric&&this.dots.each(function(t,i){i.innerHTML=t+1})},e});\\\",\\\"new N2Classes.SmartSliderWidgetBulletTransition(this, {\\\\\\\"overlay\\\\\\\":false,\\\\\\\"area\\\\\\\":10,\\\\\\\"thumbnails\\\\\\\":[],\\\\\\\"action\\\\\\\":\\\\\\\"click\\\\\\\",\\\\\\\"numeric\\\\\\\":0});\\\"],\\\"allowBGImageAttachmentFixed\\\":false,\\\"bgAnimationsColor\\\":\\\"RGBA(51,51,51,1)\\\",\\\"bgAnimations\\\":0,\\\"mainanimation\\\":{\\\"type\\\":\\\"horizontal\\\",\\\"duration\\\":800,\\\"delay\\\":0,\\\"ease\\\":\\\"easeOutQuad\\\",\\\"parallax\\\":0,\\\"shiftedBackgroundAnimation\\\":0},\\\"carousel\\\":1,\\\"dynamicHeight\\\":0});});\"],\"globalInline\":[]},\"googleFonts\":{\"staticGroup\":[],\"files\":{\"Raleway\":[\"300\",\"400\"]},\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[],\"globalInline\":[]},\"image\":{\"images\":[\"\\/boston22\\/images\\/slider\\/slide1.jpg\",\"\\/boston22\\/images\\/slider\\/slide2.jpg\",\"\\/boston22\\/images\\/slider\\/slide3.jpg\"]}}}', 0, 1);
+(10047, 'cache', 'notweb/n2-ss-1', 'slider1', '{\"html\":\"<style>div#n2-ss-1{width:1200px;float:left;margin:0px 0px 0px 0px;}html[dir=\\\"rtl\\\"] div#n2-ss-1{float:right;}div#n2-ss-1 .n2-ss-slider-1{position:relative;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;height:450px;border-style:solid;border-width:0px;border-color:#3e3e3e;border-color:RGBA(62,62,62,1);border-radius:0px;background-clip:padding-box;background-repeat:repeat;background-position:50% 50%;background-size:cover;background-attachment:scroll;}div#n2-ss-1 .n2-ss-slider-background-video-container{position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden;}div#n2-ss-1 .n2-ss-slider-2{position:relative;width:100%;height:100%;}.x-firefox div#n2-ss-1 .n2-ss-slider-2{opacity:0.99999;}div#n2-ss-1 .n2-ss-slider-3{position:relative;width:100%;height:100%;overflow:hidden;outline:1px solid rgba(0,0,0,0);z-index:10;}div#n2-ss-1 .n2-ss-slide-backgrounds,div#n2-ss-1 .n2-ss-slider-3 > .n-particles-js-canvas-el,div#n2-ss-1 .n2-ss-slider-3 > .n2-ss-divider{position:absolute;left:0;top:0;width:100%;height:100%;}div#n2-ss-1 .n2-ss-slide-backgrounds{z-index:10;}div#n2-ss-1 .n2-ss-slider-3 > .n-particles-js-canvas-el{z-index:12;}div#n2-ss-1 .n2-ss-slide-backgrounds > *{overflow:hidden;}div#n2-ss-1 .n2-ss-slide{position:absolute;top:0;left:0;width:100%;height:100%;z-index:20;display:block;-webkit-backface-visibility:hidden;}div#n2-ss-1 .n2-ss-layers-container{position:relative;width:1200px;height:450px;}div#n2-ss-1 .n2-ss-parallax-clip > .n2-ss-layers-container{position:absolute;right:0;}div#n2-ss-1 .n2-ss-slide{-webkit-perspective:1500px;perspective:1500px;}div#n2-ss-1 .n2-ss-slide-active{z-index:21;}div#n2-ss-1 .n2-ss-button-container,div#n2-ss-1 .n2-ss-button-container a{display:inline-block;}div#n2-ss-1 .n2-ss-button-container.n2-ss-fullwidth,div#n2-ss-1 .n2-ss-button-container.n2-ss-fullwidth a{display:block;}div#n2-ss-1 .n2-ss-button-container.n2-ss-nowrap{white-space:nowrap;}div#n2-ss-1 .n2-ss-button-container a div{display:inline;font-size:inherit;text-decoration:inherit;color:inherit;line-height:inherit;font-family:inherit;font-weight:inherit;}div#n2-ss-1 .n2-ss-button-container a > div{display:inline-flex;align-items:center;vertical-align:top;}div#n2-ss-1 .n2-ss-button-container i{font-size:100%;vertical-align:baseline;}div#n2-ss-1 .n2-ss-button-container a[data-iconplacement=\\\"left\\\"] i{margin-right:0.3em;}div#n2-ss-1 .n2-ss-button-container a[data-iconplacement=\\\"right\\\"] i{margin-left:0.3em;}div#n2-ss-1 .n2-ss-control-bullet{visibility:hidden;text-align:center;justify-content:center;}div#n2-ss-1 .n2-ss-control-bullet-horizontal.n2-ss-control-bullet-fullsize{width:100%;}div#n2-ss-1 .n2-ss-control-bullet-vertical.n2-ss-control-bullet-fullsize{height:100%;flex-flow:column;}div#n2-ss-1 .nextend-bullet-bar{display:inline-flex;visibility:visible;align-items:center;flex-wrap:wrap;}div#n2-ss-1 .n2-bar-justify-content-left{justify-content:flex-start;}div#n2-ss-1 .n2-bar-justify-content-center{justify-content:center;}div#n2-ss-1 .n2-bar-justify-content-right{justify-content:flex-end;}div#n2-ss-1 .n2-ss-control-bullet-vertical > .nextend-bullet-bar{flex-flow:column;}div#n2-ss-1 .n2-ss-control-bullet-fullsize > .nextend-bullet-bar{display:flex;}div#n2-ss-1 .n2-ss-control-bullet-horizontal.n2-ss-control-bullet-fullsize > .nextend-bullet-bar{flex:1 1 auto;}div#n2-ss-1 .n2-ss-control-bullet-vertical.n2-ss-control-bullet-fullsize > .nextend-bullet-bar{height:100%;}div#n2-ss-1 .nextend-bullet-bar > div{display:inline-block;cursor:pointer;transition:background-color 0.4s;vertical-align:top;}div#n2-ss-1 .nextend-bullet-bar > div.n2-active{cursor:default;}div#n2-ss-1 div.n2-ss-bullet-thumbnail-container{position:absolute;opacity:0;z-index:10000000;}div#n2-ss-1 .n2-ss-bullet-thumbnail-container .n2-ss-bullet-thumbnail{background-size:cover;background-repeat:no-repeat;background-position:center;}div#n2-ss-1 .n2-ss-layer .n2-font-0e6b5340c2296afbf06e7db7fd784bf2-hover{font-family: \'Raleway\',\'Arial\';color: #ffffff;font-size:312.5%;text-shadow: none;line-height: normal;font-weight: bold;font-style: normal;text-decoration: none;text-align: center;letter-spacing: normal;word-spacing: normal;text-transform: none;}div#n2-ss-1 .n2-style-a6ed84f0cd0c7e4f774251e22f90cdcd-heading{background: #ffffff;background: RGBA(255,255,255,0);opacity:1;padding:0px 0px 0px 0px ;box-shadow: none;border-width: 0px;border-style: solid;border-color: #000000; border-color: RGBA(0,0,0,1);border-radius:0px;}div#n2-ss-1 .n2-ss-layer .n2-font-d5d28b7f4812b94c75328acf93b4d36e-hover{font-family: \'Raleway\',\'Arial\';color: #ffffff;font-size:237.5%;text-shadow: none;line-height: normal;font-weight: normal;font-style: normal;text-decoration: none;text-align: center;letter-spacing: normal;word-spacing: normal;text-transform: none;font-weight:100}div#n2-ss-1 .n2-font-f125b413d95a7608207943e6e0e130ad-link a{font-family: \'Raleway\',\'Arial\';color: #ffffff;font-size:150%;text-shadow: none;line-height: normal;font-weight: normal;font-style: normal;text-decoration: none;text-align: center;letter-spacing: normal;word-spacing: normal;text-transform: none;}div#n2-ss-1 .n2-font-f125b413d95a7608207943e6e0e130ad-link a:HOVER, div#n2-ss-1 .n2-font-f125b413d95a7608207943e6e0e130ad-link a:ACTIVE, div#n2-ss-1 .n2-font-f125b413d95a7608207943e6e0e130ad-link a:FOCUS{color: #ffffff;}div#n2-ss-1 .n2-style-2dc0dd587706f0378a4280341d0cbb46-heading{background: #000000;background: RGBA(0,0,0,0);opacity:1;padding:4% 9% 4% 9% ;box-shadow: none;border-width: 2px;border-style: solid;border-color: #14a9cc; border-color: RGBA(20,169,204,1);border-radius:2px;transition:all 0.3s ease}div#n2-ss-1 .n2-style-2dc0dd587706f0378a4280341d0cbb46-heading:Hover, div#n2-ss-1 .n2-style-2dc0dd587706f0378a4280341d0cbb46-heading:ACTIVE, div#n2-ss-1 .n2-style-2dc0dd587706f0378a4280341d0cbb46-heading:FOCUS{background: #14a9cc;border-width: 2px;border-style: solid;border-color: #14a9cc; border-color: RGBA(20,169,204,1);}div#n2-ss-1 .n2-style-71f8992c8fa2aba15e7858625601a6fa-dot{background: #ffffff;background: RGBA(255,255,255,0.5);opacity:1;padding:5px 5px 5px 5px ;box-shadow: none;border-width: 0px;border-style: solid;border-color: #000000; border-color: RGBA(0,0,0,1);border-radius:50px;margin: 4px;}div#n2-ss-1 .n2-style-71f8992c8fa2aba15e7858625601a6fa-dot.n2-active, div#n2-ss-1 .n2-style-71f8992c8fa2aba15e7858625601a6fa-dot:HOVER{background: #ffffff;}<\\/style><div id=\\\"n2-ss-1-align\\\" class=\\\"n2-ss-align\\\"><div class=\\\"n2-padding\\\"><div id=\\\"n2-ss-1\\\" data-creator=\\\"Smart Slider 3\\\" class=\\\"n2-ss-slider n2-ow n2-has-hover n2notransition n2-ss-load-fade \\\" data-minFontSizedesktopPortrait=\\\"4\\\" data-minFontSizedesktopLandscape=\\\"4\\\" data-minFontSizetabletPortrait=\\\"4\\\" data-minFontSizetabletLandscape=\\\"4\\\" data-minFontSizemobilePortrait=\\\"4\\\" data-minFontSizemobileLandscape=\\\"4\\\" style=\\\"font-size: 16px;\\\" data-fontsize=\\\"16\\\">\\r\\n        <div class=\\\"n2-ss-slider-1 n2-ss-swipe-element n2-ow\\\" style=\\\"\\\">\\r\\n                        <div class=\\\"n2-ss-slider-2 n2-ow\\\">\\r\\n                                <div class=\\\"n2-ss-slider-3 n2-ow\\\" style=\\\"\\\">\\r\\n\\r\\n                    <div class=\\\"n2-ss-slide-backgrounds\\\"><\\/div><div data-first=\\\"1\\\" data-slide-duration=\\\"0\\\" data-id=\\\"3\\\" style=\\\"\\\" class=\\\"n2-ss-slide n2-ss-canvas n2-ow  n2-ss-slide-3\\\"><div class=\\\"n2-ss-slide-background n2-ow\\\" data-mode=\\\"fill\\\"><img data-hash=\\\"fa32c4bbcd5c64e23e01191ddd9f036b\\\" data-desktop=\\\"\\/boston\\/v2.3\\/images\\/slider\\/slide1.jpg\\\" data-blur=\\\"0\\\" data-opacity=\\\"100\\\" data-x=\\\"50\\\" data-y=\\\"50\\\" src=\\\"\\/boston\\/v2.3\\/images\\/slider\\/slide1.jpg\\\" alt=\\\"\\\" \\/><\\/div><div class=\\\"n2-ss-layers-container n2-ow\\\" data-csstextalign=\\\"center\\\" style=\\\"\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-pm=\\\"content\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"content\\\" data-hasbackground=\\\"0\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"1\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-section-main-content n2-ss-layer-content n2-ow\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"center\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-frontend-fullwidth=\\\"1\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-csstextalign=\\\"inherit\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitgutter=\\\"20\\\" data-desktopportraitwrapafter=\\\"0\\\" data-mobileportraitwrapafter=\\\"1\\\" data-mobilelandscapewrapafter=\\\"1\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"row\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-row \\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\"><div class=\\\"n2-ss-layer-row-inner \\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 100%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"100\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 1.25em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|20|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h2 id=\\\"n2-ss-1item1\\\" class=\\\"n2-font-0e6b5340c2296afbf06e7db7fd784bf2-hover n2-style-a6ed84f0cd0c7e4f774251e22f90cdcd-heading   n2-ow\\\" style=\\\"display:block;\\\">OUR COMPANY CAN BOAST THE REPUTATION<\\/h2><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 2.5em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|40|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h5 id=\\\"n2-ss-1item2\\\" class=\\\"n2-font-d5d28b7f4812b94c75328acf93b4d36e-hover   n2-ow\\\" style=\\\"display:block;\\\">OF THE TRUSTED PARTNER KNOWN WORLDWIDE.<\\/h5><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-mobileportraitfontsize=\\\"140\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-button-container n2-ow n2-font-f125b413d95a7608207943e6e0e130ad-link  n2-ss-nowrap\\\"><a class=\\\"n2-style-2dc0dd587706f0378a4280341d0cbb46-heading  n2-ow \\\" onclick=\\\"return false;\\\" href=\\\"#\\\"><div><div>Learn more<\\/div><\\/div><\\/a><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><div data-slide-duration=\\\"0\\\" data-id=\\\"22\\\" style=\\\"\\\" class=\\\"n2-ss-slide n2-ss-canvas n2-ow  n2-ss-slide-22\\\"><div class=\\\"n2-ss-slide-background n2-ow\\\" data-mode=\\\"fill\\\"><img data-hash=\\\"5e904d9d7069def50e5941d76c4ab994\\\" data-desktop=\\\"\\/boston\\/v2.3\\/images\\/slider\\/slide2.jpg\\\" data-blur=\\\"0\\\" data-opacity=\\\"100\\\" data-x=\\\"50\\\" data-y=\\\"50\\\" src=\\\"\\/boston\\/v2.3\\/images\\/slider\\/slide2.jpg\\\" alt=\\\"\\\" \\/><\\/div><div class=\\\"n2-ss-layers-container n2-ow\\\" data-csstextalign=\\\"center\\\" style=\\\"\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-pm=\\\"content\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"content\\\" data-hasbackground=\\\"0\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"1\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-section-main-content n2-ss-layer-content n2-ow\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"center\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-frontend-fullwidth=\\\"1\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-csstextalign=\\\"inherit\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitgutter=\\\"20\\\" data-desktopportraitwrapafter=\\\"0\\\" data-mobileportraitwrapafter=\\\"1\\\" data-mobilelandscapewrapafter=\\\"1\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"row\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-row \\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\"><div class=\\\"n2-ss-layer-row-inner \\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 100%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"100\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 1.25em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|20|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h2 id=\\\"n2-ss-1item4\\\" class=\\\"n2-font-0e6b5340c2296afbf06e7db7fd784bf2-hover n2-style-a6ed84f0cd0c7e4f774251e22f90cdcd-heading   n2-ow\\\" style=\\\"display:block;\\\">THE LEADING COMPANY DELIVERING<\\/h2><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 2.5em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|40|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h5 id=\\\"n2-ss-1item5\\\" class=\\\"n2-font-d5d28b7f4812b94c75328acf93b4d36e-hover   n2-ow\\\" style=\\\"display:block;\\\">SERVICES OF THE HIGHEST QUALITY.<\\/h5><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-mobileportraitfontsize=\\\"140\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-button-container n2-ow n2-font-f125b413d95a7608207943e6e0e130ad-link  n2-ss-nowrap\\\"><a class=\\\"n2-style-2dc0dd587706f0378a4280341d0cbb46-heading  n2-ow \\\" onclick=\\\"return false;\\\" href=\\\"#\\\"><div><div>Learn more<\\/div><\\/div><\\/a><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><div data-slide-duration=\\\"0\\\" data-id=\\\"21\\\" style=\\\"\\\" class=\\\"n2-ss-slide n2-ss-canvas n2-ow  n2-ss-slide-21\\\"><div class=\\\"n2-ss-slide-background n2-ow\\\" data-mode=\\\"fill\\\"><img data-hash=\\\"df7f5c3556a4057e3ffec5678cdde907\\\" data-desktop=\\\"\\/boston\\/v2.3\\/images\\/slider\\/slide3.jpg\\\" data-blur=\\\"0\\\" data-opacity=\\\"100\\\" data-x=\\\"50\\\" data-y=\\\"50\\\" src=\\\"\\/boston\\/v2.3\\/images\\/slider\\/slide3.jpg\\\" alt=\\\"\\\" \\/><\\/div><div class=\\\"n2-ss-layers-container n2-ow\\\" data-csstextalign=\\\"center\\\" style=\\\"\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-pm=\\\"content\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"content\\\" data-hasbackground=\\\"0\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"1\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-section-main-content n2-ss-layer-content n2-ow\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"center\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-frontend-fullwidth=\\\"1\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-csstextalign=\\\"inherit\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitgutter=\\\"20\\\" data-desktopportraitwrapafter=\\\"0\\\" data-mobileportraitwrapafter=\\\"1\\\" data-mobilelandscapewrapafter=\\\"1\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-sstype=\\\"row\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-row \\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\"><div class=\\\"n2-ss-layer-row-inner \\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"width: 100%;margin-right: 20px;margin-top: 20px;overflow:visible;\\\" data-csstextalign=\\\"inherit\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-pm=\\\"default\\\" data-desktopportraitpadding=\\\"10|*|10|*|10|*|10|*|px+\\\" data-desktopportraitinneralign=\\\"inherit\\\" data-desktopportraitorder=\\\"0\\\" data-colwidthpercent=\\\"100\\\" data-sstype=\\\"col\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-layer-col n2-ss-layer-content\\\" style=\\\"padding:0.625em 0.625em 0.625em 0.625em ;\\\" data-verticalalign=\\\"flex-start\\\"><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 1.25em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|20|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h2 id=\\\"n2-ss-1item7\\\" class=\\\"n2-font-0e6b5340c2296afbf06e7db7fd784bf2-hover n2-style-a6ed84f0cd0c7e4f774251e22f90cdcd-heading   n2-ow\\\" style=\\\"display:block;\\\">WELCOME TO THE ONE OF THE WORLD\'S BEST<\\/h2><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0.625em 0em 2.5em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"10|*|0|*|40|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-plugin=\\\"rendered\\\"><h5 id=\\\"n2-ss-1item8\\\" class=\\\"n2-font-d5d28b7f4812b94c75328acf93b4d36e-hover   n2-ow\\\" style=\\\"display:block;\\\">KNOWN COMPANY IN THE INDUSTRY!<\\/h5><\\/div><div class=\\\"n2-ss-layer n2-ow\\\" style=\\\"margin:0em 0em 0em 0em ;overflow:visible;\\\" data-pm=\\\"normal\\\" data-desktopportraitmargin=\\\"0|*|0|*|0|*|0|*|px+\\\" data-desktopportraitheight=\\\"0\\\" data-has-maxwidth=\\\"0\\\" data-desktopportraitmaxwidth=\\\"0\\\" data-cssselfalign=\\\"inherit\\\" data-desktopportraitselfalign=\\\"inherit\\\" data-sstype=\\\"layer\\\" data-rotation=\\\"0\\\" data-desktopportrait=\\\"1\\\" data-desktoplandscape=\\\"1\\\" data-tabletportrait=\\\"1\\\" data-tabletlandscape=\\\"1\\\" data-mobileportrait=\\\"1\\\" data-mobilelandscape=\\\"1\\\" data-adaptivefont=\\\"0\\\" data-desktopportraitfontsize=\\\"100\\\" data-mobileportraitfontsize=\\\"140\\\" data-plugin=\\\"rendered\\\"><div class=\\\"n2-ss-button-container n2-ow n2-font-f125b413d95a7608207943e6e0e130ad-link  n2-ss-nowrap\\\"><a class=\\\"n2-style-2dc0dd587706f0378a4280341d0cbb46-heading  n2-ow \\\" onclick=\\\"return false;\\\" href=\\\"#\\\"><div><div>Learn more<\\/div><\\/div><\\/a><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div>                <\\/div>\\r\\n            <\\/div>\\r\\n            <div data-ssleft=\\\"width\\/2-bulletwidth\\/2\\\" data-ssbottom=\\\"0+10\\\" data-offset=\\\"10\\\" class=\\\"n2-ss-widget n2-ss-widget-display-desktop n2-ss-widget-display-tablet n2-ss-widget-display-mobile  n2-flex n2-ss-control-bullet n2-ss-control-bullet-horizontal\\\" style=\\\"position: absolute;\\\"><div class=\\\" nextend-bullet-bar n2-ow n2-bar-justify-content-center\\\"><div class=\\\"n2-ow n2-style-71f8992c8fa2aba15e7858625601a6fa-dot \\\" tabindex=\\\"0\\\"><\\/div><div class=\\\"n2-ow n2-style-71f8992c8fa2aba15e7858625601a6fa-dot \\\" tabindex=\\\"0\\\"><\\/div><div class=\\\"n2-ow n2-style-71f8992c8fa2aba15e7858625601a6fa-dot \\\" tabindex=\\\"0\\\"><\\/div><\\/div><\\/div>\\n        <\\/div>\\r\\n        <\\/div><div class=\\\"n2-clear\\\"><\\/div><div id=\\\"n2-ss-1-spinner\\\" style=\\\"display: none;\\\"><div><div class=\\\"n2-ss-spinner-simple-white-container\\\"><div class=\\\"n2-ss-spinner-simple-white\\\"><\\/div><\\/div><\\/div><\\/div><\\/div><\\/div><div id=\\\"n2-ss-1-placeholder\\\" style=\\\"position: relative;z-index:2;background-color:RGBA(0,0,0,0);max-height:3000px; background-color:RGBA(255,255,255,0);\\\"><img style=\\\"width: 100%; max-width:3000px; display: block;opacity:0;\\\" class=\\\"n2-ow\\\" src=\\\"data:image\\/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMCIgd2lkdGg9IjEyMDAiIGhlaWdodD0iNDUwIiA+PC9zdmc+\\\" alt=\\\"Slider\\\" \\/><\\/div>\",\"assets\":{\"css\":{\"staticGroup\":{\"smartslider\":\"E:\\\\xampp717\\\\htdocs\\\\boston\\\\v2.3\\/media\\/n2\\/ss3\\/smartslider.min.css\"},\"files\":[],\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[\".n2-ss-spinner-simple-white-container {\\r\\n    position: absolute;\\r\\n    top: 50%;\\r\\n    left: 50%;\\r\\n    margin: -20px;\\r\\n    background: #fff;\\r\\n    width: 20px;\\r\\n    height: 20px;\\r\\n    padding: 10px;\\r\\n    border-radius: 50%;\\r\\n    z-index: 1000;\\r\\n}\\r\\n\\r\\n.n2-ss-spinner-simple-white {\\r\\n  outline: 1px solid RGBA(0,0,0,0);\\r\\n  width:100%;\\r\\n  height: 100%;\\r\\n}\\r\\n\\r\\n.n2-ss-spinner-simple-white:before {\\r\\n    position: absolute;\\r\\n    top: 50%;\\r\\n    left: 50%;\\r\\n    width: 20px;\\r\\n    height: 20px;\\r\\n    margin-top: -11px;\\r\\n    margin-left: -11px;\\r\\n}\\r\\n\\r\\n.n2-ss-spinner-simple-white:not(:required):before {\\r\\n    content: \'\';\\r\\n    border-radius: 50%;\\r\\n    border-top: 2px solid #333;\\r\\n    border-right: 2px solid transparent;\\r\\n    animation: n2SimpleWhite .6s linear infinite;\\r\\n    -webkit-animation: n2SimpleWhite .6s linear infinite;\\r\\n}\\r\\n@keyframes n2SimpleWhite {\\r\\n    to {transform: rotate(360deg);}\\r\\n}\\r\\n\\r\\n@-webkit-keyframes n2SimpleWhite {\\r\\n    to {-webkit-transform: rotate(360deg);}\\r\\n}\"],\"globalInline\":[]},\"less\":{\"staticGroup\":[],\"files\":[],\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[],\"globalInline\":[]},\"js\":{\"staticGroup\":{\"smartslider-simple-type-frontend\":\"E:\\\\xampp717\\\\htdocs\\\\boston\\\\v2.3\\/media\\/n2\\/ss3\\/plugins\\\\type\\\\simple\\\\simple\\/dist\\/smartslider-simple-type-frontend.min.js\"},\"files\":[],\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[\"N2R([\\\"nextend-frontend\\\",\\\"smartslider-frontend\\\",\\\"nextend-gsap\\\",\\\"smartslider-simple-type-frontend\\\"],function(){new N2Classes.SmartSliderSimple(\'#n2-ss-1\', {\\\"admin\\\":false,\\\"translate3d\\\":1,\\\"callbacks\\\":\\\"\\\",\\\"background.video.mobile\\\":1,\\\"align\\\":\\\"normal\\\",\\\"isDelayed\\\":0,\\\"load\\\":{\\\"fade\\\":1,\\\"scroll\\\":0},\\\"playWhenVisible\\\":1,\\\"playWhenVisibleAt\\\":0.5,\\\"responsive\\\":{\\\"desktop\\\":1,\\\"tablet\\\":1,\\\"mobile\\\":1,\\\"onResizeEnabled\\\":true,\\\"type\\\":\\\"fullwidth\\\",\\\"downscale\\\":1,\\\"upscale\\\":1,\\\"minimumHeight\\\":0,\\\"maximumHeight\\\":3000,\\\"maximumSlideWidth\\\":3000,\\\"maximumSlideWidthLandscape\\\":3000,\\\"maximumSlideWidthTablet\\\":3000,\\\"maximumSlideWidthTabletLandscape\\\":3000,\\\"maximumSlideWidthMobile\\\":3000,\\\"maximumSlideWidthMobileLandscape\\\":3000,\\\"maximumSlideWidthConstrainHeight\\\":0,\\\"forceFull\\\":1,\\\"forceFullOverflowX\\\":\\\"body\\\",\\\"forceFullHorizontalSelector\\\":\\\"body\\\",\\\"constrainRatio\\\":1,\\\"verticalOffsetSelectors\\\":\\\"\\\",\\\"decreaseSliderHeight\\\":0,\\\"focusUser\\\":0,\\\"focusAutoplay\\\":0,\\\"deviceModes\\\":{\\\"desktopPortrait\\\":1,\\\"desktopLandscape\\\":0,\\\"tabletPortrait\\\":1,\\\"tabletLandscape\\\":0,\\\"mobilePortrait\\\":1,\\\"mobileLandscape\\\":0},\\\"normalizedDeviceModes\\\":{\\\"unknownUnknown\\\":[\\\"unknown\\\",\\\"Unknown\\\"],\\\"desktopPortrait\\\":[\\\"desktop\\\",\\\"Portrait\\\"],\\\"desktopLandscape\\\":[\\\"desktop\\\",\\\"Portrait\\\"],\\\"tabletPortrait\\\":[\\\"tablet\\\",\\\"Portrait\\\"],\\\"tabletLandscape\\\":[\\\"tablet\\\",\\\"Portrait\\\"],\\\"mobilePortrait\\\":[\\\"mobile\\\",\\\"Portrait\\\"],\\\"mobileLandscape\\\":[\\\"mobile\\\",\\\"Portrait\\\"]},\\\"verticalRatioModifiers\\\":{\\\"unknownUnknown\\\":1,\\\"desktopPortrait\\\":1,\\\"desktopLandscape\\\":1,\\\"tabletPortrait\\\":1,\\\"tabletLandscape\\\":1,\\\"mobilePortrait\\\":1,\\\"mobileLandscape\\\":1},\\\"minimumFontSizes\\\":{\\\"desktopPortrait\\\":4,\\\"desktopLandscape\\\":4,\\\"tabletPortrait\\\":4,\\\"tabletLandscape\\\":4,\\\"mobilePortrait\\\":4,\\\"mobileLandscape\\\":4},\\\"ratioToDevice\\\":{\\\"Portrait\\\":{\\\"tablet\\\":0.7,\\\"mobile\\\":0.5},\\\"Landscape\\\":{\\\"tablet\\\":0,\\\"mobile\\\":0}},\\\"sliderWidthToDevice\\\":{\\\"desktopPortrait\\\":1200,\\\"desktopLandscape\\\":1200,\\\"tabletPortrait\\\":840,\\\"tabletLandscape\\\":0,\\\"mobilePortrait\\\":600,\\\"mobileLandscape\\\":0},\\\"basedOn\\\":\\\"combined\\\",\\\"orientationMode\\\":\\\"width_and_height\\\",\\\"scrollFix\\\":0,\\\"overflowHiddenPage\\\":0,\\\"desktopPortraitScreenWidth\\\":1200,\\\"tabletPortraitScreenWidth\\\":800,\\\"mobilePortraitScreenWidth\\\":440,\\\"tabletLandscapeScreenWidth\\\":800,\\\"mobileLandscapeScreenWidth\\\":440},\\\"controls\\\":{\\\"scroll\\\":0,\\\"drag\\\":1,\\\"touch\\\":\\\"horizontal\\\",\\\"keyboard\\\":1,\\\"tilt\\\":0},\\\"lazyLoad\\\":0,\\\"lazyLoadNeighbor\\\":0,\\\"blockrightclick\\\":0,\\\"maintainSession\\\":0,\\\"autoplay\\\":{\\\"enabled\\\":0,\\\"start\\\":1,\\\"duration\\\":8000,\\\"autoplayToSlide\\\":-1,\\\"autoplayToSlideIndex\\\":-1,\\\"allowReStart\\\":0,\\\"pause\\\":{\\\"click\\\":1,\\\"mouse\\\":\\\"0\\\",\\\"mediaStarted\\\":1},\\\"resume\\\":{\\\"click\\\":0,\\\"mouse\\\":0,\\\"mediaEnded\\\":1,\\\"slidechanged\\\":0}},\\\"perspective\\\":1500,\\\"layerMode\\\":{\\\"playOnce\\\":0,\\\"playFirstLayer\\\":1,\\\"mode\\\":\\\"skippable\\\",\\\"inAnimation\\\":\\\"mainInEnd\\\"},\\\"background.parallax.tablet\\\":0,\\\"background.parallax.mobile\\\":0,\\\"initCallbacks\\\":[\\\"N2D(\\\\\\\"SmartSliderWidgetBulletTransition\\\\\\\",function(t,i){function e(i,e){this.slider=i,this.slider.started(t.proxy(this.start,this,e))}return e.prototype.start=function(i){if(this.slider.sliderElement.data(\\\\\\\"bullet\\\\\\\"))return!1;this.slider.sliderElement.data(\\\\\\\"bullet\\\\\\\",this),this.axis=\\\\\\\"horizontal\\\\\\\",this.offset=0,this.parameters=i,this.bar=this.slider.sliderElement.find(\\\\\\\".nextend-bullet-bar\\\\\\\");var e=\\\\\\\"universalclick\\\\\\\";if(\\\\\\\"mouseenter\\\\\\\"==i.action&&(e=\\\\\\\"mouseenter\\\\\\\"),this.originalDots=this.dots=this.bar.find(\\\\\\\"div\\\\\\\").on(e,t.proxy(this.onDotClick,this)),this.slider.isShuffled){for(var s=[],o=[],a=0;this.slider.realSlides.length>a;a++){var r=this.slider.realSlides[a];s.push(this.dots.get(r.originalIndex)),o.push(this.parameters.thumbnails[r.originalIndex]),i.numeric&&this.dots.eq(r.originalIndex).html(a+1)}this.originalDots=this.dots=t(s).appendTo(this.dots.parent()),this.parameters.thumbnails=o}if(this.slider.sliderElement.on({slideCountChanged:t.proxy(this.onSlideCountChanged,this),sliderSwitchTo:t.proxy(this.onSlideSwitch,this)}),this.slider.firstSlideReady.done(t.proxy(this.onFirstSlideSet,this)),0==i.overlay){var n=!1;switch(i.area){case 1:n=\\\\\\\"Top\\\\\\\";break;case 12:n=\\\\\\\"Bottom\\\\\\\";break;case 5:n=\\\\\\\"Left\\\\\\\",this.axis=\\\\\\\"vertical\\\\\\\";break;case 8:n=\\\\\\\"Right\\\\\\\",this.axis=\\\\\\\"vertical\\\\\\\"}n&&(this.offset=parseFloat(this.bar.data(\\\\\\\"offset\\\\\\\")),this.slider.responsive.addStaticMargin(n,this))}this.initThumbnails()},e.prototype.onFirstSlideSet=function(t){this.dots.eq(t.index).addClass(\\\\\\\"n2-active\\\\\\\")},e.prototype.onDotClick=function(i){this.slider.directionalChangeToReal(this.originalDots.index(i.currentTarget)),t(i.target).blur()},e.prototype.onSlideSwitch=function(t,i){this.dots.filter(\\\\\\\".n2-active\\\\\\\").removeClass(\\\\\\\"n2-active\\\\\\\"),this.dots.eq(i).addClass(\\\\\\\"n2-active\\\\\\\")},e.prototype.isVisible=function(){return this.bar.is(\\\\\\\":visible\\\\\\\")},e.prototype.getSize=function(){return\\\\\\\"horizontal\\\\\\\"==this.axis?this.bar.height()+this.offset:this.bar.width()+this.offset},e.prototype.initThumbnails=function(){this.parameters.thumbnails.length>0&&this.dots.each(t.proxy(function(i,e){\\\\\\\"\\\\\\\"!=this.parameters.thumbnails[i]&&t(e).on({universalenter:t.proxy(this.showThumbnail,this,i)},{leaveOnSecond:!0})},this))},e.prototype.showThumbnail=function(i,e){var s=this.getThumbnail(i);NextendTween.to(s,.3,{opacity:1}).play(),this.originalDots.eq(i).on(\\\\\\\"universalleave.thumbnailleave\\\\\\\",t.proxy(this.hideThumbnail,this,i,s))},e.prototype.hideThumbnail=function(t,i,e){e.stopPropagation(),this.originalDots.eq(t).off(\\\\\\\"universalleave.thumbnailleave\\\\\\\"),NextendTween.to(i,.3,{opacity:0,onComplete:function(){i.remove()}}).play()},e.prototype.getThumbnail=function(i){var e=this.originalDots.eq(i),s=this.slider.sliderElement.offset(),o=e.offset(),a=e.outerWidth(),r=e.outerHeight(),n=t(\\\\\\\"<div\\\\\\/>\\\\\\\").append(t(\\\\\\\"<div\\\\\\/>\\\\\\\").css({width:this.parameters.thumbnailWidth,height:this.parameters.thumbnailHeight,backgroundImage:\'url(\\\\\\\"\'+this.parameters.thumbnails[i]+\'\\\\\\\")\'}).addClass(\\\\\\\"n2-ss-bullet-thumbnail\\\\\\\")).addClass(this.parameters.thumbnailStyle).addClass(\\\\\\\"n2-ss-bullet-thumbnail-container\\\\\\\").appendTo(this.slider.sliderElement);switch(this.parameters.thumbnailPosition){case\\\\\\\"right\\\\\\\":n.css({left:o.left-s.left+a,top:o.top-s.top+r\\\\\\/2-n.outerHeight(!0)\\\\\\/2});break;case\\\\\\\"left\\\\\\\":n.css({left:o.left-s.left-n.outerWidth(!0),top:o.top-s.top+r\\\\\\/2-n.outerHeight(!0)\\\\\\/2});break;case\\\\\\\"top\\\\\\\":n.css({left:o.left-s.left+a\\\\\\/2-n.outerWidth(!0)\\\\\\/2,top:o.top-s.top-n.outerHeight(!0)});break;case\\\\\\\"bottom\\\\\\\":n.css({left:o.left-s.left+a\\\\\\/2-n.outerWidth(!0)\\\\\\/2,top:o.top-s.top+r})}return e.data(\\\\\\\"thumbnail\\\\\\\",n),n},e.prototype.onSlideCountChanged=function(i,e,s){this.dots=t();for(var o=0;this.originalDots.length>o;o++)o%s==0?this.dots=this.dots.add(this.originalDots.eq(o).css(\\\\\\\"display\\\\\\\",\\\\\\\"\\\\\\\")):this.originalDots.eq(o).css(\\\\\\\"display\\\\\\\",\\\\\\\"none\\\\\\\");this.parameters.numeric&&this.dots.each(function(t,i){i.innerHTML=t+1})},e});\\\",\\\"new N2Classes.SmartSliderWidgetBulletTransition(this, {\\\\\\\"overlay\\\\\\\":false,\\\\\\\"area\\\\\\\":10,\\\\\\\"thumbnails\\\\\\\":[],\\\\\\\"action\\\\\\\":\\\\\\\"click\\\\\\\",\\\\\\\"numeric\\\\\\\":0});\\\"],\\\"allowBGImageAttachmentFixed\\\":false,\\\"bgAnimationsColor\\\":\\\"RGBA(51,51,51,1)\\\",\\\"bgAnimations\\\":0,\\\"mainanimation\\\":{\\\"type\\\":\\\"horizontal\\\",\\\"duration\\\":800,\\\"delay\\\":0,\\\"ease\\\":\\\"easeOutQuad\\\",\\\"parallax\\\":0,\\\"shiftedBackgroundAnimation\\\":0},\\\"carousel\\\":1,\\\"dynamicHeight\\\":0});});\"],\"globalInline\":[]},\"googleFonts\":{\"staticGroup\":[],\"files\":{\"Raleway\":[\"300\",\"400\"]},\"urls\":[],\"codes\":[],\"firstCodes\":[],\"inline\":[],\"globalInline\":[]},\"image\":{\"images\":[\"\\/boston\\/v2.3\\/images\\/slider\\/slide1.jpg\",\"\\/boston\\/v2.3\\/images\\/slider\\/slide2.jpg\",\"\\/boston\\/v2.3\\/images\\/slider\\/slide3.jpg\"]}}}', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -3855,6 +3948,7 @@ INSERT INTO `#__nextend2_section_storage` (`id`, `application`, `section`, `refe
 -- Table structure for table `#__nextend2_smartslider3_generators`
 --
 
+DROP TABLE IF EXISTS `#__nextend2_smartslider3_generators`;
 CREATE TABLE IF NOT EXISTS `#__nextend2_smartslider3_generators` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group` varchar(254) NOT NULL,
@@ -3874,6 +3968,7 @@ TRUNCATE TABLE `#__nextend2_smartslider3_generators`;
 -- Table structure for table `#__nextend2_smartslider3_sliders`
 --
 
+DROP TABLE IF EXISTS `#__nextend2_smartslider3_sliders`;
 CREATE TABLE IF NOT EXISTS `#__nextend2_smartslider3_sliders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
@@ -3905,6 +4000,7 @@ INSERT INTO `#__nextend2_smartslider3_sliders` (`id`, `title`, `type`, `params`,
 -- Table structure for table `#__nextend2_smartslider3_sliders_xref`
 --
 
+DROP TABLE IF EXISTS `#__nextend2_smartslider3_sliders_xref`;
 CREATE TABLE IF NOT EXISTS `#__nextend2_smartslider3_sliders_xref` (
   `group_id` int(11) NOT NULL,
   `slider_id` int(11) NOT NULL,
@@ -3923,6 +4019,7 @@ TRUNCATE TABLE `#__nextend2_smartslider3_sliders_xref`;
 -- Table structure for table `#__nextend2_smartslider3_slides`
 --
 
+DROP TABLE IF EXISTS `#__nextend2_smartslider3_slides`;
 CREATE TABLE IF NOT EXISTS `#__nextend2_smartslider3_slides` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(200) NOT NULL,
@@ -3962,6 +4059,7 @@ INSERT INTO `#__nextend2_smartslider3_slides` (`id`, `title`, `slider`, `publish
 -- Table structure for table `#__overrider`
 --
 
+DROP TABLE IF EXISTS `#__overrider`;
 CREATE TABLE IF NOT EXISTS `#__overrider` (
   `id` int(10) NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
   `constant` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -3981,6 +4079,7 @@ TRUNCATE TABLE `#__overrider`;
 -- Table structure for table `#__postinstall_messages`
 --
 
+DROP TABLE IF EXISTS `#__postinstall_messages`;
 CREATE TABLE IF NOT EXISTS `#__postinstall_messages` (
   `postinstall_message_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `extension_id` bigint(20) NOT NULL DEFAULT '700' COMMENT 'FK to #__extensions',
@@ -4021,6 +4120,7 @@ INSERT INTO `#__postinstall_messages` (`postinstall_message_id`, `extension_id`,
 -- Table structure for table `#__redirect_links`
 --
 
+DROP TABLE IF EXISTS `#__redirect_links`;
 CREATE TABLE IF NOT EXISTS `#__redirect_links` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `old_url` varchar(2048) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -4048,6 +4148,7 @@ TRUNCATE TABLE `#__redirect_links`;
 -- Table structure for table `#__schemas`
 --
 
+DROP TABLE IF EXISTS `#__schemas`;
 CREATE TABLE IF NOT EXISTS `#__schemas` (
   `extension_id` int(11) NOT NULL,
   `version_id` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -4073,6 +4174,7 @@ INSERT INTO `#__schemas` (`extension_id`, `version_id`) VALUES
 -- Table structure for table `#__session`
 --
 
+DROP TABLE IF EXISTS `#__session`;
 CREATE TABLE IF NOT EXISTS `#__session` (
   `session_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `client_id` tinyint(3) UNSIGNED DEFAULT NULL,
@@ -4096,10 +4198,9 @@ TRUNCATE TABLE `#__session`;
 --
 
 INSERT INTO `#__session` (`session_id`, `client_id`, `guest`, `time`, `data`, `userid`, `username`) VALUES
-('639vlucjrt3gps307i89c80hp8', 1, 0, '1531742766', 'joomla|s:968:\"TzoyNDoiSm9vbWxhXFJlZ2lzdHJ5XFJlZ2lzdHJ5IjozOntzOjc6IgAqAGRhdGEiO086ODoic3RkQ2xhc3MiOjE6e3M6OToiX19kZWZhdWx0IjtPOjg6InN0ZENsYXNzIjo0OntzOjc6InNlc3Npb24iO086ODoic3RkQ2xhc3MiOjM6e3M6NzoiY291bnRlciI7aTo1O3M6NToidG9rZW4iO3M6MzI6InhleUxOY1VQY0pUSXBlTXpvdkVwdWFpTUhtanR1aVRZIjtzOjU6InRpbWVyIjtPOjg6InN0ZENsYXNzIjozOntzOjU6InN0YXJ0IjtpOjE1MzE3NDI3MzM7czo0OiJsYXN0IjtpOjE1MzE3NDI3NTY7czozOiJub3ciO2k6MTUzMTc0Mjc2Njt9fXM6ODoicmVnaXN0cnkiO086MjQ6Ikpvb21sYVxSZWdpc3RyeVxSZWdpc3RyeSI6Mzp7czo3OiIAKgBkYXRhIjtPOjg6InN0ZENsYXNzIjoxOntzOjEzOiJjb21faW5zdGFsbGVyIjtPOjg6InN0ZENsYXNzIjozOntzOjc6Im1lc3NhZ2UiO3M6MDoiIjtzOjE3OiJleHRlbnNpb25fbWVzc2FnZSI7czowOiIiO3M6MTI6InJlZGlyZWN0X3VybCI7Tjt9fXM6MTQ6IgAqAGluaXRpYWxpemVkIjtiOjA7czo5OiJzZXBhcmF0b3IiO3M6MToiLiI7fXM6NDoidXNlciI7TzoyMDoiSm9vbWxhXENNU1xVc2VyXFVzZXIiOjE6e3M6MjoiaWQiO3M6MjoiNDUiO31zOjExOiJhcHBsaWNhdGlvbiI7Tzo4OiJzdGRDbGFzcyI6MTp7czo1OiJxdWV1ZSI7YTowOnt9fX19czoxNDoiACoAaW5pdGlhbGl6ZWQiO2I6MDtzOjk6InNlcGFyYXRvciI7czoxOiIuIjt9\";', 45, 'admin'),
-('ju7infqe0ahupvpu5so4r81ssl', 0, 1, '1531742834', 'joomla|s:664:\"TzoyNDoiSm9vbWxhXFJlZ2lzdHJ5XFJlZ2lzdHJ5IjozOntzOjc6IgAqAGRhdGEiO086ODoic3RkQ2xhc3MiOjE6e3M6OToiX19kZWZhdWx0IjtPOjg6InN0ZENsYXNzIjozOntzOjc6InNlc3Npb24iO086ODoic3RkQ2xhc3MiOjI6e3M6NzoiY291bnRlciI7aToxO3M6NToidGltZXIiO086ODoic3RkQ2xhc3MiOjM6e3M6NToic3RhcnQiO2k6MTUzMTc0MjgzNDtzOjQ6Imxhc3QiO2k6MTUzMTc0MjgzNDtzOjM6Im5vdyI7aToxNTMxNzQyODM0O319czo4OiJyZWdpc3RyeSI7TzoyNDoiSm9vbWxhXFJlZ2lzdHJ5XFJlZ2lzdHJ5IjozOntzOjc6IgAqAGRhdGEiO086ODoic3RkQ2xhc3MiOjA6e31zOjE0OiIAKgBpbml0aWFsaXplZCI7YjowO3M6OToic2VwYXJhdG9yIjtzOjE6Ii4iO31zOjQ6InVzZXIiO086MjA6Ikpvb21sYVxDTVNcVXNlclxVc2VyIjoxOntzOjI6ImlkIjtpOjA7fX19czoxNDoiACoAaW5pdGlhbGl6ZWQiO2I6MDtzOjk6InNlcGFyYXRvciI7czoxOiIuIjt9\";', 0, ''),
-('npql6h62da6a41q13bfvadvh3p', 0, 1, '1531742832', 'joomla|s:664:\"TzoyNDoiSm9vbWxhXFJlZ2lzdHJ5XFJlZ2lzdHJ5IjozOntzOjc6IgAqAGRhdGEiO086ODoic3RkQ2xhc3MiOjE6e3M6OToiX19kZWZhdWx0IjtPOjg6InN0ZENsYXNzIjozOntzOjc6InNlc3Npb24iO086ODoic3RkQ2xhc3MiOjI6e3M6NzoiY291bnRlciI7aToxO3M6NToidGltZXIiO086ODoic3RkQ2xhc3MiOjM6e3M6NToic3RhcnQiO2k6MTUzMTc0MjgzMDtzOjQ6Imxhc3QiO2k6MTUzMTc0MjgzMDtzOjM6Im5vdyI7aToxNTMxNzQyODMwO319czo4OiJyZWdpc3RyeSI7TzoyNDoiSm9vbWxhXFJlZ2lzdHJ5XFJlZ2lzdHJ5IjozOntzOjc6IgAqAGRhdGEiO086ODoic3RkQ2xhc3MiOjA6e31zOjE0OiIAKgBpbml0aWFsaXplZCI7YjowO3M6OToic2VwYXJhdG9yIjtzOjE6Ii4iO31zOjQ6InVzZXIiO086MjA6Ikpvb21sYVxDTVNcVXNlclxVc2VyIjoxOntzOjI6ImlkIjtpOjA7fX19czoxNDoiACoAaW5pdGlhbGl6ZWQiO2I6MDtzOjk6InNlcGFyYXRvciI7czoxOiIuIjt9\";', 0, ''),
-('v2kthd84kjogf19crou82b8b49', 1, 0, '1531742888', 'joomla|s:864:\"TzoyNDoiSm9vbWxhXFJlZ2lzdHJ5XFJlZ2lzdHJ5IjozOntzOjc6IgAqAGRhdGEiO086ODoic3RkQ2xhc3MiOjE6e3M6OToiX19kZWZhdWx0IjtPOjg6InN0ZENsYXNzIjozOntzOjc6InNlc3Npb24iO086ODoic3RkQ2xhc3MiOjM6e3M6NzoiY291bnRlciI7aTo0O3M6NToidGltZXIiO086ODoic3RkQ2xhc3MiOjM6e3M6NToic3RhcnQiO2k6MTUzMTc0Mjg1MTtzOjQ6Imxhc3QiO2k6MTUzMTc0Mjg1NztzOjM6Im5vdyI7aToxNTMxNzQyODU3O31zOjU6InRva2VuIjtzOjMyOiJ6R0FUaEE0c0FzVGVjQVVNVHdrOUVHdnpHNVNscGY4cyI7fXM6ODoicmVnaXN0cnkiO086MjQ6Ikpvb21sYVxSZWdpc3RyeVxSZWdpc3RyeSI6Mzp7czo3OiIAKgBkYXRhIjtPOjg6InN0ZENsYXNzIjoxOntzOjEzOiJjb21faW5zdGFsbGVyIjtPOjg6InN0ZENsYXNzIjoyOntzOjc6Im1lc3NhZ2UiO3M6MDoiIjtzOjE3OiJleHRlbnNpb25fbWVzc2FnZSI7czowOiIiO319czoxNDoiACoAaW5pdGlhbGl6ZWQiO2I6MDtzOjk6InNlcGFyYXRvciI7czoxOiIuIjt9czo0OiJ1c2VyIjtPOjIwOiJKb29tbGFcQ01TXFVzZXJcVXNlciI6MTp7czoyOiJpZCI7czoyOiI0NSI7fX19czoxNDoiACoAaW5pdGlhbGl6ZWQiO2I6MDtzOjk6InNlcGFyYXRvciI7czoxOiIuIjt9\";', 45, 'admin');
+('05k3ta8p8a4mc0m39egh87eoah', 0, 0, '1533018329', 'joomla|s:2392:\"TzoyNDoiSm9vbWxhXFJlZ2lzdHJ5XFJlZ2lzdHJ5IjozOntzOjc6IgAqAGRhdGEiO086ODoic3RkQ2xhc3MiOjI6e3M6OToiX19kZWZhdWx0IjtPOjg6InN0ZENsYXNzIjo0OntzOjc6InNlc3Npb24iO086ODoic3RkQ2xhc3MiOjM6e3M6NzoiY291bnRlciI7aToxOTtzOjU6InRpbWVyIjtPOjg6InN0ZENsYXNzIjozOntzOjU6InN0YXJ0IjtpOjE1MzMwMTY2MTM7czo0OiJsYXN0IjtpOjE1MzMwMTc0NzY7czozOiJub3ciO2k6MTUzMzAxODMyODt9czo1OiJ0b2tlbiI7czozMjoiSmc2RU1sZms3WlRRNWM4WTZMcDBwenM1MERxWHlyNngiO31zOjg6InJlZ2lzdHJ5IjtPOjI0OiJKb29tbGFcUmVnaXN0cnlcUmVnaXN0cnkiOjM6e3M6NzoiACoAZGF0YSI7Tzo4OiJzdGRDbGFzcyI6Mjp7czoxNDoiY29tX3ZpcnR1ZW1hcnQiO086ODoic3RkQ2xhc3MiOjE6e3M6NDoiY2FydCI7Tzo4OiJzdGRDbGFzcyI6MTp7czoxMDoibGltaXRzdGFydCI7aTowO319czo1OiJ1c2VycyI7Tzo4OiJzdGRDbGFzcyI6MTp7czo1OiJsb2dpbiI7Tzo4OiJzdGRDbGFzcyI6MTp7czo0OiJmb3JtIjtPOjg6InN0ZENsYXNzIjoyOntzOjY6InJldHVybiI7czo3NDoiaW5kZXgucGhwP29wdGlvbj1jb21fdmlydHVlbWFydCZ2aWV3PWNhcnQmbGltaXRzdGFydD0wJmtleXdvcmQ9Jkl0ZW1pZD0xMDgiO3M6NDoiZGF0YSI7YTowOnt9fX19fXM6MTQ6IgAqAGluaXRpYWxpemVkIjtiOjA7czo5OiJzZXBhcmF0b3IiO3M6MToiLiI7fXM6NDoidXNlciI7TzoyMDoiSm9vbWxhXENNU1xVc2VyXFVzZXIiOjE6e3M6MjoiaWQiO3M6MzoiODcyIjt9czoxMToiYXBwbGljYXRpb24iO086ODoic3RkQ2xhc3MiOjE6e3M6NToicXVldWUiO2E6MDp7fX19czo0OiJfX3ZtIjtPOjg6InN0ZENsYXNzIjo1OntzOjY6Im1hbmFnZSI7aTowO3M6MTk6InZtbGFzdHZpc2l0ZWRJdGVtaWQiO2k6MTA4O3M6MjM6InZtbGFzdHZpc2l0ZWRjYXRlZ29yeWlkIjtpOjQ7czo2OiJ2bWNhcnQiO3M6NjgxOiJ7ImNhcnRQcm9kdWN0c0RhdGEiOlt7InZpcnR1ZW1hcnRfcHJvZHVjdF9pZCI6MjIsInF1YW50aXR5IjoxLCJjdXN0b21Qcm9kdWN0RGF0YSI6W119XSwidmVuZG9ySWQiOjEsImxhc3RWaXNpdGVkQ2F0ZWdvcnlJZCI6MCwidmlydHVlbWFydF9zaGlwbWVudG1ldGhvZF9pZCI6IjEiLCJ2aXJ0dWVtYXJ0X3BheW1lbnRtZXRob2RfaWQiOiIxIiwiYXV0b21hdGljU2VsZWN0ZWRTaGlwbWVudCI6dHJ1ZSwiYXV0b21hdGljU2VsZWN0ZWRQYXltZW50Ijp0cnVlLCJvcmRlcl9udW1iZXIiOm51bGwsIkJUIjowLCJTVCI6MCwiY2FydGZpZWxkcyI6bnVsbCwiY291cG9uQ29kZSI6IiIsIl90cmllc1ZhbGlkYXRlQ291cG9uIjpbXSwib3JkZXJfbGFuZ3VhZ2UiOiJlbi1HQiIsInByaWNlc0N1cnJlbmN5IjoiMTQ0IiwicGF5bWVudEN1cnJlbmN5IjoiMTQ0IiwiX2d1ZXN0IjowLCJfaW5DaGVja091dCI6ZmFsc2UsIl9pbkNvbmZpcm0iOmZhbHNlLCJfZGF0YVZhbGlkYXRlZCI6ZmFsc2UsIl9jb25maXJtRG9uZSI6ZmFsc2UsIlNUc2FtZUFzQlQiOjEsInNlbGVjdGVkX3NoaXB0byI6MCwiX2Zyb21DYXJ0IjpmYWxzZSwibGF5b3V0IjoiZGVmYXVsdCIsImxheW91dFBhdGgiOiIiLCJ2aXJ0dWVtYXJ0X2NhcnRfaWQiOjAsIm9yZGVyZG9uZUh0bWwiOmZhbHNlLCJ2aXJ0dWVtYXJ0X29yZGVyX2lkIjpmYWxzZX0iO3M6MjM6InZtbGFzdHZpc2l0ZWRwcm9kdWN0aWRzIjthOjM6e2k6MDtpOjIwO2k6MTtpOjIyO2k6MjtpOjIxO319fXM6MTQ6IgAqAGluaXRpYWxpemVkIjtiOjA7czo5OiJzZXBhcmF0b3IiO3M6MToiLiI7fQ==\";', 872, 'admin'),
+('8tgkkrnl7ip72t906ini5uj588', 1, 0, '1533018420', 'joomla|s:1208:\"TzoyNDoiSm9vbWxhXFJlZ2lzdHJ5XFJlZ2lzdHJ5IjozOntzOjc6IgAqAGRhdGEiO086ODoic3RkQ2xhc3MiOjE6e3M6OToiX19kZWZhdWx0IjtPOjg6InN0ZENsYXNzIjozOntzOjc6InNlc3Npb24iO086ODoic3RkQ2xhc3MiOjM6e3M6NzoiY291bnRlciI7aTo4O3M6NToidG9rZW4iO3M6MzI6InZHTnJUVlZYcUVmcmRqVWhzWUtVQTV4QkVxUDdVa1dLIjtzOjU6InRpbWVyIjtPOjg6InN0ZENsYXNzIjozOntzOjU6InN0YXJ0IjtpOjE1MzMwMTgyOTE7czo0OiJsYXN0IjtpOjE1MzMwMTgzODQ7czozOiJub3ciO2k6MTUzMzAxODQxOTt9fXM6ODoicmVnaXN0cnkiO086MjQ6Ikpvb21sYVxSZWdpc3RyeVxSZWdpc3RyeSI6Mzp7czo3OiIAKgBkYXRhIjtPOjg6InN0ZENsYXNzIjoxOntzOjEzOiJjb21faW5zdGFsbGVyIjtPOjg6InN0ZENsYXNzIjozOntzOjc6Im1lc3NhZ2UiO3M6MDoiIjtzOjE3OiJleHRlbnNpb25fbWVzc2FnZSI7czowOiIiO3M6NjoibWFuYWdlIjtPOjg6InN0ZENsYXNzIjozOntzOjY6ImZpbHRlciI7YTo1OntzOjY6InNlYXJjaCI7czowOiIiO3M6Njoic3RhdHVzIjtzOjA6IiI7czo5OiJjbGllbnRfaWQiO3M6MDoiIjtzOjQ6InR5cGUiO3M6ODoidGVtcGxhdGUiO3M6NjoiZm9sZGVyIjtzOjA6IiI7fXM6NDoibGlzdCI7YToyOntzOjEyOiJmdWxsb3JkZXJpbmciO3M6ODoibmFtZSBBU0MiO3M6NToibGltaXQiO3M6MjoiMjAiO31zOjEwOiJsaW1pdHN0YXJ0IjtpOjA7fX19czoxNDoiACoAaW5pdGlhbGl6ZWQiO2I6MDtzOjk6InNlcGFyYXRvciI7czoxOiIuIjt9czo0OiJ1c2VyIjtPOjIwOiJKb29tbGFcQ01TXFVzZXJcVXNlciI6MTp7czoyOiJpZCI7czozOiI4NzIiO319fXM6MTQ6IgAqAGluaXRpYWxpemVkIjtiOjA7czo5OiJzZXBhcmF0b3IiO3M6MToiLiI7fQ==\";', 872, 'admin'),
+('teoooutbhr2mvcdbi8itn4220n', 0, 1, '1533017155', 'joomla|s:1732:\"TzoyNDoiSm9vbWxhXFJlZ2lzdHJ5XFJlZ2lzdHJ5IjozOntzOjc6IgAqAGRhdGEiO086ODoic3RkQ2xhc3MiOjI6e3M6OToiX19kZWZhdWx0IjtPOjg6InN0ZENsYXNzIjozOntzOjc6InNlc3Npb24iO086ODoic3RkQ2xhc3MiOjI6e3M6NzoiY291bnRlciI7aToxO3M6NToidGltZXIiO086ODoic3RkQ2xhc3MiOjM6e3M6NToic3RhcnQiO2k6MTUzMzAxNzE1NDtzOjQ6Imxhc3QiO2k6MTUzMzAxNzE1NDtzOjM6Im5vdyI7aToxNTMzMDE3MTU0O319czo4OiJyZWdpc3RyeSI7TzoyNDoiSm9vbWxhXFJlZ2lzdHJ5XFJlZ2lzdHJ5IjozOntzOjc6IgAqAGRhdGEiO086ODoic3RkQ2xhc3MiOjA6e31zOjE0OiIAKgBpbml0aWFsaXplZCI7YjowO3M6OToic2VwYXJhdG9yIjtzOjE6Ii4iO31zOjQ6InVzZXIiO086MjA6Ikpvb21sYVxDTVNcVXNlclxVc2VyIjoxOntzOjI6ImlkIjtpOjA7fX1zOjQ6Il9fdm0iO086ODoic3RkQ2xhc3MiOjU6e3M6NjoibWFuYWdlIjtpOjA7czoxOToidm1sYXN0dmlzaXRlZEl0ZW1pZCI7aToxMDg7czoyMzoidm1sYXN0dmlzaXRlZGNhdGVnb3J5aWQiO2k6NDtzOjY6InZtY2FydCI7czo2MTc6InsiY2FydFByb2R1Y3RzRGF0YSI6W10sInZlbmRvcklkIjowLCJsYXN0VmlzaXRlZENhdGVnb3J5SWQiOjAsInZpcnR1ZW1hcnRfc2hpcG1lbnRtZXRob2RfaWQiOiIxIiwidmlydHVlbWFydF9wYXltZW50bWV0aG9kX2lkIjoiMSIsImF1dG9tYXRpY1NlbGVjdGVkU2hpcG1lbnQiOnRydWUsImF1dG9tYXRpY1NlbGVjdGVkUGF5bWVudCI6dHJ1ZSwib3JkZXJfbnVtYmVyIjpudWxsLCJCVCI6MCwiU1QiOjAsImNhcnRmaWVsZHMiOm51bGwsImNvdXBvbkNvZGUiOiIiLCJfdHJpZXNWYWxpZGF0ZUNvdXBvbiI6W10sIm9yZGVyX2xhbmd1YWdlIjoiZW4tR0IiLCJwcmljZXNDdXJyZW5jeSI6IjE0NCIsInBheW1lbnRDdXJyZW5jeSI6IjE0NCIsIl9ndWVzdCI6MSwiX2luQ2hlY2tPdXQiOmZhbHNlLCJfaW5Db25maXJtIjpmYWxzZSwiX2RhdGFWYWxpZGF0ZWQiOmZhbHNlLCJfY29uZmlybURvbmUiOmZhbHNlLCJTVHNhbWVBc0JUIjoxLCJzZWxlY3RlZF9zaGlwdG8iOjAsIl9mcm9tQ2FydCI6ZmFsc2UsImxheW91dCI6ImRlZmF1bHQiLCJsYXlvdXRQYXRoIjoiIiwidmlydHVlbWFydF9jYXJ0X2lkIjowLCJvcmRlcmRvbmVIdG1sIjpmYWxzZSwidmlydHVlbWFydF9vcmRlcl9pZCI6ZmFsc2V9IjtzOjIzOiJ2bWxhc3R2aXNpdGVkcHJvZHVjdGlkcyI7YToxOntpOjA7aToyMDt9fX1zOjE0OiIAKgBpbml0aWFsaXplZCI7YjowO3M6OToic2VwYXJhdG9yIjtzOjE6Ii4iO30=\";', 0, '');
 
 -- --------------------------------------------------------
 
@@ -4107,6 +4208,7 @@ INSERT INTO `#__session` (`session_id`, `client_id`, `guest`, `time`, `data`, `u
 -- Table structure for table `#__spsimpleportfolio_items`
 --
 
+DROP TABLE IF EXISTS `#__spsimpleportfolio_items`;
 CREATE TABLE IF NOT EXISTS `#__spsimpleportfolio_items` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -4154,6 +4256,7 @@ INSERT INTO `#__spsimpleportfolio_items` (`id`, `title`, `alias`, `catid`, `imag
 -- Table structure for table `#__spsimpleportfolio_tags`
 --
 
+DROP TABLE IF EXISTS `#__spsimpleportfolio_tags`;
 CREATE TABLE IF NOT EXISTS `#__spsimpleportfolio_tags` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -4184,6 +4287,7 @@ INSERT INTO `#__spsimpleportfolio_tags` (`id`, `title`, `alias`) VALUES
 -- Table structure for table `#__tags`
 --
 
+DROP TABLE IF EXISTS `#__tags`;
 CREATE TABLE IF NOT EXISTS `#__tags` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `parent_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -4244,6 +4348,7 @@ INSERT INTO `#__tags` (`id`, `parent_id`, `lft`, `rgt`, `level`, `path`, `title`
 -- Table structure for table `#__template_styles`
 --
 
+DROP TABLE IF EXISTS `#__template_styles`;
 CREATE TABLE IF NOT EXISTS `#__template_styles` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `template` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -4280,6 +4385,7 @@ INSERT INTO `#__template_styles` (`id`, `template`, `client_id`, `home`, `title`
 -- Table structure for table `#__testimonies`
 --
 
+DROP TABLE IF EXISTS `#__testimonies`;
 CREATE TABLE IF NOT EXISTS `#__testimonies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -4328,6 +4434,7 @@ INSERT INTO `#__testimonies` (`id`, `name`, `email`, `avatar`, `website_url`, `p
 -- Table structure for table `#__ucm_base`
 --
 
+DROP TABLE IF EXISTS `#__ucm_base`;
 CREATE TABLE IF NOT EXISTS `#__ucm_base` (
   `ucm_id` int(10) UNSIGNED NOT NULL,
   `ucm_item_id` int(10) NOT NULL,
@@ -4350,6 +4457,7 @@ TRUNCATE TABLE `#__ucm_base`;
 -- Table structure for table `#__ucm_content`
 --
 
+DROP TABLE IF EXISTS `#__ucm_content`;
 CREATE TABLE IF NOT EXISTS `#__ucm_content` (
   `core_content_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `core_type_alias` varchar(400) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'FK to the content types table',
@@ -4409,6 +4517,7 @@ TRUNCATE TABLE `#__ucm_content`;
 -- Table structure for table `#__ucm_history`
 --
 
+DROP TABLE IF EXISTS `#__ucm_history`;
 CREATE TABLE IF NOT EXISTS `#__ucm_history` (
   `version_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `ucm_item_id` int(10) UNSIGNED NOT NULL,
@@ -4646,6 +4755,7 @@ INSERT INTO `#__ucm_history` (`version_id`, `ucm_item_id`, `ucm_type_id`, `versi
 -- Table structure for table `#__updates`
 --
 
+DROP TABLE IF EXISTS `#__updates`;
 CREATE TABLE IF NOT EXISTS `#__updates` (
   `update_id` int(11) NOT NULL AUTO_INCREMENT,
   `update_site_id` int(11) DEFAULT '0',
@@ -4662,7 +4772,7 @@ CREATE TABLE IF NOT EXISTS `#__updates` (
   `infourl` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `extra_query` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT '',
   PRIMARY KEY (`update_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Available Updates';
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Available Updates';
 
 --
 -- Truncate table before insert `#__updates`
@@ -4674,25 +4784,85 @@ TRUNCATE TABLE `#__updates`;
 --
 
 INSERT INTO `#__updates` (`update_id`, `update_site_id`, `extension_id`, `name`, `description`, `element`, `type`, `folder`, `client_id`, `version`, `data`, `detailsurl`, `infourl`, `extra_query`) VALUES
-(1, 3, 0, 'English CA', '', 'pkg_en-CA', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/en-CA_details.xml', '', ''),
-(2, 3, 0, 'French CA', '', 'pkg_fr-CA', 'package', '', 0, '3.6.5.1', '', 'https://update.joomla.org/language/details3/fr-CA_details.xml', '', ''),
-(3, 3, 0, 'Welsh', '', 'pkg_cy-GB', 'package', '', 0, '3.8.5.1', '', 'https://update.joomla.org/language/details3/cy-GB_details.xml', '', ''),
-(4, 3, 0, 'Sinhala', '', 'pkg_si-LK', 'package', '', 0, '3.3.1.2', '', 'https://update.joomla.org/language/details3/si-LK_details.xml', '', ''),
-(5, 3, 0, 'Dari Persian', '', 'pkg_prs-AF', 'package', '', 0, '3.4.4.2', '', 'https://update.joomla.org/language/details3/prs-AF_details.xml', '', ''),
-(6, 3, 0, 'Turkmen', '', 'pkg_tk-TM', 'package', '', 0, '3.5.0.2', '', 'https://update.joomla.org/language/details3/tk-TM_details.xml', '', ''),
-(7, 3, 0, 'Irish', '', 'pkg_ga-IE', 'package', '', 0, '3.8.7.1', '', 'https://update.joomla.org/language/details3/ga-IE_details.xml', '', ''),
-(8, 3, 0, 'Dzongkha', '', 'pkg_dz-BT', 'package', '', 0, '3.6.2.1', '', 'https://update.joomla.org/language/details3/dz-BT_details.xml', '', ''),
-(9, 3, 0, 'Slovenian', '', 'pkg_sl-SI', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/sl-SI_details.xml', '', ''),
-(10, 3, 0, 'Spanish CO', '', 'pkg_es-CO', 'package', '', 0, '3.8.6.1', '', 'https://update.joomla.org/language/details3/es-CO_details.xml', '', ''),
-(11, 3, 0, 'German CH', '', 'pkg_de-CH', 'package', '', 0, '3.8.10.2', '', 'https://update.joomla.org/language/details3/de-CH_details.xml', '', ''),
-(12, 3, 0, 'German AT', '', 'pkg_de-AT', 'package', '', 0, '3.8.10.2', '', 'https://update.joomla.org/language/details3/de-AT_details.xml', '', ''),
-(13, 3, 0, 'German LI', '', 'pkg_de-LI', 'package', '', 0, '3.8.10.2', '', 'https://update.joomla.org/language/details3/de-LI_details.xml', '', ''),
-(14, 3, 0, 'German LU', '', 'pkg_de-LU', 'package', '', 0, '3.8.10.2', '', 'https://update.joomla.org/language/details3/de-LU_details.xml', '', ''),
-(15, 3, 0, 'English NZ', '', 'pkg_en-NZ', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/en-NZ_details.xml', '', ''),
-(16, 29, 0, 'VirtueMart - Shipment, by Weight, country, zip,... ', 'VirtueMart - Shipment, Shipment, by Weight, country, zip,... ', 'standard', 'plugin', 'vmshipment', 0, '3.2.1', '', 'http://virtuemart.net/releases/vm3/plg_vmshipment_weight_countries_update.xml', 'https://docs.virtuemart.net/tutorials/installation-migration-upgrade/226-update-single-plugin-delivered-by-aio.html', ''),
-(17, 36, 0, 'VirtueMart Product module', 'VirtueMart Product module', 'mod_virtuemart_product', 'plugin', '', 0, '3.2.1', '', 'http://virtuemart.net/releases/vm3/mod_virtuemart_product_update.xml', 'https://docs.virtuemart.net/tutorials/installation-migration-upgrade/226-update-single-plugin-delivered-by-aio.html', ''),
-(18, 59, 0, 'SP Simple Portfolio Module', '', '', 'module', '', 0, '1.6', '', 'http://www.joomshaper.com/updates/mod-sp-simple-portfolio.xml', '', ''),
-(19, 69, 10030, 'Smart Slider 3', '', 'com_smartslider3', 'component', '', 1, '3.3.4', '', 'https://secure.nextendweb.com/api/api.php?action=joomla_version&platform=joomla&product=smartslider3&pro=0', 'https://smartslider3.helpscoutdocs.com/article/432-changelog', '');
+(1, 3, 0, 'Armenian', '', 'pkg_hy-AM', 'package', '', 0, '3.4.4.1', '', 'https://update.joomla.org/language/details3/hy-AM_details.xml', '', ''),
+(2, 3, 0, 'Malay', '', 'pkg_ms-MY', 'package', '', 0, '3.4.1.2', '', 'https://update.joomla.org/language/details3/ms-MY_details.xml', '', ''),
+(3, 3, 0, 'Romanian', '', 'pkg_ro-RO', 'package', '', 0, '3.7.3.1', '', 'https://update.joomla.org/language/details3/ro-RO_details.xml', '', ''),
+(4, 3, 0, 'Flemish', '', 'pkg_nl-BE', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/nl-BE_details.xml', '', ''),
+(5, 3, 0, 'Chinese Traditional', '', 'pkg_zh-TW', 'package', '', 0, '3.8.0.1', '', 'https://update.joomla.org/language/details3/zh-TW_details.xml', '', ''),
+(6, 3, 0, 'French', '', 'pkg_fr-FR', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/fr-FR_details.xml', '', ''),
+(7, 3, 0, 'Galician', '', 'pkg_gl-ES', 'package', '', 0, '3.3.1.2', '', 'https://update.joomla.org/language/details3/gl-ES_details.xml', '', ''),
+(8, 3, 0, 'Georgian', '', 'pkg_ka-GE', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/ka-GE_details.xml', '', ''),
+(9, 3, 0, 'Greek', '', 'pkg_el-GR', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/el-GR_details.xml', '', ''),
+(10, 3, 0, 'Japanese', '', 'pkg_ja-JP', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/ja-JP_details.xml', '', ''),
+(11, 3, 0, 'Hebrew', '', 'pkg_he-IL', 'package', '', 0, '3.1.1.2', '', 'https://update.joomla.org/language/details3/he-IL_details.xml', '', ''),
+(12, 3, 0, 'Bengali', '', 'pkg_bn-BD', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/bn-BD_details.xml', '', ''),
+(13, 3, 0, 'Hungarian', '', 'pkg_hu-HU', 'package', '', 0, '3.8.7.1', '', 'https://update.joomla.org/language/details3/hu-HU_details.xml', '', ''),
+(14, 3, 0, 'Afrikaans', '', 'pkg_af-ZA', 'package', '', 0, '3.8.10.2', '', 'https://update.joomla.org/language/details3/af-ZA_details.xml', '', ''),
+(15, 3, 0, 'Arabic Unitag', '', 'pkg_ar-AA', 'package', '', 0, '3.7.5.1', '', 'https://update.joomla.org/language/details3/ar-AA_details.xml', '', ''),
+(16, 3, 0, 'Belarusian', '', 'pkg_be-BY', 'package', '', 0, '3.2.1.2', '', 'https://update.joomla.org/language/details3/be-BY_details.xml', '', ''),
+(17, 3, 0, 'Bulgarian', '', 'pkg_bg-BG', 'package', '', 0, '3.6.5.2', '', 'https://update.joomla.org/language/details3/bg-BG_details.xml', '', ''),
+(18, 3, 0, 'Catalan', '', 'pkg_ca-ES', 'package', '', 0, '3.8.3.3', '', 'https://update.joomla.org/language/details3/ca-ES_details.xml', '', ''),
+(19, 3, 0, 'Chinese Simplified', '', 'pkg_zh-CN', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/zh-CN_details.xml', '', ''),
+(20, 3, 0, 'Croatian', '', 'pkg_hr-HR', 'package', '', 0, '3.8.5.1', '', 'https://update.joomla.org/language/details3/hr-HR_details.xml', '', ''),
+(21, 3, 0, 'Czech', '', 'pkg_cs-CZ', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/cs-CZ_details.xml', '', ''),
+(22, 3, 0, 'Danish', '', 'pkg_da-DK', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/da-DK_details.xml', '', ''),
+(23, 3, 0, 'Dutch', '', 'pkg_nl-NL', 'package', '', 0, '3.8.9.1', '', 'https://update.joomla.org/language/details3/nl-NL_details.xml', '', ''),
+(24, 3, 0, 'Esperanto', '', 'pkg_eo-XX', 'package', '', 0, '3.8.8.1', '', 'https://update.joomla.org/language/details3/eo-XX_details.xml', '', ''),
+(25, 3, 0, 'Estonian', '', 'pkg_et-EE', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/et-EE_details.xml', '', ''),
+(26, 3, 0, 'Italian', '', 'pkg_it-IT', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/it-IT_details.xml', '', ''),
+(27, 3, 0, 'Khmer', '', 'pkg_km-KH', 'package', '', 0, '3.4.5.1', '', 'https://update.joomla.org/language/details3/km-KH_details.xml', '', ''),
+(28, 3, 0, 'Korean', '', 'pkg_ko-KR', 'package', '', 0, '3.8.9.1', '', 'https://update.joomla.org/language/details3/ko-KR_details.xml', '', ''),
+(29, 3, 0, 'Latvian', '', 'pkg_lv-LV', 'package', '', 0, '3.7.3.1', '', 'https://update.joomla.org/language/details3/lv-LV_details.xml', '', ''),
+(30, 3, 0, 'Lithuanian', '', 'pkg_lt-LT', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/lt-LT_details.xml', '', ''),
+(31, 3, 0, 'Macedonian', '', 'pkg_mk-MK', 'package', '', 0, '3.6.5.1', '', 'https://update.joomla.org/language/details3/mk-MK_details.xml', '', ''),
+(32, 3, 0, 'Norwegian Bokmal', '', 'pkg_nb-NO', 'package', '', 0, '3.8.9.1', '', 'https://update.joomla.org/language/details3/nb-NO_details.xml', '', ''),
+(33, 3, 0, 'Norwegian Nynorsk', '', 'pkg_nn-NO', 'package', '', 0, '3.4.2.1', '', 'https://update.joomla.org/language/details3/nn-NO_details.xml', '', ''),
+(34, 3, 0, 'Persian', '', 'pkg_fa-IR', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/fa-IR_details.xml', '', ''),
+(35, 3, 0, 'Polish', '', 'pkg_pl-PL', 'package', '', 0, '3.8.8.2', '', 'https://update.joomla.org/language/details3/pl-PL_details.xml', '', ''),
+(36, 3, 0, 'Portuguese', '', 'pkg_pt-PT', 'package', '', 0, '3.8.2.1', '', 'https://update.joomla.org/language/details3/pt-PT_details.xml', '', ''),
+(37, 3, 0, 'Russian', '', 'pkg_ru-RU', 'package', '', 0, '3.8.2.1', '', 'https://update.joomla.org/language/details3/ru-RU_details.xml', '', ''),
+(38, 3, 0, 'English AU', '', 'pkg_en-AU', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/en-AU_details.xml', '', ''),
+(39, 3, 0, 'Slovak', '', 'pkg_sk-SK', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/sk-SK_details.xml', '', ''),
+(40, 3, 0, 'English US', '', 'pkg_en-US', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/en-US_details.xml', '', ''),
+(41, 3, 0, 'Swedish', '', 'pkg_sv-SE', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/sv-SE_details.xml', '', ''),
+(42, 3, 0, 'Syriac', '', 'pkg_sy-IQ', 'package', '', 0, '3.4.5.1', '', 'https://update.joomla.org/language/details3/sy-IQ_details.xml', '', ''),
+(43, 3, 0, 'Tamil', '', 'pkg_ta-IN', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/ta-IN_details.xml', '', ''),
+(44, 3, 0, 'Thai', '', 'pkg_th-TH', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/th-TH_details.xml', '', ''),
+(45, 3, 0, 'Turkish', '', 'pkg_tr-TR', 'package', '', 0, '3.8.2.1', '', 'https://update.joomla.org/language/details3/tr-TR_details.xml', '', ''),
+(46, 3, 0, 'Ukrainian', '', 'pkg_uk-UA', 'package', '', 0, '3.7.1.1', '', 'https://update.joomla.org/language/details3/uk-UA_details.xml', '', ''),
+(47, 3, 0, 'Uyghur', '', 'pkg_ug-CN', 'package', '', 0, '3.7.5.1', '', 'https://update.joomla.org/language/details3/ug-CN_details.xml', '', ''),
+(48, 3, 0, 'Albanian', '', 'pkg_sq-AL', 'package', '', 0, '3.1.1.2', '', 'https://update.joomla.org/language/details3/sq-AL_details.xml', '', ''),
+(49, 3, 0, 'Basque', '', 'pkg_eu-ES', 'package', '', 0, '3.7.5.1', '', 'https://update.joomla.org/language/details3/eu-ES_details.xml', '', ''),
+(50, 3, 0, 'Hindi', '', 'pkg_hi-IN', 'package', '', 0, '3.3.6.2', '', 'https://update.joomla.org/language/details3/hi-IN_details.xml', '', ''),
+(51, 3, 0, 'German DE', '', 'pkg_de-DE', 'package', '', 0, '3.8.10.2', '', 'https://update.joomla.org/language/details3/de-DE_details.xml', '', ''),
+(52, 3, 0, 'Portuguese Brazil', '', 'pkg_pt-BR', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/pt-BR_details.xml', '', ''),
+(53, 3, 0, 'Serbian Latin', '', 'pkg_sr-YU', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/sr-YU_details.xml', '', ''),
+(54, 3, 0, 'Spanish', '', 'pkg_es-ES', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/es-ES_details.xml', '', ''),
+(55, 3, 0, 'Bosnian', '', 'pkg_bs-BA', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/bs-BA_details.xml', '', ''),
+(56, 3, 0, 'Serbian Cyrillic', '', 'pkg_sr-RS', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/sr-RS_details.xml', '', ''),
+(57, 3, 0, 'Vietnamese', '', 'pkg_vi-VN', 'package', '', 0, '3.2.1.2', '', 'https://update.joomla.org/language/details3/vi-VN_details.xml', '', ''),
+(58, 3, 0, 'Bahasa Indonesia', '', 'pkg_id-ID', 'package', '', 0, '3.6.2.1', '', 'https://update.joomla.org/language/details3/id-ID_details.xml', '', ''),
+(59, 3, 0, 'Finnish', '', 'pkg_fi-FI', 'package', '', 0, '3.8.1.1', '', 'https://update.joomla.org/language/details3/fi-FI_details.xml', '', ''),
+(60, 3, 0, 'Swahili', '', 'pkg_sw-KE', 'package', '', 0, '3.8.8.1', '', 'https://update.joomla.org/language/details3/sw-KE_details.xml', '', ''),
+(61, 3, 0, 'Montenegrin', '', 'pkg_srp-ME', 'package', '', 0, '3.3.1.2', '', 'https://update.joomla.org/language/details3/srp-ME_details.xml', '', ''),
+(62, 3, 0, 'English CA', '', 'pkg_en-CA', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/en-CA_details.xml', '', ''),
+(63, 3, 0, 'French CA', '', 'pkg_fr-CA', 'package', '', 0, '3.6.5.1', '', 'https://update.joomla.org/language/details3/fr-CA_details.xml', '', ''),
+(64, 3, 0, 'Welsh', '', 'pkg_cy-GB', 'package', '', 0, '3.8.5.1', '', 'https://update.joomla.org/language/details3/cy-GB_details.xml', '', ''),
+(65, 3, 0, 'Sinhala', '', 'pkg_si-LK', 'package', '', 0, '3.3.1.2', '', 'https://update.joomla.org/language/details3/si-LK_details.xml', '', ''),
+(66, 3, 0, 'Dari Persian', '', 'pkg_prs-AF', 'package', '', 0, '3.4.4.2', '', 'https://update.joomla.org/language/details3/prs-AF_details.xml', '', ''),
+(67, 3, 0, 'Turkmen', '', 'pkg_tk-TM', 'package', '', 0, '3.5.0.2', '', 'https://update.joomla.org/language/details3/tk-TM_details.xml', '', ''),
+(68, 3, 0, 'Irish', '', 'pkg_ga-IE', 'package', '', 0, '3.8.7.1', '', 'https://update.joomla.org/language/details3/ga-IE_details.xml', '', ''),
+(69, 3, 0, 'Dzongkha', '', 'pkg_dz-BT', 'package', '', 0, '3.6.2.1', '', 'https://update.joomla.org/language/details3/dz-BT_details.xml', '', ''),
+(70, 3, 0, 'Slovenian', '', 'pkg_sl-SI', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/sl-SI_details.xml', '', ''),
+(71, 3, 0, 'Spanish CO', '', 'pkg_es-CO', 'package', '', 0, '3.8.6.1', '', 'https://update.joomla.org/language/details3/es-CO_details.xml', '', ''),
+(72, 3, 0, 'German CH', '', 'pkg_de-CH', 'package', '', 0, '3.8.10.2', '', 'https://update.joomla.org/language/details3/de-CH_details.xml', '', ''),
+(73, 3, 0, 'German AT', '', 'pkg_de-AT', 'package', '', 0, '3.8.10.2', '', 'https://update.joomla.org/language/details3/de-AT_details.xml', '', ''),
+(74, 3, 0, 'German LI', '', 'pkg_de-LI', 'package', '', 0, '3.8.10.2', '', 'https://update.joomla.org/language/details3/de-LI_details.xml', '', ''),
+(75, 3, 0, 'German LU', '', 'pkg_de-LU', 'package', '', 0, '3.8.10.2', '', 'https://update.joomla.org/language/details3/de-LU_details.xml', '', ''),
+(76, 3, 0, 'English NZ', '', 'pkg_en-NZ', 'package', '', 0, '3.8.10.1', '', 'https://update.joomla.org/language/details3/en-NZ_details.xml', '', ''),
+(78, 29, 0, 'VirtueMart - Shipment, by Weight, country, zip,... ', 'VirtueMart - Shipment, Shipment, by Weight, country, zip,... ', 'standard', 'plugin', 'vmshipment', 0, '3.2.1', '', 'http://virtuemart.net/releases/vm3/plg_vmshipment_weight_countries_update.xml', 'https://docs.virtuemart.net/tutorials/installation-migration-upgrade/226-update-single-plugin-delivered-by-aio.html', ''),
+(79, 36, 0, 'VirtueMart Product module', 'VirtueMart Product module', 'mod_virtuemart_product', 'plugin', '', 0, '3.2.1', '', 'http://virtuemart.net/releases/vm3/mod_virtuemart_product_update.xml', 'https://docs.virtuemart.net/tutorials/installation-migration-upgrade/226-update-single-plugin-delivered-by-aio.html', ''),
+(82, 59, 0, 'SP Simple Portfolio Module', '', '', 'module', '', 0, '1.6', '', 'http://www.joomshaper.com/updates/mod-sp-simple-portfolio.xml', '', '');
 
 -- --------------------------------------------------------
 
@@ -4700,6 +4870,7 @@ INSERT INTO `#__updates` (`update_id`, `update_site_id`, `extension_id`, `name`,
 -- Table structure for table `#__update_sites`
 --
 
+DROP TABLE IF EXISTS `#__update_sites`;
 CREATE TABLE IF NOT EXISTS `#__update_sites` (
   `update_site_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '',
@@ -4721,49 +4892,49 @@ TRUNCATE TABLE `#__update_sites`;
 --
 
 INSERT INTO `#__update_sites` (`update_site_id`, `name`, `type`, `location`, `enabled`, `last_check_timestamp`, `extra_query`) VALUES
-(1, 'Joomla! Core', 'collection', 'https://update.joomla.org/core/list.xml', 1, 1531742860, ''),
-(3, 'Accredited Joomla! Translations', 'collection', 'https://update.joomla.org/language/translationlist_3.xml', 1, 1531742860, ''),
-(4, 'Joomla! Update Component Update Site', 'extension', 'https://update.joomla.org/core/extensions/com_joomlaupdate.xml', 1, 1531742861, ''),
-(7, 'AcyMailing', 'extension', 'http://www.acyba.com/component/updateme/updatexml/component-acymailing/level-Starter/file-extension.xml', 1, 1531742862, ''),
-(9, '', 'extension', 'http://www.nextendweb.com/update2/joomla/update.php', 1, 1531742863, ''),
+(1, 'Joomla! Core', 'collection', 'https://update.joomla.org/core/list.xml', 1, 1533016653, ''),
+(3, 'Accredited Joomla! Translations', 'collection', 'https://update.joomla.org/language/translationlist_3.xml', 1, 1533016656, ''),
+(4, 'Joomla! Update Component Update Site', 'extension', 'https://update.joomla.org/core/extensions/com_joomlaupdate.xml', 1, 1533016656, ''),
+(7, 'AcyMailing', 'extension', 'http://www.acyba.com/component/updateme/updatexml/component-acymailing/level-Starter/file-extension.xml', 1, 1533016657, ''),
+(9, '', 'extension', 'http://www.nextendweb.com/update2/joomla/update.php', 1, 1533016658, ''),
 (10, 'K2 Updates', 'extension', 'http://getk2.org/app/update.xml', 0, 0, ''),
-(12, 'VirtueMart3 Update Site', 'extension', 'http://virtuemart.net/releases/vm3/virtuemart_update.xml', 1, 1531742864, ''),
-(13, 'VirtueMart plg_vmpayment_standard Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_standard_update.xml', 1, 1531742865, ''),
-(14, 'VirtueMart plg_vmpayment_klarna Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_klarna_update.xml', 1, 1531742865, ''),
-(15, 'VirtueMart plg_vmpayment_klarnacheckout Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_klarnacheckout_update.xml', 1, 1531742866, ''),
-(16, 'VirtueMart plg_vmpayment_sofort Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_sofort_update.xml', 1, 1531742867, ''),
-(17, 'VirtueMart plg_vmpayment_paypal Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_paypal_update.xml', 1, 1531742867, ''),
+(12, 'VirtueMart3 Update Site', 'extension', 'http://virtuemart.net/releases/vm3/virtuemart_update.xml', 1, 1533016659, ''),
+(13, 'VirtueMart plg_vmpayment_standard Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_standard_update.xml', 1, 1533016659, ''),
+(14, 'VirtueMart plg_vmpayment_klarna Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_klarna_update.xml', 1, 1533016660, ''),
+(15, 'VirtueMart plg_vmpayment_klarnacheckout Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_klarnacheckout_update.xml', 1, 1533016661, ''),
+(16, 'VirtueMart plg_vmpayment_sofort Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_sofort_update.xml', 1, 1533016661, ''),
+(17, 'VirtueMart plg_vmpayment_paypal Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_paypal_update.xml', 1, 1533016662, ''),
 (18, 'VirtueMart plg_vmpayment_heidelpay Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_heidelpay_update.xml', 0, 0, ''),
-(19, 'VirtueMart plg_vmpayment_paybox Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_paybox_update.xml', 1, 1531742868, ''),
-(20, 'VirtueMart3 plg_vmpayment_tco Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_tco_update.xml', 1, 1531742869, ''),
-(21, 'VirtueMart plg_vmpayment_amazon Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_amazon_update.xml', 1, 1531742869, ''),
-(22, 'VirtueMart plg_system_amazon Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_system_amazon_update.xml', 1, 1531742870, ''),
-(23, 'VirtueMart plg_vmpayment_realex_hpp_api Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_realex_hpp_api_update.xml', 1, 1531742871, ''),
-(24, 'VirtueMart plg_vmuserfield_realex_hpp_api Update Site', 'extension', '\n            http://virtuemart.net/releases/vm3/plg_vmuserfield_realex_hpp_api_update.xml', 1, 1531742871, ''),
-(25, 'VirtueMart3 plg_vmpayment_skrill Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_skrill_update.xml', 1, 1531742872, ''),
-(26, 'VirtueMart plg_vmpayment_authorizenet Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_authorisenet_update.xml', 1, 1531742873, ''),
-(27, 'VirtueMart plg_vmpayment_sofort_ideal Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_sofort_ideal_update.xml', 1, 1531742873, ''),
-(28, 'VirtueMart plg_vmpayment_klikandpay Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_klikandpay_update.xml', 1, 1531742874, ''),
-(29, 'VirtueMart3 plg_vmshipment_weight_countries Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmshipment_weight_countries_update.xml', 1, 1531742875, ''),
-(30, 'VirtueMart3 plg_vmcustom_textinput Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmcustom_textinput_update.xml', 1, 1531742875, ''),
-(31, 'VirtueMart3 plg_vmcustom_specification Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmcustom_specification_update.xml', 1, 1531742876, ''),
-(32, 'VirtueMart3 plg_vmcalculation_avalara Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmcalculation_avalara_update.xml', 1, 1531742877, ''),
-(33, 'VirtueMart3 plg_search_virtuemart Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_search_virtuemart_update.xml', 1, 1531742878, ''),
-(34, 'VirtueMart3 MOD_VMENU Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_vmmenu_update.xml', 1, 1531742878, ''),
-(35, 'VirtueMart3 mod_virtuemart_currencies Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_virtuemart_currencies_update.xml', 1, 1531742879, ''),
-(36, 'VirtueMart3 mod_virtuemart_product Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_virtuemart_product_update.xml', 1, 1531742880, ''),
-(37, 'VirtueMart3 mod_virtuemart_search Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_virtuemart_search_update.xml', 1, 1531742880, ''),
-(38, 'VirtueMart3 mod_virtuemart_manufacturer Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_virtuemart_manufacturer_update.xml', 1, 1531742881, ''),
+(19, 'VirtueMart plg_vmpayment_paybox Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_paybox_update.xml', 1, 1533016662, ''),
+(20, 'VirtueMart3 plg_vmpayment_tco Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_tco_update.xml', 1, 1533016663, ''),
+(21, 'VirtueMart plg_vmpayment_amazon Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_amazon_update.xml', 1, 1533016664, ''),
+(22, 'VirtueMart plg_system_amazon Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_system_amazon_update.xml', 1, 1533016664, ''),
+(23, 'VirtueMart plg_vmpayment_realex_hpp_api Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_realex_hpp_api_update.xml', 1, 1533016665, ''),
+(24, 'VirtueMart plg_vmuserfield_realex_hpp_api Update Site', 'extension', '\n            http://virtuemart.net/releases/vm3/plg_vmuserfield_realex_hpp_api_update.xml', 1, 1533016665, ''),
+(25, 'VirtueMart3 plg_vmpayment_skrill Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_skrill_update.xml', 1, 1533016666, ''),
+(26, 'VirtueMart plg_vmpayment_authorizenet Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_authorisenet_update.xml', 1, 1533016667, ''),
+(27, 'VirtueMart plg_vmpayment_sofort_ideal Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_sofort_ideal_update.xml', 1, 1533016667, ''),
+(28, 'VirtueMart plg_vmpayment_klikandpay Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmpayment_klikandpay_update.xml', 1, 1533016668, ''),
+(29, 'VirtueMart3 plg_vmshipment_weight_countries Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmshipment_weight_countries_update.xml', 1, 1533016669, ''),
+(30, 'VirtueMart3 plg_vmcustom_textinput Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmcustom_textinput_update.xml', 1, 1533016669, ''),
+(31, 'VirtueMart3 plg_vmcustom_specification Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmcustom_specification_update.xml', 1, 1533016670, ''),
+(32, 'VirtueMart3 plg_vmcalculation_avalara Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_vmcalculation_avalara_update.xml', 1, 1533016671, ''),
+(33, 'VirtueMart3 plg_search_virtuemart Update Site', 'extension', 'http://virtuemart.net/releases/vm3/plg_search_virtuemart_update.xml', 1, 1533016671, ''),
+(34, 'VirtueMart3 MOD_VMENU Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_vmmenu_update.xml', 1, 1533016672, ''),
+(35, 'VirtueMart3 mod_virtuemart_currencies Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_virtuemart_currencies_update.xml', 1, 1533016672, ''),
+(36, 'VirtueMart3 mod_virtuemart_product Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_virtuemart_product_update.xml', 1, 1533016673, ''),
+(37, 'VirtueMart3 mod_virtuemart_search Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_virtuemart_search_update.xml', 1, 1533016674, ''),
+(38, 'VirtueMart3 mod_virtuemart_manufacturer Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_virtuemart_manufacturer_update.xml', 1, 1533016674, ''),
 (39, 'VirtueMart3 mod_virtuemart_cart Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_virtuemart_cart_update.xml', 0, 0, ''),
 (40, 'VirtueMart3 mod_virtuemart_category Update Site', 'extension', 'http://virtuemart.net/releases/vm3/mod_virtuemart_category_update.xml', 0, 0, ''),
 (41, 'VirtueMart3 AIO Update Site', 'extension', 'http://virtuemart.net/releases/vm3/virtuemart_aio_update.xml', 0, 0, ''),
-(48, 'Helix3 - Ajax', 'extension', 'http://www.joomshaper.com/updates/plg-ajax-helix3.xml', 1, 1531742882, ''),
-(49, 'System - Helix3 Framework', 'extension', 'http://www.joomshaper.com/updates/plg-system-helix3.xml', 1, 1531742883, ''),
-(59, 'SP Simple Portfolio Module', 'extension', 'http://www.joomshaper.com/updates/mod-sp-simple-portfolio.xml', 1, 1531742883, ''),
-(61, 'SP Simple Portfolio', 'extension', 'http://www.joomshaper.com/updates/com-sp-simple-portfolio.xml', 1, 1531742885, ''),
-(65, 'ChronoForms v6 update server', 'extension', 'http://www.chronoengine.com/chrono_joomla_updates/chronoforms6.xml', 1, 1531742885, ''),
-(69, 'Smart Slider 3 Updates', 'extension', 'https://secure.nextendweb.com/api/api.php?action=joomla_version&platform=joomla&product=smartslider3&pro=0', 1, 1531742887, ''),
-(73, 'CEGCore v2 update server', 'extension', 'http://www.chronoengine.com/chrono_joomla_updates/cegcore2.xml', 1, 1531742888, '');
+(48, 'Helix3 - Ajax', 'extension', 'http://www.joomshaper.com/updates/plg-ajax-helix3.xml', 1, 1533016675, ''),
+(49, 'System - Helix3 Framework', 'extension', 'http://www.joomshaper.com/updates/plg-system-helix3.xml', 1, 1533016676, ''),
+(59, 'SP Simple Portfolio Module', 'extension', 'http://www.joomshaper.com/updates/mod-sp-simple-portfolio.xml', 1, 1533016676, ''),
+(61, 'SP Simple Portfolio', 'extension', 'http://www.joomshaper.com/updates/com-sp-simple-portfolio.xml', 1, 1533016677, ''),
+(65, 'ChronoForms v6 update server', 'extension', 'http://www.chronoengine.com/chrono_joomla_updates/chronoforms6.xml', 1, 1533016678, ''),
+(69, 'Smart Slider 3 Updates', 'extension', 'https://secure.nextendweb.com/api/api.php?action=joomla_version&platform=joomla&product=smartslider3&pro=0', 1, 1533016679, ''),
+(73, 'CEGCore v2 update server', 'extension', 'http://www.chronoengine.com/chrono_joomla_updates/cegcore2.xml', 1, 1533016680, '');
 
 -- --------------------------------------------------------
 
@@ -4771,6 +4942,7 @@ INSERT INTO `#__update_sites` (`update_site_id`, `name`, `type`, `location`, `en
 -- Table structure for table `#__update_sites_extensions`
 --
 
+DROP TABLE IF EXISTS `#__update_sites_extensions`;
 CREATE TABLE IF NOT EXISTS `#__update_sites_extensions` (
   `update_site_id` int(11) NOT NULL DEFAULT '0',
   `extension_id` int(11) NOT NULL DEFAULT '0',
@@ -4838,6 +5010,7 @@ INSERT INTO `#__update_sites_extensions` (`update_site_id`, `extension_id`) VALU
 -- Table structure for table `#__usergroups`
 --
 
+DROP TABLE IF EXISTS `#__usergroups`;
 CREATE TABLE IF NOT EXISTS `#__usergroups` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
   `parent_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Adjacency List Reference Id',
@@ -4877,6 +5050,7 @@ INSERT INTO `#__usergroups` (`id`, `parent_id`, `lft`, `rgt`, `title`) VALUES
 -- Table structure for table `#__user_keys`
 --
 
+DROP TABLE IF EXISTS `#__user_keys`;
 CREATE TABLE IF NOT EXISTS `#__user_keys` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -4901,6 +5075,7 @@ TRUNCATE TABLE `#__user_keys`;
 -- Table structure for table `#__user_notes`
 --
 
+DROP TABLE IF EXISTS `#__user_notes`;
 CREATE TABLE IF NOT EXISTS `#__user_notes` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -4933,6 +5108,7 @@ TRUNCATE TABLE `#__user_notes`;
 -- Table structure for table `#__user_profiles`
 --
 
+DROP TABLE IF EXISTS `#__user_profiles`;
 CREATE TABLE IF NOT EXISTS `#__user_profiles` (
   `user_id` int(11) NOT NULL,
   `profile_key` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -4952,6 +5128,7 @@ TRUNCATE TABLE `#__user_profiles`;
 -- Table structure for table `#__utf8_conversion`
 --
 
+DROP TABLE IF EXISTS `#__utf8_conversion`;
 CREATE TABLE IF NOT EXISTS `#__utf8_conversion` (
   `converted` tinyint(4) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -4974,6 +5151,7 @@ INSERT INTO `#__utf8_conversion` (`converted`) VALUES
 -- Table structure for table `#__viewlevels`
 --
 
+DROP TABLE IF EXISTS `#__viewlevels`;
 CREATE TABLE IF NOT EXISTS `#__viewlevels` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
   `title` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -5005,6 +5183,7 @@ INSERT INTO `#__viewlevels` (`id`, `title`, `ordering`, `rules`) VALUES
 -- Table structure for table `#__virtuemart_adminmenuentries`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_adminmenuentries`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_adminmenuentries` (
   `id` tinyint(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `module_id` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'The ID of the VM Module, this Item is assigned to',
@@ -5070,6 +5249,7 @@ INSERT INTO `#__virtuemart_adminmenuentries` (`id`, `module_id`, `parent_id`, `n
 -- Table structure for table `#__virtuemart_calcs`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_calcs`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_calcs` (
   `virtuemart_calc_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Belongs to vendor',
@@ -5122,6 +5302,7 @@ INSERT INTO `#__virtuemart_calcs` (`virtuemart_calc_id`, `virtuemart_vendor_id`,
 -- Table structure for table `#__virtuemart_calc_categories`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_calc_categories`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_calc_categories` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_calc_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -5141,6 +5322,7 @@ TRUNCATE TABLE `#__virtuemart_calc_categories`;
 -- Table structure for table `#__virtuemart_calc_countries`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_calc_countries`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_calc_countries` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_calc_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -5160,6 +5342,7 @@ TRUNCATE TABLE `#__virtuemart_calc_countries`;
 -- Table structure for table `#__virtuemart_calc_manufacturers`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_calc_manufacturers`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_calc_manufacturers` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_calc_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -5179,6 +5362,7 @@ TRUNCATE TABLE `#__virtuemart_calc_manufacturers`;
 -- Table structure for table `#__virtuemart_calc_shoppergroups`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_calc_shoppergroups`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_calc_shoppergroups` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_calc_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -5198,6 +5382,7 @@ TRUNCATE TABLE `#__virtuemart_calc_shoppergroups`;
 -- Table structure for table `#__virtuemart_calc_states`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_calc_states`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_calc_states` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_calc_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -5217,6 +5402,7 @@ TRUNCATE TABLE `#__virtuemart_calc_states`;
 -- Table structure for table `#__virtuemart_carts`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_carts`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_carts` (
   `virtuemart_cart_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_user_id` int(1) UNSIGNED NOT NULL,
@@ -5229,7 +5415,7 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_carts` (
   PRIMARY KEY (`virtuemart_cart_id`),
   KEY `virtuemart_vendor_id` (`virtuemart_vendor_id`),
   KEY `virtuemart_user_id` (`virtuemart_user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Used to store the cart';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Used to store the cart';
 
 --
 -- Truncate table before insert `#__virtuemart_carts`
@@ -5241,7 +5427,8 @@ TRUNCATE TABLE `#__virtuemart_carts`;
 --
 
 INSERT INTO `#__virtuemart_carts` (`virtuemart_cart_id`, `virtuemart_user_id`, `virtuemart_vendor_id`, `cartData`, `created_on`, `created_by`, `modified_on`, `modified_by`) VALUES
-(2, 45, 1, 0x7b226361727450726f647563747344617461223a5b7b227669727475656d6172745f70726f647563745f6964223a392c227175616e74697479223a312c22637573746f6d50726f6475637444617461223a5b5d7d2c7b227669727475656d6172745f70726f647563745f6964223a32312c227175616e74697479223a352c22637573746f6d50726f6475637444617461223a5b5d7d2c7b227669727475656d6172745f70726f647563745f6964223a32302c227175616e74697479223a312c22637573746f6d50726f6475637444617461223a5b5d7d5d2c2276656e646f724964223a312c226c6173745669736974656443617465676f72794964223a302c227669727475656d6172745f736869706d656e746d6574686f645f6964223a302c227669727475656d6172745f7061796d656e746d6574686f645f6964223a2231222c226175746f6d6174696353656c6563746564536869706d656e74223a66616c73652c226175746f6d6174696353656c65637465645061796d656e74223a747275652c226f726465725f6e756d626572223a6e756c6c2c224254223a7b22656d61696c223a2261646d696e4061646d696e2e636f6d222c22636f6d70616e79223a22222c227469746c65223a22222c2266697273745f6e616d65223a226a64427573696e657373222c226d6964646c655f6e616d65223a22222c226c6173745f6e616d65223a224a44222c22616464726573735f31223a22556e69746564205374617465222c22616464726573735f32223a22222c227a6970223a22303131222c2263697479223a224e657720596f726b222c227669727475656d6172745f636f756e7472795f6964223a3232332c227669727475656d6172745f73746174655f6964223a33332c2270686f6e655f31223a22222c2270686f6e655f32223a22222c22666178223a22227d2c225354223a7b227669727475656d6172745f75736572696e666f5f6964223a2232222c227669727475656d6172745f757365725f6964223a223435222c22616464726573735f74797065223a225354222c22616464726573735f747970655f6e616d65223a22536869706d656e74222c22636f6d70616e79223a22222c227469746c65223a6e756c6c2c226c6173745f6e616d65223a2254657374222c2266697273745f6e616d65223a2254657374222c226d6964646c655f6e616d65223a22222c2270686f6e655f31223a22222c2270686f6e655f32223a22222c22666178223a22222c22616464726573735f31223a225465737420616e642074657374222c22616464726573735f32223a22222c2263697479223a224368696361676f222c227669727475656d6172745f73746174655f6964223a352c227669727475656d6172745f636f756e7472795f6964223a3232332c227a6970223a22313135353436222c22616772656564223a2230222c22746f73223a2230222c22637573746f6d65725f6e6f7465223a22222c22637265617465645f6f6e223a22323031362d31302d30332032333a33313a3137222c22637265617465645f6279223a223435222c226d6f6469666965645f6f6e223a22323031362d31302d30332032333a33313a3137222c226d6f6469666965645f6279223a223435222c226c6f636b65645f6f6e223a22303030302d30302d30302030303a30303a3030222c226c6f636b65645f6279223a2230227d2c22636172746669656c6473223a7b22637573746f6d65725f6e6f7465223a22222c22746f73223a2230227d2c22636f75706f6e436f6465223a22222c225f747269657356616c6964617465436f75706f6e223a5b5d2c226f726465725f6c616e6775616765223a22656e2d4742222c2270726963657343757272656e6379223a22313434222c227061796d656e7443757272656e6379223a22313434222c225f6775657374223a302c225f696e436865636b4f7574223a66616c73652c225f696e436f6e6669726d223a66616c73652c225f6461746156616c696461746564223a66616c73652c225f636f6e6669726d446f6e65223a66616c73652c22535473616d6541734254223a302c2273656c65637465645f73686970746f223a2232222c225f66726f6d43617274223a747275652c226c61796f7574223a2264656661756c74222c226c61796f757450617468223a22222c227669727475656d6172745f636172745f6964223a2232227d, '0000-00-00 00:00:00', 0, '2018-02-21 11:56:35', 45);
+(2, 45, 1, 0x7b226361727450726f647563747344617461223a5b7b227669727475656d6172745f70726f647563745f6964223a392c227175616e74697479223a312c22637573746f6d50726f6475637444617461223a5b5d7d2c7b227669727475656d6172745f70726f647563745f6964223a32312c227175616e74697479223a352c22637573746f6d50726f6475637444617461223a5b5d7d2c7b227669727475656d6172745f70726f647563745f6964223a32302c227175616e74697479223a312c22637573746f6d50726f6475637444617461223a5b5d7d5d2c2276656e646f724964223a312c226c6173745669736974656443617465676f72794964223a302c227669727475656d6172745f736869706d656e746d6574686f645f6964223a302c227669727475656d6172745f7061796d656e746d6574686f645f6964223a2231222c226175746f6d6174696353656c6563746564536869706d656e74223a66616c73652c226175746f6d6174696353656c65637465645061796d656e74223a747275652c226f726465725f6e756d626572223a6e756c6c2c224254223a7b22656d61696c223a2261646d696e4061646d696e2e636f6d222c22636f6d70616e79223a22222c227469746c65223a22222c2266697273745f6e616d65223a226a64427573696e657373222c226d6964646c655f6e616d65223a22222c226c6173745f6e616d65223a224a44222c22616464726573735f31223a22556e69746564205374617465222c22616464726573735f32223a22222c227a6970223a22303131222c2263697479223a224e657720596f726b222c227669727475656d6172745f636f756e7472795f6964223a3232332c227669727475656d6172745f73746174655f6964223a33332c2270686f6e655f31223a22222c2270686f6e655f32223a22222c22666178223a22227d2c225354223a7b227669727475656d6172745f75736572696e666f5f6964223a2232222c227669727475656d6172745f757365725f6964223a223435222c22616464726573735f74797065223a225354222c22616464726573735f747970655f6e616d65223a22536869706d656e74222c22636f6d70616e79223a22222c227469746c65223a6e756c6c2c226c6173745f6e616d65223a2254657374222c2266697273745f6e616d65223a2254657374222c226d6964646c655f6e616d65223a22222c2270686f6e655f31223a22222c2270686f6e655f32223a22222c22666178223a22222c22616464726573735f31223a225465737420616e642074657374222c22616464726573735f32223a22222c2263697479223a224368696361676f222c227669727475656d6172745f73746174655f6964223a352c227669727475656d6172745f636f756e7472795f6964223a3232332c227a6970223a22313135353436222c22616772656564223a2230222c22746f73223a2230222c22637573746f6d65725f6e6f7465223a22222c22637265617465645f6f6e223a22323031362d31302d30332032333a33313a3137222c22637265617465645f6279223a223435222c226d6f6469666965645f6f6e223a22323031362d31302d30332032333a33313a3137222c226d6f6469666965645f6279223a223435222c226c6f636b65645f6f6e223a22303030302d30302d30302030303a30303a3030222c226c6f636b65645f6279223a2230227d2c22636172746669656c6473223a7b22637573746f6d65725f6e6f7465223a22222c22746f73223a2230227d2c22636f75706f6e436f6465223a22222c225f747269657356616c6964617465436f75706f6e223a5b5d2c226f726465725f6c616e6775616765223a22656e2d4742222c2270726963657343757272656e6379223a22313434222c227061796d656e7443757272656e6379223a22313434222c225f6775657374223a302c225f696e436865636b4f7574223a66616c73652c225f696e436f6e6669726d223a66616c73652c225f6461746156616c696461746564223a66616c73652c225f636f6e6669726d446f6e65223a66616c73652c22535473616d6541734254223a302c2273656c65637465645f73686970746f223a2232222c225f66726f6d43617274223a747275652c226c61796f7574223a2264656661756c74222c226c61796f757450617468223a22222c227669727475656d6172745f636172745f6964223a2232227d, '0000-00-00 00:00:00', 0, '2018-02-21 11:56:35', 45),
+(3, 872, 1, 0x7b226361727450726f647563747344617461223a5b7b227669727475656d6172745f70726f647563745f6964223a32322c227175616e74697479223a312c22637573746f6d50726f6475637444617461223a5b5d7d5d2c2276656e646f724964223a312c226c6173745669736974656443617465676f72794964223a302c227669727475656d6172745f736869706d656e746d6574686f645f6964223a2231222c227669727475656d6172745f7061796d656e746d6574686f645f6964223a2231222c226175746f6d6174696353656c6563746564536869706d656e74223a747275652c226175746f6d6174696353656c65637465645061796d656e74223a747275652c226f726465725f6e756d626572223a6e756c6c2c224254223a302c225354223a302c22636172746669656c6473223a6e756c6c2c22636f75706f6e436f6465223a22222c225f747269657356616c6964617465436f75706f6e223a5b5d2c226f726465725f6c616e6775616765223a22656e2d4742222c2270726963657343757272656e6379223a22313434222c227061796d656e7443757272656e6379223a22313434222c225f6775657374223a302c225f696e436865636b4f7574223a66616c73652c225f696e436f6e6669726d223a66616c73652c225f6461746156616c696461746564223a66616c73652c225f636f6e6669726d446f6e65223a66616c73652c22535473616d6541734254223a312c2273656c65637465645f73686970746f223a302c225f66726f6d43617274223a66616c73652c226c61796f7574223a2264656661756c74222c226c61796f757450617468223a22222c227669727475656d6172745f636172745f6964223a302c226f72646572646f6e6548746d6c223a66616c73652c227669727475656d6172745f6f726465725f6964223a66616c73657d, '0000-00-00 00:00:00', 0, '2018-07-31 06:04:46', 872);
 
 -- --------------------------------------------------------
 
@@ -5249,6 +5436,7 @@ INSERT INTO `#__virtuemart_carts` (`virtuemart_cart_id`, `virtuemart_user_id`, `
 -- Table structure for table `#__virtuemart_categories`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_categories`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_categories` (
   `virtuemart_category_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Belongs to vendor',
@@ -5298,6 +5486,7 @@ INSERT INTO `#__virtuemart_categories` (`virtuemart_category_id`, `virtuemart_ve
 -- Table structure for table `#__virtuemart_categories_en_gb`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_categories_en_gb`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_categories_en_gb` (
   `virtuemart_category_id` int(1) UNSIGNED NOT NULL,
   `category_name` varchar(180) NOT NULL DEFAULT '',
@@ -5330,6 +5519,7 @@ INSERT INTO `#__virtuemart_categories_en_gb` (`virtuemart_category_id`, `categor
 -- Table structure for table `#__virtuemart_category_categories`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_category_categories`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_category_categories` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `category_parent_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -5361,6 +5551,7 @@ INSERT INTO `#__virtuemart_category_categories` (`id`, `category_parent_id`, `ca
 -- Table structure for table `#__virtuemart_category_medias`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_category_medias`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_category_medias` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_category_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -5391,6 +5582,7 @@ INSERT INTO `#__virtuemart_category_medias` (`id`, `virtuemart_category_id`, `vi
 -- Table structure for table `#__virtuemart_configs`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_configs`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_configs` (
   `virtuemart_config_id` tinyint(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `config` text,
@@ -5421,6 +5613,7 @@ INSERT INTO `#__virtuemart_configs` (`virtuemart_config_id`, `config`, `created_
 -- Table structure for table `#__virtuemart_countries`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_countries`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_countries` (
   `virtuemart_country_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_worldzone_id` tinyint(1) NOT NULL DEFAULT '1',
@@ -5705,6 +5898,7 @@ INSERT INTO `#__virtuemart_countries` (`virtuemart_country_id`, `virtuemart_worl
 -- Table structure for table `#__virtuemart_coupons`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_coupons`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_coupons` (
   `virtuemart_coupon_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL,
@@ -5741,6 +5935,7 @@ TRUNCATE TABLE `#__virtuemart_coupons`;
 -- Table structure for table `#__virtuemart_currencies`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_currencies`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_currencies` (
   `virtuemart_currency_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -5954,6 +6149,7 @@ INSERT INTO `#__virtuemart_currencies` (`virtuemart_currency_id`, `virtuemart_ve
 -- Table structure for table `#__virtuemart_customs`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_customs`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_customs` (
   `virtuemart_custom_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `custom_parent_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -6018,6 +6214,7 @@ INSERT INTO `#__virtuemart_customs` (`virtuemart_custom_id`, `custom_parent_id`,
 -- Table structure for table `#__virtuemart_invoices`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_invoices`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_invoices` (
   `virtuemart_invoice_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -6056,6 +6253,7 @@ INSERT INTO `#__virtuemart_invoices` (`virtuemart_invoice_id`, `virtuemart_vendo
 -- Table structure for table `#__virtuemart_manufacturercategories`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_manufacturercategories`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_manufacturercategories` (
   `virtuemart_manufacturercategories_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `published` tinyint(1) NOT NULL DEFAULT '1',
@@ -6080,6 +6278,7 @@ TRUNCATE TABLE `#__virtuemart_manufacturercategories`;
 -- Table structure for table `#__virtuemart_manufacturercategories_en_gb`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_manufacturercategories_en_gb`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_manufacturercategories_en_gb` (
   `virtuemart_manufacturercategories_id` int(1) UNSIGNED NOT NULL,
   `mf_category_name` varchar(180) NOT NULL DEFAULT '',
@@ -6100,6 +6299,7 @@ TRUNCATE TABLE `#__virtuemart_manufacturercategories_en_gb`;
 -- Table structure for table `#__virtuemart_manufacturers`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_manufacturers`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_manufacturers` (
   `virtuemart_manufacturer_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_manufacturercategories_id` int(1) DEFAULT NULL,
@@ -6129,6 +6329,7 @@ TRUNCATE TABLE `#__virtuemart_manufacturers`;
 -- Table structure for table `#__virtuemart_manufacturers_en_gb`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_manufacturers_en_gb`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_manufacturers_en_gb` (
   `virtuemart_manufacturer_id` int(1) UNSIGNED NOT NULL,
   `mf_name` varchar(180) NOT NULL DEFAULT '',
@@ -6154,6 +6355,7 @@ TRUNCATE TABLE `#__virtuemart_manufacturers_en_gb`;
 -- Table structure for table `#__virtuemart_manufacturer_medias`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_manufacturer_medias`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_manufacturer_medias` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_manufacturer_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -6175,6 +6377,7 @@ TRUNCATE TABLE `#__virtuemart_manufacturer_medias`;
 -- Table structure for table `#__virtuemart_medias`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_medias`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_medias` (
   `virtuemart_media_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -6300,6 +6503,7 @@ INSERT INTO `#__virtuemart_medias` (`virtuemart_media_id`, `virtuemart_vendor_id
 -- Table structure for table `#__virtuemart_migration_oldtonew_ids`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_migration_oldtonew_ids`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_migration_oldtonew_ids` (
   `id` smallint(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `cats` longblob,
@@ -6328,6 +6532,7 @@ TRUNCATE TABLE `#__virtuemart_migration_oldtonew_ids`;
 -- Table structure for table `#__virtuemart_modules`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_modules`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_modules` (
   `module_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `module_name` char(255) DEFAULT NULL,
@@ -6371,6 +6576,7 @@ INSERT INTO `#__virtuemart_modules` (`module_id`, `module_name`, `module_descrip
 -- Table structure for table `#__virtuemart_orders`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_orders`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_orders` (
   `virtuemart_order_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_user_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -6445,6 +6651,7 @@ INSERT INTO `#__virtuemart_orders` (`virtuemart_order_id`, `virtuemart_user_id`,
 -- Table structure for table `#__virtuemart_orderstates`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_orderstates`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_orderstates` (
   `virtuemart_orderstate_id` tinyint(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -6492,6 +6699,7 @@ INSERT INTO `#__virtuemart_orderstates` (`virtuemart_orderstate_id`, `virtuemart
 -- Table structure for table `#__virtuemart_order_calc_rules`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_order_calc_rules`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_order_calc_rules` (
   `virtuemart_order_calc_rule_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_calc_id` int(1) UNSIGNED DEFAULT NULL,
@@ -6536,6 +6744,7 @@ INSERT INTO `#__virtuemart_order_calc_rules` (`virtuemart_order_calc_rule_id`, `
 -- Table structure for table `#__virtuemart_order_histories`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_order_histories`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_order_histories` (
   `virtuemart_order_history_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_order_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -6584,6 +6793,7 @@ INSERT INTO `#__virtuemart_order_histories` (`virtuemart_order_history_id`, `vir
 -- Table structure for table `#__virtuemart_order_items`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_order_items`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_order_items` (
   `virtuemart_order_item_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_order_id` int(1) UNSIGNED DEFAULT NULL,
@@ -6645,6 +6855,7 @@ INSERT INTO `#__virtuemart_order_items` (`virtuemart_order_item_id`, `virtuemart
 -- Table structure for table `#__virtuemart_order_item_histories`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_order_item_histories`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_order_item_histories` (
   `virtuemart_order_item_history_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_order_item_id` int(1) UNSIGNED NOT NULL,
@@ -6689,6 +6900,7 @@ TRUNCATE TABLE `#__virtuemart_order_item_histories`;
 -- Table structure for table `#__virtuemart_order_userinfos`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_order_userinfos`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_order_userinfos` (
   `virtuemart_order_userinfo_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_order_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -6748,6 +6960,7 @@ INSERT INTO `#__virtuemart_order_userinfos` (`virtuemart_order_userinfo_id`, `vi
 -- Table structure for table `#__virtuemart_paymentmethods`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_paymentmethods`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_paymentmethods` (
   `virtuemart_paymentmethod_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -6789,6 +7002,7 @@ INSERT INTO `#__virtuemart_paymentmethods` (`virtuemart_paymentmethod_id`, `virt
 -- Table structure for table `#__virtuemart_paymentmethods_en_gb`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_paymentmethods_en_gb`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_paymentmethods_en_gb` (
   `virtuemart_paymentmethod_id` int(1) UNSIGNED NOT NULL,
   `payment_name` varchar(180) NOT NULL DEFAULT '',
@@ -6816,6 +7030,7 @@ INSERT INTO `#__virtuemart_paymentmethods_en_gb` (`virtuemart_paymentmethod_id`,
 -- Table structure for table `#__virtuemart_paymentmethod_shoppergroups`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_paymentmethod_shoppergroups`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_paymentmethod_shoppergroups` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_paymentmethod_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -6835,6 +7050,7 @@ TRUNCATE TABLE `#__virtuemart_paymentmethod_shoppergroups`;
 -- Table structure for table `#__virtuemart_payment_plg_standard`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_payment_plg_standard`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_payment_plg_standard` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_order_id` int(1) UNSIGNED DEFAULT NULL,
@@ -6880,6 +7096,7 @@ INSERT INTO `#__virtuemart_payment_plg_standard` (`id`, `virtuemart_order_id`, `
 -- Table structure for table `#__virtuemart_products`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_products`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_products` (
   `virtuemart_product_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -6966,6 +7183,7 @@ INSERT INTO `#__virtuemart_products` (`virtuemart_product_id`, `virtuemart_vendo
 -- Table structure for table `#__virtuemart_products_en_gb`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_products_en_gb`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_products_en_gb` (
   `virtuemart_product_id` int(1) UNSIGNED NOT NULL,
   `product_s_desc` varchar(2000) NOT NULL DEFAULT '',
@@ -7013,6 +7231,7 @@ INSERT INTO `#__virtuemart_products_en_gb` (`virtuemart_product_id`, `product_s_
 -- Table structure for table `#__virtuemart_product_categories`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_product_categories`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_product_categories` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_product_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -7057,6 +7276,7 @@ INSERT INTO `#__virtuemart_product_categories` (`id`, `virtuemart_product_id`, `
 -- Table structure for table `#__virtuemart_product_customfields`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_product_customfields`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_product_customfields` (
   `virtuemart_customfield_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'field id',
   `virtuemart_product_id` int(1) NOT NULL DEFAULT '0',
@@ -7109,6 +7329,7 @@ INSERT INTO `#__virtuemart_product_customfields` (`virtuemart_customfield_id`, `
 -- Table structure for table `#__virtuemart_product_manufacturers`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_product_manufacturers`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_product_manufacturers` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_product_id` int(1) DEFAULT NULL,
@@ -7128,6 +7349,7 @@ TRUNCATE TABLE `#__virtuemart_product_manufacturers`;
 -- Table structure for table `#__virtuemart_product_medias`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_product_medias`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_product_medias` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_product_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -7210,6 +7432,7 @@ INSERT INTO `#__virtuemart_product_medias` (`id`, `virtuemart_product_id`, `virt
 -- Table structure for table `#__virtuemart_product_prices`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_product_prices`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_product_prices` (
   `virtuemart_product_price_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_product_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -7274,6 +7497,7 @@ INSERT INTO `#__virtuemart_product_prices` (`virtuemart_product_price_id`, `virt
 -- Table structure for table `#__virtuemart_product_shoppergroups`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_product_shoppergroups`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_product_shoppergroups` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_product_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -7300,6 +7524,7 @@ INSERT INTO `#__virtuemart_product_shoppergroups` (`id`, `virtuemart_product_id`
 -- Table structure for table `#__virtuemart_ratings`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_ratings`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_ratings` (
   `virtuemart_rating_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_product_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -7338,6 +7563,7 @@ INSERT INTO `#__virtuemart_ratings` (`virtuemart_rating_id`, `virtuemart_product
 -- Table structure for table `#__virtuemart_rating_reviews`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_rating_reviews`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_rating_reviews` (
   `virtuemart_rating_review_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_rating_vote_id` int(1) UNSIGNED DEFAULT NULL,
@@ -7390,6 +7616,7 @@ INSERT INTO `#__virtuemart_rating_reviews` (`virtuemart_rating_review_id`, `virt
 -- Table structure for table `#__virtuemart_rating_votes`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_rating_votes`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_rating_votes` (
   `virtuemart_rating_vote_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_product_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -7427,6 +7654,7 @@ INSERT INTO `#__virtuemart_rating_votes` (`virtuemart_rating_vote_id`, `virtuema
 -- Table structure for table `#__virtuemart_shipmentmethods`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_shipmentmethods`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_shipmentmethods` (
   `virtuemart_shipmentmethod_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -7467,6 +7695,7 @@ INSERT INTO `#__virtuemart_shipmentmethods` (`virtuemart_shipmentmethod_id`, `vi
 -- Table structure for table `#__virtuemart_shipmentmethods_en_gb`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_shipmentmethods_en_gb`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_shipmentmethods_en_gb` (
   `virtuemart_shipmentmethod_id` int(1) UNSIGNED NOT NULL,
   `shipment_name` varchar(180) NOT NULL DEFAULT '',
@@ -7494,6 +7723,7 @@ INSERT INTO `#__virtuemart_shipmentmethods_en_gb` (`virtuemart_shipmentmethod_id
 -- Table structure for table `#__virtuemart_shipmentmethod_shoppergroups`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_shipmentmethod_shoppergroups`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_shipmentmethod_shoppergroups` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_shipmentmethod_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -7513,6 +7743,7 @@ TRUNCATE TABLE `#__virtuemart_shipmentmethod_shoppergroups`;
 -- Table structure for table `#__virtuemart_shipment_plg_weight_countries`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_shipment_plg_weight_countries`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_shipment_plg_weight_countries` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_order_id` int(11) UNSIGNED DEFAULT NULL,
@@ -7556,6 +7787,7 @@ INSERT INTO `#__virtuemart_shipment_plg_weight_countries` (`id`, `virtuemart_ord
 -- Table structure for table `#__virtuemart_shoppergroups`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_shoppergroups`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_shoppergroups` (
   `virtuemart_shoppergroup_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -7602,6 +7834,7 @@ INSERT INTO `#__virtuemart_shoppergroups` (`virtuemart_shoppergroup_id`, `virtue
 -- Table structure for table `#__virtuemart_states`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_states`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_states` (
   `virtuemart_state_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -8449,6 +8682,7 @@ INSERT INTO `#__virtuemart_states` (`virtuemart_state_id`, `virtuemart_vendor_id
 -- Table structure for table `#__virtuemart_userfields`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_userfields`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_userfields` (
   `virtuemart_userfield_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '1',
@@ -8537,6 +8771,7 @@ INSERT INTO `#__virtuemart_userfields` (`virtuemart_userfield_id`, `virtuemart_v
 -- Table structure for table `#__virtuemart_userfield_values`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_userfield_values`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_userfield_values` (
   `virtuemart_userfield_value_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_userfield_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -8590,6 +8825,7 @@ INSERT INTO `#__virtuemart_userfield_values` (`virtuemart_userfield_value_id`, `
 -- Table structure for table `#__virtuemart_userinfos`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_userinfos`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_userinfos` (
   `virtuemart_userinfo_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_user_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -8644,6 +8880,7 @@ INSERT INTO `#__virtuemart_userinfos` (`virtuemart_userinfo_id`, `virtuemart_use
 -- Table structure for table `#__virtuemart_vendors`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_vendors`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_vendors` (
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `vendor_name` varchar(64) DEFAULT NULL,
@@ -8681,6 +8918,7 @@ INSERT INTO `#__virtuemart_vendors` (`virtuemart_vendor_id`, `vendor_name`, `ven
 -- Table structure for table `#__virtuemart_vendors_en_gb`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_vendors_en_gb`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_vendors_en_gb` (
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL,
   `vendor_store_desc` text NOT NULL,
@@ -8723,6 +8961,7 @@ INSERT INTO `#__virtuemart_vendors_en_gb` (`virtuemart_vendor_id`, `vendor_store
 -- Table structure for table `#__virtuemart_vendor_medias`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_vendor_medias`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_vendor_medias` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -8743,6 +8982,7 @@ TRUNCATE TABLE `#__virtuemart_vendor_medias`;
 -- Table structure for table `#__virtuemart_vendor_users`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_vendor_users`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_vendor_users` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -8762,6 +9002,7 @@ TRUNCATE TABLE `#__virtuemart_vendor_users`;
 -- Table structure for table `#__virtuemart_vmusers`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_vmusers`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_vmusers` (
   `virtuemart_user_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -8800,6 +9041,7 @@ INSERT INTO `#__virtuemart_vmusers` (`virtuemart_user_id`, `virtuemart_vendor_id
 -- Table structure for table `#__virtuemart_vmuser_shoppergroups`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_vmuser_shoppergroups`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_vmuser_shoppergroups` (
   `id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_user_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -8819,6 +9061,7 @@ TRUNCATE TABLE `#__virtuemart_vmuser_shoppergroups`;
 -- Table structure for table `#__virtuemart_waitingusers`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_waitingusers`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_waitingusers` (
   `virtuemart_waitinguser_id` int(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_product_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -8849,6 +9092,7 @@ TRUNCATE TABLE `#__virtuemart_waitingusers`;
 -- Table structure for table `#__virtuemart_worldzones`
 --
 
+DROP TABLE IF EXISTS `#__virtuemart_worldzones`;
 CREATE TABLE IF NOT EXISTS `#__virtuemart_worldzones` (
   `virtuemart_worldzone_id` smallint(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` int(1) UNSIGNED DEFAULT NULL,
