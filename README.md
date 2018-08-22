@@ -1,4 +1,8 @@
 # JD Boston
+![Github All Releases](https://img.shields.io/github/downloads/joomdev/jd_boston/total.svg)
+![AUR](https://img.shields.io/aur/license/yaourt.svg)
+![GitHub release](https://img.shields.io/github/release/joomdev/jd_boston.svg)
+
 JD Boston Free Template for Joomla 3.8.10
 ![JD Boston mockup](https://cdn.joomdev.com/images/templates/jd_boston/screenshot/jd-boston-mockup.jpg)
 -----------
