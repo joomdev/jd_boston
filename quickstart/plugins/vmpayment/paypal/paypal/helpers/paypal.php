@@ -8,7 +8,7 @@
  * @version $Id: paypal.php 7217 2013-09-18 13:42:54Z alatak $
  * @package VirtueMart
  * @subpackage payment
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2018 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -50,6 +50,7 @@ class PaypalHelperPaypal {
 	const FMF_PENDED_ERROR_CODE = 11610;
 	const FMF_DENIED_ERROR_CODE = 11611;
 	const BNCODE = "VirtueMart_Cart_PPA";
+
 
 
 	function __construct ($method, $paypalPlugin) {
@@ -114,7 +115,9 @@ class PaypalHelperPaypal {
 
 	function getProductAmount ($productPricesUnformatted) {
 		if ($productPricesUnformatted['salesPriceWithDiscount']) {
-			return vmPSPlugin::getAmountValueInCurrency($productPricesUnformatted['salesPriceWithDiscount'], $this->_method->payment_currency);
+			return vmPSPlugin::getAmountValueInCurrency( $productPricesUnformatted['salesPriceWithDiscount'], $this->_method->payment_currency );
+		} else if (!empty($productPricesUnformatted['override']) and !empty($productPricesUnformatted['product_override_price'])) {
+			return vmPSPlugin::getAmountValueInCurrency( $productPricesUnformatted['product_override_price'], $this->_method->payment_currency );
 		} else {
 			return vmPSPlugin::getAmountValueInCurrency($productPricesUnformatted['salesPrice'], $this->_method->payment_currency);
 		}
@@ -155,9 +158,6 @@ class PaypalHelperPaypal {
 	}
 
 	public function setTotal ($total) {
-		if (!class_exists('CurrencyDisplay')) {
-			require(VMPATH_ADMIN . DS  .'helpers'.DS.'currencydisplay.php');
-		}
 		$this->total = vmPSPlugin::getAmountValueInCurrency($total, $this->_method->payment_currency);
 
 		$cd = CurrencyDisplay::getInstance($this->cart->pricesCurrency);
@@ -301,9 +301,6 @@ class PaypalHelperPaypal {
 	}
 
 	protected function truncate ($string, $length) {
-		if (!class_exists('shopFunctionsF')) {
-			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
-		}
 		return ShopFunctionsF::vmSubstr($string, 0, $length);
 	}
 
@@ -355,13 +352,28 @@ class PaypalHelperPaypal {
 		return $extraInfo;
 	}
 
-	public function getLogoImage () {
-		if ($this->_method->logoimg) {
-			return JURI::base() . '/images/stories/virtuemart/payment/' . $this->_method->logoimg;
-		} else {
-			return JURI::base() . $this->vendor->images[0]->file_url;
+	public function getLogoImage ($img = null) {
+
+		if(!isset($img)){
+			$img = $this->_method->logoimg;
+		}
+		if ($img) {
+			if(!class_exists('JFile')){
+				require(VMPATH_LIBS.'/joomla/filesystem/file.php');
+			}
+			$rUrl = '/images/virtuemart/payment/' . $img;
+			if(!JFile::exists(VMPATH_ROOT .$rUrl)){
+				$rUrl = '/images/stories/virtuemart/payment/' . $img;
+				if(!JFile::exists(VMPATH_ROOT .$rUrl)) {
+					$rUrl = false;
+				}
+			}
+			if($rUrl){
+				return JURI::base() . $rUrl;
+			}
 		}
 
+		return JURI::base() . $this->vendor->images[0]->file_url;
 	}
 
 	public function getRecurringProfileDesc () {
@@ -469,6 +481,14 @@ class PaypalHelperPaypal {
 				if ($paypal_data['txn_type'] != 'recurring_payment' && !$this->_check_email_amount_currency($payments, $paypal_data)) {
 					return FALSE;
 				}
+					//	quorvia set successful status only if parameters allow and are configured
+					// 4. check this status can be updated
+				if (!empty($this->_method->status_ipn_success_updateable)) {
+					if(!$this->_check_ipn_status_confirmed_allowed( $this->_method->status_ipn_success_updateable )) {
+						$this->debugLog( $paypal_data['payment_status'], '_status of order is restricted cannot be set to confirmed', 'debug' );
+						return FALSE;
+					}
+				}
 				// now we can process the payment
 				if (strcmp($paypal_data['payment_status'], 'Authorization') == 0) {
 					$order_history['order_status'] = $this->_method->status_pending;
@@ -519,133 +539,43 @@ class PaypalHelperPaypal {
 					return true;
 				}
 		*/
+		/*
+		 * adding an extra parameter because getting IP trough gethostbynamel is not a unfortunatly reliable method
+		 */
+		if (isset($this->_method->check_ips) and $this->_method->check_ips==0) {
+			return true;
+		}
 		$order_number = $paypal_data['invoice'];
 
 		// Get the list of IP addresses for www.paypal.com and notify.paypal.com
 
 
-		if ($this->_method->sandbox) {
-			$paypal_iplist = gethostbynamel('ipn.sandbox.paypal.com');
-			$paypal_iplist = (array)$paypal_iplist;
-			$this->debugLog($paypal_iplist, 'checkPaypalIps SANDBOX', 'debug', false);
+        if ($this->_method->sandbox) {
+//			$paypal_iplist = gethostbynamel('ipn.sandbox.paypal.com');
+//			$paypal_iplist = (array)$paypal_iplist;
+//           QUORVIA 2017April24
+            $paypal_sandbox_iplist_ipn       = gethostbynamel('ipn.sandbox.paypal.com');
+            $paypal_sandbox_iplist_ipnpb      = gethostbynamel('ipnpb.sandbox.paypal.com');
+
+            $paypal_iplist = array_merge(
+                $paypal_sandbox_iplist_ipn,
+                $paypal_sandbox_iplist_ipnpb
+            ); // end quorvia
 
 		} else {
-			$paypal_iplist1 = gethostbynamel('www.paypal.com');
-			$paypal_iplist2 = gethostbynamel('notify.paypal.com');
-			$paypal_iplist3 = array('216.113.188.202', '216.113.188.203', '216.113.188.204', '66.211.170.66');
-			$paypal_iplist = array_merge($paypal_iplist1, $paypal_iplist2, $paypal_iplist3);
-// http://forum.virtuemart.net/index.php?topic=115375.msg406664#msg406664
+            // JH 2017-04-23
+//              QUORVIA 2017April24
+            // Get IP through DNS call
+            // Reporting and order management
+            $paypal_iplist_ipnpb       = gethostbynamel('ipnpb.paypal.com');
+            $paypal_iplist_notify      = gethostbynamel('notify.paypal.com');
 
-			// Added JH 2013-10-12
-			//Current IP addresses
-			//------------api.paypal.com---------
-			$paypal_iplist_api = array(
-				'173.0.88.66',
-				'173.0.88.98',
-				'173.0.84.66',
-				'173.0.84.98',
-				'173.0.80.00',
-				'173.0.80.01',
-				'173.0.80.02',
-				'173.0.80.03',
-				'173.0.80.04',
-				'173.0.80.05',
-				'173.0.80.06',
-				'173.0.80.07',
-				'173.0.80.08',
-				'173.0.80.09',
-				'173.0.80.10',
-				'173.0.80.11',
-				'173.0.80.12',
-				'173.0.80.13',
-				'173.0.80.14',
-				'173.0.80.15',
-				'173.0.80.16',
-				'173.0.80.17',
-				'173.0.80.18',
-				'173.0.80.19',
-				'173.0.80.20',
-				'173.0.82.126',
-			);
-			//------------api-aa.paypal.com------------
-			$paypal_iplist_api_aa = array('173.0.88.67', '173.0.88.99', '173.0.84.99', '173.0.84.67');
-			//'------------api-3t.paypal.com------------'
-			$paypal_iplist_api_3t_aa = array('173.0.88.69', '173.0.88.101', '173.0.84.69', '173.0.84.101');
-			//------------api-aa-3t.paypal.com------------
-			$paypal_iplist_api_aa_3t = array('173.0.88.68', '173.0.88.100', '173.0.84.68', '173.0.84.100');
-			//------------notify.paypal.com (IPN delivery)------------
-			$paypal_iplist_notify = array('173.0.81.1', '173.0.81.33');
-			//'-----------reports.paypal.com-----------'
-			$paypal_iplist_reports = array(
-				'66.211.168.93',
-				'173.0.84.161',
-				'173.0.84.198',
-				'173.0.88.161',
-				'173.0.88.198'
-			);
-			//'------------www.paypal.com------------'
-			//'Starting September 12, 2012 www.paypal.com will start resolving to a dynamic list of IP addresses and as such should not be whitelisted.'
-			//'For more information on IPNs please go here.'
-			//'------------ipnpb.paypal.com------------'
-			$paypal_iplist_ipnb = array(
-				'64.4.240.0',
-				'64.4.240.1',
-				'64.4.240.2',
-				'64.4.240.3',
-				'64.4.240.4',
-				'64.4.240.5',
-				'64.4.240.6',
-				'64.4.240.7',
-				'64.4.240.8',
-				'64.4.240.9',
-				'64.4.240.10',
-				'64.4.240.11',
-				'64.4.240.12',
-				'64.4.240.13',
-				'64.4.240.14',
-				'64.4.240.15',
-				'64.4.240.16',
-				'64.4.240.17',
-				'64.4.240.18',
-				'64.4.240.19',
-				'64.4.240.20',
-				'118.214.15.186',
-				'118.215.103.186',
-				'118.215.119.186',
-				'118.215.127.186',
-				'118.215.15.186',
-				'118.215.151.186',
-				'118.215.159.186',
-				'118.215.167.186',
-				'118.215.199.186',
-				'118.215.207.186',
-				'118.215.215.186',
-				'118.215.231.186',
-				'118.215.255.186',
-				'118.215.39.186',
-				'118.215.63.186',
-				'118.215.7.186',
-				'118.215.79.186',
-				'118.215.87.186',
-				'118.215.95.186',
-				'202.43.63.186',
-				'69.192.31.186',
-				'72.247.111.186',
-				'88.221.43.186',
-				'92.122.143.186',
-				'92.123.151.186',
-				'92.123.159.186',
-				'92.123.163.186',
-				'92.123.167.186',
-				'92.123.179.186',
-				'92.123.183.186'
-			);
-			// JH
-
-			$paypal_iplist = array_merge($paypal_iplist, // Added JH 2013-10-12
-				$paypal_iplist_api, $paypal_iplist_api_aa, $paypal_iplist_api_3t_aa, $paypal_iplist_api_aa_3t, $paypal_iplist_notify, $paypal_iplist_ipnb// JH
-			);
-
+            $paypal_iplist = array_merge( // JH 2017-04-23
+            // List of Reporting and order management
+                $paypal_iplist_ipnpb,
+                $paypal_iplist_notify
+            );
+            // JH
 			$this->debugLog($paypal_iplist, 'checkPaypalIps PRODUCTION', 'debug', false);
 
 		}
@@ -683,8 +613,6 @@ class PaypalHelperPaypal {
 	}*/
 
 	function getRemoteIPAddress() {
-		if (!class_exists('ShopFunctions'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 		return ShopFunctions::getClientIP();
 	}
 
@@ -777,6 +705,16 @@ class PaypalHelperPaypal {
 		}
 		return false;
 	}
+
+//quorvia should this order status be updated
+	protected function _check_ipn_status_confirmed_allowed ($valid_for_confirmed) {
+
+		if (in_array($this->order['details']['BT']->order_status, $valid_for_confirmed)) {
+					return true;
+		}
+		return false;
+	}
+
 
 	protected function _check_email_amount_currency ($payments, $paypal_data) {
 

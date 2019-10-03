@@ -6,10 +6,11 @@
  * @subpackage Helpers
  * @author Max Milberes
  * @author Valerie Isaksen
- * @copyright Copyright (c) 2014 VirtueMart Team and author. All rights reserved.
+ * @copyright Copyright (c) 2014 - 2018 VirtueMart Team and author. All rights reserved.
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL 2, see COPYRIGHT.php
  */
 defined('_JEXEC') or die('Restricted access');
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+
 
 class vmRSS{
 

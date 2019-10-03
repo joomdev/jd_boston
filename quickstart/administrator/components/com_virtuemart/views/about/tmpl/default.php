@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 AdminUIHelper::startAdminArea($this);
  
-include(VMPATH_ADMIN.DS.'COPYRIGHT.php');
+include(VMPATH_ADMIN .'/COPYRIGHT.php');
 
 AdminUIHelper::endAdminArea();
 

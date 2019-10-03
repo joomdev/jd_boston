@@ -13,13 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: order_items.php 9756 2018-02-01 17:36:01Z Milbo $
+* @version $Id: order_items.php 10051 2019-05-02 12:07:26Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
 
 /**
  * Order item table class
@@ -67,7 +65,7 @@ class TableOrder_items extends VmTable {
 	var $order_status = NULL;
 	/** @var text Product attribute */
 	var $product_attribute = NULL;
-
+	var $paid = 0;
 	var $oi_hash = NULL;
 
 	/**
@@ -78,7 +76,8 @@ class TableOrder_items extends VmTable {
 
 		$this->setLoggable();
 		$this->setHashable('oi_hash');
-		$this->setOmittedHashFields(array('virtuemart_order_item_id','modified_on','modified_by','locked_on','locked_by'));
+		$this->setOmittedHashFields(array('virtuemart_order_item_id','modified_on','modified_by','locked_on','locked_by','paid'));
+		$this->setConvertDecimal(array('paid'));
 	}
 
 }

@@ -33,13 +33,39 @@ $params = VmConfig::loadConfig();
         <legend><?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_LAYOUT_SETTINGS'); ?></legend>
         <table class="admintable">
 			<?php
+			$opt = array(
+			'' => vmText::_('COM_VIRTUEMART_NONE_USE_LEGACY'),
+			'bs2' => vmText::_('Bootstrap 2'),
+			'bs3' => vmText::_('Bootstrap 3'),
+			'bs4' => vmText::_('Bootstrap 4')
+			);
+			echo VmHTML::row('genericlist','COM_VM_SELECT_BOOTSTRAP_VERSION',$opt, 'bootstrap', 'size=1 width=200', 'value', 'name', VmConfig::get('bootstrap', ''));
 			echo VmHTML::row('genericlist','COM_VIRTUEMART_SELECT_DEFAULT_SHOP_TEMPLATE',$this->jTemplateList, 'vmtemplate', 'size=1 width=200', 'value', 'name', VmConfig::get('vmtemplate', ''));
 			echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_CATEGORY_TEMPLATE',$this->jTemplateList, 'categorytemplate', 'size=1 width=200', 'value', 'name', VmConfig::get('categorytemplate', ''));
-
 			echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_CART_LAYOUT', $this->cartLayoutList, 'cartlayout', 'size=1', 'value', 'text', VmConfig::get('cartlayout', 'default'));
 			echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_CATEGORY_LAYOUT', $this->categoryLayoutList, 'categorylayout', 'size=1', 'value', 'text', VmConfig::get('categorylayout', 'default'));
 			echo VmHTML::row('genericlist','COM_VIRTUEMART_CFG_PRODUCTS_SUBLAYOUT', $this->productsFieldList, 'productsublayout', 'size=1', 'value', 'text', VmConfig::get('productsublayout', 0));
 			echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_PRODUCT_LAYOUT', $this->productLayoutList, 'productlayout', 'size=1', 'value', 'text', VmConfig::get('productlayout', 'default'));
+			?>
+        </table>
+    </fieldset>
+
+    <fieldset>
+        <legend class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS_JS_SETTINGS_TIP'); ?>">
+			<?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS_JS_SETTINGS'); ?>
+        </legend>
+        <table class="admintable">
+			<?php
+			echo VmHTML::row('checkbox','COM_VIRTUEMART_CFG_FANCY','usefancy', VmConfig::get('usefancy',1));
+			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS','css', VmConfig::get('css',1));
+			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JQUERY_FW','jquery_framework', VmConfig::get('jquery_framework',1));
+			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JQUERY','jquery', VmConfig::get('jquery',1));
+			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JPRICE','jprice', VmConfig::get('jprice',1));
+			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JSITE','jsite', VmConfig::get('jsite',1));
+			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JCHOSEN','jchosen', VmConfig::get('jchosen',1));
+			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JDYNUPDATE','jdynupdate', VmConfig::get('jdynupdate',1));
+			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_ENABLE_GOOGLE_JQUERY','google_jquery', VmConfig::get('google_jquery',0));
+			//echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_JS_CSS_MINIFIED','minified', VmConfig::get('minified',1));
 			?>
         </table>
     </fieldset>
@@ -82,7 +108,7 @@ $params = VmConfig::loadConfig();
 			</tr>
 		<?php }
 
-		echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_NOIMAGEPAGE',$this->noimagelist, 'no_image_set', 'style="min-width:120px"', 'value', 'text', VmConfig::get('no_image_set'));
+		echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_NOIMAGEPAGE',$this->noimagelist, 'no_image_set', 'style="min-width:120px"', 'value', 'text', VmConfig::get('no_image_set','noimage_new.gif'));
 		echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_NOIMAGEFOUND',$this->noimagelist, 'no_image_found', 'style="min-width:120px"', 'value', 'text', VmConfig::get('no_image_found'));
 
 		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH','forSale_path',VmConfig::get('forSale_path',''),'class="inputbox"','',50,260);
@@ -115,24 +141,7 @@ $params = VmConfig::loadConfig();
 	</table>
 </fieldset>
 
-<fieldset>
-	<legend class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS_JS_SETTINGS_TIP'); ?>">
-		<?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS_JS_SETTINGS'); ?>
-	</legend>
-	<table class="admintable">
-		<?php
-		echo VmHTML::row('checkbox','COM_VIRTUEMART_CFG_FANCY','usefancy', VmConfig::get('usefancy',1));
-		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS','css', VmConfig::get('css',1));
-		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JQUERY','jquery', VmConfig::get('jquery',1));
-		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JPRICE','jprice', VmConfig::get('jprice',1));
-		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JSITE','jsite', VmConfig::get('jsite',1));
-		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JCHOSEN','jchosen', VmConfig::get('jchosen',1));
-		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JDYNUPDATE','jdynupdate', VmConfig::get('jdynupdate',1));
-		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_ENABLE_GOOGLE_JQUERY','google_jquery', VmConfig::get('google_jquery',1));
-		//echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_JS_CSS_MINIFIED','minified', VmConfig::get('minified',1));
-		?>
-	</table>
-</fieldset>
+
 </td>
 </tr>
 </table>

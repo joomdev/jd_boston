@@ -1,0 +1,55 @@
+.gallery-section {
+   overflow: hidden;
+}
+.gallery-section div[class*="col"] a{
+   display: block;
+}
+.gallery-section div[class*="col"] a img {
+   width: 100%;
+}
+.gallery-section div[class*="col"] a:hover .overlay {
+   opacity: 1;
+}
+.gallery-section div[class*="col"] a:hover .overlay-border {
+   opacity: 1;
+}
+.gallery-section div[class*="col"] i.fas {
+   background: transparent;
+   color: #000;
+   border: 1px solid #000;
+   font-size: 1rem;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   -ms-transform: translate(-50%, -50%);
+   text-align: center;
+   width: 50px;
+   height: 50px;
+   line-height: 50px;
+   border-radius: 0px;
+}
+.gallery-section div[class*="col"] .overlay {
+   position: absolute;
+   top: 8px;
+   bottom: 0;
+   left: 8px;
+   right: 0;
+   height: calc(100% - 16px);
+   width: calc(100% - 16px);
+   opacity: 0;
+   transition: 0.3s ease;
+   background-color: rgba(255, 229, 0, 0.9294117647058824);
+}
+.gallery-section div[class*="col"] .overlay-border{
+   position: absolute;
+   top: 8px;
+   bottom: 0;
+   left: 8px;
+   right: 0;
+   height: calc(100% - 16px);
+   width: calc(100% - 16px);
+   opacity: 0;
+   transition: 0.3s ease;
+   border: 1px dotted #000;
+}

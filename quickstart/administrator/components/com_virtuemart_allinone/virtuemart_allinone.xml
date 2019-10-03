@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension method="upgrade" type="component" version="2.5">
     <name>VirtueMart_allinone</name>
-    <creationDate>March 29 2017</creationDate>
+    <creationDate>September 24 2019</creationDate>
     <copyright>Copyright (C) 2004-2017 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
     <author>The VirtueMart Development Team</author>
     <authorUrl>https://virtuemart.net</authorUrl>
-    <version status="MAYOR">3.2.1</version>
+    <version status="BUGFIX">3.6.2</version>
 
     <scriptfile>script.vmallinone.php</scriptfile>
 	<installfile>script.vmallinone.php</installfile>
@@ -15,11 +15,11 @@
     <administration>
         <menu>VirtueMart AIO</menu>
         <files folder="admin">
-            <filename>admin.virtuemart_allinone.php</filename>
-            <folder>libraries</folder>
+            <filename>virtuemart_allinone.php</filename>
+            <!--folder>libraries</folder>
             <folder>plugins</folder>
             <folder>modules</folder>
-            <folder>modulesBE</folder>
+            <folder>modulesBE</folder-->
         </files>
     </administration>
     <updateservers>

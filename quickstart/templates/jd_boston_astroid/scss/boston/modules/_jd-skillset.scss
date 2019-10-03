@@ -1,0 +1,16 @@
+div {
+	.counter-sub-container>div {
+		margin: 30px 0;
+	}
+
+	.counter-number .count {
+		font-weight: 700;
+	}
+}
+
+.border-skillset {
+	.counter-wrapper {
+		border: 1px solid $light;
+		padding: 30px 15px;
+	}
+}

@@ -15,7 +15,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: list.php 9653 2017-10-18 12:59:33Z Milbo $
+* @version $Id: list.php 10051 2019-05-02 12:07:26Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -76,7 +76,7 @@ if (count($this->orderlist) == 0) {
 					<?php echo shopFunctionsF::getOrderStatusName($row->order_status); ?>
 				</td>
 				<td align="left">
-					<?php echo $this->currency->priceDisplay($row->order_total, $row->currency); ?>
+					<?php echo $row->currency->priceDisplay($row->order_total, $row->currency); ?>
 				</td>
 			</tr>
 	<?php

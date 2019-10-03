@@ -8,7 +8,7 @@
  * @version $Id: paypal.php 7217 2013-09-18 13:42:54Z alatak $
  * @package VirtueMart
  * @subpackage payment
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -99,9 +99,10 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 		$post_variables['version'] = "104.0";
 		// 104.0 required by Paypal
 		//https://developer.paypal.com/webapps/developer/docs/classic/release-notes/
+
 		$post_variables['USER'] = $this->api_login_id;
 		$post_variables['PWD'] = $this->api_password;
-		$post_variables['BUTTONSOURCE'] = self::BNCODE;;
+		$post_variables['BUTTONSOURCE'] = self::BNCODE;
 		if ($this->api_signature) {
 			$post_variables['SIGNATURE'] = $this->api_signature;
 		}
@@ -293,10 +294,16 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 		// THIS IS A DIFFERENT URL FROM VM2
 	//	$post_variables['RETURNURL'] = JURI::root() . 'index.php?option=com_virtuemart&view=plugin&type=vmpayment&name=' . $this->_method->payment_element . '&action=SetExpressCheckout&SetExpressCheckout=done&pm=' . $this->_method->virtuemart_paymentmethod_id;
 
-		$post_variables['RETURNURL'] = JURI::root() . 'index.php?option=com_virtuemart&view=cart&task=setpayment&expresscheckout=done&pm=' . $this->_method->virtuemart_paymentmethod_id . '&Itemid=' . vRequest::getInt('Itemid') . '&lang=' . vRequest::getCmd('lang', '');
+		$post_variables['RETURNURL'] = JURI::root() . 'index.php?option=com_virtuemart&view=cart&task=setpayment&expresscheckout=done&virtuemart_paymentmethod_id=' . $this->_method->virtuemart_paymentmethod_id . '&Itemid=' . vRequest::getInt('Itemid') . '&lang=' . vRequest::getCmd('lang', '');
 
 		$post_variables['CANCELURL'] = JURI::root() . 'index.php?option=com_virtuemart&view=cart&expresscheckout=cancel&Itemid=' . vRequest::getInt('Itemid') . '&lang=' . vRequest::getCmd('lang', '');
 
+		if(!empty($this->_method->offer_credit) or !empty($this->_method->enable_smart_buttons)){
+			if(!empty($this->_method->offer_credit)){
+				$post_variables['USERSELECTEDFUNDINGSOURCE'] = 'Finance';
+			}
+			$post_variables['version'] = "116.0";
+		}
 
 		//$post_variables['CANCELURL'] = substr(JURI::root(false,''),0,-1). JROUTE::_('index.php?option=com_virtuemart&view=pluginresponse&task=pluginUserPaymentCancel&expresscheckout=cancel');
 		$post_variables['ADDROVERRIDE'] = $this->_method->address_override;
@@ -354,6 +361,12 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 
 	public function getExpressCheckoutDetails () {
 
+		$result = null;
+
+		if(isset($result)){
+			return $result;
+		}
+
 		$post_variables = $this->initPostVariables('GetExpressCheckoutDetails');
 		$this->addAcceleratedOnboarding($post_variables);
 
@@ -370,10 +383,17 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 			$this->customerData->setVar('paypal_response', $this->response);
 			$this->customerData->save();
 			$this->storeAddresses();
-			return true;
+			VmInfo('VMPAYMENT_PAYPAL_PROCEED_CHECKOUT');
+
+			//Leads to killerlopp, should not be necessary, because the cart is usually updated after the redirect
+			$cart = VirtueMartCart::getCart();
+			$cart -> setupAddressFieldsForCart(true);
+			//$cart->checkoutData(false);
+			$result = true;
 		} else {
-			return false;
+			$result = false;
 		}
+		return $result;
 	}
 
 	public function ManageLogin () {
@@ -750,7 +770,7 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 		$addressST['shipto_virtuemart_state_id'] = !empty($this->response['SHIPTOSTATE'])? ShopFunctions::getStateIDByName($this->response['SHIPTOSTATE']): '0';
 		$addressST['shipto_virtuemart_country_id'] = ShopFunctions::getCountryIDByName($this->response['SHIPTOCOUNTRYCODE']);
 		$this->cart->STsameAsBT = 0;
-		$this->cart->setCartIntoSession();
+		//$this->cart->setCartIntoSession();
 		$this->cart->saveAddressInCart($addressST, 'ST', true,'shipto_');
 
 
@@ -861,9 +881,6 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 		$expressCheckout = vRequest::getVar('expresscheckout', '');
 		if ($expressCheckout == 'cancel') {
 			$this->customerData->clear();
-			if (!class_exists('VirtueMartCart')) {
-				require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
-			}
 			$cart = VirtueMartCart::getCart();
 			$cart->virtuemart_paymentmethod_id = 0;
 			$cart->setCartIntoSession();
@@ -915,27 +932,31 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 	 * https://www.paypalobjects.com/IntegrationCenter/ic_express-buttons.html
 	 * @return array
 	 */
-	function getExpressCheckoutButton () {
+	function getExpressCheckoutButton ($credit = false) {
 		$button = array();
 
 		$lang = jFactory::getLanguage();
-		$lang_iso = str_replace('-', '_', $lang->gettag());
+		$lang_iso = str_replace('-', '_', $lang->getTag());
 		$available_buttons = array('en_US', 'en_GB', 'de_DE', 'es_ES', 'pl_PL', 'nl_NL', 'fr_FR', 'it_IT', 'zn_CN');
 		if (!in_array($lang_iso, $available_buttons)) {
 			$lang_iso = 'en_US';
 		}
 		// SetExpressCheckout
 		$button['link'] = JURI::root() . 'index.php?option=com_virtuemart&view=plugin&type=vmpayment&name=' . $this->_method->payment_element . '&action=SetExpressCheckout&pm=' . $this->_method->virtuemart_paymentmethod_id;
-		$button['img'] = JURI::root() . 'plugins/vmpayment/' . $this->_method->payment_element . '/' . $this->_method->payment_element . '/assets/images/PP_Buttons_CheckOut_119x24_v3.png';
 
+		if($credit){
+			$button['img'] = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-small.png';
+		} else {
+			$button['img'] = JURI::root() . 'plugins/vmpayment/' . $this->_method->payment_element . '/' . $this->_method->payment_element . '/assets/images/de-pp-logo-150px.png';
+		}
 
 		return $button;
 	}
 
-	function getExpressProduct () {
+	public function getExpressProduct () {
 
-		$lang = jFactory::getLanguage();
-		$lang_iso = str_replace('-', '_', $lang->gettag());
+		$lang = JFactory::getLanguage();
+		$lang_iso = str_replace('-', '_', $lang->getTag());
 		$paypal_buttonurls = array(
 			'en_US' => 'https://www.paypal.com/en_US/i/logo/PayPal_mark_60x38.gif',
 			'en_GB' => 'https://www.paypal.com/en_GB/i/bnr/horizontal_solution_PP.gif',
@@ -963,9 +984,8 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 		}
 		$paypalProduct['link'] = $paypal_infolink[$lang_iso];
 		$paypalProduct['img'] = $paypal_buttonurls[$lang_iso];
+
 		return $paypalProduct;
-
-
 	}
 
 

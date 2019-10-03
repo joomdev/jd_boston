@@ -5,29 +5,21 @@
 *
 * @package	VirtueMart
 * @subpackage Category
-* @author RickG, jseros
+* @author Max Milbers, jseros
 * @link https://virtuemart.net
-* @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+* @copyright Copyright (c) 2004 - 2018 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 * VirtueMart is free software. This version may have been modified pursuant
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: category.php 9478 2017-03-16 09:33:17Z Milbo $
+* @version $Id: category.php 9999 2018-12-13 11:05:18Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmController')) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
 
-/**
- * Category Controller
- *
- * @package    VirtueMart
- * @subpackage Category
- * @author jseros, Max Milbers
- */
 class VirtuemartControllerCategory extends VmController {
 
 
@@ -45,8 +37,7 @@ class VirtuemartControllerCategory extends VmController {
 		
 		$data = vRequest::getRequest();
 
-		$data['category_name'] = vRequest::getHtml('category_name','');
-		$data['category_description'] = vRequest::getHtml('category_description','');
+		$this->getStrByAcl(array('category_description','category_name'),$data);
 
 		parent::save($data);
 	}

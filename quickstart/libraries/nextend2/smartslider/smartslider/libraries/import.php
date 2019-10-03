@@ -36,6 +36,8 @@ class N2SmartSliderImport {
         } else if (!isset($importData['data'])) {
             if (array_key_exists("slider.ss2", $importData)) {
                 N2Message::error(n2_('You can\'t import sliders from Smart Slider 2.'));
+            } else if (empty($importData)) {
+                N2Message::error(n2_('Export file corrupted! Slider data is missing.'));
             }
 
             return false;
@@ -167,7 +169,14 @@ class N2SmartSliderImport {
                 $slide['thumbnail'] = $this->fixImage($slide['thumbnail']);
                 $slide['params']->set('backgroundImage', $this->fixImage($slide['params']->get('backgroundImage')));
                 $slide['params']->set('ligthboxImage', $this->fixImage($slide['params']->get('ligthboxImage')));
-                $slide['params']->set('link', $this->fixLightbox($slide['params']->get('link')));
+
+                if ($slide['params']->has('link')) {
+                    // Compatibility fix for the old SS3 import files
+                    $slide['params']->set('link', $this->fixLightbox($slide['params']->get('link')));
+                }
+                if ($slide['params']->has('href')) {
+                    $slide['params']->set('href', $this->fixLightbox($slide['params']->get('href')));
+                }
 
                 $layers = json_decode($slide['slide'], true);
 
@@ -232,14 +241,17 @@ class N2SmartSliderImport {
     }
 
     public function fixLightbox($url) {
-        preg_match('/^([a-zA-Z]+)\[(.*)](.*)/', $url, $matches);
+        preg_match('/^([a-zA-Z]+)\[(.*)]/', $url, $matches);
         if (!empty($matches) && $matches[1] == 'lightbox') {
-            $images    = explode(',', $matches[2]);
-            $newImages = array();
-            foreach ($images AS $image) {
-                $newImages[] = $this->fixImage($image);
+            $data = json_decode($matches[2]);
+            if ($data) {
+                $newImages = array();
+                foreach ($data->urls AS $image) {
+                    $newImages[] = $this->fixImage($image);
+                }
+                $data->urls = $newImages;
+                $url        = 'lightbox[' . json_encode($data) . ']';
             }
-            $url = 'lightbox[' . implode(',', $newImages) . ']' . $matches[3];
         }
 
         return $url;

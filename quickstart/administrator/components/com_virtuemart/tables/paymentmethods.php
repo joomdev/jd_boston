@@ -14,12 +14,9 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: paymentmethods.php 9413 2017-01-04 17:20:58Z Milbo $
+ * @version $Id: paymentmethods.php 9831 2018-05-07 13:45:33Z Milbo $
  */
 defined('_JEXEC') or die();
-
-if (!class_exists('VmTable'))
-    require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmtable.php');
 
 /**
  * Calculator table class

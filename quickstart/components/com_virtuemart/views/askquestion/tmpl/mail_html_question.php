@@ -2,19 +2,19 @@
 defined('_JEXEC') or die('');
 /**
 * Renders the email for ask a question
-	* @package	VirtueMart
-	* @subpackage product details
-	* @author Maik K�nnemann
-	* @link https://virtuemart.net
- * @copyright Copyright (c) 2004 - 2014 VirtueMart Team. All rights reserved.
+ * @package	VirtueMart
+ * @subpackage product details
+ * @author Maik Künnemann
+ * @link https://virtuemart.net
+ * @copyright Copyright (c) 2004 - 2018 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id$
+ * @version $Id: mail_html_question.php 9927 2018-09-10 STS $
  */
- ?>
+?>
 
 <html>
 	<head>
@@ -25,8 +25,8 @@ defined('_JEXEC') or die('');
 			h2 { font-size: 1.6em; font-weight: normal; margin: 0px; padding: 0px; }
 			img {border: none;}
 			a {text-decoration: none; color: #000;}
-			a.product-details, a.product-details:visited { 
-				border: solid #CAC9C9 1px; 
+			a.product-details, a.product-details:visited {
+				border: solid #CAC9C9 1px;
 				border-radius: 4px;
 				-webkit-border-radius: 4px;
 				-moz-border-radius: 4px;
@@ -34,7 +34,7 @@ defined('_JEXEC') or die('');
 				text-decoration: none;
 				padding: 3px 8px 2px 8px;
 			}
-			a.product-details:hover {color:#888;background: #f8f8f8;}; 
+			a.product-details:hover {color:#888;background: #f8f8f8;};
 		</style>
 	</head>
 
@@ -60,7 +60,7 @@ defined('_JEXEC') or die('');
 								<table width="100%" cellpadding="0" cellspacing="0">
 									<tr>
 										<?php
-										$menuItemID = shopFunctionsF::getMenuItemId(JFactory::getLanguage()->getTag());
+										$menuItemID = shopFunctionsF::getMenuItemId(vmLanguage::getLanguage()->getTag());
 										$product_link = JURI::root().'index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->virtuemart_product_id . '&Itemid=' . $menuItemID;
 										?>
 										<td width="30%" align="center">
@@ -74,7 +74,7 @@ defined('_JEXEC') or die('');
 												<?php if ($this->product->product_sku) echo ' ('.vmText::_('COM_VIRTUEMART_PRODUCT_SKU').' '.$this->product->product_sku .')' ; ?>
 											</h2>
 											<p style="margin: 15px 0; display:block;"><?php  echo $this->product->product_s_desc ?></p>
-											<a href="<?php  echo $product_link ?>" class="product-details">Product details</a>
+											<a href="<?php  echo $product_link ?>" class="product-details"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_DETAILS') ; ?></a>
 										</td>
 									</tr>
 								</table>

@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: edit_config.php 9413 2017-01-04 17:20:58Z Milbo $
+ * @version $Id: edit_config.php 9869 2018-06-13 09:03:47Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -36,7 +36,7 @@ if ($this->payment->payment_jplugin_id) {
 	<?php
 	if ($this->payment->form) {
 		$form = $this->payment->form;
-		include(VMPATH_ADMIN.DS.'fields'.DS.'formrenderer.php');
+		include(VMPATH_ADMIN .'/fields/formrenderer.php');
 	}
 } else {
 	echo vmText::_('COM_VIRTUEMART_SELECT_PAYMENT_METHOD_VM3');

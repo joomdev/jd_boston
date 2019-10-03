@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: default_shopfront.php 9694 2017-12-06 17:41:34Z StefanSTS $
+ * @version $Id: default_shopfront.php 9995 2018-11-28 13:59:08Z StefanSTS $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -98,7 +98,7 @@ defined('_JEXEC') or die('Restricted access');?>
 		<div>
 			<?php echo VmHTML::checkbox('lstockmail', VmConfig::get('lstockmail')); ?>
 			<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_CFG_LOWSTOCK_NOTIFY_TIP'); ?>">
-				<label for="reviews_autopublish">
+				<label for="lstockmail">
 					<?php echo vmText::_('COM_VIRTUEMART_CFG_LOWSTOCK_NOTIFY'); ?>
 				</label>
 			</span>
@@ -138,7 +138,7 @@ defined('_JEXEC') or die('Restricted access');?>
 		<span class="icon-nofloat vmicon vmicon-16-info tooltip" title="<?php echo '<b>' . vmText::_('COM_VIRTUEMART_AVAILABILITY') . '</b><br/ >' . vmText::sprintf('COM_VIRTUEMART_PRODUCT_FORM_AVAILABILITY_TOOLTIP2', $this->imagePath) ?>"></span>
 
 		<div class="clr"></div>
-		<img id="imagelib" alt="<?php echo vmText::_('COM_VIRTUEMART_PREVIEW'); ?>" name="imagelib" src="<?php if (VmConfig::get('rised_availability')) {
+		<img id="imagelib" alt="<?php echo vmText::_('COM_VIRTUEMART_PREVIEW'); ?>" name="imagelib" src="<?php if (VmConfig::get('rised_availability') and file_exists(JPATH_ROOT . '/' . $this->imagePath.VmConfig::get('rised_availability'))) {
 			echo JURI::root(true) . $this->imagePath . VmConfig::get('rised_availability');
 		}?>"/>
 	</fieldset>
@@ -176,7 +176,7 @@ defined('_JEXEC') or die('Restricted access');?>
 </tr>
 </table>
 <?php
-vmJsApi::addJScript('vm.imagechange','
+vmJsApi::addJScript('vm-imagechange','
 	jQuery("#image").change(function () {
 		var $newimage = jQuery(this).val();
 		jQuery("#product_availability").val($newimage);

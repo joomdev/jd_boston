@@ -22,12 +22,28 @@ class N2JoomlaImageFallBack {
         return $protocol . $domainName;
     }
 
+    static public function checkHTTP($image, $root, $returnboolean = false) {
+        if (substr($image, 0, 5) != 'http:' && substr($image, 0, 6) != 'https:') {
+            if ($returnboolean) {
+                return false;
+            } else {
+                return $root . $image;
+            }
+        } else {
+            if ($returnboolean) {
+                return true;
+            } else {
+                return $image;
+            }
+        }
+    }
+
     static public function fallback($root, $imageVars, $textVars = array()) {
         $return = '';
         if (is_array($imageVars)) {
             foreach ($imageVars as $image) {
                 if (!empty($image)) {
-                    $return = N2ImageHelper::dynamic($root . $image);
+                    $return = N2ImageHelper::dynamic(self::checkHTTP($image, $root));
                     break;
                 }
             }
@@ -35,9 +51,9 @@ class N2JoomlaImageFallBack {
                 foreach ($textVars as $text) {
                     $imageInText = self::findImage($text);
                     if (!empty($imageInText)) {
-                        $file = $root . $imageInText;
-                        if (N2Filesystem::existsFile($file)) {
-                            $return = N2ImageHelper::dynamic($root . $imageInText);
+                        $file = self::checkHTTP($imageInText, $root);
+                        if (N2Filesystem::existsFile($file) || self::checkHTTP($imageInText, $root, true)) {
+                            $return = N2ImageHelper::dynamic($file);
                         } else {
                             $slashes = array(
                                 '/',
@@ -45,7 +61,7 @@ class N2JoomlaImageFallBack {
                             );
                             if (in_array(substr(self::siteURL(), -1), $slashes) || in_array(substr($imageInText, 0, 1), $slashes)) {
                                 $return = N2ImageHelper::dynamic(self::siteURL() . $imageInText);
-                            } else if( strpos($imageInText, self::siteURL()) === 0 ) {
+                            } else if (strpos($imageInText, self::siteURL()) === 0) {
                                 $return = $imageInText;
                             } else {
                                 $return = N2ImageHelper::dynamic(self::siteURL() . '/' . $imageInText);

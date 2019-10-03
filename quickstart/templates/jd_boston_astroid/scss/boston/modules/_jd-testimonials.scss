@@ -1,0 +1,31 @@
+.jd-testimonial {
+	text-align: center;
+	.slick-initialized {
+		padding: 0 30px;
+		.slick-dots {
+			margin-top: 15px;
+		}
+	}
+}
+.jd-testimonial .slick-slider:not(.style-two) {
+	.author-img {
+		margin: 0 auto;
+	}
+
+	.author-info {
+		margin-top: 10px;
+	}
+
+	.jd-testimonial-review {
+		margin: 30px auto 0;
+		width: 60%;
+
+		@include media-breakpoint-down(md) {
+			width: 100%;
+		}
+	}
+
+	.slick-slider {
+		margin-bottom: 0 !important;
+	}
+}

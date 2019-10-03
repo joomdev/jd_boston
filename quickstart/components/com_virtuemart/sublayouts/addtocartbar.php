@@ -93,7 +93,7 @@ if (!VmConfig::get('use_as_catalog', 0)  ) { ?>
             <span class="quantity-box">
 				<input type="<?php echo $editable ?>" class="quantity-input js-recalculate" name="quantity[]"
                        data-errStr="<?php echo vmText::_ ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED')?>"
-                       value="<?php echo $init; ?>" init="<?php echo $init; ?>" step="<?php echo $step; ?>" <?php echo $maxOrder; ?> />
+                       value="<?php echo $init; ?>" data-init="<?php echo $init; ?>" data-step="<?php echo $step; ?>" <?php echo $maxOrder; ?> />
 			</span>
 			<?php if ($product->orderable) { ?>
                 <span class="quantity-controls js-recalculate">

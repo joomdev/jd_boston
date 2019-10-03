@@ -13,14 +13,11 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: product.php 9720 2018-01-09 10:21:53Z Milbo $
+ * @version $Id: product.php 10036 2019-04-01 10:28:12Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
-
 
 /**
  * Product Controller
@@ -38,7 +35,7 @@ class VirtuemartControllerProduct extends VmController {
 	 */
 	function __construct() {
 		parent::__construct('virtuemart_product_id');
-		$this->addViewPath( VMPATH_ADMIN . DS . 'views');
+		$this->addViewPath( VMPATH_ADMIN .'/views');
 	}
 
 
@@ -58,43 +55,20 @@ class VirtuemartControllerProduct extends VmController {
 
 		if($data===0)$data = vRequest::getRequest();
 
-		if(vmAccess::manager('raw')){
-			$data['product_desc'] = vRequest::get('product_desc','');
-			$data['product_s_desc'] = vRequest::get('product_s_desc','');
-			$data['customtitle'] = vRequest::get('customtitle','');
+		$this->getStrByAcl(array('product_name','product_desc','product_s_desc','customtitle'),$data);
 
-			if(isset($data['field'])){
-				$data['field'] = vRequest::get('field');
-			}
-
-			if(isset($data['childs'])){
-				foreach($data['childs'] as $k=>$v){
-					if($n = vRequest::get('product_name',false,FILTER_UNSAFE_RAW,FILTER_FLAG_NO_ENCODE,$data['childs'][$k])){
-						$data['childs'][$k]['product_name'] = $n;
-					}
-				}
-			}
-
-		} else  {
-			if(vmAccess::manager('html')){
-				$data['product_desc'] = vRequest::getHtml('product_desc','');
-				$data['product_s_desc'] = vRequest::getHtml('product_s_desc','');
-				$data['customtitle'] = vRequest::getHtml('customtitle','');
-
-				if(isset($data['field'])){
-					$data['field'] = vRequest::getHtml('field');
-				}
-			} else {
-				$data['product_desc'] = vRequest::getString('product_desc','');
-				$data['product_s_desc'] = vRequest::getString('product_s_desc','');
-				$data['customtitle'] = vRequest::getString('customtitle','');
-
-				if(isset($data['field'])){
-					$data['field'] = vRequest::getString('field');
-				}
-			}
-
+		if(isset($data['field'])){
+			$data['field'] = vRequest::getHtml('field');
 		}
+
+		if(isset($data['childs'])){
+			foreach($data['childs'] as $k=>$v){
+				if($n = vRequest::getHtml('product_name',false, $data['childs'][$k])){
+					$data['childs'][$k]['product_name'] = $n;
+				}
+			}
+		}
+
 		parent::save($data);
 	}
 
@@ -271,7 +245,7 @@ class VirtuemartControllerProduct extends VmController {
 			vmInfo('COM_VIRTUEMART_PRODUCT_XREF_NAMES',implode(', ',$productNames));
 		}
 
-		$this->addViewPath(VMPATH_ADMIN . DS . 'views');
+		$this->addViewPath(VMPATH_ADMIN .'/views');
 		$document = JFactory::getDocument();
 		$viewType = $document->getType();
 		$view = $this->getView($this->_cname, $viewType);

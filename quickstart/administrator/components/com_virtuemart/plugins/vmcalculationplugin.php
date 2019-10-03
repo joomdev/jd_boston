@@ -20,8 +20,6 @@
  */
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-if (!class_exists('vmPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmplugin.php');
-
 abstract class vmCalculationPlugin extends vmPlugin {
 
 	function __construct(& $subject, $config) {

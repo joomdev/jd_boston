@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: product_edit_customer.php 9722 2018-01-09 11:36:14Z Milbo $
+ * @version $Id: product_edit_customer.php 9982 2018-11-02 21:32:43Z kkmediaproduction $
  */
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die('Restricted access');
@@ -69,7 +69,7 @@ $i = 0;
 		<td width="21%" valign="top">
 			<div id="customer-mail-content">
 				<div><?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_SUBJECT') ?></div>
-				<input type="text" class="mail-subject" id="mail-subject" size="100"   value="<?php echo vmText::sprintf ('COM_VIRTUEMART_PRODUCT_EMAIL_SHOPPERS_SUBJECT',htmlentities($this->product->product_name)) ?>">
+				<input type="text" class="mail-subject" id="mail-subject" size="100"   value="<?php echo vmText::sprintf ('COM_VIRTUEMART_PRODUCT_EMAIL_SHOPPERS_SUBJECT',$this->product->product_name) ?>">
 
 				<div><?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_CONTENT') ?></div>
 				<textarea style="width: 100%;" class="inputbox"   id="mail-body" cols="35" rows="10"></textarea>
@@ -86,22 +86,21 @@ $i = 0;
 				</span><br/>
 				<?php echo $this->lists['OrderStatus'];?>
 				<br/> <br/>
-				<div style="font-weight:bold;"><?php echo vmText::sprintf ('COM_VIRTUEMART_PRODUCT_SHOPPERS_LIST', vRequest::vmSpecialChars($this->product->product_name)); ?></div>
+				<div style="font-weight:bold;"><?php echo vmText::sprintf ('COM_VIRTUEMART_PRODUCT_SHOPPERS_LIST', $this->product->product_name); ?></div>
 				<table class="adminlist table ui-sortable" cellspacing="0" cellpadding="0">
 					<thead>
 					<tr>
-						<th class="title"><?php echo $this->sort ('ou.first_name', 'COM_VIRTUEMART_NAME','productShoppers');?></th>
-						<th class="title"><?php echo $this->sort ('ou.email', 'COM_VIRTUEMART_EMAIL','productShoppers');?></th>
+						<th class="title"><?php echo $this->sort ('ou.first_name', 'COM_VIRTUEMART_NAME','edit');?></th>
+						<th class="title"><?php echo $this->sort ('ou.email', 'COM_VIRTUEMART_EMAIL','edit');?></th>
 						<th class="title"><?php echo vmText::_ ('COM_VIRTUEMART_SHOPPER_FORM_PHONE');?></th>
 						<th class="title"><?php echo vmText::_ ('COM_VIRTUEMART_ORDER_PRINT_QUANTITY');?></th>
 						<th class="title"><?php echo vmText::_ ('COM_VIRTUEMART_ORDER_PRINT_ITEM_STATUS');?></th>
-						<th class="title"><?php echo $this->sort ('o.order_number', 'COM_VIRTUEMART_ORDER_NUMBER', 'productShoppers');?></th>
-						<th class="title"><?php echo $this->sort ('order_date', 'COM_VIRTUEMART_ORDER_CDATE','productShoppers');?></th>
+						<th class="title"><?php echo $this->sort ('o.order_number', 'COM_VIRTUEMART_ORDER_NUMBER', 'edit');?></th>
+						<th class="title"><?php echo $this->sort ('order_date', 'COM_VIRTUEMART_ORDER_CDATE','edit');?></th>
 					</tr>
 					</thead>
 					<tbody id="customers-list">
 					<?php
-					if(!class_exists('ShopFunctions'))require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 					echo ShopFunctions::renderProductShopperList($this->productShoppers);
 					?>
 					</tbody>
@@ -152,7 +151,6 @@ $i = 0;
 				<?php } ?>
 			</div>
 
-			</div>
 		</td>
 	</tr>
 	<tr>

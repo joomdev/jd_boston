@@ -19,8 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
-
 /**
  * Order history table class
  * The class is is used to manage the order history in the shop.
@@ -69,7 +67,7 @@ class TableOrder_item_histories extends VmTable {
 	var $order_status = NULL;
 	/** @var text Product attribute */
 	var $product_attribute = NULL;
-
+	var $paid = 0;
 	var $oi_hash = NULL;
 
 	var $created_on = NULL;

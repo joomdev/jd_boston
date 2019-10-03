@@ -14,13 +14,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: category.php 9805 2018-03-23 09:40:01Z Milbo $
+* @version $Id: category.php 10146 2019-09-16 12:13:08Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Model for product categories
@@ -53,7 +51,8 @@ class VirtueMartModelCategory extends VmModel {
 
 
 	public function checkIfCached($virtuemart_category_id,$childs=TRUE){
-		return !empty($this->_cache[$virtuemart_category_id][(int)$childs]);
+		$childs = (int)$childs;
+		return !empty($this->_cache[$virtuemart_category_id][(int)$childs][VmLanguage::$currLangTag]);
 	}
 
 	/**
@@ -61,64 +60,70 @@ class VirtueMartModelCategory extends VmModel {
 	 *
 	 * @author RickG, jseros, Max Milbers
 	 */
-	public function getCategory($virtuemart_category_id=0,$childs=TRUE, $fe = true){
+	public function getCategory($virtuemart_category_id=0, $childs=TRUE, $fe = true){
 
 		if(!empty($virtuemart_category_id)) $this->_id = (int)$virtuemart_category_id;
 		$childs = (int)$childs;
-		if (empty($this->_cache[$this->_id][$childs.VmLanguage::$currLangTag])) {
+		//vmdebug('getCategory '.$this->_id.' '.$childs);
+		if (isset($this->_cache[$this->_id][$childs][VmLanguage::$currLangTag])) {
+			vmdebug('Found cached cat');
+			return clone($this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]);
+		} else {
 
-			if($childs and !empty($this->_cache[$this->_id][0])){
-				$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag] = clone($this->_cache[$this->_id][0]);
-			} else if(!$childs and !empty($this->_cache[$this->_id][1])){
-				$t = clone($this->_cache[$this->_id][1]);
+			if($childs and !empty($this->_cache[$this->_id][0][VmLanguage::$currLangTag])){
+				$this->_cache[$this->_id][1][VmLanguage::$currLangTag] = clone($this->_cache[$this->_id][0][VmLanguage::$currLangTag]);
+vmdebug('Found cached cat, but without children');
+			} else if(!$childs and !empty($this->_cache[$this->_id][1][VmLanguage::$currLangTag])){
+				$t = clone($this->_cache[$this->_id][1][VmLanguage::$currLangTag]);
 				$t->children = false;
 				$t->haschildren = null;
 				$t->productcount = false;
 				$t->parents = false;
-				$this->_cache[$this->_id][0] = $t;
-				//vmdebug('Use category already loaded with children');
+				$this->_cache[$this->_id][0][VmLanguage::$currLangTag] = $t;
+				vmdebug('Use already loaded category with children');
 				return $t;
+
 			} else {
-				$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag] = $this->getTable('categories');
+				$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag] = $this->getTable('categories');
 				if(!empty($this->_id)){
-					$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->load($this->_id);
+					$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->load($this->_id);
 
 					$xrefTable = $this->getTable('category_medias');
-					$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->virtuemart_media_id = $xrefTable->load((int)$this->_id);
+					$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->virtuemart_media_id = $xrefTable->load((int)$this->_id);
 				} else {
-					$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->virtuemart_media_id = false;
+					$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->virtuemart_media_id = false;
 				}
 
-
-				$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->categorytemplate = $this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->category_template;
-				$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->categorylayout = $this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->category_layout;
-				$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->productlayout = $this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->category_product_layout;
+				//Fallbacks
+				$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->categorytemplate = $this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->category_template;
+				$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->categorylayout = $this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->category_layout;
+				$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->productlayout = $this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->category_product_layout;
 			}
 
-			$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->children = false;
-			$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->haschildren = null;
-			$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->productcount = false;
-			$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->parents = false;
+			$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->children = false;
+			$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->haschildren = null;
+			$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->productcount = false;
+			$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->parents = null;
+
 			if($childs){
-				$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->haschildren = $this->hasChildren($this->_id);
+				$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->haschildren = $this->hasChildren($this->_id);
 
 				/* Get children if they exist */
-				if ($this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->haschildren) {
-					//$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->children = $this->getCategories( true, $this->_id );
-					$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->children = $this->getChildCategoryList($this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->virtuemart_vendor_id, $this->_id );
+				if ($this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->haschildren) {
+					//$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->children = $this->getCategories( true, $this->_id );
+					$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->children = $this->getChildCategoryList($this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->virtuemart_vendor_id, $this->_id );
 				}
 
-
 				/* Get the product count */
-				$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->productcount = $this->countProducts($this->_id);
+				$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->productcount = $this->countProducts($this->_id);
 
-				/* Get parent for breatcrumb */
-				$this->_cache[$this->_id][$childs.VmLanguage::$currLangTag]->parents = $this->getParentsList($this->_id);
+				/* Get parent for breadcrumb */
+				$this->_cache[$this->_id][$childs][VmLanguage::$currLangTag]->parents = $this->getParentsList($this->_id);
 			}
 
 		}
 
-		return $this->_cache[$this->_id][$childs.VmLanguage::$currLangTag];
+		return $this->_cache[$this->_id][$childs][VmLanguage::$currLangTag];
 	}
 
 	/**
@@ -222,7 +227,6 @@ class VirtueMartModelCategory extends VmModel {
 		$db->setQuery( $query);
 		$childList = $db->loadObjectList();
 		if(!empty($childList)){
-			if(!class_exists('TableCategory_medias'))require(VMPATH_ADMIN.DS.'tables'.DS.'category_medias.php');
 			foreach($childList as $child){
 				$xrefTable = new TableCategory_medias($db);
 				$child->virtuemart_media_id = $xrefTable->load($child->virtuemart_category_id);
@@ -543,6 +547,10 @@ class VirtueMartModelCategory extends VmModel {
 		$data['category_layout'] = $data['categorylayout'];
 		$data['category_product_layout'] = $data['productlayout'];
 
+
+		if($data['category_parent_id'] == $data['virtuemart_category_id']){
+			$data['category_parent_id'] = 0;
+		}
 		$table->bindChecknStore($data);
 
 		if(!empty($data['virtuemart_category_id'])){
@@ -691,15 +699,20 @@ class VirtueMartModelCategory extends VmModel {
 		$db = JFactory::getDBO();
 		$menu = JFactory::getApplication()->getMenu();
 		$parents = array();
-		if (empty($query['Itemid'])) {
+		$Itemid = vRequest::getInt('Itemid',false);
+		if (empty($Itemid)) {
 			$menuItem = $menu->getActive();
 		} else {
-			$menuItem = $menu->getItem($query['Itemid']);
+			$menuItem = $menu->getItem($Itemid);
 		}
 		$menuCatid = (empty($menuItem->query['virtuemart_category_id'])) ? 0 : $menuItem->query['virtuemart_category_id'];
 		if ($menuCatid == $virtuemart_category_id) return ;
-		$parents_id = array_reverse($this->getCategoryRecurse($virtuemart_category_id,$menuCatid));
 
+		$this->categoryRecursed = 0;
+		$tCats = $this->getCategoryRecurse($virtuemart_category_id,$menuCatid);
+		if(!$tCats) return false;
+
+		$parents_id = array_reverse($tCats);
 
 		//$useFb = vmLanguage::getUseLangFallback();
 		//$useFb2 = vmLanguage::getUseLangFallbackSecondary();
@@ -730,7 +743,7 @@ class VirtueMartModelCategory extends VmModel {
 		return $parents;
 	}
 
-	private $categoryRecursed = 0;
+	public $categoryRecursed = 0;
 
 	public function getCategoryRecurse($virtuemart_category_id,$catMenuId,$idsArr=true ) {
 

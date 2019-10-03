@@ -3,7 +3,7 @@ if( !defined( '_JEXEC' ) ) die('Restricted access');
 
 /**
 *
-* @version $Id: view.html.php 9802 2018-03-20 15:22:11Z Milbo $
+* @version $Id: view.html.php 9843 2018-05-18 22:39:36Z Milbo $
 * @package VirtueMart
 * @subpackage Report
 * @copyright Copyright (C) VirtueMart Team - All rights reserved.
@@ -16,8 +16,6 @@ if( !defined( '_JEXEC' ) ) die('Restricted access');
 *
 * http://virtuemart.org
 */
-
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * Report View class
@@ -32,12 +30,6 @@ class VirtuemartViewReport extends VmViewAdmin {
 	 * Render the view
 	 */
 	function display($tpl = null){
-
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-		if (!class_exists('CurrencyDisplay'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
-
 
 		$model		= VmModel::getModel();
 
@@ -81,7 +73,7 @@ class VirtuemartViewReport extends VmViewAdmin {
 		$this->assignRef('totalReport', $totalReport);
 
 		if($this->showVendors()){
-			$this->lists['vendors'] = Shopfunctions::renderVendorList($model->virtuemart_vendor_id);
+			$this->lists['vendors'] = Shopfunctions::renderVendorList($model->virtuemart_vendor_id, 'virtuemart_vendor_id', true);
 		}
 		$orderstatusM =VmModel::getModel('orderstatus');
 		$this->lists['select_date'] = $model->renderDateSelectList();

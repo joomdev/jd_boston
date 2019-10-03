@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: default.php 9413 2017-01-04 17:20:58Z Milbo $
+ * @version $Id: default.php 9821 2018-04-16 18:04:39Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -26,7 +26,7 @@ AdminUIHelper::startAdminArea($this);
 <?php // Loading Templates in Tabs
 AdminUIHelper::buildTabs ( $this,  array (
 									'shop' 			=> 	'COM_VIRTUEMART_ADMIN_CFG_SHOPTAB',
-									'email' 		=> 	'COM_VIRTUEMART_ADMIN_CFG_EMAILTAB',
+									'email' 		=> 	'COM_VIRTUEMART_ADMIN_CFG_ORDERTAB',
 									'shopfront' 	=> 	'COM_VIRTUEMART_ADMIN_CFG_SHOPFRONTTAB',
 									'templates' 	=> 	'COM_VIRTUEMART_ADMIN_CFG_TEMPLATESTAB',
 									'pricing' 		=> 	'COM_VIRTUEMART_ADMIN_CFG_PRICINGTAB',

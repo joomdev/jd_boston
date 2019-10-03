@@ -9,10 +9,7 @@
  * @copyright Copyright (c) 2011 - 2014 VirtueMart Team. All rights reserved.
  */
 
-
 defined('_JEXEC') or die();
-
-if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
 
 /**
  * Shopper group table.
@@ -41,8 +38,6 @@ class TableShoppergroups extends VmTable
 
 		$this->setLoggable();
 		$this->setTableShortCut('sg');
-
-		if (!class_exists('CurrencyDisplay')) require(VMPATH_ADMIN .'/helpers/currencydisplay.php');
 
 		$varsToPushParam = array('show_prices' => array(0,'int'));
 		foreach(CurrencyDisplay::$priceNames as $field){

@@ -19,8 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
-
 /**
  * Model class for shop coupons
  *
@@ -38,6 +36,11 @@ class VirtueMartModelInvoice extends VmModel {
 		$this->setMainTable('invoices');
 	}
 
+	static public function isInvoiceToBeAttachByOrderstats($order_status){
+
+		return (int)(VirtueMartModelInvoice::needInvoiceByOrderstatus($order_status) or VirtueMartModelInvoice::needInvoiceByOrderstatus($order_status,'inv_osr', array('R')));
+	}
+
 	static function needInvoiceByOrderstatus($order_status, $confName = 'inv_os', $def = array('C')){
 
 		$orderstatusForInvoice = VmConfig::get($confName,$def);
@@ -47,8 +50,11 @@ class VirtueMartModelInvoice extends VmModel {
 		if(in_array($order_status, $orderstatusForInvoice)){
 			$invoiceOrderStatus = true;
 		}
-		 return $invoiceOrderStatus;
+
+		return $invoiceOrderStatus;
 	}
+
+
 
 	static function checkInvoiceExists($invoiceNumber, $layout){
 		$path = self::getInvoicePath();
@@ -84,7 +90,7 @@ class VirtueMartModelInvoice extends VmModel {
 
 		$hashOrder = self::hashOrder($order);
 		$invoice = self::getInvoiceEntry($orderId,true,'*');
-		if(!empty($storedOrder->o_hash) and $storedOrder->o_hash == $hashOrder){
+		if($storedOrder->invoice_locked or (!empty($storedOrder->o_hash) and $storedOrder->o_hash == $hashOrder)){
 			return false;
 		} else {
 
@@ -93,7 +99,7 @@ class VirtueMartModelInvoice extends VmModel {
 		}
 		//Compare hash of orderDetails and stored invoice hash
 	}
-
+/*
 	static function hashOrder($order){
 
 		$b =vmJsapi::safe_json_encode($order['details']['BT']);
@@ -103,22 +109,34 @@ class VirtueMartModelInvoice extends VmModel {
 		vmdebug('hashOrder',$h,$order);
 		return $h;
 	}
+*/
+	function createReferencedInvoiceNumber($orderId, $orderDetails = false, $layout = 'invoice', $checkHash = true) {
 
-	function createReferencedInvoiceNumber($orderId, $orderDetails = false, $layout = 'invoice') {
+		if(!empty($orderDetails['invoice_locked'])) return false;
 
-		//check if there is already an InvoiceEntry
-		$invNu = self::getInvoiceEntry( $orderId, true, '*' );
+		$invNu = false;
+		if($checkHash or !VmConfig::get( 'ChangedInvCreateNewInvNumber', true )){
+			//check if there is already an InvoiceEntry
+			$invNu = self::getInvoiceEntry( $orderId, true, '*' );
+			vmdebug( 'createReferencedInvoiceNumber', $orderId,$invNu );
+		}
 
 		//First lets execute a path check, if the invoice was actually already rendered
-		if($invNu){
+		if($checkHash and $invNu){
 			$exists = self::checkInvoiceExists($invNu['invoice_number'], $layout);
 			if(!$exists){
 				vmdebug('Current invoice number not rendered yet');
 				return false; //No new invoice number created
+			} else {
+				vmdebug( 'createReferencedInvoiceNumber invoice entry exists already for', $orderId, $invNu );
+				if(!empty($orderDetails['o_hash']) and $orderDetails['o_hash']==$invNu['o_hash']){
+					vmdebug( 'createReferencedInvoiceNumber hash of invoice entry and invoice to create is the same, break', $orderId, $invNu );
+					return false;
+				}
 			}
 		}
 
-		//vmdebug( 'createReferencedInvoiceNumber', $orderId, $invNu );
+		vmdebug( 'createReferencedInvoiceNumber f', $orderId, $invNu );
 		if(!VmConfig::get( 'ChangedInvCreateNewInvNumber', true ) and $invNu) {
 			$invT = $this->getTable( 'invoices' );
 			$invT->bind( $invNu );
@@ -133,11 +151,15 @@ class VirtueMartModelInvoice extends VmModel {
 		}
 	}
 
+	function createNewInvoiceNumber($orderDetails, &$invoiceNumber){
+		return $this->getExistingIfUnlockedCreateNewInvoiceNumber($orderDetails, $invoiceNumber);
+	}
+
 	/**
 	 * returns true if an invoice number has been created
 	 * returns false if an invoice number has not been created  due to some configuration parameters
 	 */
-	function createNewInvoiceNumber($orderDetails, &$invoiceNumber){
+	function getExistingIfUnlockedCreateNewInvoiceNumber($orderDetails, &$invoiceNumber){
 
 		$orderDetails = (array)$orderDetails;
 
@@ -146,16 +168,23 @@ class VirtueMartModelInvoice extends VmModel {
 			vmdebug('createInvoiceNumber $orderDetails has no virtuemart_order_id ',$orderDetails);
 		}
 
-		$invM = VmModel::getModel('invoice');
-		$result = $invM->getInvoiceEntry($orderDetails['virtuemart_order_id'], true, '*');
-//vmdebug('createInvoiceNumber',$orderDetails,$result);
-		if (!class_exists('ShopFunctions')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
-		if(!$result or empty($result['invoice_number']) ){
-			$invoiceNumber = $invM->createStoreNewInvoiceNumber($orderDetails);
+		//$invM = VmModel::getModel('invoice');
+		$result = $this->getInvoiceEntry($orderDetails['virtuemart_order_id'], true, '*');
+		vmdebug('getExistingIfUnlockedCreateNewInvoiceNumber',$orderDetails['virtuemart_order_id'],$result);
+
+		if( (!$result or empty($result['invoice_number'])) ){
+			if(empty($orderDetails['invoice_locked'])){
+				$invoiceNumber = $this->createStoreNewInvoiceNumber($orderDetails);
+			} else {
+				$er= 'No new invoice number created. Invoice is locked';
+				vmError($er,$er);
+				$invoiceNumber = false;
+			}
 		} else {
 			$invoiceNumber = array($result['invoice_number'],$result['created_on']);
 		}
-		return true;
+		vmdebug('getExistingIfUnlockedCreateNewInvoiceNumber returning $invoiceNumber',$invoiceNumber);
+		return $invoiceNumber;
 	}
 
 	function createStoreNewInvoiceNumberById($orderId, $orderDetails = false){
@@ -190,6 +219,10 @@ class VirtueMartModelInvoice extends VmModel {
 
 		$data['virtuemart_vendor_id'] = $orderDetails['virtuemart_vendor_id'];
 
+		$data['o_hash'] = $orderDetails['o_hash'];
+
+		if($orderDetails['invoice_locked']) return false;
+
 		JPluginHelper::importPlugin('vmextended');
 		JPluginHelper::importPlugin('vmshopper');
 		JPluginHelper::importPlugin('vmshipment');
@@ -203,11 +236,10 @@ class VirtueMartModelInvoice extends VmModel {
 			// check the default configuration
 			$orderstatusForInvoice = VmConfig::get('inv_os',array('C'));
 			if(!is_array($orderstatusForInvoice)) $orderstatusForInvoice = array($orderstatusForInvoice); //for backward compatibility 2.0.8e
-			$pdfInvoice = (int)VmConfig::get('pdf_invoice', 0); // backwards compatible
-			$force_create_invoice=vRequest::getCmd('create_invoice', -1);
-			// florian : added if pdf invoice are enabled
 
-			if ( in_array($orderDetails['order_status'],$orderstatusForInvoice)  or $pdfInvoice==1  or $force_create_invoice==$orderDetails['order_create_invoice_pass'] ){
+			$force_create_invoice=vRequest::getCmd('create_invoice', -1);
+
+			if ( in_array($orderDetails['order_status'],$orderstatusForInvoice) or $force_create_invoice==$orderDetails['order_create_invoice_pass'] ){
 				$q = 'SELECT COUNT(1) FROM `#__virtuemart_invoices` WHERE `virtuemart_vendor_id`= "'.$orderDetails['virtuemart_vendor_id'].'" '; // AND `order_status` = "'.$orderDetails->order_status.'" ';
 				$db = JFactory::getDBO();
 				$db->setQuery($q);
@@ -216,8 +248,6 @@ class VirtueMartModelInvoice extends VmModel {
 
 				if(empty($data['invoice_number'])) {
 					$date = date("Y-m-d");
-					if(!class_exists('vmCrypt'))
-						require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
 					$data['invoice_number'] = str_replace('-', '', substr($date,2,8)).vmCrypt::getHumanToken(4).'0'.$count;
 				}
 			} else {
@@ -251,10 +281,10 @@ class VirtueMartModelInvoice extends VmModel {
 	 * @author Valérie Isaksen
 	 * @author Max Milbers
 	 */
-	static function getInvoiceEntry($virtuemart_order_id, $last = true, $select = '`invoice_number`' ){
+	static function getInvoiceEntry($virtuemart_order_id, $last = true, $select = '`invoice_number`', $where = 'virtuemart_order_id' ){
 
 		$db = JFactory::getDBO();
-		$q = 'SELECT '.$select.' FROM `#__virtuemart_invoices` WHERE `virtuemart_order_id`= "'.$virtuemart_order_id.'" ORDER BY `created_on` DESC ';
+		$q = 'SELECT '.$select.' FROM `#__virtuemart_invoices` WHERE `'.$where.'`= "'.$virtuemart_order_id.'" ORDER BY `created_on` DESC ';
 		if($last){
 			$q .= ' Limit 1';
 		}
@@ -309,7 +339,7 @@ class VirtueMartModelInvoice extends VmModel {
 			vmError('No path set to store invoices');
 			return false;
 		} else {
-			if(!class_exists('ShopFunctionsF')) require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+
 			$path .= shopFunctionsF::getInvoiceFolderName().DS;
 			if(!file_exists($path)){
 				vmError('Path wrong to store invoices, folder invoices does not exist '.$path);
@@ -337,8 +367,6 @@ class VirtueMartModelInvoice extends VmModel {
 		if(empty($table->invoice_number)){
 			return false;
 		}
-		if (!class_exists ('shopFunctionsF'))
-			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 
 		// rename invoice pdf file
 		$path = shopFunctions::getInvoicePath(VmConfig::get('forSale_path',0));
@@ -356,7 +384,6 @@ class VirtueMartModelInvoice extends VmModel {
 			// We the sanitized file name as the invoice number might contain strange characters like 2015/01.
 			$invoice_name_dst = $path.DS.$name.'_deprecated'.$date.'_'.$table->order_status.'.pdf';
 
-			if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
 			if (!JFile::move($invoice_name_src, $invoice_name_dst)) {
 				vmError ('Could not rename Invoice '.$invoice_name_src.' to '. $invoice_name_dst );
 			}

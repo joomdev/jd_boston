@@ -13,14 +13,11 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 9659 2017-10-26 22:06:20Z Milbo $
+ * @version $Id: view.html.php 9987 2018-11-18 20:29:25Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * HTML View class for maintaining the Installation. Updating of the files and imports of the database should be done here
@@ -33,17 +30,9 @@ class VirtuemartViewUpdatesMigration extends VmViewAdmin {
 
 	function display($tpl = null) {
 
-
 		$latestVersion = vRequest::getVar('latestverison', '');
 
-		JToolBarHelper::title(vmText::_('COM_VIRTUEMART_UPDATE_MIGRATION'), 'head vm_config_48');
-
-		if (!class_exists('VmImage'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-		if(!class_exists('vmCrypt'))
-			require(VMPATH_ADMIN.'/helpers/vmcrypt.php');
+		JToolbarHelper::title(vmText::_('COM_VIRTUEMART_UPDATE_MIGRATION'), 'head vm_config_48');
 
 		$this->assignRef('latestVersion', $latestVersion);
 

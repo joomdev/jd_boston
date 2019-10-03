@@ -6,8 +6,8 @@ $thumb = $viewData['thumb'];
 
 ?>
 <div class="product-container">
-<div class="vm-product-media-container"><?php
-echo JHtml::link (JRoute::_ ('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $related->virtuemart_product_id . '&virtuemart_category_id=' . $related->virtuemart_category_id), $thumb   . $related->product_name, array('title' => $related->product_name,'target'=>'_blank'));
+<div class="vm-product-media-container"><?php 
+echo JHtml::link (JRoute::_ ($related->link), $thumb   . $related->product_name, array('title' => $related->product_name,'target'=>'_blank'));
 ?></div><?php
 if($customfield->wPrice){
 	?> <div class="product-price" id="productPrice<?php echo $related->virtuemart_product_id ?>"> <?php

@@ -13,14 +13,11 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 9589 2017-06-26 13:52:48Z Milbo $
+ * @version $Id: view.html.php 10010 2019-01-21 12:07:25Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * HTML View class for maintaining the list of manufacturers
@@ -32,11 +29,6 @@ if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmi
 class VirtuemartViewManufacturer extends VmViewAdmin {
 
 	function display($tpl = null) {
-
-		// Load the helper(s)
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-
 
 		// get necessary models
 		$model = VmModel::getModel('manufacturer');
@@ -75,9 +67,6 @@ class VirtuemartViewManufacturer extends VmViewAdmin {
 			$this->manufacturerCategories = $categoryModel->getManufacturerCategories(false,true);
 
 			$this->addStandardEditViewCommands($this->manufacturer->virtuemart_manufacturer_id);
-
-			if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
-			$this->virtuemart_vendor_id = VirtueMartModelVendor::getLoggedVendor();
 
 		}
 		else {

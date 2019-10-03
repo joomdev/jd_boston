@@ -8,7 +8,7 @@
  * @version $Id: paypal.php 7217 2013-09-18 13:42:54Z alatak $
  * @package VirtueMart
  * @subpackage payment
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2018 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -220,7 +220,7 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 		$post_variables['cmd'] = '_ext-enter';
 		$post_variables['redirect_cmd'] = $payment_type;
 		$post_variables['paymentaction'] = strtolower($this->_method->payment_action);
-		$post_variables['upload'] = '1';
+		$post_variables['upload'] = '1';	//We may need this configurable $this->_method->upload
 		$post_variables['business'] = $this->merchant_email; //Email address or account ID of the payment recipient (i.e., the merchant).
 		$post_variables['receiver_email'] = $this->merchant_email; //Primary email address of the payment recipient (i.e., the merchant
 		$post_variables['order_number'] = $this->order['details']['BT']->order_number;
@@ -241,8 +241,11 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 		$post_variables['email'] = $this->order['details']['BT']->email;
 		$post_variables['night_phone_b'] = $address->phone_1;
 
-
-		$post_variables['return'] = JURI::root() . 'index.php?option=com_virtuemart&view=vmplg&task=pluginresponsereceived&on=' . $this->order['details']['BT']->order_number . '&pm=' . $this->order['details']['BT']->virtuemart_paymentmethod_id . '&Itemid=' . vRequest::getInt('Itemid') . '&lang=' . vRequest::getCmd('lang', '');
+		$lang = vRequest::getCmd('lang', '');
+		if(!empty($lang)){
+			$lang = '&lang='.$lang;
+		}
+		$post_variables['return'] = JURI::root() . 'index.php?option=com_virtuemart&view=vmplg&task=pluginresponsereceived&on=' . $this->order['details']['BT']->order_number . '&pm=' . $this->order['details']['BT']->virtuemart_paymentmethod_id . '&Itemid=' . vRequest::getInt('Itemid') . $lang;
 		//Keep this line, needed when testing
 		//$post_variables['return'] 		= JRoute::_(JURI::root().'index.php?option=com_virtuemart&view=vmplg&task=notify&tmpl=component'),
 		$post_variables['notify_url'] = JURI::root() . 'index.php?option=com_virtuemart&view=vmplg&task=notify&tmpl=component' . '&lang=' . vRequest::getCmd('lang', '');
@@ -262,7 +265,7 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 		if (empty($this->_method->headerimg) OR $this->_method->headerimg == -1) {
 			$post_variables['image_url'] = $this->getLogoImage();
 		} else {
-			$post_variables['cpp_header_image'] = JURI::base() . 'images/stories/virtuemart/payment/' . $this->_method->headerimg;
+			$post_variables['cpp_header_image'] = $this->getLogoImage($this->_method->headerimg);
 		}
 		/*
 		 * The HTML hex code for your principal identifying color.

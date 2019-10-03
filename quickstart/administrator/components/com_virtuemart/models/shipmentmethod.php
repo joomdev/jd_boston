@@ -13,13 +13,11 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: shipmentmethod.php 9802 2018-03-20 15:22:11Z Milbo $
+ * @version $Id: shipmentmethod.php 10026 2019-03-13 10:33:11Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Model class for shop shipment
@@ -69,7 +67,6 @@ class VirtueMartModelShipmentmethod extends VmModel {
 
 
 			if(empty($this->_cache[$this->_id]->virtuemart_vendor_id)){
-				//if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
 				$this->_cache[$this->_id]->virtuemart_vendor_id = vmAccess::getVendorId('shipmentmethod.edit');;
 			}
 
@@ -86,9 +83,6 @@ class VirtueMartModelShipmentmethod extends VmModel {
 
 			//We still need this, because the table is already loaded, but the keys are set later
 			if($this->_cache[$this->_id]->getCryptedFields()){
-				if(!class_exists('vmCrypt')){
-					require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
-				}
 
 				if(isset($this->_cache[$this->_id]->modified_on)){
 					$date = JFactory::getDate($this->_cache[$this->_id]->modified_on);
@@ -104,12 +98,8 @@ class VirtueMartModelShipmentmethod extends VmModel {
 				}
 			}
 
-			/* Add the shipmentcarreir shoppergroups */
-			$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_shipmentmethod_shoppergroups WHERE `virtuemart_shipmentmethod_id` = "'.$this->_id.'"';
-			$this->_db->setQuery($q);
-			$this->_cache[$this->_id]->virtuemart_shoppergroup_ids = $this->_db->loadColumn();
-			if(empty($this->_cache[$this->_id]->virtuemart_shoppergroup_ids)) $this->_cache[$this->_id]->virtuemart_shoppergroup_ids = 0;
-
+			/* Add the shipmentmethod shoppergroups */
+			$this->_cache[$this->_id]->virtuemart_shoppergroup_ids = $this->getShipmentShopperGrps($this->_id);
 		}
 
 		return $this->_cache[$this->_id];
@@ -142,19 +132,25 @@ class VirtueMartModelShipmentmethod extends VmModel {
 		$datas =$this->exeSortSearchListQuery(0,$select,$joins,$whereString,' ',$this->_getOrdering() );
 
 		if(isset($datas)){
-			if(!class_exists('shopfunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 			foreach ($datas as &$data){
-				// Add the shipment shoppergroups
-				$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_shipmentmethod_shoppergroups WHERE `virtuemart_shipmentmethod_id` = "'.$data->virtuemart_shipmentmethod_id.'"';
-				$db = JFactory::getDBO();
-				$db->setQuery($q);
-				$data->virtuemart_shoppergroup_ids = $db->loadColumn();
+				$data->virtuemart_shoppergroup_ids = $this->getShipmentShopperGrps($data->virtuemart_shipmentmethod_id);
 			}
 		}
 		return $datas;
 	}
 
+	public function getShipmentShopperGrps($id){
 
+		static $cache = array();
+		if(!isset($cache[$id])){
+			$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_shipmentmethod_shoppergroups WHERE `virtuemart_shipmentmethod_id` = "'.(int)$id.'"';
+			$db = JFactory::getDBO();
+			$db->setQuery($q);
+			$cache[$id] = $db->loadColumn();
+			if(empty($cache[$id])) $cache[$id] = 0;
+		}
+		return $cache[$id];
+	}
 
 	/**
 	 * Bind the post data to the shipment tables and save it
@@ -183,8 +179,7 @@ class VirtueMartModelShipmentmethod extends VmModel {
 		}
 
 		if(empty($data['virtuemart_vendor_id'])){
-			if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
-			$data['virtuemart_vendor_id'] = VirtueMartModelVendor::getLoggedVendor();
+			$data['virtuemart_vendor_id'] = vmAccess::isSuperVendor();
 		} else {
 			$data['virtuemart_vendor_id'] = (int) $data['virtuemart_vendor_id'];
 		}
@@ -222,7 +217,6 @@ class VirtueMartModelShipmentmethod extends VmModel {
 		$xrefTable = $this->getTable('shipmentmethod_shoppergroups');
 		$xrefTable->bindChecknStore($data);
 
-		if (!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 		JPluginHelper::importPlugin('vmshipment');
 		//Add a hook here for other shipment methods, checking the data of the choosed plugin
 		$dispatcher = JDispatcher::getInstance();

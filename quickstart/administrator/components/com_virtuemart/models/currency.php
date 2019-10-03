@@ -14,13 +14,11 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: currency.php 9413 2017-01-04 17:20:58Z Milbo $
+ * @version $Id: currency.php 10010 2019-01-21 12:07:25Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Model class for shop Currencies
@@ -39,6 +37,7 @@ class VirtueMartModelCurrency extends VmModel {
 	function __construct() {
 		parent::__construct();
 		$this->setMainTable('currencies');
+		$this->setToggleName('shared');
 	}
 
 	/**
@@ -93,15 +92,7 @@ class VirtueMartModelCurrency extends VmModel {
 
 		static $currencies = array();
 		if($vendorId===0){
-			$multix = Vmconfig::get('multix','none');
-			if(strpos($multix,'payment')!==FALSE){
-				if (!class_exists('VirtueMartModelVendor'))
-					require(VMPATH_ADMIN . DS . 'models' . DS . 'vendor.php');
-				$vendorId = VirtueMartModelVendor::getLoggedVendor();
-
-			} else {
-				$vendorId = 1;
-			}
+			$vendorId = 1;
 		}
 		if(!isset($currencies[$vendorId])){
 			$db = JFactory::getDbo();
@@ -112,8 +103,7 @@ class VirtueMartModelCurrency extends VmModel {
 				$vendor_currency['vendor_accepted_currencies'] = $vendor_currency['vendor_currency'];
 				vmWarn('No accepted currencies defined');
 				if(empty($vendor_currency['vendor_accepted_currencies'])) {
-					$uri = JFactory::getURI();
-					$link = $uri->root().'administrator/index.php?option=com_virtuemart&view=user&task=editshop';
+					$link = JURI::root(false).'administrator/index.php?option=com_virtuemart&view=user&task=editshop';
 					vmWarn(vmText::sprintf('COM_VIRTUEMART_CONF_WARN_NO_CURRENCY_DEFINED','<a href="'.$link.'">'.$link.'</a>'));
 					$currencies[$vendorId] = false;
 					return $currencies[$vendorId];

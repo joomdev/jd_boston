@@ -6,10 +6,10 @@ defined('_JEXEC') or die();
  * Realex payment plugin
  *
  * @author Valerie Isaksen
- * @version $Id: render_pluginname.php 8200 2014-08-14 11:09:44Z alatak $
+ * @version $Id: render_pluginname.php 10130 2019-09-11 08:36:03Z Milbo $
  * @package VirtueMart
  * @subpackage payment
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2015 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or

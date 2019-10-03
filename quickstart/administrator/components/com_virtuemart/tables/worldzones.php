@@ -19,8 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmTable')) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
-
 /**
  * Worldzones table class
  * The class is is used to manage the currencies in the shop.

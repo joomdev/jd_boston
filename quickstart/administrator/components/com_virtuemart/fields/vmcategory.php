@@ -15,13 +15,8 @@
  * @version $Id:$
  */
 defined('JPATH_BASE') or die;
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+
 if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
-if (!class_exists('ShopFunctions'))
-    require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
-if (!class_exists('TableCategories'))
-    require(VMPATH_ADMIN . DS . 'tables' . DS . 'categories.php');
-jimport('joomla.form.formfield');
 
 /**
  * Supports a modal category picker.

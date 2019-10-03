@@ -1,0 +1,90 @@
+/* CSS Document */
+
+.form-horizontal .controls
+{
+	margin-left:250px !important;
+}
+.controls .controls, .noleft .controls
+{
+margin-left:0px !important;
+}
+.form-horizontal .control-label
+{
+	width:250px !important;
+}
+.form-horizontal .control-group
+{
+	margin-bottom:12px !important;
+}
+
+#porder_settings ul li
+{
+	 display:block !important;
+	width:50% !important;
+	float:left !important;
+}
+.row-fluid [class*="span"]
+{
+	 margin-left:1.5% !important;
+}
+.row-fluid .span6
+{
+	width:49.25% !important;
+}
+.row-fluid [class*="span"]:first-child
+{
+	margin-left:0px !important;
+}
+.smallinputs td ,
+.mediuminputs td
+{
+ vertical-align:top !important;	
+}
+.maincontentdiv
+{
+
+
+}
+.virtuemart-admin-area
+{
+	border-top:solid 1px #dedbdb;
+}
+
+.virtuemart-admin-area .admin-content {
+
+    margin: 0;
+    -webkit-flex-basis: 99%;
+    flex-basis: 99%;
+
+}
+
+.virtuemart-admin-area {
+
+    position: relative;
+    border: hidden #b4b4b4 1px;
+    -moz-border-radius-bottomleft: 6px;
+    -moz-border-radius-bottomright: 6px;
+    -webkit-border-bottom-left-radius: 6px;
+    -webkit-border-bottom-right-radius: 6px;
+    display: -webkit-flex;
+    display: flex;
+    overflow: visible;
+    min-height: 540px;
+
+}
+.clearboth
+{
+	clear:both;
+}
+.margintop_small
+{
+	margin-top:20px;
+}
+hr
+{
+	margin:10px 0px !important;
+}
+.noleft .controls
+{
+	padding-left:0px;
+}

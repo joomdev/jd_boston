@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension method="upgrade" type="component" version="2.5">
     <name>VIRTUEMART</name>
-    <creationDate>April 05 2018</creationDate>
+    <creationDate>September 24 2019</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorEmail>max|at|virtuemart.net</authorEmail>
     <authorUrl>https://virtuemart.net</authorUrl>
-    <copyright>Copyright (C) 2004-2015 Virtuemart Team. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2004-2018 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <version status="MAYOR">3.2.14</version>
+    <version status="BUGFIX">3.6.2</version>
     <description></description>
 
     <scriptfile>install/script.virtuemart.php</scriptfile>
@@ -32,6 +32,7 @@
             <menu link="option=com_virtuemart&amp;view=virtuemart" img="components/com_virtuemart/assets/images/icon_16/menu-icon16-report.png">COM_VIRTUEMART_CONTROL_PANEL</menu>
             <menu link="option=com_virtuemart&amp;view=category" img="components/com_virtuemart/assets/images/icon_16/menu-icon16-categories.png">COM_VIRTUEMART_MENU_CATEGORIES</menu>
             <menu link="option=com_virtuemart&amp;view=product" img="components/com_virtuemart/assets/images/icon_16/menu-icon16-products.png">COM_VIRTUEMART_MENU_PRODUCTS</menu>
+            <menu link="option=com_virtuemart&amp;view=custom" img="components/com_virtuemart/assets/images/icon_16/menu-icon16-document_move.png">COM_VIRTUEMART_MENU_CUSTOMS</menu>
             <menu link="option=com_virtuemart&amp;view=orders" img="components/com_virtuemart/assets/images/icon_16/menu-icon16-orders.png">COM_VIRTUEMART_MENU_ORDERS</menu>
             <menu link="option=com_virtuemart&amp;view=report" img="components/com_virtuemart/assets/images/icon_16/menu-icon16-report.png">COM_VIRTUEMART_MENU_REPORT</menu>
             <menu link="option=com_virtuemart&amp;view=user" img="components/com_virtuemart/assets/images/icon_16/menu-icon16-shoppers.png">COM_VIRTUEMART_MENU_USERS</menu>
@@ -45,13 +46,12 @@
         <!-- Administration Main File Copy Section -->
         <files folder="administrator/components/com_virtuemart">
             <filename>virtuemart.php</filename>
-            <filename>admin.virtuemart.php</filename>
-            <filename>changelog.php</filename>
             <filename>COPYRIGHT.php</filename>
             <filename>version.php</filename>
             <filename>virtuemart_defaults.cfg-dist</filename>
             <filename>config.xml</filename>
             <filename>access.xml</filename>
+            <filename>index.html</filename>
             <folder>assets</folder>
             <folder>controllers</folder>
             <folder>fields</folder>

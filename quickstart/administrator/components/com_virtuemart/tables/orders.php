@@ -13,13 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: orders.php 9754 2018-02-01 10:40:16Z Milbo $
+* @version $Id: orders.php 10051 2019-05-02 12:07:26Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmTableData'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtabledata.php');
 
 /**
  * Orders table class
@@ -40,6 +38,7 @@ class TableOrders extends VmTableData {
 	var $order_number = NULL;
 	var $order_pass = NULL;
 	var $order_create_invoice_pass = 0;
+	var $invoice_locked = 0;
 	var $customer_number = NULL;
 	/** @var decimal Order total */
 	var $order_total = 0.00000;
@@ -53,7 +52,7 @@ class TableOrders extends VmTableData {
 	var $order_billDiscountAmount = 0.00000;
 	/** @var decimal Order  Products Discount amount */
 	var $order_discountAmount = 0.00000;
-	/** @var decimal Order subtotal */
+	/** @var decimal Order subTotal */
 	var $order_subtotal = 0.00000;
 	/** @var decimal Order tax */
 	var $order_tax = 0.00000;
@@ -96,6 +95,9 @@ class TableOrders extends VmTableData {
 	/** @var char Order language */
 	var $order_language = NULL;
 	var $delivery_date = NULL;
+	var $STsameAsBT = 0;
+	var $paid = 0;
+	var $paid_on = 0;
 	var $o_hash = NULL;
 
 	/**
@@ -111,19 +113,18 @@ class TableOrders extends VmTableData {
 		$this->setLoggable();
 		$this->setHashable('o_hash');
 
-		$this->setOmittedHashFields(array('order_pass','order_create_invoice_pass'));
+		$this->setOmittedHashFields(array('order_pass','order_create_invoice_pass','ip_address','order_status','paid','paid_on','invoice_locked','modified_on','modified_by','locked_on','locked_by'));
 		$this->setTableShortCut('o');
+		$this->setConvertDecimal(array('paid'));
 	}
 
 	function check(){
 
 		if(empty($this->order_number)){
-			if(!class_exists('VirtueMartModelOrders')) VmModel::getModel('orders');
 			$this->order_number = VirtueMartModelOrders::genStdOrderNumber($this->virtuemart_vendor_id);
 		}
 
 		if(empty($this->order_pass)){
-			if(!class_exists('VirtueMartModelOrders')) VmModel::getModel('orders');
 			$this->order_pass = VirtueMartModelOrders::genStdOrderPass();
 		}
 

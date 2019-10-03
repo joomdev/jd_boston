@@ -3,12 +3,12 @@
 defined ('_JEXEC') or die();
 
 /**
- * @version $Id: klarna.php 9420 2017-01-12 09:35:36Z Milbo $
+ * @version $Id: klarna.php 10150 2019-09-16 12:22:07Z Milbo $
  *
  * @author Valérie Isaksen
  * @package VirtueMart
  * @link https://virtuemart.net
- * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2019 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -22,7 +22,7 @@ if (!class_exists('VmConfig')) {
 }
 
 if (!class_exists ('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+	require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 }
 
 	require (VMPATH_ROOT . DS . 'plugins' . DS . 'vmpayment' . DS . 'klarna' . DS . 'klarna' . DS . 'helpers' . DS . 'define.php');
@@ -210,13 +210,14 @@ class plgVmPaymentKlarna extends vmPSPlugin {
 				$cart->STsameAsBT = 1;
 				$cart->setCartIntoSession ();
 			}
-		} elseif ($cart->BT == 0 or empty($cart->BT)) {
-			$st = $cart->BT;
-			$type = 'BT';
-		} else {
+		} else if(empty($cart->STsameAsBT)){
 			$st = $cart->ST;
 			$type = 'ST';
+		} else {
+			$st = $cart->BT;
+			$type = 'BT';
 		}
+
 		return $st;
 	}
 
@@ -1661,9 +1662,7 @@ class plgVmPaymentKlarna extends vmPSPlugin {
 			$db->setQuery ($q);
 			$taxrules = $db->loadAssocList ();
 		}
-		if (!class_exists ('calculationHelper')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
-		}
+
 		$calculator = calculationHelper::getInstance ();
 		if (count ($taxrules) > 0) {
 			$calculator->setRevert (TRUE);
@@ -1899,17 +1898,13 @@ class plgVmPaymentKlarna extends vmPSPlugin {
 		if ($loaded) {
 			return;
 		}
-		$assetsPath = VMKLARNAPLUGINWEBROOT . '/klarna/assets/';
-		JHTML::stylesheet ('style.css', $assetsPath . 'css/', FALSE);
-		JHTML::stylesheet ('klarna.css', $assetsPath . 'css/', FALSE);
-		JHTML::script ('klarna_general.js', $assetsPath . 'js/', FALSE);
-		JHTML::script ('klarnaConsentNew.js', 'http://static.klarna.com/external/js/', FALSE);
-		$document = JFactory::getDocument ();
-		/*
-		$document->addScriptDeclaration ('
-		 klarna.ajaxPath = "' . juri::root () . '/index.php?option=com_virtuemart&view=plugin&vmtype=vmpayment&name=klarna";
-	');
-		*/
+		$assetsPath = VMKLARNAPLUGINWEBROOT . '/klarna/assets';
+		vmJsApi::css ('style', $assetsPath . '/css');
+		vmJsApi::css ('klarna', $assetsPath . '/css');
+
+		vmJsApi::addJScript('klarna_general', '/'.$assetsPath . '/js/klarna_general.js');
+		vmJsApi::addJScript ('klarnaConsentNew', 'https://static.klarna.com/external/js/klarnaConsentNew.js',false);
+
 		$loaded=true;
 	}
 

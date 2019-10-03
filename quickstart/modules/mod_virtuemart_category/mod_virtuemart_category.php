@@ -20,7 +20,6 @@ defined('_JEXEC') or  die( 'Direct Access to '.basename(__FILE__).' is not allow
 *----------------------------------------------------------------------
 */
 
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
 
 VmConfig::loadConfig();
@@ -61,7 +60,7 @@ if($level>1){
 }
 //vmdebug('my categories',$categories);
 
-
+$categoryModel->categoryRecursed = 0;
 $parentCategories = $categoryModel->getCategoryRecurse($active_category_id,0);
 
 /* Load tmpl default */

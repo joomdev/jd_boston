@@ -19,8 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
-
 /**
  * Orders table class
  * The class is is used to manage the orders in the shop.
@@ -43,6 +41,8 @@ class TableInvoices extends VmTable {
 
 	var $xhtml = '';
 
+	var $o_hash = '';
+
 	/**
 	 *
 	 * @author Max Milbers
@@ -54,7 +54,7 @@ class TableInvoices extends VmTable {
 
 		$this->setUniqueName('invoice_number');
 		$this->setLoggable();
-
+		//$this->setHashable('inv_hash');
 		$this->setTableShortCut('inv');
 	}
 

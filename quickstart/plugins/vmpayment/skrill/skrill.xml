@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension version="2.5" type="plugin" group="vmpayment">
     <name>Skrill</name>
-    <creationDate>March 31 2017</creationDate>
+    <creationDate>September 24 2019</creationDate>
     <author>Skrill Holdings Limited</author>
     <authorUrl>http://www.skrill.com</authorUrl>
-    <copyright>Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
-    <version>3.2.1</version>
+    <version>3.6.2</version>
     <description><![CDATA[<a href="http://www.skrill.com" target="_blank">skrill</a> is a popular
 	payment provider authorised by the Financial Services Authority of the United Kingdom (FSA). ]]>
     </description>
@@ -20,6 +20,7 @@
     <vmconfig>
         <fields name="params">
             <fieldset name="basic" addfieldpath="/administrator/components/com_virtuemart/fields">
+                <field name="checkConditionsCore" value="1" default="1" type="hidden"/>
                 <field type="vmtitle" default="VMPAYMENT_SKRILL_ACCOUNT_PARAMS"/>
 
                 <field type="list" name="product" label="VMPAYMENT_SKRILL_PRODUCT"
@@ -63,7 +64,7 @@
                        description=""/>
                 <field name="payment_logos" type="imagelist" label="VMPAYMENT_SKRILL_LOGOS" multiple="true"
                            description="VMPAYMENT_SKRILL_LOGOS_TIP"
-                           directory="/images/stories/virtuemart/payment"
+                           directory="/images/virtuemart/payment"
                            default="" hide_default="1" hide_none="1"
                            stripext="0" exclude="^_"/>
 

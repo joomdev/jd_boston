@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="package" version="1.6" method="upgrade">
+  <name>VirtueMart Package</name>
+  <author>The VirtueMart Development Team</author>
+  <creationDate>September 24 2019</creationDate>
+  <packagename>virtuemart_pkg</packagename>
+  <version>3.6.2</version>
+  <url>https://virtuemart.net/</url>
+  <packager>The VirtueMart Team</packager>
+  <packagerurl>>https://virtuemart.net/</packagerurl>
+  <description>Virtuemart Core and AIO (All in once)</description>
+  <update>https://virtuemart.net/downloads</update>
+  <scriptfile>script.vmpackage.php</scriptfile>
+  <files>
+    <file type="component" id="com_virtuemart" >com_virtuemart.3.6.2.10159.zip</file>
+    <file type="component" id="com_virtuemart_allinone" >com_virtuemart.3.6.2.10159_ext_aio.zip</file>
+    <file type="component" id="com_tcpdf" >com_tcpdf_1.0.8.zip</file>
+    <file type="template" id="vmbeez3" client="site" >vmbeez3_3.2.0.zip</file>
+  </files>
+ </extension>

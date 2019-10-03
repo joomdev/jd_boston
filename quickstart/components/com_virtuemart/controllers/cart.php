@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: cart.php 9737 2018-01-24 00:04:59Z Milbo $
+ * @version $Id: cart.php 10155 2019-09-20 10:07:12Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -32,15 +32,7 @@ class VirtueMartControllerCart extends JControllerLegacy {
 
 	public function __construct() {
 		parent::__construct();
-		if (VmConfig::get('use_as_catalog', 0)) {
-			$app = JFactory::getApplication();
-			$app->redirect('index.php');
-		} else {
-			if (!class_exists('VirtueMartCart'))
-			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
-			if (!class_exists('calculationHelper'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
-		}
+
 		$this->useSSL = vmURI::useSSL();	//VmConfig::get('useSSL', 0);
 		$this->useXHTML = false;
 
@@ -87,31 +79,6 @@ class VirtueMartControllerCart extends JControllerLegacy {
 		$cart->prepareCartData(false);
 		$html=true;
 
-		if ($cart->virtuemart_shipmentmethod_id==0 and (($s_id = VmConfig::get('set_automatic_shipment',false)) >= 0)){
-			if(empty($s_id)){
-				$methods = VmModel::getModel('Shipmentmethod')->getShipments();
-				if($methods){
-					$s_id = $methods[0]->virtuemart_shipmentmethod_id;
-				}
-			}
-			if(!empty($s_id)){
-				$cart->setShipmentMethod($force, !$html, $s_id);
-				$cart->getCartPrices($force);
-			}
-		}
-
-		if ($cart->virtuemart_paymentmethod_id==0 and (($s_id = VmConfig::get('set_automatic_payment',false)) > 0) and $cart->products){
-			if(empty($s_id)){
-				$methods = VmModel::getModel('paymentmethod')->getPayments();
-				if($methods){
-					$s_id = $methods[0]->virtuemart_paymentmethod_id;
-				}
-			}
-			if(!empty($s_id)){
-				$cart->setPaymentMethod($force, !$html, $s_id);
-				$cart->getCartPrices($force);
-			}
-		}
 
 		$request = vRequest::getRequest();
 		$task = vRequest::getCmd('task');
@@ -125,7 +92,13 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			return true;
 		} else {
 			//$cart->_inCheckOut = false;
-			$redirect = (isset($request['checkout']) or $task=='checkout');
+			$redirect = (isset($request['checkout']) or $task=='checkout' );
+
+			if( VmConfig::get('directCheckout',false) and !$redirect and !$cart->getInCheckOut() and !vRequest::getInt('dynamic',0) and !$cart->_dataValidated) {
+				$redirect = true;
+				vmdebug('directCheckout');
+			}
+
 			$cart->_inConfirm = false;
 			$cart->checkoutData($redirect);
 		}
@@ -149,23 +122,8 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			vRequest::setVar('checkout',true);
 		}
 
+		$cart->storeCartSession = false;
 		$cart->saveCartFieldsInCart();
-
-		/*For storing cartfields
-		$currentUser = JFactory::getUser();
-		$userModel = VmModel::getModel('user');
-
-		if($currentUser->guest!=1 and !empty($currentUser->id)){
-
-			$btId = $userModel->getBTuserinfo_id($currentUser->id);
-			if($btId){
-				$cart->BT['virtuemart_userinfo_id'] = $btId;
-
-				$dataT = $userModel->getTable('userinfos');
-				$dataT->bindChecknStore($cart->BT,true);
-			}
-		}
-		*/
 
 		if($cart->updateProductCart()){
 			//vmInfo('COM_VIRTUEMART_PRODUCT_UPDATED_SUCCESSFULLY');
@@ -209,8 +167,8 @@ class VirtueMartControllerCart extends JControllerLegacy {
 		$cart->setShipmentMethod($force, !$html);
 		$cart->setPaymentMethod($force, !$html);
 
-		JPluginHelper::importPlugin('vmcustom');
-		JPluginHelper::importPlugin('vmextended');
+		VmConfig::importVMPlugins('vmcustom');
+
 		$dispatcher = JDispatcher::getInstance();
 		$dispatcher->trigger('plgVmOnUpdateCart',array(&$cart, &$force, &$html));
 
@@ -222,6 +180,11 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			if($msg) vmInfo($msg);
 			$cart->setOutOfCheckout();
 		}
+
+		//We enable storing of the cart again, execute store session and just set the boolean to store the cart to yes, which is then executed in the display function
+		$cart->storeCartSession = true;
+		$cart->setCartIntoSession(false,true);
+		$cart->storeToDB = true;
 
 		if ($html) {
 			$this->display();
@@ -368,8 +331,6 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	 */
 	public function viewJS() {
 
-		if (!class_exists('VirtueMartCart'))
-		require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$cart = VirtueMartCart::getCart(false);
 		$cart -> prepareCartData();
 		$data = $cart -> prepareAjaxData(true);
@@ -495,8 +456,6 @@ class VirtueMartControllerCart extends JControllerLegacy {
 		$session = JFactory::getSession();
 		$adminID = $session->get('vmAdminID');
 		if(!isset($adminID)) {
-			if(!class_exists('vmCrypt'))
-				require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
 			$session->set('vmAdminID', vmCrypt::encrypt($current->id));
 		}
 
@@ -508,9 +467,17 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			$newUser->email = '';
 		}
 
+		//behaviour on admin change shopper
+		if (VmConfig::get('ChangeShopperDeleteCart', 0)) {
 
-		//update cart data
-		$cart = VirtueMartCart::getCart();
+//		Changing shopper empties all existing cart data and give new cart id
+			$cart = VirtueMartCart::getCart(true);
+			VirtuemartCart::emptyCartValues($cart,true);
+		} else {
+			//update cart data
+			$cart = VirtueMartCart::getCart();
+		}
+
 		$usermodel = VmModel::getModel('user');
 		$data = $usermodel->getUserAddressList($userID, 'BT');
 

@@ -1,0 +1,21 @@
+.astroid-section .astroid-banner {
+	.astroid-banner-inner {
+		padding: 100px 0;
+
+		@include media-breakpoint-down(md) {
+			padding: 50px 0;
+		}
+
+		.astroid-banner-title {
+			font-size: 45px;
+			font-weight: 300;
+		}
+
+		.astroid-banner-subtitle {
+			font-size: 20px;
+			font-weight: 300;
+			line-height: 30px;
+			margin-top: 15px;
+		}
+	}
+}

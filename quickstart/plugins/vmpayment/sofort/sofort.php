@@ -3,10 +3,10 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * @author Valérie Isaksen
- * @version $Id: sofort.php 9422 2017-01-16 18:12:35Z Milbo $
+ * @version $Id: sofort.php 10153 2019-09-19 15:51:37Z Milbo $
  * @package VirtueMart
  * @subpackage payment
- * @copyright Copyright (C) 2004-Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.   - All rights reserved.
+ * @copyright Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.   - All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -17,11 +17,11 @@ defined('_JEXEC') or die('Restricted access');
  * http://virtuemart.net
  */
 if (!class_exists('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+	require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 }
 
 class plgVmPaymentSofort extends vmPSPlugin {
-	const RELEASE = 'VM 3.2.1';
+	const RELEASE = 'VM 3.6.2';
 	const SU_SOFORTBANKING = 'su';
 
 
@@ -35,7 +35,7 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		$this->_tableId = 'id'; //'virtuemart_sofort_id';
 
 		$varsToPush = $this->getVarsToPush();
-
+		$this->addVarsToPushCore($varsToPush, 1);
 		$this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
 
 	}
@@ -592,51 +592,7 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		return ($method->cost_per_transaction + ($cart_prices['salesPrice'] * $cost_percent_total * 0.01));
 	}*/
 
-	/**
-	 * Check if the payment conditions are fulfilled for this payment method
-	 *
-	 * @author: Valerie Isaksen
-	 *
-	 * @param $cart_prices: cart prices
-	 * @param $payment
-	 * @return true: if the conditions are fulfilled, false otherwise
-	 *
-	 */
-	protected function checkConditions ($cart, $method, $cart_prices) {
 
-		$this->convert_condition_amount($method);
-		$amount = $this->getCartAmount($cart_prices);
-		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
-
-		$amount_cond = ($amount >= $method->min_amount AND $amount <= $method->max_amount
-			OR
-			($method->min_amount <= $amount AND ($method->max_amount == 0)));
-
-		$countries = array();
-		if (!empty($method->countries)) {
-			if (!is_array($method->countries)) {
-				$countries[0] = $method->countries;
-			} else {
-				$countries = $method->countries;
-			}
-		}
-		// probably did not gave his BT:ST address
-		if (!is_array($address)) {
-			$address = array();
-			$address['virtuemart_country_id'] = 0;
-		}
-
-		if (!isset($address['virtuemart_country_id'])) {
-			$address['virtuemart_country_id'] = 0;
-		}
-		if (in_array($address['virtuemart_country_id'], $countries) || count($countries) == 0) {
-			if ($amount_cond) {
-				return TRUE;
-			}
-		}
-
-		return FALSE;
-	}
 
 
 
@@ -704,7 +660,6 @@ class plgVmPaymentSofort extends vmPSPlugin {
 				$methodSalesPrice = $this->calculateSalesPrice($cart, $this->_currentMethod, $cartPrices);
 
 				$logo = $this->displayLogos($this->_currentMethod->payment_logos);
-				$logo_link = $this->getLogoLink();
 				$payment_cost = '';
 				if ($methodSalesPrice) {
 					$payment_cost = $currency->priceDisplay($methodSalesPrice);
@@ -718,7 +673,6 @@ class plgVmPaymentSofort extends vmPSPlugin {
 				                                                       'plugin' => $this->_currentMethod,
 				                                                       'checked' => $checked,
 				                                                       'payment_logo' => $logo,
-				                                                       'payment_logo_link' => $logo_link,
 				                                                       'payment_cost' => $payment_cost,
 				                                                  ));
 

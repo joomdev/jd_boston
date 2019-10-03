@@ -7,7 +7,8 @@
  * @package	VirtueMart
  * @subpackage Helpers
  * @author RickG
- * @copyright Copyright (c) 2004-2008 Soeren Eberhardt-Biermann, 2009 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004-2008 Soeren Eberhardt-Biermann, 2009 - 2018 VirtueMart Team. All rights reserved.
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL 2, see COPYRIGHT.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -105,7 +106,7 @@ class VmHtml{
 			foreach ($passedArgs as $k => $v) {
 			    $args[] = &$passedArgs[$k];
 			}
-		$lang =JFactory::getLanguage();
+		$lang =vmLanguage::getLanguage();
 		if($lang->hasKey($label.'_TIP')){
 			$label = '<span class="hasTip" title="'.htmlentities(vmText::_($label.'_TIP')).'">'.vmText::_($label).'</span>' ;
 		} //Fallback
@@ -137,7 +138,7 @@ class VmHtml{
 	}
 	/* simple value display */
 	static function value( $value ){
-		$lang =JFactory::getLanguage();
+		$lang =vmLanguage::getLanguage();
 		return $lang->hasKey($value) ? vmText::_($value) : $value;
 	}
 

@@ -7,7 +7,7 @@ defined('_JEXEC') or die('Restricted access');
  * @version $Id: klarnacheckout.php 8886 2015-06-24 16:31:58Z alatak $
  * @package VirtueMart
  * @subpackage payment
- * @copyright Copyright (C) 2004-Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.   - All rights reserved.
+ * @copyright Copyright (C) 2004-Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.   - All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
  * http://virtuemart.net
  */
 if (!class_exists('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+	require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 }
 
 if (!defined('JPATH_VMKLARNACHEKOUTCHEKOUTPLUGIN')) {
@@ -37,7 +37,7 @@ if (!class_exists('Klarna')) {
 
 
 class plgVmPaymentKlarnaCheckout extends vmPSPlugin {
-	const RELEASE = 'VM 3.2.1';
+	const RELEASE = 'VM 3.6.2';
 	protected $currency_code_3;
 	protected $currency_id;
 	protected $country_code_2;
@@ -304,7 +304,7 @@ class plgVmPaymentKlarnaCheckout extends vmPSPlugin {
 				if (!$hide_BTST) {
 					$update['shipping_address']['email'] = $cart->BT['email'];
 					$hide_BTST = false;
-					$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
+					$address = $cart->getST();
 					if (isset($address['zip']) and !empty($address['zip'])) {
 						$update['shipping_address']['postal_code'] = $cart->BT['zip'];
 					}
@@ -340,7 +340,7 @@ class plgVmPaymentKlarnaCheckout extends vmPSPlugin {
 
 			if (!$this->isDefaultKCOemail($cart->BT['email'])) {
 				$create['shipping_address']['email'] = $cart->BT['email'];
-				$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
+				$address = $cart->getST();
 				if (isset($address['zip']) and !empty($address['zip'])) {
 					$create['shipping_address']['postal_code'] = $cart->BT['zip'];
 				}
@@ -1477,7 +1477,7 @@ jQuery().ready(function($) {
 
 			if (!isset($cart->BT['email'])) {
 				$create['shipping_address']['email'] = $cart->BT['email'];
-				$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
+				$address = $cart->getST();
 				if (isset($address['zip']) and !empty($address['zip'])) {
 					$create['shipping_address']['postal_code'] = $cart->BT['zip'];
 				}

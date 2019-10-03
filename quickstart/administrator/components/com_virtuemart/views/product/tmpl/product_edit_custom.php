@@ -39,9 +39,33 @@ defined('_JEXEC') or die('Restricted access');
 
 				foreach ($this->product->customfields as $k=>$customfield) {
 
-					//vmdebug('displayProductCustomfieldBE',$customfield);
-
+					$checkValue = $customfield->virtuemart_customfield_id;
+					$title = '';
+					$text = '';
 					$customfield->display = $customfieldsModel->displayProductCustomfieldBE ($customfield, $this->product, $i);
+
+					$checkValue = $customfield->virtuemart_customfield_id;
+					if($customfield->override!=0 or $customfield->disabler!=0){
+
+						if(!empty($customfield->disabler)) $checkValue = $customfield->disabler;
+						if(!empty($customfield->override)) $checkValue = $customfield->override;
+						$title = vmText::sprintf('COM_VIRTUEMART_CUSTOM_OVERRIDE',$checkValue).'</br>';
+						if($customfield->disabler!=0){
+							$title = vmText::sprintf('COM_VIRTUEMART_CUSTOM_DISABLED',$checkValue).'</br>';
+						}
+
+						if($customfield->override!=0){
+							$title = vmText::sprintf('COM_VIRTUEMART_CUSTOM_OVERRIDE',$checkValue).'</br>';
+						}
+
+					} else if($customfield->virtuemart_product_id==$this->product->product_parent_id){
+						$title = vmText::_('COM_VIRTUEMART_CUSTOM_INHERITED').'</br>';
+					}
+
+					if(!empty($title)){
+						$text = '<span style="white-space: nowrap;" class="hasTip" title="'.htmlentities(vmText::_('COM_VIRTUEMART_CUSTOMFLD_DIS_DER_TIP')).'">d:'.VmHtml::checkbox('field[' . $i . '][disabler]',$customfield->disabler,$checkValue).'</span>';
+
+					}
 
 					if ($customfield->is_cart_attribute) $cartIcone=  'default';
 					else  $cartIcone= 'default-off';
@@ -49,6 +73,7 @@ defined('_JEXEC') or die('Restricted access');
 						// R: related categories
 						$tables['categories'] .=  '
 							<div class="vm_thumb_image">
+								'.$text.'
 								<span class="vmicon vmicon-16-move"></span>
 								<div class="vmicon vmicon-16-remove 4remove"></div>
 								<span>'.$customfield->display.'</span>
@@ -59,6 +84,7 @@ defined('_JEXEC') or die('Restricted access');
 					// R: related products
 						$tables['products'] .=  '
 							<div class="vm_thumb_image">
+								'.$text.'
 								<span class="vmicon vmicon-16-move"></span>
 								<div class="vmicon vmicon-16-remove 4remove"></div>
 								<span>'.$customfield->display.'</span>
@@ -67,9 +93,6 @@ defined('_JEXEC') or die('Restricted access');
 
 					} else {
 
-						$checkValue = $customfield->virtuemart_customfield_id;
-						$title = '';
-						$text = '';
 						if(isset($this->fieldTypes[$customfield->field_type])){
 							$type = $this->fieldTypes[$customfield->field_type];
 						} else {
@@ -80,26 +103,9 @@ defined('_JEXEC') or die('Restricted access');
 						if($customfield->field_type == 'C'){
 							$colspan = 'colspan="2" ';
 						}
-						if($customfield->override!=0 or $customfield->disabler!=0){
-
-							if(!empty($customfield->disabler)) $checkValue = $customfield->disabler;
-							if(!empty($customfield->override)) $checkValue = $customfield->override;
-							$title = vmText::sprintf('COM_VIRTUEMART_CUSTOM_OVERRIDE',$checkValue).'</br>';
-							if($customfield->disabler!=0){
-								$title = vmText::sprintf('COM_VIRTUEMART_CUSTOM_DISABLED',$checkValue).'</br>';
-							}
-
-							if($customfield->override!=0){
-								$title = vmText::sprintf('COM_VIRTUEMART_CUSTOM_OVERRIDE',$checkValue).'</br>';
-							}
-
-						} else if($customfield->virtuemart_product_id==$this->product->product_parent_id){
-							$title = vmText::_('COM_VIRTUEMART_CUSTOM_INHERITED').'</br>';
-						}
 
 						if(!empty($title)){
-							$text = '<span style="white-space: nowrap;" class="hasTip" title="'.htmlentities(vmText::_('COM_VIRTUEMART_CUSTOMFLD_DIS_DER_TIP')).'">d:'.VmHtml::checkbox('field[' . $i . '][disabler]',$customfield->disabler,$checkValue).'</span>
-							<span style="white-space: nowrap;" class="hasTip" title="'.htmlentities(vmText::_('COM_VIRTUEMART_DIS_DER_CUSTOMFLD_OVERR_DER_TIP')).'">o:'.VmHtml::checkbox('field['.$i.'][override]',$customfield->override,$checkValue).'</span>';
+							$text .= '<span style="white-space: nowrap;" class="hasTip" title="'.htmlentities(vmText::_('COM_VIRTUEMART_DIS_DER_CUSTOMFLD_OVERR_DER_TIP')).'">o:'.VmHtml::checkbox('field['.$i.'][override]',$customfield->override,$checkValue).'</span>';
 						}
 
 						$tables['fields'] .= '<tr class="removable">

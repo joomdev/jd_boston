@@ -21,9 +21,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 
 <div class="col50">
 	<div class="selectimage">
-		<?php 
-		$this->manufacturer->images[0]->addHidden('virtuemart_vendor_id',$this->virtuemart_vendor_id);
-
+		<?php
 		echo $this->manufacturer->images[0]->displayFilesHandler($this->manufacturer->virtuemart_media_id,'manufacturer'); ?>
 	</div>
 </div>

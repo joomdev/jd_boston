@@ -8,28 +8,25 @@
     <authorUrl>http://www.heidelpay.de</authorUrl>
     <copyright>Copyright Heidelberger Payment GmbH</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
-    <version>3.2.1</version>
+    <version>16.11.07</version>
     <description>
-        <![CDATA[<h2>Virtuemart Plugin von:</h2><p><a href="http://www.Heidelpay.de" target="_blank"><img src="http://www.heidelpay.de/gfx/logo.gif" style="margin-right:20px;"/></a></p> ]]></description>
+        <![CDATA[<h2>Virtuemart Plugin von:</h2><p><a href="https://www.Heidelpay.de" target="_blank"><img src="https://www.heidelpay.de/gfx/logo.gif" style="margin-right:20px;"/></a></p> ]]></description>
     <files>
         <filename plugin="heidelpay">heidelpay.php</filename>
-        <filename>index.html</filename>
         <folder>heidelpay</folder>
     </files>
     <vmconfig>
         <fields name="params">
 
             <fieldset name="heidelpay" addfieldpath="/plugins/vmpayment/heidelpay/heidelpay/fields">
-
+                <field name="checkConditionsCore" value="1" default="1" type="hidden"/>
                 <field type="spacer" default="VMPAYMENT_HEIDELPAY_PAYMENT"/>
                 <field type="spacer" default=""/>
                 <field type="getheidelpay" level="level1"/>
                 <field type="spacer" default=""/>
-                <field name="payment_logos" type="vmfiles" label="VMPAYMENT_HEIDELPAY_LOGOS"
-                       description="VMPAYMENT_HEIDELPAY_LOGOS_DESC"
-                       directory="/images/stories/virtuemart/payment"
-                       default="default" hide_default="1" hide_none="1"
-                       stripext="0" exclude="^_"/>
+				<field class="" name="payment_logos" type="filelist" label="VMPAYMENT_HEIDELPAY_LOGOS"
+                       description="VMPAYMENT_HEIDELPAY_LOGOS_DESC" directory="/images/virtuemart/payment"
+                       default="" hide_default="1" hide_none="0" stripext="0" exclude="^_"/>
                 <field type="spacer" default=""/>
                 <field type="spacer" default=""/>
                 <field type="spacer" default="VMPAYMENT_HEIDELPAY_VM_PARAMETERS"/>

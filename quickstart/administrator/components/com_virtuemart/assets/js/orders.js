@@ -46,7 +46,8 @@ if (typeof Virtuemart === "undefined")
 		$('.element-hidden').mouseout(function () {
 			$(this).hide();
 		});
-	}
+	};
+
 	Virtuemart.set2status = function () {
 
 		var newStatus = $("#order_status_code_bulk").val();
@@ -117,8 +118,7 @@ if (typeof Virtuemart === "undefined")
 				Virtuemart.enableEdit(event);
 			});
 		})
-	}
-
+	};
 
 	Virtuemart.removeItem = function (e,id){
 		var answer = confirm(Virtuemart.confirmDelete);
@@ -129,7 +129,7 @@ if (typeof Virtuemart === "undefined")
 
 		}
 		e.preventDefault();
-	}
+	};
 
 	jQuery(function ($) {
 
@@ -175,7 +175,7 @@ if (typeof Virtuemart === "undefined")
 
 		$('#itemTable').find('#lItemRow').after('<tr>' + row + '</tr>');
 		e.preventDefault();
-	}
+	};
 
 	Virtuemart.cancelEdit = function (e) {
 		$('#orderItemForm').each(function () {
@@ -189,7 +189,7 @@ if (typeof Virtuemart === "undefined")
 		$('.orderView').show();
 		$("#updateOrderItemStatus").addClass('viewMode');
 		e.preventDefault();
-	}
+	};
 
 	Virtuemart.resetOrderHead = function (e) {
 		$('#orderForm').each(function () {
@@ -202,8 +202,8 @@ if (typeof Virtuemart === "undefined")
 			.find('option:selected').prop('selected', true)
 			.end().trigger('liszt:updated');
 		e.preventDefault();
-	}
-})(jQuery)
+	};
+})(jQuery);
 
 
 

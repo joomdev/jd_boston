@@ -52,6 +52,17 @@ Virtuemart.sortable = jQuery(function($) {
 
 (function ($) {
 
+	Virtuemart.sendCurrForm = function(event){
+		console.log('What the heck',event);
+		event.preventDefault();
+		if(event.currentTarget.length > 0){
+			$(event.currentTarget[0].form.submit());
+		} else {
+			var f = jQuery(event.currentTarget).closest('form');
+			f.submit();
+		}
+	};
+
     var methods = {
 
         tabs:function (cookie) {

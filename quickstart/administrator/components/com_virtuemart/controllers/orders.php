@@ -13,14 +13,11 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: orders.php 9796 2018-03-14 12:36:18Z Milbo $
+ * @version $Id: orders.php 10159 2019-09-24 15:31:58Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
-
 
 /**
  * Orders Controller
@@ -47,8 +44,8 @@ class VirtuemartControllerOrders extends VmController {
 	 */
 	public function callInvoiceView(){
 
-		if(!class_exists( 'VirtueMartControllerInvoice' )) require(VMPATH_SITE.DS.'controllers'.DS.'invoice.php');
 		$controller = new VirtueMartControllerInvoice();
+		$controller->unlockInvoice = 1;
 		$controller->display();
 
 	}
@@ -190,15 +187,23 @@ class VirtuemartControllerOrders extends VmController {
 		/* Update the statuses */
 		$model = VmModel::getModel('orders');
 
+		$order = array() ;
 		if ($lastTask == 'updatestatus') {
 			// single order is in POST but we need an array
-			$order = array() ;
+
 			$virtuemart_order_id = vRequest::getInt('virtuemart_order_id');
 			$order[$virtuemart_order_id] = (vRequest::getRequest());
 
 			$result = $model->updateOrderStatus($order);
 		} else {
-			$result = $model->updateOrderStatus();
+
+			if($cids = vRequest::getInt('cid',false)){
+				$orders = vRequest::getVar('orders');
+				foreach($cids as $virtuemart_order_id){
+					$order[$virtuemart_order_id] = $orders[$virtuemart_order_id];
+				}
+			}
+			$result = $model->updateOrderStatus($order);
 		}
 
 		$msg='';
@@ -267,11 +272,7 @@ class VirtuemartControllerOrders extends VmController {
 
 		$_items = vRequest::getVar('item_id', 0);
 
-		//The order editing often needs some correction. So we disable sending of the emails here
-		$_items['customer_notified'] = 0;
 		$model->updateStatusForOneOrder($_orderID,$_items,true);
-
-		$model->deleteInvoice($_orderID);
 
 		$app = JFactory::getApplication();
 		$app->redirect('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.$_orderID);
@@ -288,7 +289,6 @@ class VirtuemartControllerOrders extends VmController {
 		$model = VmModel::getModel();
 		$_orderID = vRequest::getInt('virtuemart_order_id', '');
 		$model->UpdateOrderHead((int)$_orderID, vRequest::getRequest());
-		$model->deleteInvoice($_orderID);
 
 		$mainframe->redirect('index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id='.$_orderID);
 	}
@@ -320,7 +320,6 @@ class VirtuemartControllerOrders extends VmController {
 		$model = VmModel::getModel();
 		$data = vRequest::getRequest();
 		$model->saveOrderLineItem($data);
-		$model->deleteInvoice($orderId);
 
 		$editLink = 'index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id=' . $orderId;
 		$this->setRedirect($editLink, $msg);
@@ -356,11 +355,10 @@ class VirtuemartControllerOrders extends VmController {
 					break;
 				}
 			}
-
+			//prevents sending of email
 			$_items['customer_notified'] = 0;
 			$model->updateStatusForOneOrder($orderId,$_items,true);
 
-			$model->deleteInvoice($orderId);
 		}
 
 		$editLink = 'index.php?option=com_virtuemart&view=orders&task=edit&virtuemart_order_id=' . $orderId;

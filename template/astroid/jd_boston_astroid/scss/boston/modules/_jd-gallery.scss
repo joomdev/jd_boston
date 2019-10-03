@@ -1,0 +1,32 @@
+/*---- For JD Gallery ----*/
+div .gallery-section {
+	div[class*="col"] {
+		a img {
+			position: relative;
+		}
+		.overlay {
+			background-color: rgba($white, 0.2);
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+		}
+	}
+}
+
+/*---- For Footer Gallery ----*/
+.footer-gallery .gallery-section {
+	div[class*="col"] {
+		display: inline-block;
+		width: auto;
+		flex: auto;
+		a img {
+			max-width: 80px;
+		}
+		i.fas {
+			width: 30px;
+    		height: 30px;
+    		line-height: 30px;
+		}
+	}
+}

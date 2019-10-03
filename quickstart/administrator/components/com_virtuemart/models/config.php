@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: config.php 9808 2018-04-05 11:26:20Z Milbo $
+ * @version $Id: config.php 10135 2019-09-12 10:50:05Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -36,7 +36,7 @@ class VirtueMartModelConfig extends VmModel {
 
 	function getFieldList($fieldname){
 
-		$dirs[] = VMPATH_ROOT.DS.'components'.DS.'com_virtuemart'.DS.'sublayouts';
+		$dirs[] = VMPATH_ROOT.'/components/com_virtuemart/sublayouts';
 
 		$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id` ="0" AND `home`="1" ';
 
@@ -45,8 +45,8 @@ class VirtueMartModelConfig extends VmModel {
 
 		$tplnames = $db->loadResult();
 		if($tplnames){
-			if(is_dir(VMPATH_ROOT.DS.'templates'.DS.$tplnames.DS.'html'.DS.'com_virtuemart'.DS.'sublayouts')){
-				$dirs[] = VMPATH_ROOT.DS.'templates'.DS.$tplnames.DS.'html'.DS.'com_virtuemart'.DS.'sublayouts';
+			if(is_dir(VMPATH_ROOT.'/templates/'.$tplnames.'/html/com_virtuemart/sublayouts')){
+				$dirs[] = VMPATH_ROOT.'/templates/'.$tplnames.'/html/com_virtuemart/sublayouts';
 			}
 		}
 		return self::getLayouts($dirs,$fieldname.'_');
@@ -65,9 +65,9 @@ class VirtueMartModelConfig extends VmModel {
 		$com = strpos($view,'mod_');
 
 		if($com===0){
-			$dirs[] = VMPATH_ROOT.DS.'modules'.DS.$view.DS.'tmpl';
+			$dirs[] = VMPATH_ROOT.'/modules/'.$view.'/tmpl';
 		} else {
-			$dirs[] = VMPATH_ROOT.DS.'components'.DS.'com_virtuemart'.DS.'views'.DS.$view.DS.'tmpl';
+			$dirs[] = VMPATH_ROOT.'/components/com_virtuemart/views/'.$view.'/tmpl';
 
 		}
 
@@ -79,9 +79,9 @@ class VirtueMartModelConfig extends VmModel {
 		$tplnames = $db->loadResult();
 		if($tplnames){
 			if($com===0){
-				$opath = VMPATH_ROOT.DS.'templates'.DS.$tplnames.DS.'html'.DS.$view;
+				$opath = VMPATH_ROOT.'/templates/'.$tplnames.'/html/'.$view;
 			} else {
-				$opath = VMPATH_ROOT.DS.'templates'.DS.$tplnames.DS.'html'.DS.'com_virtuemart'.DS.$view;
+				$opath = VMPATH_ROOT.'/templates/'.$tplnames.'/html/com_virtuemart/'.$view;
 			}
 			if(is_dir($opath)){
 				$dirs[] = $opath;
@@ -145,7 +145,7 @@ class VirtueMartModelConfig extends VmModel {
 	 */
 	function getTCPDFFontsList() {
 
-		$dir = VMPATH_ROOT.DS.'libraries'.DS.'tcpdf'.DS.'fonts';
+		$dir = VMPATH_LIBS.vmDefines::tcpdf() .'/fonts';
 		$result = array();
 		$specfiles = array();
 		if(is_dir($dir)) {
@@ -167,6 +167,8 @@ class VirtueMartModelConfig extends VmModel {
 					}
 				}
 			}
+		} else {
+			vmWarn('Fonts not found in '.$dir);
 		}
 
 		if(empty($specfiles)){
@@ -208,9 +210,8 @@ class VirtueMartModelConfig extends VmModel {
 	function getNoImageList() {
 
 		//TODO set config value here
-		$dirs[] = VMPATH_ROOT.DS.'components'.DS.'com_virtuemart'.DS.'assets'.DS.'images'.DS.'vmgeneral';
+		$dirs[] = VMPATH_ROOT.'/components/com_virtuemart/assets/images/vmgeneral';
 
-		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
 		$tplpath = VmConfig::get('vmtemplate',VmTemplate::getDefaultTemplate());
 		if(!empty($tplpath) and is_numeric($tplpath)){
 			$db = JFactory::getDbo();
@@ -225,8 +226,8 @@ class VirtueMartModelConfig extends VmModel {
 		}
 
 		if(!empty($tplpath)){
-			if(is_dir(VMPATH_ROOT.DS.'templates'.DS.$tplpath.DS.'images'.DS.'vmgeneral')){
-				$dirs[] = VMPATH_ROOT.DS.'templates'.DS.$tplpath.DS.'images'.DS.'vmgeneral';
+			if(is_dir(VMPATH_ROOT.'/templates/'.$tplpath.'/images/vmgeneral')){
+				$dirs[] = VMPATH_ROOT.'/templates/'.$tplpath.'/images/vmgeneral';
 			}
 		}
 
@@ -254,7 +255,7 @@ class VirtueMartModelConfig extends VmModel {
 	 * @return object List of theme objects
 	 */
 	function getCurrencyConverterList() {
-		$dir = VMPATH_ADMIN.DS.'plugins'.DS.'currency_converter';
+		$dir = VMPATH_ADMIN.'/plugins/currency_converter';
 		$result = array();
 
 		if ($handle = opendir($dir)) {
@@ -294,7 +295,7 @@ class VirtueMartModelConfig extends VmModel {
 	function getActiveLanguages($active_languages, $name = 'active_languages[]', $multiple = true, $placeholder = 'COM_VIRTUEMART_DRDOWN_NOTMULTILINGUAL') {
 
 		$activeLangs = array() ;
-		$language =JFactory::getLanguage();
+		$language =vmLanguage::getLanguage();
 		$jLangs = $language->getKnownLanguages(VMPATH_ROOT);
 
 		foreach ($jLangs as $jLang) {
@@ -384,7 +385,7 @@ class VirtueMartModelConfig extends VmModel {
 			return false;
 		}
 
-		//$this->setFraudProtection();
+
 
 		//$oldLangs = $config->get('active_languages');
 		$oldLangs = VmConfig::get('active_languages', array());
@@ -441,8 +442,6 @@ class VirtueMartModelConfig extends VmModel {
 			}
 		}
 
-		if(!class_exists('JFolder')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
-
 		$safePath = trim($config->get('forSale_path'));
 		if(!empty($safePath)){
 			if(DS!='/' and strpos($safePath,'/')!==false){
@@ -454,29 +453,37 @@ class VirtueMartModelConfig extends VmModel {
 				$safePath = $safePath.DS;
 				vmInfo('Corrected safe path, added missing '.DS);
 			}
-			$p =  VMPATH_ROOT.DS;
+			$safePath = JPath::clean($safePath);
+
+			$p =  JPath::clean(VMPATH_ROOT.DS);vmdebug('store config safepath check against root ',$safePath,$p);
 			if(strtolower($safePath) == strtolower($p)){
 				$safePath = '';
-				vmError('Do not use as safepath your virtuemart root folder');
+				vmError('Do not use as safepath your joomla root folder');
 			}
+
+			$p =  JPath::clean(VMPATH_ADMINISTRATOR.DS);
+			if(strtolower($safePath) == strtolower($p)){
+				$safePath = '';
+				vmError('Do not use as safepath your joomla administrator folder');
+			}
+
+			$p =  JPath::clean(VMPATH_ADMIN.DS);
+			if(strtolower($safePath) == strtolower($p)){
+				$safePath = '';
+				vmError('Do not use as safepath your virtuemart component folder in administration');
+			}
+
+			$p =  JPath::clean(VMPATH_SITE.DS);
+			if(strtolower($safePath) == strtolower($p)){
+				$safePath = '';
+				vmError('Do not use as safepath your virtuemart component folder');
+			}
+
 			$config->set('forSale_path',$safePath);
 		}
 
-		if(!class_exists('shopfunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 		$safePath = shopFunctions::checkSafePath($safePath);
 
-		if(!empty($safePath)){
-
-			$exists = JFolder::exists($safePath.'invoices');
-			if(!$exists){
-				$created = JFolder::create($safePath.'invoices');
-				if($created){
-					vmInfo('COM_VIRTUEMART_SAFE_PATH_INVOICE_CREATED');
-				} else {
-					VmWarn('COM_VIRTUEMART_WARN_SAFE_PATH_NO_INVOICE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'));
-				}
-			}
-		}
 
 		if(empty($data['vmDefLang'])){
 			$defl = VmConfig::$jDefLangTag;
@@ -492,7 +499,6 @@ class VirtueMartModelConfig extends VmModel {
 		$active_langs[] = $defl;
 		$active_langs = array_unique($active_langs);
 		$config->set('active_languages',$active_langs);
-
 
 
 		//ATM we want to ensure that only one config is used
@@ -530,31 +536,10 @@ class VirtueMartModelConfig extends VmModel {
 		return true;
 	}
 
-	static public function getActiveVmLanguages(){
-		$langs = VmConfig::get('active_languages',false);
-		if(empty($langs)){
-			$langs = vmLanguage::getShopDefaultSiteLangTagByJoomla();
-			$langs = (array)strtolower(strtr($langs,'-','_'));
-		}
-		return $langs;
-	}
-
-	static public function installLanguageTables(){
-
-		if(!class_exists('GenericTableUpdater')) require(VMPATH_ADMIN .'/helpers/tableupdater.php');
-		$updater = new GenericTableUpdater();
-		$langs = self::getActiveVmLanguages();
-
-		$updater->createLanguageTables($langs);
-	}
-
 	public function setVmLanguages() {
-		$db = JFactory::getDbo();
-		$db->setQuery('SELECT lang_code FROM #__languages');
-		$options = $db->loadColumn();
 
 		$config = VmConfig::loadConfig();
-		$config->set('active_languages',$options);
+		$config->set('active_languages',array());
 
 		$lang = vmLanguage::getShopDefaultSiteLangTagByJoomla();
 		$config->set('vmDefLang',$lang);
@@ -566,6 +551,22 @@ class VirtueMartModelConfig extends VmModel {
 		$confTable->bindChecknStore($data);
 
 		VmConfig::loadConfig(true);
+	}
+
+	static public function getActiveVmLanguages(){
+		$langs = (array)VmConfig::get('active_languages',array());
+		$deflang = vmLanguage::getShopDefaultSiteLangTagByJoomla();
+		$langs[] = $deflang;
+		$langs = array_unique($langs);
+		return $langs;
+	}
+
+	static public function installLanguageTables(){
+
+		$updater = new GenericTableUpdater();
+		$langs = self::getActiveVmLanguages();
+
+		$updater->createLanguageTables($langs);
 	}
 
 	static public function checkConfigTableExists(){
@@ -625,10 +626,9 @@ class VirtueMartModelConfig extends VmModel {
 	 */
 	static function readConfigFile(){
 
-		$_datafile = VMPATH_ADMIN.DS.'virtuemart.cfg';
+		$_datafile = VMPATH_ADMIN.'/virtuemart.cfg';
 		if (!file_exists($_datafile)) {
-			if (file_exists(VMPATH_ADMIN.DS.'virtuemart_defaults.cfg-dist')) {
-				if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
+			if (file_exists(VMPATH_ADMIN.'/virtuemart_defaults.cfg-dist')) {
 				JFile::copy('virtuemart_defaults.cfg-dist','virtuemart.cfg',VMPATH_ADMIN);
 			} else {
 				vmWarn('The data file with the default configuration could not be found. You must configure the shop manually.');
@@ -709,7 +709,7 @@ class VirtueMartModelConfig extends VmModel {
 				$confData['virtuemart_config_id'] = 1;
 
 				$confData['config'] = $params;
-				VmTable::addIncludePath(VMPATH_ADMIN.DS.'tables','Table');
+				VmTable::addIncludePath(VMPATH_ADMIN.'/tables','Table');
 				JFactory::getDbo();
 				$confTable = VmTable::getInstance('configs', 'Table', array());
 
@@ -776,69 +776,6 @@ class VirtueMartModelConfig extends VmModel {
 	}
 
 
-	/**
-	 * FraudProtection to comply to the French financial Law 2018
-	 * Those 2 params are required: ordersAddOnly=1, ChangedInvCreateNewInvNumber=1
-	 *
-	 * @author Valérie Isaksen
-	 */
-	//France, Guadeloupe, Martinique, Guyane ,La Réunion, Polynésie française et Nouvelle-Calédonie, Wallis-et-Futuna, Saint-Pierre-et-Miquelon, Saint-Barthélemy, Saint-Martin
-	static $defaultFraudProtectionCountries = array('FRA', 'GLP', 'MTQ', 'GUF', 'REU', 'PYF', 'NCL', 'WLF', 'SPM', 'BLM', 'MAF');
-	static $vendorCountry = '';
-
-	function setFraudProtection() {
-		vmLanguage::loadJLang('com_virtuemart_config',false);
-
-		$config = VmConfig::loadConfig();
-		$fraudProtectionIsRequired= $this->vendorRequireFraudProtection();
-		if ($fraudProtectionIsRequired) {
-			$config->set('ordersAddOnly',1);
-			$config->set('ChangedInvCreateNewInvNumber',1);
-		} else {
-			$config->set('ordersAddOnly',0);
-			$config->set('ChangedInvCreateNewInvNumber',0);
-		}
-
-		$data['virtuemart_config_id'] = 1;
-		$data['config'] = $config->toString();
-
-		$confTable = $this->getTable('configs');
-		$confTable->bindChecknStore($data);
-
-		VmConfig::loadConfig(true);
-		if($fraudProtectionIsRequired ) {
-			if (VmConfig::get('ordersAddOnly',false) and VmConfig::get('ChangedInvCreateNewInvNumber',false)){
-				vmInfo(vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRAUD_PROTECTION_ON'));
-				if (in_array(self::$vendorCountry, self::$defaultFraudProtectionCountries)) {
-					vmInfo(vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRAUD_PROTECTION_ON_FR_WARNING'));
-				}
-			} else {
-				vmError(vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRAUD_PROTECTION_SHOULD_BE_ON'));
-				if (in_array(self::$vendorCountry, self::$defaultFraudProtectionCountries)) {
-					vmError(vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRAUD_PROTECTION_SHOULD_BE_ON_FR_WARNING'));
-				}
-			}
-		}
-
-
-	}
-	function vendorRequireFraudProtection() {
-		if(!self::checkConfigTableExists()){ return ;}
-		$vendorModel = VmModel::getModel('vendor');
-		$vendorAddress = $vendorModel->getVendorAdressBT(1);
-		self::$vendorCountry = ShopFunctions::getCountryByID($vendorAddress->virtuemart_country_id, 'country_3_code');
-
-		$config = VmConfig::loadConfig();
-
-		$FraudProtectionCountries = $config->get('FraudProtectionCountries', array());
-		$FraudProtectionCountries = array_merge(self::$defaultFraudProtectionCountries, $FraudProtectionCountries);
-
-		if (in_array(self::$vendorCountry, $FraudProtectionCountries)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 }
 

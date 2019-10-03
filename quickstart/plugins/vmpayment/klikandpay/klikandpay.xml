@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension version="2.5" type="plugin" group="vmpayment" method="upgrade">
     <name>VM Payment - klikandpay</name>
-    <creationDate>March 31 2017</creationDate>
+    <creationDate>September 24 2019</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>https://virtuemart.net</authorUrl>
-    <copyright>Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2004 - 2018 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <!--version>3.2.1</version-->
-    <version>3.2.1</version>
+    <!--version>3.6.2</version-->
+    <version>3.6.2</version>
     <description><![CDATA[<a href="http://klikandpay.com" target="_blank">klikandpay</a> ]]>
     </description>
 
@@ -233,7 +233,7 @@
                        description=""/>
                 <field name="payment_logos" type="vmfiles" multiple="true" label="VMPAYMENT_KLIKANDPAY_CONF_LOGOS"
                        description="VMPAYMENT_KLIKANDPAY_CONF_LOGOS_TIP"
-                       directory="/images/stories/virtuemart/payment"
+                       directory="/images/virtuemart/payment"
                        default="default" hide_default="1" hide_none="1"
                        stripext="0" exclude="^_"/>
 

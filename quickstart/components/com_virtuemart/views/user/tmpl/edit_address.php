@@ -13,16 +13,14 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: edit_address.php 9801 2018-03-16 17:08:49Z yourgeek $
+ * @version $Id: edit_address.php 10079 2019-07-01 17:09:55Z StefanSTS $
  */
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die('Restricted access');
 
-// Implement Joomla's form validation
-vmJsApi::vmValidator();
+
 vmJsApi::css('vmpanels');
 
-if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 $this->cart = VirtueMartCart::getCart();
 $url = 0;
 if ($this->cart->_fromCart or $this->cart->getInCheckOut()) {
@@ -47,7 +45,7 @@ function renderControlButtons($view,$rview){
 
 
 	if (VmConfig::get ('oncheckout_show_register', 1) && $view->userDetails->JUser->id == 0 && !VmConfig::get ('oncheckout_only_registered', 0) && $view->address_type == 'BT' and $rview == 'cart') {
-		echo '<div id="reg_text">'.vmText::sprintf ('COM_VIRTUEMART_ONCHECKOUT_DEFAULT_TEXT_REGISTER', vmText::_ ('COM_VIRTUEMART_REGISTER_AND_CHECKOUT'), vmText::_ ('COM_VIRTUEMART_CHECKOUT_AS_GUEST')).'</div>';			}
+		echo '<div class="reg_text">'.vmText::sprintf ('COM_VIRTUEMART_ONCHECKOUT_DEFAULT_TEXT_REGISTER', vmText::_ ('COM_VIRTUEMART_REGISTER_AND_CHECKOUT'), vmText::_ ('COM_VIRTUEMART_CHECKOUT_AS_GUEST')).'</div>';			}
 	else {
 		//echo vmText::_('COM_VIRTUEMART_REGISTER_ACCOUNT');
 	}
@@ -107,12 +105,7 @@ echo shopFunctionsF::getLoginForm (TRUE, FALSE, $url);
 	</h2>
 
 	<!--<form method="post" id="userForm" name="userForm" action="<?php echo JRoute::_ ('index.php'); ?>" class="form-validate">-->
-	<?php renderControlButtons($this,$rview);
-
-	if (!class_exists ('VirtueMartCart')) {
-		require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
-	}
-
+	<?php
 	if (count ($this->userFields['functions']) > 0) {
 		echo '<script language="javascript">' . "\n";
 		echo join ("\n", $this->userFields['functions']);

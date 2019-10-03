@@ -5,22 +5,19 @@
 *
 * @package	VirtueMart
 * @subpackage User
-* @author Oscar van Eijk
+* @author VirtueMart Team
 * @link https://virtuemart.net
-* @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+* @copyright Copyright (c) 2004 - 2018 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 * VirtueMart is free software. This version may have been modified pursuant
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: user.php 9478 2017-03-16 09:33:17Z Milbo $
+* @version $Id: user.php 10091 2019-07-08 09:30:22Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
-
 
 /**
  * Controller class for the user
@@ -50,8 +47,8 @@ class VirtuemartControllerUser extends VmController {
 
 		//We set here the virtuemart_user_id, when no virtuemart_user_id is set to 0, for adding a new user
 		//In every other case the virtuemart_user_id is sent.
-		$cid = vRequest::getVar('virtuemart_user_id');
-		if(!isset($cid)) vRequest::setVar('virtuemart_user_id', (int)0);
+		$cid = vRequest::getInt('virtuemart_user_id',vRequest::getInt('cid',0));
+		vRequest::setVar('virtuemart_user_id', $cid);
 
 		parent::edit('edit');
 	}
@@ -107,28 +104,17 @@ class VirtuemartControllerUser extends VmController {
 
 			if($data===0) $data = vRequest::getRequest();
 
-			// Store multiple selectlist entries as a ; separated string
-			if (array_key_exists('vendor_accepted_currencies', $data) && is_array($data['vendor_accepted_currencies'])) {
-			    $data['vendor_accepted_currencies'] = implode(',', $data['vendor_accepted_currencies']);
-			}
-			// TODO disallow vendor_store_name as HTML ?
-			$data['vendor_store_name'] = vRequest::getHtml('vendor_store_name');
-			$data['vendor_store_desc'] = vRequest::getHtml('vendor_store_desc');
-			$data['vendor_terms_of_service'] = vRequest::getHtml('vendor_terms_of_service');
-			$data['vendor_legal_info'] = vRequest::getHtml('vendor_legal_info');
-			$data['vendor_letter_css'] = vRequest::getHtml('vendor_letter_css');
-			$data['vendor_letter_header_html'] = vRequest::getHtml('vendor_letter_header_html');
-			$data['vendor_letter_footer_html'] = vRequest::getHtml('vendor_letter_footer_html');
+			$this->getStrByAcl(array('vendor_store_name','vendor_store_desc','vendor_terms_of_service','vendor_legal_info', 'vendor_letter_css', 'vendor_letter_header_html', 'vendor_letter_footer_html'),$data);
 
 			$ids = vRequest::getInt('virtuemart_user_id');
 
 			if($ids){
 				if(is_array($ids) and isset($ids[0])){
 					$model->setId((int)$ids[0]);
-					vmdebug('my user controller set '.(int)$ids[0],$ids);
+					//vmdebug('my user controller set '.(int)$ids[0],$ids);
 				} else{
 					$model->setId((int)$ids);
-					vmdebug('my user controller set '.(int)$ids,$ids);
+					//vmdebug('my user controller set '.(int)$ids,$ids);
 				}
 			}
 			$ret=$model->store($data);

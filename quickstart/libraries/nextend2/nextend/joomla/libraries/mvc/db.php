@@ -15,10 +15,10 @@ class N2DBConnector extends N2DBConnectorAbstract
      */
     public $primaryKeyColumn = "id";
 
-    protected $_prefix = '#__';
-
     public function __construct($class) {
         $this->db = JFactory::getDbo();
+        $this->_prefix = $this->db->getPrefix();
+        
         $this->setTableName($class);
     }
 
@@ -104,7 +104,7 @@ class N2DBConnector extends N2DBConnectorAbstract
     public function findAllByAttributes(array $attributes, $fields = false, $order = false) {
         $query = $this->db->getQuery(true);
         if ($fields) {
-            $query->select($fields);
+            $query->select($this->quoteName($fields));
         } else {
             $query->select('*');
         }

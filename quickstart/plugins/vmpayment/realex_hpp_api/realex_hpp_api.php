@@ -7,10 +7,10 @@ defined('_JEXEC') or die();
  * Realex payment plugin
  *
  * @author Valerie Isaksen
- * @version $Id: realex_hpp_api.php 9420 2017-01-12 09:35:36Z Milbo $
+ * @version $Id: realex_hpp_api.php 10132 2019-09-11 08:50:38Z Milbo $
  * @package VirtueMart
  * @subpackage payment
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -22,21 +22,12 @@ defined('_JEXEC') or die();
  */
 
 defined('_JEXEC') or die('Restricted access');
-if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart'.DS.'helpers'.DS.'config.php');
-
-if (!class_exists('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
-}
 
 if (!class_exists('RealexHelperRealex')) {
 	require(VMPATH_ROOT . DS.'plugins'. DS.'vmpayment'. DS.'realex_hpp_api'. DS.'realex_hpp_api'. DS.'helpers'. DS.'helper.php');
 }
 if (!class_exists('RealexHelperCustomerData')) {
 	require(VMPATH_ROOT .   DS.'plugins'. DS.'vmpayment'. DS.'realex_hpp_api'. DS.'realex_hpp_api'. DS.'helpers'. DS.'customerdata.php');
-}
-
-if (!class_exists('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
 }
 
 class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
@@ -54,6 +45,7 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 		$this->_tablepkey = 'id';
 		$this->_tableId = 'id';
 		$varsToPush = $this->getVarsToPush();
+		$this->addVarsToPushCore($varsToPush, 1);
 		$this->setCryptedFields(array('shared_secret', 'rebate_password'));
 		$this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
 
@@ -109,12 +101,7 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 			return FALSE;
 		}
 
-		if (!class_exists('VirtueMartModelOrders')) {
-			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
-		}
-		if (!class_exists('VirtueMartModelCurrency')) {
-			require(VMPATH_ADMIN . DS . 'models' . DS . 'currency.php');
-		}
+
 		//$this->setInConfirmOrder($cart);
 		$email_currency = $this->getEmailCurrency($this->_currentMethod);
 
@@ -1095,42 +1082,7 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 	 * @return bool
 	 */
 	protected function checkConditions ($cart, $method, $cart_prices) {
-
-
-		$method->min_amount = (float)$method->min_amount;
-		$method->max_amount = (float)$method->max_amount;
-
-		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
-
-		$amount = $this->getCartAmount($cart_prices);
-		$amount_cond = ($amount >= $method->min_amount AND $amount <= $method->max_amount
-			OR
-			($method->min_amount <= $amount AND ($method->max_amount == 0)));
-
-		$countries = array();
-		if (!empty($method->countries)) {
-			if (!is_array($method->countries)) {
-				$countries[0] = $method->countries;
-			} else {
-				$countries = $method->countries;
-			}
-		}
-		// probably did not gave his BT:ST address
-		if (!is_array($address)) {
-			$address = array();
-			$address['virtuemart_country_id'] = 0;
-		}
-
-		if (!isset($address['virtuemart_country_id'])) {
-			$address['virtuemart_country_id'] = 0;
-		}
-		if (in_array($address['virtuemart_country_id'], $countries) || count($countries) == 0) {
-			if ($amount_cond) {
-				return TRUE;
-			}
-		}
-
-		return FALSE;
+		return parent::checkConditions($cart, $method, $cart_prices);
 	}
 
 	/**
@@ -2027,7 +1979,7 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 		$name = session_name();
 		$length = 32;
 		for ($i = 0; $i < $length; ++$i) {
-			$token .= $chars[(rand(0, $max))];
+			$token .= $chars[(mt_rand(0, $max))];
 		}
 
 		return md5($token . $name);

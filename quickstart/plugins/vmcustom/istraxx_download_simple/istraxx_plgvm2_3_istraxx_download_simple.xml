@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updates>
+    <update>
+        <name>${PHING.NAME}</name>
+        <description>${PHING.DESCRIPTION}</description>
+        <folder>${PHING.GROUP}</folder>
+        <element>${PHING.FILENAME}</element>
+        <type>plugin</type>
+        <client>0</client>
+        <version>${PHING.VERSION}</version>
+        <infourl title="VirtueMart Extensions ${PHING.FILENAME}">http://extensions.virtuemart.net/my-orders</infourl>
+        <downloads>
+            <downloadurl type="full" format="zip">https://extensions.virtuemart.net/index.php?option=com_virtuemart&amp;view=plugin&amp;name=istraxx_download_byhost</downloadurl>
+        </downloads>
+        <tags>
+            <tag>stable</tag>
+        </tags>
+        <maintainer>${PHING.COMPANY.LONG}</maintainer>
+        <maintainerurl>${PHING.AUTHORURL}</maintainerurl>
+        <targetplatform name="joomla" version=".*" />
+    </update>
+</updates>

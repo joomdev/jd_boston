@@ -7,7 +7,7 @@
  * @version $Id$
  * @package VirtueMart
  * @subpackage payment
- * @copyright Copyright (c) 2004 - March 31 2017 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2014 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or

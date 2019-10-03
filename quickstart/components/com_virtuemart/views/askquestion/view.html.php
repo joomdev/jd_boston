@@ -19,11 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die('Restricted access');
 
-// Load the view framework
-if (!class_exists ('VmView')) {
-	require(VMPATH_SITE . DS . 'helpers' . DS . 'vmview.php');
-}
-
 /**
  * Product details
  *
@@ -53,20 +48,12 @@ class VirtueMartViewAskquestion extends VmView {
 		}
 
 		$this->show_prices = (int)VmConfig::get ('show_prices', 1);
-		if ($this->show_prices) {
-			if (!class_exists ('calculationHelper')) {
-				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
-			}
-		}
 
 		$document = JFactory::getDocument ();
 
 		$mainframe = JFactory::getApplication ();
 		$pathway = $mainframe->getPathway ();
 		$task = vRequest::getCmd ('task');
-
-		if (!class_exists('VmImage'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 
 		// Load the product
 		$product_model = VmModel::getModel ('product');
@@ -84,9 +71,6 @@ class VirtueMartViewAskquestion extends VmView {
 			return;
 		}
 
-		if (!class_exists ('VirtueMartModelVendor')) {
-			require(VMPATH_ADMIN . DS . 'models' . DS . 'vendor.php');
-		}
 		$product = $product_model->getProduct ($virtuemart_product_id);
 
 		// Set Canonic link

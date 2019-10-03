@@ -27,35 +27,9 @@ if ($this->doctype != 'invoice') {
     $colspan -= 1;
 }
 
-$handled = array();
-$discountsBill = false;
-$taxBill = false;
-$vats = 0;
-foreach($this->orderDetails['calc_rules'] as $rule){
-	if(isset($sumRules[$rule->virtuemart_calc_id])){	// or $rule->calc_kind=='payment' or $rule->calc_kind=='shipment'){
-		continue;
-	}
-	$handled[$rule->virtuemart_calc_id] = true;
-	$r = new stdClass();
-	$r->calc_result = $rule->calc_result;
-	$r->calc_amount = $rule->calc_amount;
-	$r->calc_rule_name = $rule->calc_rule_name;
-	$r->calc_kind = $rule->calc_kind;
-	$r->calc_value = $rule->calc_value;
-
-	if($rule->calc_kind == 'DBTaxRulesBill' or $rule->calc_kind == 'DATaxRulesBill'){
-		$discountsBill[$rule->virtuemart_calc_id] = $r;
-	}
-	if($rule->calc_kind == 'taxRulesBill' or $rule->calc_kind == 'VatTax' or $rule->calc_kind=='payment' or $rule->calc_kind=='shipment'){
-		//vmdebug('method rule',$rule);
-		$r->label = shopFunctionsF::getTaxNameWithValue($rule->calc_rule_name,$rule->calc_value);
-		if(isset($taxBill[$rule->virtuemart_calc_id])){
-			$taxBill[$rule->virtuemart_calc_id]->calc_amount += $r->calc_amount;
-		} else {
-			$taxBill[$rule->virtuemart_calc_id] = $r;
-		}
-	}
-} ?>
+$discountsBill = $this->discountsBill;
+$taxBill = $this->taxBill;
+ ?>
 
 <table class="html-email" width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr style="text-align: left;" class="sectiontableheader">
@@ -85,7 +59,7 @@ foreach($this->orderDetails['calc_rules'] as $rule){
 
 <?php
 $menuItemID = shopFunctionsF::getMenuItemId($this->orderDetails['details']['BT']->order_language);
-if(!class_exists('VirtueMartModelCustomfields'))require(VMPATH_ADMIN.DS.'models'.DS.'customfields.php');
+
 VirtueMartModelCustomfields::$useAbsUrls = ($this->isMail or $this->isPdf);
 foreach($this->orderDetails['items'] as $item) {
 	$qtt = $item->product_quantity ;
@@ -193,6 +167,41 @@ foreach($this->orderDetails['items'] as $item) {
 		}
 	} ?>
 
+	<?php
+	foreach($this->orderDetails['calc_rules'] as $rule){
+		if ($rule->calc_kind== 'DBTaxRulesBill') { ?>
+            <tr>
+                <td colspan="6"  style="text-align: right;" class="pricePad"><?php echo $rule->calc_rule_name ?> </td>
+				<?php if ( VmConfig::get('show_tax')) { ?>
+                    <td style="text-align: right;">&nbsp;</td>
+				<?php } ?>
+                <td style="text-align: right;"><?php echo  $this->currency->priceDisplay($rule->calc_amount,$this->user_currency_id);  ?> </td>
+                <td style="text-align: right;"><?php echo  $this->currency->priceDisplay($rule->calc_amount,$this->user_currency_id);  ?> </td>
+            </tr>
+			<?php
+		} elseif ($rule->calc_kind == 'taxRulesBill') { ?>
+            <tr>
+                <td colspan="6"  style="text-align: right;" class="pricePad"><?php echo $rule->calc_rule_name ?> </td>
+				<?php if ( VmConfig::get('show_tax')) { ?>
+                    <td style="text-align: right;"><?php echo $this->currency->priceDisplay($rule->calc_amount,$this->user_currency_id); ?> </td>
+				<?php } ?>
+                <td style="text-align: right;">&nbsp;</td>
+                <td style="text-align: right;"><?php echo $this->currency->priceDisplay($rule->calc_amount,$this->user_currency_id); ?> </td>
+            </tr>
+			<?php
+		} elseif ($rule->calc_kind == 'DATaxRulesBill') { ?>
+            <tr>
+                <td colspan="6" style="text-align: right;" class="pricePad"><?php echo $rule->calc_rule_name ?> </td>
+				<?php if ( VmConfig::get('show_tax')) { ?>
+                    <td style="text-align: right;">&nbsp;</td>
+				<?php } ?>
+                <td style="text-align: right;"><?php  echo   $this->currency->priceDisplay($rule->calc_amount,$this->user_currency_id);  ?> </td>
+                <td style="text-align: right;"><?php echo $this->currency->priceDisplay($rule->calc_amount,$this->user_currency_id);  ?> </td>
+            </tr>
+			<?php
+		}
+	} ?>
+
 	<tr>
 		<td style="text-align: right;" class="pricePad" colspan="6"><?php echo $this->orderDetails['shipmentName'] ?></td>
 		<?php if ( VmConfig::get('show_tax')) { ?>
@@ -261,8 +270,8 @@ foreach($this->orderDetails['items'] as $item) {
 			if ($rule->calc_kind == 'taxRulesBill' or $rule->calc_kind == 'VatTax' ) { ?>
 				<tr >
 					<td colspan="6" style="text-align: right;" class="pricePad"><?php echo $rule->label ?> </td>
-					<?php if ( VmConfig::get('show_tax')) {  ?>
-					<td style="text-align: right;"><?php echo $this->currency->priceDisplay($rule->calc_result, $this->user_currency_id); ?></td>
+					<?php if ( VmConfig::get('show_tax')) { ?>
+					<td style="text-align: right;"><?php echo $this->currency->priceDisplay($rule->calc_amount, $this->user_currency_id); ?></td>
 					<?php } ?>
 					<td style="text-align: right;">&nbsp;</td>
 					<td style="text-align: right;">&nbsp;</td>
@@ -271,5 +280,110 @@ foreach($this->orderDetails['items'] as $item) {
 			}
 		}
 	}
+
+    ?>   <tr style="border-top-style:double">
+            <td align="left" colspan="3" style="padding-right: 5px;"><strong><?php echo vmText::_('COM_VM_ORDER_BALANCE') ?></strong></td>
+
+	<?php
+	$this->orderbt = $this->orderDetails['details']['BT'];
+	$tp = '';
+	$detail=false;
+	if (empty($this->orderbt->paid) ) {
+		$t = vmText::_('COM_VM_ORDER_UNPAID');
+	} else if($this->orderbt->paid == $this->orderbt->toPay){
+		$t =  vmText::_('COM_VM_ORDER_PAID');
+	} else if($this->orderbt->paid < $this->orderbt->toPay){
+		$t =  vmText::sprintf('COM_VM_ORDER_PARTIAL_PAID',$this->orderbt->paid);
+		$detail=true;
+	} else {
+		$t =  vmText::sprintf('COM_VM_ORDER_CREDIT_BALANCE',$this->orderbt->paid);
+		$detail=true;
+	}
+	$trOpen = true;
+	$colspan = '5';
+	if(empty($this->toRefund) and !$detail){
+		echo '<td align="left" colspan="3" style="padding-right: 5px;">'.$t.'</td>';
+		//echo '<td><input class="orderEdit" type="text" size="8" name="item_id[paid]" value="'.$this->orderbt->paid.'"/></td>';
+		echo '</tr>';
+		$trOpen = false;
+	}
+
+	if(!empty($this->toRefund)){
+		echo '<td colspan="5">'.vmText::_('COM_VM_ORDER_PRODUCTS_TO_REFUND').'</td>';
+		if($trOpen) {
+			echo '</tr>';
+			$trOpen = false;
+		}
+		foreach ($this->toRefund as $index => $item) {
+
+			$tmpl = "refund-tmpl-" . $index;
+
+			echo '<tr id="'.$tmpl.'" class="order-item">';
+			echo '<td colspan="3"></td>';
+			echo '<td colspan="2">'.$item->order_item_name.'</td>';
+			echo '<td colspan="1">'.$item->order_item_sku.'</td>';
+			echo '<td style="text-align: right;" colspan="1">'.$this->currency->priceDisplay($item->product_tax).'</td>';
+			echo '<td colspan="1"></td>';
+			echo '<td style="text-align: right;" colspan="1">'.$this->currency->priceDisplay($item->product_subtotal_with_tax).'</td>';
+			echo '</tr>';
+			$this->orderbt->order_total -= $item->product_subtotal_with_tax;
+			$colspan = '5';
+		}
+	} else {
+		$colspan = '2';
+	}
+
+	if(!empty($this->toRefund) or $detail){
+
+		if($this->orderbt->paid < $this->orderbt->toPay){
+
+			if (empty($this->orderbt->paid)){
+				$t =  vmText::_('COM_VM_ORDER_UNPAID');
+			} else {
+				$t =  vmText::_('COM_VM_ORDER_PARTIAL_PAID');
+			}
+			$l = vmText::_('COM_VM_ORDER_OUTSTANDING_AMOUNT');
+
+		} else {
+			$t =  vmText::_('COM_VM_ORDER_PAID');
+			$l = vmText::_('COM_VM_ORDER_BALANCE');
+		}
+
+		$tp .= '';
+		if($this->orderbt->toPay!=$this->orderbt->order_total){
+			if(!$trOpen){
+				$tp .= '<tr>';
+				$trOpen= true;
+			}
+			$tp .= '<td colspan="'.$colspan.'"></td>';
+			$tp .= '<td style="text-align: right;" colspan="3" style="padding-right: 5px;">'.vmText::_('COM_VM_ORDER_NEW_TOTAL').'</td>';
+			$tp .= '<td style="text-align: right;">'.$this->currency->priceDisplay($this->orderbt->toPay).'</td>';
+
+			if($trOpen) {
+				$tp .= '</tr>';
+				$trOpen = false;
+			}
+		}
+
+		if(!$trOpen){
+			$tp .= '<tr>';
+			$trOpen= true;
+		}
+		$tp .= '<td colspan="'.$colspan.'"></td>';
+		$tp .= '<td style="text-align: right;" colspan="3" style="padding-right: 5px;">'.$t.'</td>';
+		$tp .= '<td style="text-align: right;" >'.$this->currency->priceDisplay($this->orderbt->paid).'</td>';
+		$tp .= '</tr>';
+
+		$tp .= '<tr>';
+		$tp .= '<td colspan="5"></td>';
+		$tp .= '<td style="text-align: right;" colspan="3" style="padding-right: 5px;">'.$l.'</td>';
+		$tp .= '<td style="text-align: right;" >'.$this->currency->priceDisplay(abs($this->orderbt->order_total - $this->orderbt->paid) ).'</td>';
+		echo $tp;
+	}
+	if($trOpen) {
+		echo '</tr>';
+		$trOpen = false;
+	}
+
 } ?>
 </table>

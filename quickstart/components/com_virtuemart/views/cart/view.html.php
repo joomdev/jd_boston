@@ -16,13 +16,10 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 9737 2018-01-24 00:04:59Z Milbo $
+ * @version $Id: view.html.php 10086 2019-07-04 09:29:19Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmView'))require(VMPATH_SITE.DS.'helpers'.DS.'vmview.php');
 
 /**
  * View for the shopping cart
@@ -60,8 +57,6 @@ class VirtueMartViewCart extends VmView {
 
 		$format = vRequest::getCmd('format');
 
-		if (!class_exists('VirtueMartCart'))
-		require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$this->cart = VirtueMartCart::getCart();
 
 		$this->cart->prepareVendor();
@@ -89,14 +84,12 @@ class VirtueMartViewCart extends VmView {
 
 			$pathway->addItem( vmText::_( 'COM_VIRTUEMART_CART_THANKYOU' ) );
 			$document->setTitle( vmText::_( 'COM_VIRTUEMART_CART_THANKYOU' ) );
+			$this->cart->layout = 'default';
+
 		} else {
 			vmLanguage::loadJLang('com_virtuemart_shoppers', true);
 
 			$this->renderCompleteAddressList();
-
-			if (!class_exists ('VirtueMartModelUserfields')) {
-				require(VMPATH_ADMIN . DS . 'models' . DS . 'userfields.php');
-			}
 
 			$userFieldsModel = VmModel::getModel ('userfields');
 
@@ -110,9 +103,6 @@ class VirtueMartViewCart extends VmView {
 				$userFieldsCart
 				,$this->cart->cartfields
 			);
-
-			if (!class_exists ('CurrencyDisplay'))
-				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 
 			$this->currencyDisplay = CurrencyDisplay::getInstance($this->cart->pricesCurrency);
 
@@ -151,9 +141,9 @@ class VirtueMartViewCart extends VmView {
 
 			$forceMethods=vRequest::getInt('forceMethods',false);
 			if (VmConfig::get('oncheckout_opc', 1) or $forceMethods) {
-				if (!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
-				JPluginHelper::importPlugin('vmshipment');
-				JPluginHelper::importPlugin('vmpayment');
+
+				//JPluginHelper::importPlugin('vmshipment');
+				//JPluginHelper::importPlugin('vmpayment');
 				//vmdebug('cart view oncheckout_opc ');
 				$lSelectShipment=$this->lSelectShipment() ;
 				$lSelectPayment=$this->lSelectPayment();
@@ -182,8 +172,9 @@ class VirtueMartViewCart extends VmView {
 			}
 			$this->assignRef('select_payment_text', $paymentText);
 
-			$this->cart->prepareAddressFieldsInCart();
+			//$this->cart->prepareAddressFieldsInCart();
 
+			if($this->cart->layout=='orderdone') $this->cart->layout = 'default';
 			$this->layoutName = $this->cart->layout;
 			if(empty($this->layoutName)) $this->layoutName = 'default';
 
@@ -195,12 +186,14 @@ class VirtueMartViewCart extends VmView {
 				$this->setLayout( strtolower( $this->layoutName ) );
 			}
 			//set order language
-			$lang = JFactory::getLanguage();
+			$lang = vmLanguage::getLanguage();
 			$order_language = $lang->getTag();
 			$this->assignRef('order_language',$order_language);
 		}
 
-		
+		if($this->cart->storeToDB){
+			$this->cart->storeCart();
+		}
 
 		$this->useSSL = vmURI::useSSL();
 		$this->useXHTML = false;
@@ -263,8 +256,8 @@ class VirtueMartViewCart extends VmView {
 		$selectedShipment = (empty($this->cart->virtuemart_shipmentmethod_id) ? 0 : $this->cart->virtuemart_shipmentmethod_id);
 
 		$shipments_shipment_rates = array();
-		if (!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
-		JPluginHelper::importPlugin('vmshipment');
+
+		//JPluginHelper::importPlugin('vmshipment');
 		$dispatcher = JDispatcher::getInstance();
 
 		$d = VmConfig::$_debug;
@@ -320,8 +313,7 @@ class VirtueMartViewCart extends VmView {
 			return;
 		}
 
-		if(!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS.DS.'vmpsplugin.php');
-		JPluginHelper::importPlugin('vmpayment');
+		//JPluginHelper::importPlugin('vmpayment');
 		$dispatcher = JDispatcher::getInstance();
 		$d = VmConfig::$_debug;
 		if(VmConfig::get('debug_enable_methods',false)){
@@ -381,11 +373,12 @@ class VirtueMartViewCart extends VmView {
 		$this->html = empty($this->html) ? vRequest::get('html', $this->cart->orderdoneHtml) : $this->html;
 
 		$this->cart->orderdoneHtml = false;
-		$this->cart->setCartIntoSession(true,true);
-
+		$this->cart->setCartIntoSession(false,true);
 	}
 
 	private function checkPaymentMethodsConfigured() {
+
+		if ($this->cart->virtuemart_paymentmethod_id) return true;
 
 		//For the selection of the payment method we need the total amount to pay.
 		$paymentModel = VmModel::getModel('Paymentmethod');
@@ -406,6 +399,8 @@ class VirtueMartViewCart extends VmView {
 	}
 
 	private function checkShipmentMethodsConfigured() {
+
+		if ($this->cart->virtuemart_shipmentmethod_id) return true;
 
 		//For the selection of the shipment method we need the total amount to pay.
 		$shipmentModel = VmModel::getModel('Shipmentmethod');
@@ -441,7 +436,7 @@ class VirtueMartViewCart extends VmView {
 
 		if($this->allowChangeShopper){
 			$this->adminID = vmAccess::getBgManagerId();
-			$superVendor = vmAccess::isSuperVendor($this->adminID);
+			$superVendor = vmAccess::isSuperVendor($this->adminID,'user');
 			if($superVendor){
 				$uModel = VmModel::getModel('user');
 				$result = $uModel->getSwitchUserList($superVendor,$this->adminID);
@@ -461,7 +456,7 @@ class VirtueMartViewCart extends VmView {
 
 			$attrs = array();
 			$attrs['style']='width: 220px;';
-			if (!class_exists('ShopFunctions'))	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
+
 			$result = ShopFunctions::renderShopperGroupList($vmUser->shopper_groups, TRUE, 'virtuemart_shoppergroup_id', 'COM_VIRTUEMART_DRDOWN_AVA2ALL', $attrs);
 		}
 
@@ -514,7 +509,7 @@ class VirtueMartViewCart extends VmView {
 		}
 
 		$j='jQuery(document).ready(function(){
-    form = jQuery("#checkoutFormSubmit");
+    var form = jQuery("#checkoutFormSubmit");
     jQuery(".output-shipto").find(":radio").change(function(){
 		form.attr("task","checkout");
 		'.$updF.'

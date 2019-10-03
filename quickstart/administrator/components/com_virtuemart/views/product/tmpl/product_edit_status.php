@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: product_edit_status.php 9413 2017-01-04 17:20:58Z Milbo $
+* @version $Id: product_edit_status.php 9972 2018-10-22 22:29:03Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -119,8 +119,9 @@ defined('_JEXEC') or die('Restricted access'); ?>
 			<?php echo JHtml::_('list.images', 'image', $this->product->product_availability, " ", $this->imagePath); ?>
 			<span class="icon-nofloat vmicon vmicon-16-info tooltip" title="<?php echo '<b>'.vmText::_('COM_VIRTUEMART_AVAILABILITY').'</b><br/ >'.vmText::sprintf('COM_VIRTUEMART_PRODUCT_FORM_AVAILABILITY_TOOLTIP2',  $this->imagePath ) ?>"></span>
 		</td>
-		<td><img border="0" id="imagelib" alt="<?php echo vmText::_('COM_VIRTUEMART_PREVIEW'); ?>" name="imagelib" src="<?php if ($this->product->product_availability) echo JURI::root(true).$this->imagePath.$this->product->product_availability;?>"/></td>
-
+		<td>
+		    <img border="0" id="imagelib" alt="<?php echo vmText::_('COM_VIRTUEMART_PREVIEW'); ?>" name="imagelib" src="<?php if ($this->product->product_availability and file_exists(JPATH_ROOT . '/' . $this->imagePath.$this->product->product_availability)) echo JURI::root(true).$this->imagePath.$this->product->product_availability;?>"/>
+		</td>
 	</tr>
 </table>
 </fieldset>

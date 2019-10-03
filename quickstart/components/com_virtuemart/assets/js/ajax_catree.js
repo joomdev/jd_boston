@@ -18,14 +18,14 @@ Virtuemart.startVmLoading = function(a) {
 	/*if (typeof a.data.msg !== 'undefined') {
 	 msg = a.data.msg;
 	 }*/
-	jQuery('#pro-tech_ajax_load').addClass('vmLoading');
+	jQuery('[data-vm="ajax_cat_load"]').addClass('vmLoading');
 	if (!jQuery('div.vmLoadingDiv').length) {
 		jQuery('body').append('<div class=\"vmLoadingDiv\"><div class=\"vmLoadingDivMsg\">' + msg + '</div></div>');
 	}
 };
 
 Virtuemart.stopVmLoading = function() {
-	if (jQuery('#pro-tech_ajax_load').hasClass('vmLoading')) {
+	if (jQuery('[data-vm="ajax_cat_load"]').hasClass('vmLoading')) {
 		jQuery('body').removeClass('vmLoading');
 		jQuery('div.vmLoadingDiv').remove();
 	}
@@ -33,7 +33,7 @@ Virtuemart.stopVmLoading = function() {
 
 Virtuemart.loadCategoryTree = function(id){
 	jQuery('#'+id+'_chzn').remove();
-	jQuery('<div id=\"pro-tech_ajax_load\" style=\"display:inline-block;width:220px;background-color:#ddd;height:25px;line-height:25px;padding:0 10px;box-sizing:border-box;background-size:20px\">Loading</div>').insertAfter('select#'+id);
+	jQuery('<div data-vm=\"ajax_cat_load\" style=\"display:inline-block;width:220px;background-color:#ddd;height:25px;line-height:25px;padding:0 10px;box-sizing:border-box;background-size:20px\">Loading</div>').insertAfter('select#'+id);
 	Virtuemart.startVmLoading('Loading categories');
 
 	if(Virtuemart.isAdmin=='1'){
@@ -51,7 +51,7 @@ Virtuemart.loadCategoryTree = function(id){
 		success:function(json){
 			jQuery('select#'+id).switchClass('chzn-done','chzn-select');
 			jQuery('select#'+id).html('<option value=\"\">'+Virtuemart.emptyCatOpt+'</option>'+json.value);
-			jQuery('#pro-tech_ajax_load').remove();
+			jQuery('[data-vm="ajax_cat_load"]').remove();
 			jQuery('select#'+id).chosen();
 			Virtuemart.stopVmLoading();
 		}

@@ -1,7 +1,7 @@
 <?php
 defined ('_JEXEC') or  die('Direct Access to ' . basename (__FILE__) . ' is not allowed.');
 /**
- * @version $Id: mod_virtuemart_search.php 9482 2017-03-19 09:23:32Z yourgeek $
+ * @version $Id: mod_virtuemart_search.php 9878 2018-06-18 18:55:52Z Milbo $
  * @package VirtueMart
  * @subpackage modules
  *
@@ -14,7 +14,6 @@ defined ('_JEXEC') or  die('Direct Access to ' . basename (__FILE__) . ' is not 
  * @link https://virtuemart.net
  */
 
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
 
 VmConfig::loadConfig ();

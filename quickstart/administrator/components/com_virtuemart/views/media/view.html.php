@@ -13,14 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: view.html.php 9802 2018-03-20 15:22:11Z Milbo $
+* @version $Id: view.html.php 10060 2019-05-22 18:38:38Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * HTML View class for the VirtueMart Component
@@ -31,9 +28,6 @@ if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmi
 class VirtuemartViewMedia extends VmViewAdmin {
 
 	function display($tpl = null) {
-
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 
 		$this->vendorId=vmAccess::isSuperVendor();
 
@@ -57,21 +51,21 @@ class VirtuemartViewMedia extends VmViewAdmin {
         	$cat_id = vRequest::getInt('virtuemart_category_id',0);
 
 			if(vmAccess::manager('media.new')){
-				JToolBarHelper::custom('synchronizeMedia', 'new', 'new', vmText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'),false);
+				JToolbarHelper::custom('synchronizeMedia', 'new', 'new', vmText::_('COM_VIRTUEMART_TOOLS_SYNC_MEDIA_FILES'),false);
 			}
 
 			$this->addStandardDefaultViewCommands(true, false);
 
 			if(vmAccess::manager('media.delete')){
-				//JToolBarHelper::custom('deleteMedia', 'delete', 'deleteFile', vmText::_('COM_VM_MEDIA_DELETE_FILES'),false);
-				//JToolBarHelper::custom('deleteEntry', 'delete', 'deleteEntry', vmText::_('COM_VM_MEDIA_DELETE_ENTRY'),false);
+				//JToolbarHelper::custom('deleteMedia', 'delete', 'deleteFile', vmText::_('COM_VM_MEDIA_DELETE_FILES'),false);
+				//JToolbarHelper::custom('deleteEntry', 'delete', 'deleteEntry', vmText::_('COM_VM_MEDIA_DELETE_ENTRY'),false);
 
 				$bar = JToolbar::getInstance('toolbar');
 				$bar->appendButton('Confirm', 'COM_VM_MEDIA_DELETE_CONFIRM', 'delete', 'COM_VM_MEDIA_FILES_DELETE', 'deleteFiles', true);
 				$bar->appendButton('Standard', 'delete', 'JTOOLBAR_DELETE', 'remove', true);
 				//$bar->appendButton('Confirm', 'COM_VM_MEDIA_DELETE_CONFIRM', 'delete', $alt, $task, true);
-				//JToolBarHelper::deleteList('COM_VM_MEDIA_DELETE_CONFIRM');
-				JToolBarHelper::spacer('10');
+				//JToolbarHelper::deleteList('COM_VM_MEDIA_DELETE_CONFIRM');
+				JToolbarHelper::spacer('10');
 			}
 
 			$this->addStandardDefaultViewLists($model,null,null,'searchMedia');
@@ -88,7 +82,7 @@ class VirtuemartViewMedia extends VmViewAdmin {
 				$vendorId = strtolower (JFactory::getApplication()->getUserStateFromRequest ('com_virtuemart.media.virtuemart_vendor_id', 'virtuemart_vendor_id', $vendorId, 'int'));
 			}
 
-			$this->lists['vendors'] = Shopfunctions::renderVendorList($vendorId);
+			$this->lists['vendors'] = Shopfunctions::renderVendorList($vendorId, 'virtuemart_vendor_id', true);
 			$options = array( '' => vmText::_('COM_VIRTUEMART_LIST_ALL_ROLES'),
 				'file_is_displayable' => vmText::_('COM_VIRTUEMART_FORM_MEDIA_DISPLAYABLE'),
 				'file_is_downloadable' => vmText::_('COM_VIRTUEMART_FORM_MEDIA_DOWNLOADABLE'),
@@ -96,7 +90,15 @@ class VirtuemartViewMedia extends VmViewAdmin {
 				);
 			$this->lists['search_role'] = VmHTML::selectList('search_role', vRequest::getVar('search_role'),$options,1,'','onchange="this.form.submit();" style="width:180px"');
 
-			$this->files = $model->getFiles(false,false,$virtuemart_product_id,$cat_id);
+			$findUnusedMedias = vRequest::getWord('findUnusedMedias', false);
+			$onlyMissing = vRequest::getCmd('missing',false);
+			if($onlyMissing){
+				$this->files = $model->findMissingMedias($virtuemart_product_id,$cat_id);
+			} else if($findUnusedMedias){
+				$this->files = $model->findUnusedMedias();
+			} else {
+				$this->files = $model->getFiles(false,false,$virtuemart_product_id,$cat_id);
+			}
 
 			$this->pagination = $model->getPagination();
 

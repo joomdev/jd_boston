@@ -1,4 +1,6 @@
 <?php
+defined ('_JEXEC') or die();
+
 // Status Of Delimiter
 $closeDelimiter = false;
 $openTable = true;

@@ -19,16 +19,7 @@ class SofortLibLogger {
 	public $fp = null;
 	
 	public $maxFilesize = 1048576;
-	
-	
-	/**
-	 * 
-	 * Constructor left empty
-	 */
-	public function SofortLibLogger() {
-		// intentionally left empty
-	}
-	
+
 	
 	/**
 	 * Logs $msg to a file which path is being set by it's unified ressource locator

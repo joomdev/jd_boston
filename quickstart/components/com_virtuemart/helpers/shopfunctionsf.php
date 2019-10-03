@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: shopfunctionsf.php 9736 2018-01-23 23:32:12Z Milbo $
+ * @version $Id: shopfunctionsf.php 10082 2019-07-04 06:12:42Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -33,10 +33,8 @@ class shopFunctionsF {
 		}
 		if($show == 1) {
 			//This is deprecated and will be replaced by the commented lines below (vmView instead of VirtuemartViewUser)
-			if(!class_exists( 'VirtuemartViewUser' )) require(VMPATH_SITE.DS.'views'.DS.'user'.DS.'view.html.php');
-			$view = new VirtuemartViewUser();
-			//if(!class_exists( 'vmView' )) require(VMPATH_SITE.DS.'helpers'.DS.'vmview.php');
-			//$view = new vmView();
+			//$view = new VirtuemartViewUser();
+			$view = new vmView();
 			$body = $view->renderVmSubLayout($layout,array('show' => $show, 'order' => $order, 'from_cart' => $cart, 'url' => $url));
 		}
 
@@ -94,7 +92,7 @@ class shopFunctionsF {
 	 */
 	static function renderFormField($type){
 		//Get custom field
-		JFormHelper::addFieldPath(VMPATH_ADMIN . DS . 'fields');
+		JFormHelper::addFieldPath(VMPATH_ADMIN .'/fields');
 		$types = JFormHelper::loadFieldType($type, false);
 		return $types->getOptions();
 	}
@@ -140,41 +138,32 @@ class shopFunctionsF {
 	 * @param string $_prefix Optional prefix for the formtag name attribute
 	 * @return string HTML containing the <select />
 	 */
-	static public function renderCountryList ($countryId = 0, $multiple = FALSE, $_attrib = array(), $_prefix = '', $required = 0, $idTag = 'virtuemart_country_id') {
+	static public function renderCountryList ($countryId = 0, $multiple = FALSE, $_attrib = array(), $_prefix = '', $required = 0, $idTag = 'virtuemart_country_id', $name = 'virtuemart_country_id') {
 
 		$countryModel = VmModel::getModel ('country');
 		$countries = $countryModel->getCountries (TRUE, TRUE, FALSE);
 		$attrs = array();
 		$optText = 'country_name';
 		$optKey = 'virtuemart_country_id';
-		$name = $_prefix.'virtuemart_country_id';
+		$name = $_prefix.$name;
 		$idTag = $_prefix.$idTag;
 		$attrs['class'] = 'virtuemart_country_id';
 		$attrs['class'] = 'vm-chzn-select';
+
 		// Load helpers and  languages files
-		if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR .'/helpers/config.php');
-		VmConfig::loadConfig();
 		vmLanguage::loadJLang('com_virtuemart_countries');
 		vmJsApi::jQuery();
 		vmJsApi::chosenDropDowns();
 
-		$sorted_countries = array();
-		$lang = JFactory::getLanguage();
+		//$sorted_countries = array();
+		$countries_list=array();
+		$lang = vmLanguage::getLanguage();
 		$prefix="COM_VIRTUEMART_COUNTRY_";
 		foreach ($countries as  $country) {
 			$country_string = $lang->hasKey($prefix.$country->country_3_code) ?   vmText::_($prefix.$country->country_3_code)  : $country->country_name;
-			$sorted_countries[$country->virtuemart_country_id] = $country_string;
-		}
-
-		asort($sorted_countries);
-
-		$countries_list=array();
-		$i=0;
-		foreach ($sorted_countries as  $key=>$value) {
-			$countries_list[$i] = new stdClass();
-			$countries_list[$i]->$optKey = $key;
-			$countries_list[$i]->$optText = $value;
-			$i++;
+			$countries_list[$country->virtuemart_country_id] = new stdClass();;
+			$countries_list[$country->virtuemart_country_id]->$optKey = $country->virtuemart_country_id;
+			$countries_list[$country->virtuemart_country_id]->$optText = $country_string;
 		}
 
 		if ($required != 0) {
@@ -363,9 +352,7 @@ class shopFunctionsF {
 
 		if(!$products) return;
 		$customfieldsModel = VmModel::getModel ('Customfields');
-		if (!class_exists ('vmCustomPlugin')) {
-			require(VMPATH_PLUGINLIBS . DS . 'vmcustomplugin.php');
-		}
+
 		foreach($products as $i => $productItem){
 
 			if (!empty($productItem->customfields)) {
@@ -487,8 +474,6 @@ class shopFunctionsF {
 	 */
 	static public function renderVmSubLayout($name,$viewData=0){
 
-		if (!class_exists ('VmView'))
-			require(VMPATH_SITE . DS . 'helpers' . DS . 'vmview.php');
 		$lPath = VmView::getVmSubLayoutPath ($name);
 
 		if($lPath){
@@ -501,6 +486,181 @@ class shopFunctionsF {
 
 	}
 
+    /**
+     * renders sub layout in a bootstrap grid layout
+     *
+     * @param     $name
+     * @param int $viewData
+     *
+     * @since 3.8
+     * @author Eugen Stranz
+     */
+    static public function renderVmSubLayoutAsGrid ($name, $viewData = 0)
+    {
+        // get the content of the first index in the array and save it in a variable
+        // this variable will be used in the for each loop to generate the grid
+        // we then delete the first index as there is no point in passing it twice
+        reset($viewData);
+        $itemCollection = $viewData[key($viewData)];
+        unset($viewData[key($viewData)]);
+
+        if(!isset($viewData['options']))
+        {
+            $viewData['options'] = array ();
+        }
+
+        // Grid Settings & Calculation
+        $itemsPerRow              = vRequest::get(
+            'items_per_row',
+            array ( 'xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 3, 'xl' => 3 ),
+            FILTER_UNSAFE_RAW,
+            FILTER_FLAG_NO_ENCODE,
+            $viewData['options']
+        );
+        $iRowItemsPerDevice       = array ( 'xs' => 0, 'sm' => 0, 'md' => 0, 'lg' => 0, 'xl' => 0 );
+        $totalItems               = count($itemCollection);
+        $iItems                   = 0;
+        $gridClassNamesForNewLine = array (
+            'xs' => 'col-12 d-block d-sm-none',
+            'sm' => 'col-12 d-none d-sm-block d-md-none d-lg-none d-xl-none',
+            'md' => 'col-12 d-none d-sm-none d-md-block d-lg-none d-xl-none',
+            'lg' => 'col-12 d-none d-sm-none d-md-none d-lg-block d-xl-none',
+            'xl' => 'col-12 d-none d-sm-none d-md-none d-lg-none d-xl-block',
+        );
+        $fixedColumnWidth         = vRequest::get(
+            'fixed_column_width',
+            false,
+            FILTER_UNSAFE_RAW,
+            FILTER_FLAG_NO_ENCODE,
+            $viewData['options']
+        );
+        if ($fixedColumnWidth)
+        {
+            $columnClassNames         = array ();
+            $possibleGridColumnWitdhs = array ( 1, 2, 3, 4, 6 );
+            foreach ($itemsPerRow as $deviceSize => $itemPerRow)
+            {
+                if (in_array($itemPerRow, $possibleGridColumnWitdhs))
+                {
+                    $columnClassNames[] = ($deviceSize == 'xs')
+                        ? 'col-' . (12 / $itemPerRow)
+                        : 'col-' . $deviceSize . '-' . (12 / $itemPerRow);
+                }
+                else
+                {
+                    $columnClassNames[]       = ($deviceSize == 'xs')
+                        ? 'col-4'
+                        : 'col-' . $deviceSize . '-4';
+                    $itemsPerRow[$deviceSize] = 3;
+                }
+            }
+            $columnClassNames[] = 'd-flex';
+        }
+        else
+        {
+            // $columnClassNames = array ( 'col', 'd-flex' );
+            $columnClassNames = array ( 'col' );
+        }
+
+        // Display Settings
+        $showHorizontalLine      = vRequest::get(
+            'show_horizontal_line',
+            true,
+            FILTER_UNSAFE_RAW,
+            FILTER_FLAG_NO_ENCODE,
+            $viewData['options']
+        );
+        $showVerticalLine        = vRequest::get(
+            'show_vertical_line',
+            true,
+            FILTER_UNSAFE_RAW,
+            FILTER_FLAG_NO_ENCODE,
+            $viewData['options']
+        );
+        $addMarginBottomToColumn = vRequest::get(
+            'add_margin_bottom_to_column',
+            false,
+            FILTER_UNSAFE_RAW,
+            FILTER_FLAG_NO_ENCODE,
+            $viewData['options']
+        );
+        if (!$showHorizontalLine)
+        {
+            $addMarginBottomToColumn = true;
+        }
+        else
+        {
+            $addMarginBottomToColumn = false;
+        }
+
+        // Output The Items
+        ob_start();
+        ?>
+        <div class="row">
+            <?php
+            // Loop Through The Items Of The Collection
+            foreach ($itemCollection as $item)
+            {
+                // Vertical Line Logic
+                $newLineClassName = array ();
+                if ($showVerticalLine)
+                {
+                    foreach ($iRowItemsPerDevice as $deviceSize => $iRowItem)
+                    {
+                        if (($iRowItemsPerDevice[$deviceSize] + 1) == $itemsPerRow[$deviceSize])
+                        {
+                            $newLineClassName[] = ' end-' . $deviceSize;
+                        }
+                        else
+                        {
+                            $newLineClassName[] = ' vl-' . $deviceSize;
+                        }
+                    }
+                }
+                ?>
+                <div class="<?php echo implode(' ', $columnClassNames) . implode('', $newLineClassName) ?>">
+                    <?php
+                    $viewData[$name] = $item;
+                    echo self::renderVmSubLayout($name, $viewData);
+                    ?>
+                </div>
+                <?php
+                $iItems++;
+
+                // Logic For New Line Force
+                foreach ($iRowItemsPerDevice as $deviceSize => $iRowItem)
+                {
+                    $iRowItemsPerDevice[$deviceSize]++;
+                    if ($iRowItemsPerDevice[$deviceSize] == $itemsPerRow[$deviceSize]
+                        && $iItems < $totalItems)
+                    {
+                        // Add Margin Bottom If We Horizontal Line is Disabled
+                        if ($addMarginBottomToColumn)
+                        {
+                            $gridClassNamesForNewLine[$deviceSize] .= ($deviceSize == 'xs')
+                                ? ' mb-4'
+                                : ' mb-' . $deviceSize . '-4';
+                        }
+                        ?>
+                        <div class="new-line <?php echo $gridClassNamesForNewLine[$deviceSize] ?>">
+                            <?php if ($showHorizontalLine): ?>
+                                <hr>
+                            <?php endif ?>
+                        </div>
+                        <?php
+                        $iRowItemsPerDevice[$deviceSize] = 0;
+                    }
+                }
+            }
+            ?>
+        </div>
+        <?php
+        // Return Content And Clear Memory
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        return $content;
+    }
 
 
 	/**
@@ -521,11 +681,16 @@ class shopFunctionsF {
 
 		if(isset($view->doVendor) && !$noVendorMail) {
 			//We need to ensure the language for the vendor here
-			$vendorUserId = VmModel::getModel('vendor')->getUserIdByVendorId(1);
+			if(!empty($vars['virtuemart_vendor_id'])){
+			    $vendorId = $vars['virtuemart_vendor_id'];
+			} else {
+				$vendorId = 1;
+			}
+			$vendorUserId = VmModel::getModel('vendor')->getUserIdByVendorId($vendorId);
 			$vu = JFactory::getUser($vendorUserId);
 			$vLang = $vu->getParam('admin_language',VmConfig::$jDefLangTag);
 
-			self::loadOrderLanguages($vLang);
+			vmLanguage::setLanguageByTag($vLang);
 			self::sendVmMail( $view, $view->vendorEmail, TRUE );
 		}
 
@@ -534,28 +699,27 @@ class shopFunctionsF {
 	}
 
 	public static function prepareViewForMail($viewName, $vars, $controllerName = false) {
-		if(!class_exists( 'VirtueMartControllerVirtuemart' )) require(VMPATH_SITE.DS.'controllers'.DS.'virtuemart.php');
 
-		$controller = new VirtueMartControllerVirtuemart();
-		// refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
-		$controller->addViewPath( VMPATH_SITE.DS.'views' );
-
-		$view = $controller->getView( $viewName, 'html' );
 		if(!$controllerName) $controllerName = $viewName;
 		$controllerClassName = 'VirtueMartController'.ucfirst( $controllerName );
-		if(!class_exists( $controllerClassName )) require(VMPATH_SITE.DS.'controllers'.DS.$controllerName.'.php');
+		if(!class_exists( $controllerClassName )) require(VMPATH_SITE .'/controllers/'.$controllerName.'.php');
+		$controller = new $controllerClassName();
+		//$controller = new VirtueMartControllerVirtuemart();
+		// refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
+		$controller->addViewPath( VMPATH_SITE .'/views' );
+
+		$view = $controller->getView( $viewName, 'html' );
 
 		//refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
 		$view->addTemplatePath( VMPATH_SITE.'/views/'.$viewName.'/tmpl' );
 
-		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
 		$template = VmTemplate::loadVmTemplateStyle();
 		VmTemplate::setTemplate($template);
 		if($template){
 			if(is_array($template) and isset($template['template'])){
-				$view->addTemplatePath( VMPATH_ROOT.DS.'templates'.DS.$template['template'].DS.'html'.DS.'com_virtuemart'.DS.$viewName );
+				$view->addTemplatePath( VMPATH_ROOT .'/templates/'.$template['template'].'/html/com_virtuemart/'.$viewName );
 			} else {
-				$view->addTemplatePath( VMPATH_ROOT.DS.'templates'.DS.$template.DS.'html'.DS.'com_virtuemart'.DS.$viewName );
+				$view->addTemplatePath( VMPATH_ROOT .'/templates/'.$template.'/html/com_virtuemart/'.$viewName );
 			}
 		}
 
@@ -574,7 +738,6 @@ class shopFunctionsF {
 
 		static $res = null;
 		if($res!==null) return $res;
-		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
 		$res = VmTemplate::loadVmTemplateStyle();
 
 	}
@@ -587,22 +750,24 @@ class shopFunctionsF {
 	 */
 	static function setVmTemplate ($view, $catTpl = 0, $prodTpl = 0, $catLayout = 0, $prodLayout = 0) {
 
-		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
 		return VmTemplate::setVmTemplate($view, $catTpl, $prodTpl, $catLayout, $prodLayout);
 	}
 
+	/**
+     * Loads lang files for the set language, new language system reloades all already loaded files automatically for the new language
+	 * @param int $language
+	 */
 	static public function loadOrderLanguages($language = 0){
 
-		$s = TRUE;
-		$cache = true;
 		vmLanguage::setLanguageByTag($language);
 
-		//Shouldnt be necessary anylonger.
+		$s = TRUE;
+		$cache = TRUE;
+
 		vmLanguage::loadJLang('com_virtuemart', 0, $language, $cache);
 		vmLanguage::loadJLang('com_virtuemart', $s, $language, $cache);
 		vmLanguage::loadJLang('com_virtuemart_shoppers', $s, $language, $cache);
 		vmLanguage::loadJLang('com_virtuemart_orders', $s, $language, $cache);
-
 	}
 
 
@@ -644,12 +809,12 @@ class shopFunctionsF {
 				$replyTo[0] = $view->orderDetails['details']['BT']->email;
 				$replyToName[0] = $view->orderDetails['details']['BT']->first_name . ' ' . $view->orderDetails['details']['BT']->last_name;
 			} else {
-				if(isset($view->user->email) && $view->user->name) {
-					$replyTo[0] = $view->user->email;
-					$replyToName[0] = $view->user->name;
+				if(is_object($view->user)){
+					$replyTo[0] = isset($view->user->email)? $view->user->email:false;
+					$replyToName[0] = isset($view->user->name)? $view->user->name:false;
 				} else {
-					$replyTo[0] = $view->user['email'];
-					$replyToName[0] = $view->user['name'];
+					$replyTo[0] = isset($view->user['email'])? $view->user['email']:false;
+					$replyToName[0] = isset($view->user['name'])? $view->user['name']:false;
 				}
 			}
 		}
@@ -662,10 +827,14 @@ class shopFunctionsF {
 				$mailer->addReplyTo($replyTo);
 			}
 		}
+
+		$mediaToSend = array();
 		if(isset($view->mediaToSend)) {
 			foreach( (array)$view->mediaToSend as $media ) {
 				$mailer->addAttachment( $media );
 			}
+			$mediaToSend = $view->mediaToSend;
+			$view->mediaToSend = array();
 		}
 
 		// set proper sender
@@ -696,7 +865,8 @@ class shopFunctionsF {
 				$recipient = array($recipient);
 			}
 			if (VmConfig::showDebug()) {
-				vmdebug('Debug mail active, no mail sent. The mail to send subject ' . $subject . ' to "' . implode(' ', $recipient) . '" from ' . $sender[0] . ' ' . $sender[1] . ' ' . vmText::$language->getTag() . '<br>' . $body,$view->mediaToSend);
+
+				vmdebug('Debug mail active, no mail sent. The mail to send subject ' . $subject . ' to "' . implode(' ', $recipient) . '" from ' . $sender[0] . ' ' . $sender[1] . ' ' . vmText::$language->getTag() . '<br>' . $body, $mediaToSend);
 			} else {
 				vmInfo('Debug mail active, no mail sent. The mail to send subject ' . $subject . ' to "' . implode(' ', $recipient) . '" from ' . $sender[0] . ' ' . $sender[1] . '<br>' . $body);
 			}
@@ -969,22 +1139,106 @@ class shopFunctionsF {
 
 		if(VmConfig::get ($config) and JFactory::getUser()->guest==1 ){
 
-			JPluginHelper::importPlugin('captcha');
-			$dispatcher = JDispatcher::getInstance();
-			$dispatcher->trigger('onInit',$id);
-			if(version_compare(JVERSION, '3.5', 'ge')){
-				$plugin = JPluginHelper::getPlugin('captcha', 'recaptcha');
-				if(!empty($plugin->params)){
-					$params = new JRegistry($plugin->params);
-					if ($params->get('version') != '1.0') {
-						return '<div id="jform_captcha" class="g-recaptcha  required" data-sitekey="'.$params->get('public_key').'" data-theme="'.$params->get('theme2').'" data-size="normal"></div>';
-					}
-				}
+			$reCaptchaName = 'recaptcha'; // the name of the captcha plugin - retrieved from the custom component's parameters
 
-			}
-			JHTML::_('behavior.framework');
-			return '<div id="'.$id.'"></div>';
+			JPluginHelper::importPlugin('captcha', $reCaptchaName); // will load the plugin selected, not all of them - we need to know what plugin's events we need to trigger
+
+			$dispatcher = JEventDispatcher::getInstance();
+			$dispatcher->trigger('onInit', $id);
+			$output = $dispatcher->trigger('onDisplay', array($reCaptchaName, $id, 'class="g-recaptcha required"'));
+			return isset($output[0])? $output[0]:'';
 		}
 		return '';
+	}
+
+	static public function summarizeRulesForBill($order, $payShipment=true){
+
+		$discountsBill = array();
+		$taxBill = array();
+		//vmdebug('summarizeRulesForBill $taxBill input',$order['calc_rules']);
+		foreach($order['items'] as $item){
+			//vmdebug('summarizeRulesForBill $item->product_subtotal_with_tax',$item->product_subtotal_with_tax);
+			foreach($order['calc_rules'] as $rule){
+
+				//The virtuemart_order_item_id is missing for the payment and shipment rules, these are handled below
+				if(isset($rule->virtuemart_order_item_id) and $rule->virtuemart_order_item_id == $item->virtuemart_order_item_id){
+
+					if($rule->calc_kind == 'VatTax' /*or $rule->calc_kind == 'Tax' */){
+
+						$rule->label = shopFunctionsF::getTaxNameWithValue($rule->calc_rule_name,$rule->calc_value);
+
+						if(!isset($taxBill[$rule->virtuemart_calc_id])){
+							$taxBill[$rule->virtuemart_calc_id] = clone($rule);
+							$taxBill[$rule->virtuemart_calc_id]->calc_amount = 0.0;
+							$taxBill[$rule->virtuemart_calc_id]->subTotal = 0.0;
+						}
+
+                        $taxBill[$rule->virtuemart_calc_id]->calc_amount += $rule->calc_amount * $item->product_quantity ;
+                        //vmdebug('summarizeRulesForBill  $rule->calc_amount after multiplied with quantity = '.$item->product_quantity, $rule->calc_amount);
+                        $taxBill[$rule->virtuemart_calc_id]->subTotal += $item->product_subtotal_with_tax;
+
+					}
+				} else {
+					if($rule->calc_kind == 'DBTaxRulesBill' or $rule->calc_kind == 'DATaxRulesBill'){
+						$discountsBill[$rule->virtuemart_calc_id] = $rule;
+					} else if($rule->calc_kind == 'taxRulesBill'){
+						//vmdebug('summarizeRulesForBill  taxRulesBill ', $rule);
+
+						if(!isset($taxBill[$rule->virtuemart_calc_id])){
+							$rule->label = shopFunctionsF::getTaxNameWithValue($rule->calc_rule_name,$rule->calc_value);
+							$taxBill[$rule->virtuemart_calc_id] = clone($rule);
+							$taxBill[$rule->virtuemart_calc_id]->subTotal = $taxBill[$rule->virtuemart_calc_id]->calc_amount;
+						}
+
+					}
+
+				}
+			}
+		}
+
+
+        if($payShipment){
+			$idWithMax = 0;
+			if(VmConfig::get('radicalShipPaymentVat',true)){
+
+				$maxValue = 0.0;
+				foreach($order['calc_rules'] as $rule){
+					if($rule->calc_kind == 'taxRulesBill' or $rule->calc_kind == 'VatTax'){
+
+						if(empty($idWithMax) or $maxValue<=$taxBill[$rule->virtuemart_calc_id]->subTotal){
+							$idWithMax = $rule->virtuemart_calc_id;
+							$maxValue = $taxBill[$rule->virtuemart_calc_id]->subTotal;
+						}
+					}
+				}
+				//vmdebug('radicalShipPaymentVat my $rule ',$maxValue,$taxBill);
+			}
+
+			foreach($order['calc_rules'] as $i=> $rule) {
+
+				if($rule->calc_kind == 'payment' or $rule->calc_kind == 'shipment') {
+					$keyN= 'order_'.$rule->calc_kind;
+					if(empty($idWithMax)){
+
+                        foreach($taxBill as $tax){
+							$sum = $order['details']['BT']->order_salesPrice;
+							$t1 = $tax->calc_value * 0.01 * $tax->subTotal/$sum;
+							$toAdd = $t1 * $order['details']['BT']->$keyN ;
+							//vmdebug('ShipPay Rules $t1 '.$tax->calc_value * 0.01.' * '. $tax->subTotal.'/'.$sum.' = '.$t1);
+							//vmdebug('ShipPay Rules $toAdd '.$t1.' * '. $order['details']['BT']->$keyN. ' = '.$toAdd. ' on '.$taxBill[$tax->virtuemart_calc_id]->calc_amount);
+							$taxBill[$tax->virtuemart_calc_id]->calc_amount += $t1 * $order['details']['BT']->$keyN ;
+
+							//vmdebug('ShipPay Rules '.$t1.' * '. $order['details']['BT']->$keyN.'='.$t1 * $order['details']['BT']->$keyN);
+                        }
+
+					} else {
+						$taxBill[$idWithMax]->calc_amount += $rule->calc_amount ;
+
+					}
+				}
+			}
+        }
+		//vmdebug('summarizeRulesForBill $taxBill return',$taxBill);
+		return array('discountsBill' => $discountsBill, 'taxBill' => $taxBill);
 	}
 }

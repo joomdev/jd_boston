@@ -18,8 +18,11 @@ abstract class N2SmartSliderCSSAbstract {
         $this->slider = $slider;
 
         $params = $slider->params;
-        N2CSS::addStaticGroup(NEXTEND_SMARTSLIDER_ASSETS . '/smartslider.min.css', 'smartslider');
-    
+
+        if (!N2Platform::needStrongerCSS()) {
+            N2CSS::addStaticGroup(NEXTEND_SMARTSLIDER_ASSETS . '/smartslider.min.css', 'smartslider');
+        
+        }
 
         $width  = intval($params->get('width', 900));
         $height = intval($params->get('height', 500));
@@ -49,12 +52,39 @@ abstract class N2SmartSliderCSSAbstract {
 
     public function getCSS() {
         $css = '';
+        if (N2Platform::needStrongerCSS()) {
+            $css = file_get_contents(NEXTEND_SMARTSLIDER_ASSETS . '/smartslider.min.css');
+        
+        }
+
         foreach ($this->slider->less AS $file => $context) {
             $compiler = new n2lessc();
             $compiler->setVariables($context);
             $css .= $compiler->compileFile($file);
         }
         $css .= implode('', $this->slider->css);
+
+        if (N2Platform::needStrongerCSS()) {
+            $css = preg_replace(array(
+                '/\.n2-ss-align([\. \{,])/',
+                '/(?<!' . preg_quote('#' . $this->slider->elementId) . ')\.n2-ss-slider([\. \{,])/'
+            ), array(
+                '#' . $this->slider->elementId . '-align$1',
+                '#' . $this->slider->elementId . '$1'
+            ), $css);
+        }
+
+        if ($this->slider->params->get('media-query-hide-slider', 0)) {
+            $css .= '
+                #' . $this->slider->elementId . '{
+                    display:block;
+                }
+                @media (' . $this->slider->params->get('media-query-under-over', 'max-width') . ': ' . $this->slider->params->get('media-query-width', '640') . 'px){
+                    div#' . $this->slider->elementId . ', div#' . $this->slider->elementId . '-placeholder{
+                        display:none;
+                    }
+                }';
+        }
 
         $css .= $this->slider->params->get('custom-css-codes', '');
 

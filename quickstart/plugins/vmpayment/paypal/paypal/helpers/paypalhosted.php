@@ -7,7 +7,7 @@
  * @version $Id: paypal.php 7217 2013-09-18 13:42:54Z alatak $
  * @package VirtueMart
  * @subpackage payment
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2018 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -144,7 +144,7 @@ class PaypalHelperPayPalHosted extends PaypalHelperPaypal {
 		$post_variables['L_BUTTONVAR']['logoFontSize'] = $this->_method->logoFontSize;
 		$post_variables['L_BUTTONVAR']['logoFontColor'] = $this->_method->logoFontColor;
 		if (!empty($this->_method->bodyBgImg[0])) {
-			$post_variables['L_BUTTONVAR']['bodyBgImg'] = JURI::base() . 'images/stories/virtuemart/payment/' . $this->_method->bodyBgImg[0];
+			$post_variables['L_BUTTONVAR']['bodyBgImg'] = $this->getLogoImage($this->_method->bodyBgImg[0]);
 
 		}
 		$post_variables['L_BUTTONVAR']['logoImage'] = $this->getLogoImage();
@@ -155,7 +155,7 @@ class PaypalHelperPayPalHosted extends PaypalHelperPaypal {
 		//$post_variables['L_BUTTONVAR']['PageCollapseTextColor'] =    $this->_method->PageCollapseTextColor;
 		$post_variables['L_BUTTONVAR']['orderSummaryBgColor'] = $this->_method->orderSummaryBgColor;
 		if (!empty($this->_method->orderSummaryBgImage[0])) {
-			$post_variables['L_BUTTONVAR']['orderSummaryBgImage'] = JURI::base() . 'images/stories/virtuemart/payment/' . $this->_method->orderSummaryBgImage[0];
+			$post_variables['L_BUTTONVAR']['orderSummaryBgImage'] = $this->getLogoImage($this->_method->orderSummaryBgImage[0]);
 		}
 		$post_variables['L_BUTTONVAR']['footerTextColor'] = $this->_method->footerTextColor;
 		$post_variables['L_BUTTONVAR']['footerTextlinkColor'] = $this->_method->footerTextlinkColor;
@@ -252,7 +252,11 @@ class PaypalHelperPayPalHosted extends PaypalHelperPaypal {
 	function redirectToPayPal() {
 
 		$websitecode = $this->response['WEBSITECODE'];
-		$emailink = $this->response['EMAILLINK'];
+		if(empty($this->response['EMAILLINK'])){
+			$emailink = '';
+		} else {
+			$emailink = $this->response['EMAILLINK'];
+		}
 
 		if ($this->_method->debug AND $this->_method->template != 'templateD') {
 			echo '<div style="background-color:red;color:white;padding:10px;">The method is in debug mode. <a href="' . $emailink . '">Click here to be redirected to PayPal</a></div>';

@@ -13,12 +13,10 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: vendors.php 9413 2017-01-04 17:20:58Z Milbo $
+* @version $Id: vendors.php 10030 2019-03-15 12:32:26Z Milbo $
 */
 
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmTableData')) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtabledata.php');
 
 class TableVendors extends VmTableData {
 
@@ -79,6 +77,9 @@ class TableVendors extends VmTableData {
 
 		$varsToPushParam = array(
 			'max_cats_per_product'=>array(-1,'int'),
+			'max_products'=>array(-1,'int'),
+			'max_customers'=>array(-1,'int'),
+			'force_product_pattern'=>array(-1,'int'),
 			'vendor_min_pov'=>array(0.0,'float'),
 			'vendor_min_poq'=>array(1,'int'),
 			'vendor_freeshipment'=>array(0.0,'float'),
@@ -132,6 +133,26 @@ class TableVendors extends VmTableData {
 
     }
 
+	public function check(){
+
+		if(!empty($this->virtuemart_vendor_id) and !vmAccess::manager('managevendors')){
+			$mV = VmModel::getModel('vendor');
+			$userId = VirtueMartModelVendor::getUserIdByVendorId($this->virtuemart_vendor_id);
+			$userTable = $mV->getTable ('vmusers');
+			$userTable->load($userId);
+			if(!empty($userTable->virtuemart_vendor_id) and $userTable->virtuemart_vendor_id!=$this->virtuemart_vendor_id){
+				VmWarn('User does not fit to vendor, storing cancelled');
+				return false;
+			}
+		}
+
+		// Store multiple selectlist entries as a ; separated string
+		if(!empty($this->vendor_accepted_currencies) and is_array($this->vendor_accepted_currencies)){
+			$this->vendor_accepted_currencies = implode (',', $this->vendor_accepted_currencies);
+		}
+
+		return parent::check();
+	}
 }
 
 //pure php no closing tag

@@ -36,7 +36,7 @@ if ($this->shipment->shipment_jplugin_id) {
 	<?php
 	if ($this->shipment->form) {
 		$form = $this->shipment->form;
-		include(VMPATH_ADMIN.DS.'fields'.DS.'formrenderer.php');
+		include(VMPATH_ADMIN .'/fields/formrenderer.php');
 	}
 } else {
 	echo vmText::_('COM_VIRTUEMART_SELECT_SHIPMENT_METHOD_VM3');

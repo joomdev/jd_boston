@@ -1,4 +1,7 @@
 <?php
+
+defined ('_JEXEC') or die();
+
 /**
 * class Image2Thumbnail
 * Thumbnail creation with PHP4 and GDLib (recommended, but not mandatory: 2.0.1 !)
@@ -106,16 +109,42 @@ class Img2Thumb	{
 
 		if(function_exists('imagecreatefromstring')){
 
-			$content = file_get_contents($filename);
+			if(strpos($filename,'//')===0){
+				try {
+					$resObj = JHttpFactory::getHttp(null, array('curl', 'stream'))->get($filename);
+					//vmdebug('Object per URL',$resObj);
+					if($resObj->code!=200){
+						vmdebug('URL does not exists',$filename,$resObj);
+						vmError(vmText::sprintf('COM_VIRTUEMART_FILE_NOT_FOUND',$filename));
+					} else {
+						$content = $resObj->body;
+					}
+				} catch (RuntimeException $e) {
+					vmError(vmText::sprintf('COM_VIRTUEMART_FILE_NOT_FOUND',$filename));
+				}
+			} else {
+				$content = file_get_contents($filename);
+			}
+
 			if($content){
 				$gd = @imagecreatefromstring($content);
 				if ($gd === false) {
-					vmWarn('Img2Thumb NewImgCreate with imagecreatefromstring failed '.$filename.' ');
+					vmError('Img2Thumb NewImgCreate with imagecreatefromstring failed '.$filename.' ');
 				} else {
 					$pathinfo = pathinfo( $fileout );
 					$type = empty($type)? $pathinfo['extension']:$type;
 					$this->fileout = $fileout;
-					$new_img =$this->NewImgResize($gd,$newxsize,$newysize,$filename);
+
+					$orig_size = 0;
+					if(strpos($filename,'//')===0){
+						if (!empty($fileout))
+						{
+							$this-> NewImgSave($gd,$fileout,$type);
+							$orig_size = getimagesize($fileout);
+						}
+					}
+
+					$new_img =$this->NewImgResize($gd,$newxsize,$newysize,$filename,$orig_size);
 					if (!empty($fileout))
 					{
 						$this-> NewImgSave($new_img,$fileout,$type);
@@ -254,7 +283,7 @@ class Img2Thumb	{
 *	private function - do not call
 *	includes function ImageCreateTrueColor and ImageCopyResampled which are available only under GD 2.0.1 or higher !
 */
-	private function NewImgResize($orig_img,$newxsize,$newysize,$filename)
+	private function NewImgResize($orig_img,$newxsize,$newysize,$filename, $orig_size = 0)
 	{
 		//getimagesize returns array
 		// [0] = width in pixels
@@ -262,8 +291,7 @@ class Img2Thumb	{
 		// [2] = type
 		// [3] = img tag "width=xx height=xx" values
 
-
-		$orig_size = getimagesize($filename);
+		if(empty($orig_size))$orig_size = getimagesize($filename);
 
 		$newxsize = (int)$newxsize;
 		$newysize = (int)$newysize;

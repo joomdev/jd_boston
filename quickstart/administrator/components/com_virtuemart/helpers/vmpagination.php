@@ -6,7 +6,7 @@
 * @package	VirtueMart
 * @subpackage Helpers
 * @author Max Milbers
-* @copyright Copyright (c) 2011-2014 VirtueMart Team. All rights reserved.
+* @copyright Copyright (c) 2011-2018 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 * VirtueMart is free software. This version may have been modified pursuant
 * to the GNU General Public License, and as distributed it includes or
@@ -128,8 +128,6 @@ class VmPagination extends vObject {
 		$limits = array();
 		$selected = $this->limit;
 
-		if(!class_exists('VmHtml')) require(VMPATH_ADMIN.DS.'helpers'.DS.'html.php');
-
 		// Build the select list
 		if($app->isAdmin()) {
 
@@ -139,7 +137,7 @@ class VmPagination extends vObject {
 
 			if(!empty($sequence)) {
 				$sequenceArray = explode( ',', $sequence );
-				if(count( $sequenceArray>1 )) {
+				if($sequenceArray!==FALSE and count( $sequenceArray)>1) {
 					foreach( $sequenceArray as $items ) {
 						$limits[$items] = JHtml::_( 'select.option', $items );
 					}
@@ -189,7 +187,7 @@ class VmPagination extends vObject {
 			}
 			if(!empty($sequence)) {
 				$sequenceArray = explode( ',', $sequence );
-				if(count( $sequenceArray>1 )) {
+				if($sequenceArray!==FALSE and count( $sequenceArray)>1) {
 					foreach( $sequenceArray as $items ) {
 						$limits[$items] = JHtml::_( 'select.option', JRoute::_( $link.'&limit='.$items, false ), $items );
 					}

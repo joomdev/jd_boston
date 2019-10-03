@@ -3,10 +3,10 @@
  * Realex payment plugin
  *
  * @author Valérie Isaksen
- * @version $Id: admin.js 8466 2014-10-16 16:06:11Z alatak $
+ * @version $Id: admin.js 10130 2019-09-11 08:36:03Z Milbo $
  * @package VirtueMart
  * @subpackage payment
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2015 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or

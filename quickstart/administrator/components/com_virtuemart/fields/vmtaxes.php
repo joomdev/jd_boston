@@ -15,12 +15,7 @@ defined('JPATH_PLATFORM') or die;
  * @version $Id$
  */
 
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
-
-if (!class_exists('ShopFunctions'))
-	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
-
 
 class JFormFieldVmTaxes extends JFormField {
 
@@ -34,7 +29,7 @@ class JFormFieldVmTaxes extends JFormField {
 
 	protected function getInput() {
 
-
+		VmConfig::loadConfig();
 		return ShopFunctions::renderTaxList($this->value, $this->name, '');
 
 		// $class = 'multiple="true" size="10"';

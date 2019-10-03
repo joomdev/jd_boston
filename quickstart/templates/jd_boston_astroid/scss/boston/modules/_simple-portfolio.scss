@@ -1,0 +1,51 @@
+#mod-sp-simpleportfolio {
+	.sp-simpleportfolio-filter {
+		margin: 0 0 50px;
+
+		li.active a,
+		li:hover a {
+			color: $white;
+			background: $primary;
+		}
+
+		li {
+			margin-top: 10px;
+
+			a {
+				color: $secondary;
+				font-size: 18px;
+				line-height: 36px;
+				border-left: none;
+				background: none;
+				border-top: 1px solid $primary;
+				border-bottom: 1px solid $primary;
+				border-radius: 0;
+				border-right: none;
+				transition: all 0.5s ease-in-out 0s;
+			}
+		}
+
+		li a:before {
+			content: none;
+		}
+	}
+}
+
+.sp-simpleportfolio .sp-simpleportfolio-item .sp-simpleportfolio-overlay-wrapper .sp-simpleportfolio-overlay {
+	color: $white;
+
+	&:before {
+		top: 0;
+		left: 0;
+		width: 100%;
+		content: "";
+		height: 100%;
+		opacity: 0.5;
+		position: absolute;
+		background: $primary;
+	}
+}
+
+.sp-simpleportfolio-tags {
+	display: none;
+}

@@ -6,7 +6,7 @@ defined ('_JEXEC') or die();
  * @version $Id: render_pluginname.php 7198 2013-09-13 13:09:01Z alatak $
  * @package VirtueMart
  * @subpackage vmpayment
- * @copyright Copyright (C) 2004-Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.   - All rights reserved.
+ * @copyright Copyright (C) 2004 - 2014 Virtuemart Team. All rights reserved.   - All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or

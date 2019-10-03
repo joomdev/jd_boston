@@ -30,20 +30,7 @@ defined('_JEXEC') or die();
  *
  */
 
-if(JVM_VERSION<3){
-	if(!interface_exists('JObservableInterface')){
-		interface JObservableInterface{
 
-		}
-	}
-
-	if(!interface_exists('JTableInterface')){
-		interface JTableInterface{
-
-		}
-	}
-}
-if(!class_exists('vObject')) require(VMPATH_ADMIN .'/helpers/vobject.php');
 
 class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
@@ -79,6 +66,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 	public $_loadedWithLangFallback = 0;
 	public $_loaded = false;
 	protected $_updateNulls = false;
+	protected $_toConvertDec = false;
 
 	/**
 	 * @param string $table
@@ -172,7 +160,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 	 * @link	http://docs.joomla.org/JTable/getInstance
 	 * @since   11.1
 	 */
-	public static function getInstance($type, $prefix = 'VmTable', $config = array())
+	public static function getInstance($type, $prefix = 'Table', $config = array())
 	{
 		// Sanitize and prepare the table class name.
 		$type = preg_replace('/[^A-Z0-9_\.-]/i', '', $type);
@@ -196,7 +184,8 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			}
 			if (!class_exists($tableClass))
 			{
-				vmdebug('Did not find file '.$type.'.php in ',$paths,$tryThis);
+				VmConfig::$echoDebug=1;
+				vmdebug('Did not find class '.$tableClass.' in file '.$type.'.php in ',$paths,$tryThis);
 				return false;
 			}
 		}
@@ -317,9 +306,9 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		return $this->_pkey;
 	}
 
-	public function setObligatoryKeys($key) {
+	public function setObligatoryKeys($key, $error = 1) {
 
-		$this->_obkeys[$key] = 1;
+		$this->_obkeys[$key] = $error;
 	}
 
 	public function setUniqueName($name) {
@@ -435,6 +424,26 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 	public function emptyCache(){
 		self::$_cache = array();
+	}
+
+	/**
+	 * @param $toConvert array
+	 */
+	public function setConvertDecimal(array $toConvert) {
+		$this->_toConvertDec = $toConvert;
+	}
+
+	public function convertDec(){
+
+		if($this->_toConvertDec){
+			foreach($this->_toConvertDec as $f){
+				if(!empty($this->$f)){
+					$this->$f = floatval(str_replace(array(',',' '),array('.',''),$this->$f));
+				} else if(isset($this->$f)){
+					$this->$f = 0.0;
+				}
+			}
+		}
 	}
 
 	/**
@@ -649,9 +658,6 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			unset($fieldNames[$this->_pkey]);
 		}
 		$this->_cryptedFields = $fieldNames;
-		if(!class_exists('vmCrypt')){
-			require(VMPATH_ADMIN .'/helpers/vmcrypt.php');
-		}
 	}
 
 	/**
@@ -723,6 +729,10 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		}
 	}
 
+	/**
+	 * @param bool $array
+	 * @return array|stdClass true as array
+	 */
 	function loadFieldValues($array=true){
 
 
@@ -853,7 +863,6 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			$admin = vmAccess::manager('core');
 
 			if($admin){
-//				vmdebug('setLoggableFieldsForStore ', $this->created_on);
 				if (empty($this->$pkey) and empty($this->created_on)) {
 					$this->created_on = $today;
 				} else if (empty($this->created_on)) {
@@ -965,6 +974,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 					//vmdebug('_varsToPushParam empty ',$this);
 				}
 			}
+			$this->convertDec();
 			//vmdebug('vmtable load empty $oid return proto',$this);
 			return $this;
 		}
@@ -1010,12 +1020,9 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		if ($andWhere === 0) $andWhere = '';
 		$query = $select . $from . ' WHERE `' . $mainTable . '`.`' . $k . '` = "' . $oid . '" ' . $andWhere;
 
-		$hashVarsToPush = '';
-		if (!empty($this->_varsToPushParam)) {
-			$hashVarsToPush = vmJsApi::safe_json_encode($this->_varsToPushParam);
-		}
-		$this->_lhash = md5($oid. $select . $k . $mainTable . $andWhere . $hashVarsToPush);
-		//$this->showFullColumns();
+		//We dont need the $hashVarsToPush in the has, because the parameteres are later bind to it.
+		$this->_lhash = $this->getHash($oid. $select . $k . $mainTable . $andWhere /*. $hashVarsToPush*/);
+
 		if (isset (self::$_cache['l'][$this->_lhash])) {
 			$this->bind(self::$_cache['l'][$this->_lhash]);
 			if (!empty($this->_xParams) and !empty($this->_varsToPushParam)) {
@@ -1024,17 +1031,18 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			if($this->_cryptedFields){
 				$this->decryptFields();
 			}
+			$this->convertDec();
 			//vmTime('loaded by cache '.$this->_pkey.' '.$this->_slugAutoName.' '.$oid,'vmtableload');
 			return $this;
 		} else {
-			//vmdebug('loading '.$this->_pkey.' '.$this->_slugAutoName.' '.$oid);
+
 		}
 
 		$db = $this->getDBO();
 		$db->setQuery($query);
 
 		$result = $db->loadAssoc();
-
+		//vmdebug('vmtable load $query',$query,$result);
 		if ($result) {
 			$this->_loaded = true;
 			$this->bind($result);
@@ -1069,8 +1077,9 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			}
 		} else {
 
-			if($this->_translatable and VmConfig::$langCount>1 and $this->_ltmp!=VmConfig::$jDefLang ){
-
+			if($this->_translatable and VmConfig::$langCount>1 and $this->_langTag!=VmConfig::$jDefLang ){
+//vmdebug('Load fallback ',$this->_ltmp,$this->_langTag,VmConfig::$jDefLang,VmConfig::$defaultLang);
+				//$usedLangTag = $this->_langTag;
 				if(VmConfig::$defaultLang!=VmConfig::$jDefLang){
 					if($this->_langTag != VmConfig::$defaultLang ){
 						$this->_ltmp = $this->_langTag;
@@ -1078,17 +1087,20 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 					} else {
 						$this->_langTag = VmConfig::$jDefLang;
 					}
-
 				} else {
 					$this->_ltmp = $this->_langTag;
 					$this->_langTag = VmConfig::$defaultLang;
 				}
 
-				//vmdebug('No result for '.$this->_ltmp.', lets check for Fallback lang '.$this->_langTag);
+
+				//vmdebug('No result for '.$usedLangTag.' '.$this->_pkey.' '.$this->_slugAutoName.', lets check for Fallback lang '.$this->_langTag);
+				
+
 				//vmSetStartTime('lfallback');
 				$this->_loadedWithLangFallback = VmConfig::$defaultLangTag;
 				$this->load($oid, $overWriteLoadName, $andWhere, $tableJoins, $joinKey) ;
 				//vmTime('Time to load language fallback '.$this->_langTag, 'lfallback');
+				return $this;
 			} else {
 				$this->_loaded = false;
 			}
@@ -1097,7 +1109,6 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		if($this->_ltmp){
 			//vmdebug('Set Ltmp '.$this->_ltmp.' back to false');
 			$this->_langTag = $this->_ltmp;
-
 			self::$_cache['l'][$this->_lhash] = $this->loadFieldValues(false);
 		}
 		else {
@@ -1108,10 +1119,21 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		if($this->_cryptedFields){
 			$this->decryptFields();
 		}
+
+		$this->convertDec();
+
 		//if($this->_translatable) vmTime('loaded '.$this->_langTag.' '.$mainTable.' '.$oid ,'vmtableload');
 		$this->_ltmp = false;
+
 		return $this;
 	}
+
+
+	function getHash($value) {
+		$hashFunction = Vmconfig::get('hashFunction', 'md5');
+		return call_user_func_array($hashFunction, array(&$value));
+	}
+
 
 	function getLoaded (){
 		return $this->_loaded;
@@ -1126,9 +1148,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 	}
 
 	function decryptFields(){
-		if(!class_exists('vmCrypt')){
-			require(VMPATH_ADMIN .'/helpers/vmcrypt.php');
-		}
+
 		if(isset($this->modified_on) and $this->modified_on!='0000-00-00 00:00:00'){
 			$date = JFactory::getDate($this->modified_on);
 			$date = $date->toUnix();
@@ -1188,18 +1208,21 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			$this->$tblKey = $this->_db->loadResult();
 		}
 
+		if(!empty($this->_hashName)){
+			$this->hashEntry();
+		}
+
 		if(!empty($this->$tblKey)){
 			$ok = $this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
 		} else {
 			$p = $this->$tblKey;
 			$ok = $this->_db->insertObject($this->_tbl, $this, $this->_tbl_key);
-
 			if($ok and !empty($this->_hashName)){
 				$oldH= $this->{$this->_hashName};
 				if($p!=$this->$tblKey and !in_array($tblKey,$this->_omittedHashFields)){
 					$this->hashEntry();
 					$ok = $this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
-					vmdebug('Updated entry with correct hash ',$this->_tbl_key,$p,$this->$tblKey,$oldH,$this->{$this->_hashName});
+					vmdebug('VmTable Updated entry with correct hash ',$this->_tbl_key,$p,$this->$tblKey,$oldH,$this->{$this->_hashName});
 				}
 			}
 		}
@@ -1342,7 +1365,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 				} else {
 					$this->$name = $this->$name . '-1';
 				}
-				vmdebug('checkCreateUnique '.$name.' = '.$existingSlugName.' changed to ',$this->$name);
+				vmdebug('checkCreateUnique '.$name.' = '.$existingSlugName.' changed to '.$this->$name.' '.$q);
 			} else {
 				return true;
 			}
@@ -1361,68 +1384,32 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		$multix = Vmconfig::get('multix', 'none');
 		//Lets check if the user is admin or the mainvendor
 		$virtuemart_vendor_id = false;
-		//Todo removed Quickn Dirty, use check in derived class
-		if ($multix == 'none' and get_class($this) !== 'TableVmusers') {
-
-			$this->virtuemart_vendor_id = 1;
-			//return true;
+		//Quickndirty is removed and set in derived classes, but cant be avoided for the vendor language tables
+		if ($multix == 'none' or strpos($this->_tbl,'virtuemart_vendors')!==FALSE) {
+			if ($multix == 'none'){
+				$this->virtuemart_vendor_id = 1;
+			}
+			return true;
 		} else {
 			//$user = JFactory::getUser();
 			//$loggedVendorId = vmAccess::isSuperVendor($user->id);
 			$loggedVendorId = vmAccess::isSuperVendor();
-			//vmdebug('Table '.$this->_tbl.' check '.$loggedVendorId,$user->id);
+			vmdebug('Table '.$this->_tbl.' check '.$loggedVendorId);
 			$user_is_vendor = 0;
 			$tbl_key = $this->_tbl_key;
 			$className = get_class($this);
 
 			$admin = vmAccess::manager('managevendors');
 			//Todo removed Quickn Dirty, use check in derived class
-			if (strpos($this->_tbl,'virtuemart_vmusers')===FALSE) {
+			if (strpos($this->_tbl,'virtuemart_vendors')===FALSE) {
 				$q = 'SELECT `virtuemart_vendor_id` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key . '`="' . $this->$tbl_key . '" ';
 				if (!isset(self::$_cache[md5($q)])) {
 					$this->_db->setQuery($q);
 					self::$_cache[md5($q)] = $virtuemart_vendor_id = $this->_db->loadResult();
 				} else $virtuemart_vendor_id = self::$_cache[md5($q)];
 			} else {
-				$q = 'SELECT `virtuemart_vendor_id`,`user_is_vendor`,`virtuemart_user_id` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key . '`="' . $this->$tbl_key . '" ';
-				if (!isset(self::$_cache[md5($q)])) {
-					$this->_db->setQuery($q);
-					$vmuser = $this->_db->loadRow();
-					self::$_cache[md5($q)] = $vmuser;
-				} else $vmuser = self::$_cache[md5($q)];
 
-				vmdebug('Table '.$this->_tbl.' check loaded old entry',$vmuser);
-				if ($vmuser and count($vmuser) === 3) {
-					$virtuemart_vendor_id = $vmuser[0];
-					$user_is_vendor = $vmuser[1];
-
-					if ($multix == 'none') {
-						if (empty($user_is_vendor)) {
-							$this->virtuemart_vendor_id = 0;
-						} else {
-							$this->virtuemart_vendor_id = 1;
-						}
-						return true;
-					} else {
-						vmdebug('Table '.$this->_tbl.' check loaded old entry mv mode',$vmuser);
-						if (!$admin) {
-							if(!empty($vmuser[2])){
-								$user = JFactory::getUser($vmuser[2]);
-								$loggedVendorId = vmAccess::isSuperVendor($user->id);
-								vmdebug('Table '.$this->_tbl.' check new user '.$loggedVendorId);
-							}
-							$this->virtuemart_vendor_id = $loggedVendorId;
-							return true;
-						}
-					}
-				} else {
-					//New User
-					//vmInfo('We run in multivendor mode and you did not set any vendor for '.$className.' and '.$this->_tbl);//, Set to mainvendor '.$this->virtuemart_vendor_id
-					if(empty($this->user_is_vendor)){
-						$this->virtuemart_vendor_id = 0;
-						return true;
-					}
-				}
+				Echo 'very wrong here'; return false;
 			}
 
 			if (!$admin and !empty($virtuemart_vendor_id) and !empty($loggedVendorId) and $loggedVendorId != $virtuemart_vendor_id) {
@@ -1538,7 +1525,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			//$transliterate = $config->get('unicodeslugs');
 			$unicodeslugs = VmConfig::get('transliterateSlugs',false);
 			if($unicodeslugs){
-				$lang = JFactory::getLanguage();
+				$lang = vmLanguage::getLanguage();
 				$this->$slugName = $lang->transliterate($this->$slugName);
 			}
 
@@ -1596,6 +1583,8 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			}
 		}
 
+		$this->convertDec();
+
 		if(!empty($this->_hashName)){
 			$this->hashEntry();
 		}
@@ -1615,7 +1604,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		$tblKey = $this->_tbl_key;
 		$ok = true;
 		if ($this->_translatable) {
-			if (!class_exists('VmTableData')) require(VMPATH_ADMIN .'/helpers/vmtabledata.php');
+
 			$db = JFactory::getDBO();
 			$dataTable = clone($this);
 			$langTable = new VmTableData($this->_tbl_lang, $tblKey, $db);
@@ -1630,8 +1619,9 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 				foreach ($this->_translatableFields as $name) {
 					$langTable->$name = $this->$name;
 					if (isset($data->$name)) {
-						//We directly store language stuff "escaped"
-						$langData[$name] = htmlspecialchars(html_entity_decode($data->$name, ENT_QUOTES, "UTF-8"), ENT_QUOTES, "UTF-8");
+						//We directly store language stuff "escaped" escape
+						//$langData[$name] = htmlspecialchars(html_entity_decode($data->$name, ENT_QUOTES, "UTF-8"), ENT_QUOTES, "UTF-8");
+						$langData[$name] = $db->escape(html_entity_decode($data->$name, ENT_QUOTES, "UTF-8") );
 					}
 					unset($dataTable->$name);
 
@@ -1653,7 +1643,8 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 				foreach ($this->_translatableFields as $name) {
 					$langTable->$name = $this->$name;
 					if (isset($data[$name])) {
-						$langData[$name] = htmlspecialchars(html_entity_decode($data[$name], ENT_QUOTES, "UTF-8"), ENT_QUOTES, "UTF-8");
+						//$langData[$name] = htmlspecialchars(html_entity_decode($data[$name], ENT_QUOTES, "UTF-8"), ENT_QUOTES, "UTF-8");
+						$langData[$name] = $db->escape(html_entity_decode($data[$name], ENT_QUOTES, "UTF-8") );
 					}
 					unset($dataTable->$name);
 
@@ -2245,7 +2236,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 			$langs = VmConfig::get('active_languages', array(VmConfig::$jDefLangTag));
 			if (!$langs) $langs[] = VmConfig::$vmlang;
-			if (!class_exists('VmTableData')) require(VMPATH_ADMIN .'/helpers/vmtabledata.php');
+
 			foreach ($langs as $lang) {
 				$lang = strtolower(strtr($lang, '-', '_'));
 				$langError = $this->checkAndDelete($this->_tbl . '_' . $lang);
@@ -2475,7 +2466,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 	protected function _getAssetParentId($table = null, $id = null)
 	{
 		// For simple cases, parent to the asset root.
-		$assets = self::getInstance('Asset', 'VmTable', array('dbo' => $this->getDbo()));
+		$assets = self::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
 		$rootId = $assets->getRootId();
 		if (!empty($rootId))
 		{

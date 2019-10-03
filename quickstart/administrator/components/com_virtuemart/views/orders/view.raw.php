@@ -12,7 +12,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.raw.php 9413 2017-01-04 17:20:58Z Milbo $
+ * @version $Id: view.raw.php 9881 2018-06-20 09:03:58Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -27,21 +27,10 @@ jimport( 'joomla.application.component.view');
  * @package		VirtueMart
  * @author
  */
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 class VirtuemartViewOrders extends VmViewAdmin {
 
 	function display($tpl = null) {
-
-		//Load helpers
-
-		if (!class_exists('CurrencyDisplay'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
-
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-
-		if(!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS.DS.'vmpsplugin.php');
 
 		// Load addl models
 		$orderModel = VmModel::getModel();
@@ -119,7 +108,6 @@ class VirtuemartViewOrders extends VmViewAdmin {
 		$this->assignRef('orderst', $orderst);
 		$this->assignRef('virtuemart_shipmentmethod_id', $orderbt->virtuemart_shipmentmethod_id);
 
-		error_reporting(0);
 		parent::display($tpl);
 	}
 

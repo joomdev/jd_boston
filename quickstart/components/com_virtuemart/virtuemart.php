@@ -2,7 +2,7 @@
 if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not allowed.' );
 /**
 *
-* @version $Id: virtuemart.php 9802 2018-03-20 15:22:11Z Milbo $
+* @version $Id: virtuemart.php 9989 2018-11-19 09:00:26Z Milbo $
 * @package VirtueMart
 * @subpackage core
 * @author Max Milbers
@@ -34,16 +34,10 @@ $task = vRequest::getCmd('task','') ;
 
 if(VmConfig::get('shop_is_offline',0) and $task!='feed' and $_controller!='virtuemart'){	//yes, quickndirty
 	$_controller = 'virtuemart';
-	require (VMPATH_SITE.DS.'controllers'.DS.'virtuemart.php');
 	vRequest::setVar('view', 'virtuemart');
 	$task='';
 	$basePath = VMPATH_SITE;
 } else {
-
-	// Front-end helpers
-	if(!class_exists('VmImage')) require(VMPATH_ADMIN.DS.'helpers'.DS.'image.php'); //dont remove that file it is actually in every view except the state view
-	if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php'); //dont remove that file it is actually in every view
-
 
 	$trigger = 'onVmSiteController';
 // 	$task = vRequest::getCmd('task',vRequest::getCmd('layout',$_controller) );		$this makes trouble!
@@ -63,7 +57,7 @@ if(VmConfig::get('shop_is_offline',0) and $task!='feed' and $_controller!='virtu
 			vRequest::setVar('tmpl','component') ;
 
 			//vmLanguage::loadJLang('com_virtuemart');
-			$jlang = JFactory::getLanguage();
+			$jlang = vmLanguage::getLanguage();
 			$tag = $jlang->getTag();
 			$jlang->load('', JPATH_ADMINISTRATOR,$tag,true);
 			vmLanguage::loadJLang('com_virtuemart');
@@ -103,9 +97,9 @@ if ($_controller=='pluginresponse') {
 /* Create the controller name */
 $_class = 'VirtuemartController'.ucfirst($_controller);
 
-if (file_exists($basePath.DS.'controllers'.DS.$_controller.'.php')) {
+if (file_exists($basePath.'/controllers/'.$_controller.'.php')) {
 	if (!class_exists($_class)) {
-		require ($basePath.DS.'controllers'.DS.$_controller.'.php');
+		require ($basePath.'/controllers/'.$_controller.'.php');
 	}
 }
 else {
@@ -134,9 +128,17 @@ if (class_exists($_class)) {
 } else {
     vmDebug('VirtueMart controller not found: '. $_class);
     if (VmConfig::get('handle_404',1)) {
-    	$mainframe = JFactory::getApplication();
-    	$mainframe->redirect(JRoute::_ ('index.php?option=com_virtuemart&view=virtuemart', FALSE));
+		header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+		if (file_exists($basePath.'/controllers/category.php')) {
+			if (!class_exists($_class)) {
+				require ($basePath.'/controllers/category.php');
+			}
+		}
+		$controller = new VirtueMartControllerCategory();
+		$controller->execute($task);
+		$controller->redirect();
+
     } else {
-    	JError::raise(E_ERROR,'404','Not found');
+		throw new RuntimeException(sprintf('VirtueMart controller not found `%s`.', $_class), 404);
     }
 }

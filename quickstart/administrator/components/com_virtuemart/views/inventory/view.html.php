@@ -13,14 +13,11 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 9413 2017-01-04 17:20:58Z Milbo $
+ * @version $Id: view.html.php 9987 2018-11-18 20:29:25Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * HTML View class for the VirtueMart Component
@@ -31,15 +28,6 @@ if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmi
 class VirtuemartViewInventory extends VmViewAdmin {
 
 	function display($tpl = null) {
-
-
-		//Load helpers
-
-		if (!class_exists('CurrencyDisplay'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
-
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 
 		// Get the data
 		$model = VmModel::getModel('product');
@@ -74,8 +62,8 @@ class VirtuemartViewInventory extends VmViewAdmin {
 
 		/* Toolbar */
 		$this->SetViewTitle('PRODUCT_INVENTORY');
-		JToolBarHelper::publish();
-		JToolBarHelper::unpublish();
+		JToolbarHelper::publish();
+		JToolbarHelper::unpublish();
 
 		parent::display($tpl);
 	}

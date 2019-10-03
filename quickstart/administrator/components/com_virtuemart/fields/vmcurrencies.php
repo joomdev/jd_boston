@@ -15,7 +15,7 @@ defined('JPATH_PLATFORM') or die;
  * other free or open source software licenses.
  * @version $Id: $
  */
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+
 if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
 /*
  * This class is used by VirtueMart Payment or Shipment Plugins
@@ -38,18 +38,17 @@ class JFormFieldVmCurrencies extends JFormFieldList {
 	protected function getOptions() {
 		$options = array();
 
-		if (!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN . DS . 'models' . DS . 'vendor.php');
-		$vendor_id = VirtueMartModelVendor::getLoggedVendor();
+		$vendor_id = vmAccess::isSuperVendor();
 		// set currency_id to logged vendor
 		if (empty($this->value)) {
 			$currency = VirtueMartModelVendor::getVendorCurrency($vendor_id);
 			$this->value = $currency->virtuemart_currency_id;
 		}
-		// why not logged vendor? shared is missing
+
 		$db = JFactory::getDBO();
 		$query = 'SELECT `virtuemart_currency_id` AS value, `currency_name` AS text
 			FROM `#__virtuemart_currencies`
-			WHERE `virtuemart_vendor_id` = "1"  AND `published` = "1" ORDER BY `currency_name` ASC ';
+			WHERE (`virtuemart_vendor_id` = "'.$vendor_id.'" OR shared="1")  AND `published` = "1" ORDER BY `currency_name` ASC ';
 		// default value should be vendor currency
 		$db->setQuery($query);
 		$values = $db->loadObjectList();

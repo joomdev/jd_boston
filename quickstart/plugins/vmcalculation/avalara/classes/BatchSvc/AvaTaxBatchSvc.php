@@ -7,14 +7,15 @@
  * Defines class loading search path.
  * 
  * @author    Avalara
- * @copyright © 2004 - 2011 Avalara, Inc.  All rights reserved.
+ * @copyright ï¿½ 2004 - 2011 Avalara, Inc.  All rights reserved.
  * @package   Base 
  */
  
-function __autoload($class_name) 
-{    
-    require_once $class_name . '.class.php';
+function avabatch_autoload_register($class_name)
+{
+	if(file_exists($class_name)) require_once $class_name . '.class.php';
 }
+spl_autoload_register( 'avabatch_autoload_register');
 
 function EnsureIsArray( $obj ) 
 {

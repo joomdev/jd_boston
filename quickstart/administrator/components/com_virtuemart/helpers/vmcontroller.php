@@ -1,4 +1,6 @@
 <?php
+defined ('_JEXEC') or die();
+
 /**
  * abstract controller class containing get,store,delete,publish and pagination
  *
@@ -18,8 +20,6 @@
  *
  * http://virtuemart.net
  */
-jimport('joomla.application.component.controller');
-if (!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 
 class VmController extends JControllerLegacy{
 
@@ -74,7 +74,7 @@ class VmController extends JControllerLegacy{
 		$viewLayout	= vRequest::getCmd('layout', 'default');
 
 		if(vRequest::getCmd('manage')){
-			$this->addViewPath(VMPATH_ADMIN . DS . 'views');
+			$this->addViewPath(VMPATH_ADMIN .'/views');
 			$this->basePath = VMPATH_ROOT.'/administrator/components/com_virtuemart';
 		}
 
@@ -82,7 +82,7 @@ class VmController extends JControllerLegacy{
 
 		$app = JFactory::getApplication();
 		if($app->isSite()){
-			$view->addTemplatePath(VMPATH_ADMIN.DS.'views'.DS.$viewName.DS.'tmpl');
+			$view->addTemplatePath(VMPATH_ADMIN.'/views/'.$viewName.'/tmpl');
 		}
 
 		// Set the layout
@@ -137,7 +137,7 @@ class VmController extends JControllerLegacy{
 		vRequest::setVar('view', $this->_cname);
 		vRequest::setVar('layout', $layout);
 
-		$this->addViewPath(VMPATH_ADMIN . DS . 'views');
+		$this->addViewPath(VMPATH_ADMIN .'/views');
 		$document = JFactory::getDocument();
 		$viewType = $document->getType();
 		$view = $this->getView($this->_cname, $viewType);
@@ -145,6 +145,17 @@ class VmController extends JControllerLegacy{
 		$view->setLayout($layout);
 
 		$this->display();
+	}
+
+	function getStrByAcl(array $names, &$data=0){
+
+		if($data==0) $data = array();
+
+		foreach($names as $name){
+			$data[$name] = vRequest::getHtml($name,'');
+		}
+
+		return $data;
 	}
 
 	/**
@@ -178,9 +189,7 @@ class VmController extends JControllerLegacy{
 		$task = vRequest::getCmd('task');
 
 		if($task == 'apply'){
-
 			$redir .= '&task=edit&'.$this->_cidName.'[]='.$id;
-
 		}
 
 		$this->setRedirect($redir, $msg,$type);
@@ -240,6 +249,7 @@ class VmController extends JControllerLegacy{
 			$val = (isset($task[2])) ? $task[2] : NULL;
 			$field = $task[1];
 		}
+		$this->_cidName = vRequest::getCmd('cidName', $this->_cidName);
 
 		$model = $this->getModel($this->_cname);
 		if (!$model->toggle($field, $val, $this->_cidName, 0, $this->_cname)) {
@@ -248,7 +258,7 @@ class VmController extends JControllerLegacy{
 			$msg = vmText::sprintf('COM_VIRTUEMART_STRING_TOGGLE_SUCCESS',$this->mainLangKey);
 		}
 
-		$this->setRedirect( $this->redirectPath, $msg);
+		$this->setRedirect( $this->getRedirectPath(), $msg);
 	}
 
 	/**
@@ -347,10 +357,34 @@ class VmController extends JControllerLegacy{
 	 * @see JController::getModel()
 	 */
 	function getModel($name = '', $prefix = '', $config = array()){
-		if(!class_exists('ShopFunctions'))require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 
 		if(empty($name)) $name = false;
 		return VmModel::getModel($name);
+	}
+
+	function getRedirectPath(){
+
+		$rView = vRequest::getCmd('rview', $this->_cname);
+		$rTask = vRequest::getCmd('rtask', false);
+		$rlayout = vRequest::getCmd('rlayout', false);
+		$rId = vRequest::getInt($this->_cidName,false);
+
+		$p = 'index.php?option=com_virtuemart&view='.$rView;
+		if($rTask){
+			$p .= '&task='.$rTask;
+		}
+		if($rlayout){
+			$p .= '&layout='.$rlayout;
+		}
+		if($rId){
+			if(is_array($rId)){
+				reset($rId);
+				$rId = current($rId);
+			}
+			$p .= '&'.$this->_cidName.'='.$rId;
+		}
+vmdebug('getRedirectPath',$p);
+		return $p;
 	}
 
 }

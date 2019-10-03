@@ -21,9 +21,12 @@ defined('_JEXEC') or die('Restricted access');
 
 <?php
 if ($this->doctype == 'invoice') {
-  if ($this->invoiceNumber) { ?>
-<h1><?php echo vmText::_('COM_VIRTUEMART_INVOICE').' '.$this->invoiceNumber; ?> </h1>
-<?php }
+	if($this->orderDetails['details']['BT']->toPay != $this->orderDetails['details']['BT']->order_total){
+		$title = vmText::_('COM_VIRTUEMART_CREDIT_NOTE');
+	} else {
+		$title = vmText::_( 'COM_VIRTUEMART_INVOICE' );
+	} ?>
+    <h1><?php echo $title.' '.$this->invoiceNumber; ?> </h1><?php
 } elseif ($this->doctype == 'deliverynote') { ?>
 <h1><?php echo vmText::_('COM_VIRTUEMART_DELIVERYNOTE'); ?> </h1>
 <?php } elseif ($this->doctype == 'confirmation') { ?>

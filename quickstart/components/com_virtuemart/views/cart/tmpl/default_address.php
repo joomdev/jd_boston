@@ -72,9 +72,6 @@ defined('_JEXEC') or die('Restricted access');
 		<?php // Output Bill To Address ?>
 		<div class="output-shipto">
 			<?php
-			if (!class_exists ('VmHtml')) {
-				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-			}
 			if($this->cart->user->virtuemart_user_id==0){
 
 				echo vmText::_ ('COM_VIRTUEMART_USER_FORM_ST_SAME_AS_BT');

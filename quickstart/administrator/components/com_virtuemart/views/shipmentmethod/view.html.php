@@ -13,14 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: view.html.php 9420 2017-01-12 09:35:36Z Milbo $
+* @version $Id: view.html.php 10152 2019-09-19 14:40:28Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * HTML View class for maintaining the list of shipment
@@ -33,14 +30,6 @@ class VirtuemartViewShipmentmethod extends VmViewAdmin {
 
 	function display($tpl = null) {
 
-		// Load the helper(s)
-		$this->addHelperPath(VMPATH_ADMIN.DS.'helpers');
-
-		if(!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS.DS.'vmpsplugin.php');
-
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-
 		$model = VmModel::getModel();
 
 		$layoutName = vRequest::getCmd('layout', 'default');
@@ -50,33 +39,45 @@ class VirtuemartViewShipmentmethod extends VmViewAdmin {
 		if ($layoutName == 'edit') {
 			vmLanguage::loadJLang('plg_vmpsplugin', false);
 
-			JForm::addFieldPath(VMPATH_ADMIN . DS . 'fields');
+			JForm::addFieldPath(VMPATH_ADMIN .'/fields');
 
 			$shipment = $model->getShipment();
 
+			$this->checkConditionsCore = false;
 			// Get the payment XML.
-			$formFile	= vRequest::filterPath( VMPATH_ROOT .DS. 'plugins' .DS. 'vmshipment' .DS. $shipment->shipment_element .DS. $shipment->shipment_element . '.xml');
+			$formFile	= vRequest::filterPath( VMPATH_ROOT .'/plugins/vmshipment/'. $shipment->shipment_element .'/'. $shipment->shipment_element . '.xml');
 			if (file_exists($formFile)){
 				$shipment->form = JForm::getInstance($shipment->shipment_element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 				$shipment->params = new stdClass();
 				$varsToPush = vmPlugin::getVarsToPushFromForm($shipment->form);
+
 				VmTable::bindParameterableToSubField($shipment,$varsToPush);
 				$shipment->form->bind($shipment->getProperties());
+
+				$fdata = $shipment->form->getData()->toArray();
+				if(isset($fdata['checkConditionsCore']) or isset($fdata['params']['checkConditionsCore'])){
+					$this->checkConditionsCore = true;
+					vmPSPlugin::addVarsToPushCore($varsToPush);
+					VmTable::bindParameterableToSubField($shipment,$varsToPush);
+
+					$toRemove = array();
+					vmPSPlugin::addVarsToPushCore($toRemove,1);
+					foreach($toRemove as $name=>$v){
+						$shipment->form->removeField($name,'params');
+					}
+					$shipment->form->bind($shipment->getProperties());
+					$this->shipmentList = shopfunctions::renderShipmentDropdown($shipment->virtuemart_shipmentmethod_ids);
+				}
 
 			} else {
 				$shipment->form = null;
 			}
-			if (!class_exists('VmImage'))
-				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
-
-			 if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
-
 
 
 			if($this->showVendors()){
-					$vendorList= ShopFunctions::renderVendorList($shipment->virtuemart_vendor_id);
-					$this->assignRef('vendorList', $vendorList);
-			 }
+				$vendorList= ShopFunctions::renderVendorList($shipment->virtuemart_vendor_id);
+				$this->assignRef('vendorList', $vendorList);
+			}
 
 			$this->pluginList = self::renderInstalledShipmentPlugins($shipment->shipment_jplugin_id);
 			$this->assignRef('shipment', $shipment);
@@ -95,7 +96,7 @@ class VirtuemartViewShipmentmethod extends VmViewAdmin {
 			$this->addStandardEditViewCommands($shipment->virtuemart_shipmentmethod_id);
 
 		} else {
-			JToolBarHelper::custom('cloneshipment', 'copy', 'copy', vmText::_('COM_VIRTUEMART_SHIPMENT_CLONE'), true);
+			JToolbarHelper::custom('cloneshipment', 'copy', 'copy', vmText::_('COM_VIRTUEMART_SHIPMENT_CLONE'), true);
 
 			$this->addStandardDefaultViewCommands();
 			$this->addStandardDefaultViewLists($model);
@@ -105,7 +106,7 @@ class VirtuemartViewShipmentmethod extends VmViewAdmin {
 
 			foreach ($this->shipments as &$data){
 				// Write the first 5 shoppergroups in the list
-				$data->shipmentShoppersList = shopfunctions::renderGuiList($data->virtuemart_shoppergroup_ids,'shoppergroups','shopper_group_name','shopper');
+				$data->shipmentShoppersList = shopfunctions::renderGuiList($data->virtuemart_shoppergroup_ids,'shoppergroups','shopper_group_name','shoppergroup');
 			}
 
 			$this->pagination = $model->getPagination();
@@ -152,6 +153,46 @@ class VirtuemartViewShipmentmethod extends VmViewAdmin {
 		}
 		$attribs='style= "width: 300px;"';
 		return JHtml::_('select.genericlist', $result, 'shipment_jplugin_id', $attribs, $ext_id, 'name', $selected);
+	}
+
+	public function ajaxCategoryDropDown($id){
+
+		$param = '';
+		if(!empty($this->categoryId)){
+			$param = '&virtuemart_category_id='.$this->categoryId;
+		} else if(!empty($this->product->virtuemart_product_id)){
+			$param = '&virtuemart_product_id='.$this->product->virtuemart_product_id;
+		}
+		$eOpt = vmText::sprintf( 'COM_VIRTUEMART_SELECT' ,  vmText::_('COM_VIRTUEMART_CATEGORY'));
+
+		$id = 'categories';
+
+		vmJsApi::addJScript('ajax_catree');
+
+		$j = "jQuery(document).ready(function($) {
+	jQuery(document).ready(function($) {
+		Virtuemart.emptyCatOpt = '".$eOpt."';
+		Virtuemart.param = '".$param."';
+		Virtuemart.isAdmin = '".self::isAdmin()."';
+		Virtuemart.loadCategoryTree('".$id."');
+	});
+});
+";
+		vmJsApi::addJScript('pro-tech.AjaxCategoriesLoad', $j, false, true, true);
+
+		$id = 'blocking_categories';
+		$j = "jQuery(document).ready(function($) {
+	jQuery(document).ready(function($) {
+		Virtuemart.emptyCatOpt = '".$eOpt."';
+		Virtuemart.param = '".$param."';
+		Virtuemart.isAdmin = '".self::isAdmin()."';
+		Virtuemart.loadCategoryTree('".$id."');
+	});
+});
+";
+		//vmJsApi::addJScript('pro-tech.AjaxCategoriesLoad2', $j, false, true, true);
+
+		//vmJsApi::ajaxCategoryDropDown($id, $param, $eOpt);
 	}
 
 }

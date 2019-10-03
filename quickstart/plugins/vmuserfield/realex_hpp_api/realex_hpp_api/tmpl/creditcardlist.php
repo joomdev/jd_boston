@@ -4,10 +4,10 @@
  * Realex User Field plugin
  *
  * @author Valerie Isaksen
- * @version $Id: creditcardlist.php 9294 2016-09-21 09:56:21Z Milbo $
+ * @version $Id: creditcardlist.php 9821 2018-04-16 18:04:39Z Milbo $
  * @package VirtueMart
  * @subpackage userfield
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or

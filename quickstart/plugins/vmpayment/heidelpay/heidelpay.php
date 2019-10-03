@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 defined ('_JEXEC') or die();
 
@@ -6,20 +6,20 @@ defined ('_JEXEC') or die();
  * Heidelpay credit card plugin
  *
  * @author Heidelberger Payment GmbH <Jens Richter>
- * @version 17.02.28
+ * @version 17.08.08
  * @package VirtueMart
  * @subpackage payment
- * @copyright Copyright (C) Heidelberger Payment GmbH
+ * @copyright Copyright (C) Heidelberger Payment GmbH 2014- 2018, The VirtueMart Team 2019
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 if (!class_exists ('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+	require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 }
 
 class plgVmPaymentHeidelpay extends vmPSPlugin {
 
 	public static $_this = FALSE;
-	protected $version = '17.02.28';
+	protected $version = '17.08.08';
 
 	function __construct (& $subject, $config) {
 
@@ -32,6 +32,7 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 		$this->secret = strtoupper (sha1 (mt_rand (10000, mt_getrandmax ())));
 
 		$varsToPush = $this->getVarsToPush ();
+		$this->addVarsToPushCore($varsToPush, 1);
 		$this->setConfigParameterable ($this->_configTableFieldName, $varsToPush);
 
 	}
@@ -154,6 +155,7 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 		$cd = CurrencyDisplay::getInstance ($cart->pricesCurrency);
 
 		// prepare the post var values:
+		//$languageTag = $this->getLang ();
 		$params = array();
 		/*
 		* Default configuration for hco
@@ -167,7 +169,7 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 
 		$params['PRESENTATION.AMOUNT'] = $totalInPaymentCurrency;
 		$params['PRESENTATION.CURRENCY'] = $currency_code_3;
-		$params['FRONTEND.LANGUAGE'] = strtoupper(substr(vmConfig::$vmlangTag, 0,2));
+		$params['FRONTEND.LANGUAGE'] = strtolower(substr(vmConfig::$vmlangTag, 0,2));
 		$params['CRITERION.LANG'] = $params['FRONTEND.LANGUAGE'];
 		$params['IDENTIFICATION.TRANSACTIONID'] = $order['details']['BT']->order_number;
 		/*
@@ -222,9 +224,9 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 			$toCheck = array('last_name', 'first_name', 'middle_name', 'phone_1', 'phone_2', 'fax', 'address_1', 'address_2', 'city', 'virtuemart_state_id', 'virtuemart_country_id', 'zip');
 
 			$bsError = false;
-			
+			$userFieldM = VmModel::getModel('userfields');
 			foreach($toCheck as $val){
-				if(isset($order['details']['ST']->$val)){
+				if($userFieldM->getIfRequired($val) and isset($order['details']['ST']->$val)){
 					if($order['details']['ST']->$val != $order['details']['BT']->$val){
 						$bsError = true;
 						$errorVal = $val;
@@ -358,7 +360,6 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 	}
 
 	function plgVmOnPaymentResponseReceived (&$html) {
-		
 		if (!class_exists ('VirtueMartCart')) {
 			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
@@ -393,7 +394,6 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 	
 
 		if ($paymentData->processing_result == "NOK") {
-
 			vmError ('VMPAYMENT_HEIDELPAY_PAYMENT_FAILED','VMPAYMENT_HEIDELPAY_PAYMENT_FAILED');
 			vmError (" - " . $paymentData->comment," - " . $paymentData->comment);
 		} else {
@@ -412,8 +412,7 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 		}
 		$orgSecret = $this->createSecretHash ($order_number, $method->HEIDELPAY_SECRET);
 		$order['comments']="";
-		
-		if ($virtuemart_order_id && $paymentData->created_on != '0000-00-00 00:00:00') {
+		if ($virtuemart_order_id) {
 			$order['customer_notified'] = 0;
 			$order['order_status'] = $this->getStatus ($method, $paymentData->processing_result);
 			$modelOrder = VmModel::getModel ('orders');
@@ -586,6 +585,13 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 		return NULL;
 	}
 
+
+	/*protected function getLang () {
+		$language =& JFactory::getLanguage ();
+		$tag = strtolower (substr ($language->get ('tag'), 0, 2));
+		return $tag;
+	}*/
+
 	private function doRequest ($url, $params, $debug) {
 		$data = $params;
 		$result = "";
@@ -647,38 +653,6 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 		} else {
 			return (utf8_encode (utf8_decode ($string)) == $string);
 		}
-	}
-
-	protected function checkConditions ($cart, $method, $cart_prices) {
-		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
-
-		$amount = $cart_prices['salesPrice'];
-		$amount_cond = ($amount >= $method->min_amount AND $amount <= $method->max_amount
-			OR
-			($method->min_amount <= $amount AND ($method->max_amount == 0)));
-
-		$countries = array();
-		if (!empty($method->countries)) {
-			if (!is_array ($method->countries)) {
-				$countries[0] = $method->countries;
-			} else {
-				$countries = $method->countries;
-			}
-		}
-		// probably did not gave his BT:ST address
-		if (!is_array ($address)) {
-			$address = array();
-			$address['virtuemart_country_id'] = 0;
-		}
-		if (!isset($address['virtuemart_country_id'])) {
-			$address['virtuemart_country_id'] = 0;
-		}
-		if (in_array ($address['virtuemart_country_id'], $countries) || count ($countries) == 0) {
-			if ($amount_cond) {
-				return TRUE;
-			}
-		}
-		return FALSE;
 	}
 
 	function createSecretHash ($orderID, $secret) {

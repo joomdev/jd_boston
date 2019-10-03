@@ -14,13 +14,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: country.php 9413 2017-01-04 17:20:58Z Milbo $
+* @version $Id: country.php 10058 2019-05-17 13:42:16Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmModel')) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Model class for shop countries
@@ -29,6 +27,8 @@ if(!class_exists('VmModel')) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php')
  * @subpackage Country
  */
 class VirtueMartModelCountry extends VmModel {
+
+	protected static $_countries = array();
 
 	/**
 	 * constructs a VmModel
@@ -39,9 +39,42 @@ class VirtueMartModelCountry extends VmModel {
 		parent::__construct();
 		$this->setMainTable('countries');
 		array_unshift($this->_validOrderingFieldName,'country_name');
-		$this->_selectedOrdering = 'country_name';
+		$this->_selectedOrdering = 'ordering, country_name';
 		$this->_selectedOrderingDir = 'ASC';
 
+	}
+
+	public function getData($id = 0){
+		if($id==0) $id = $this->_id;
+		return self::getCountry($id);
+	}
+
+	static public function getCountry($id, $fieldname = 0){
+
+		if(!isset(self::$_countries[$id])){
+			$c = VmTable::getInstance('countries');
+			$c->load($id, $fieldname);
+			self::$_countries[$c->virtuemart_country_id] = self::$_countries[strtoupper($c->country_name)] = self::$_countries[$c->country_2_code] = self::$_countries[$c->country_3_code] = $c;
+			//vmdebug('loaded country ',$id,$fieldname,self::$_countries[$id]->loadFieldValues());
+		}
+
+		//vmdebug('loaded country ',$id,$fieldname,self::$_countries[$id]->loadFieldValues());
+		if(isset(self::$_countries[$id])){
+			return self::$_countries[$id];
+		} else {
+			return false;
+		}
+
+	}
+
+	static public function getCountryFieldByID ($id, $fld = 'country_name') {
+
+		$c = self::getCountry($id);
+		if($c and isset($c->$fld)){
+			return $c->$fld;
+		} else {
+			return false;
+		}
 	}
 
     /**
@@ -51,7 +84,7 @@ class VirtueMartModelCountry extends VmModel {
      * @param string $code Country code to lookup
      * @return object Country object from database
      */
-    static function getCountryByCode($code) {
+    static public function getCountryByCode($code) {
 
 		if(empty($code)) return false;
 		$db = JFactory::getDBO();
@@ -68,17 +101,13 @@ class VirtueMartModelCountry extends VmModel {
 				$fieldname = 'country_name';
 		}
 
-		static $countries = array();
-
-		if(!isset($countries[$code])){
-			$query = 'SELECT *';
-			$query .= ' FROM `#__virtuemart_countries`';
-			$query .= ' WHERE `' . $fieldname . '` = "' . $db->escape ($code) . '"';
-			$db->setQuery($query);
-			$countries[$code] = $db->loadObject();
+		self::$_countries[$code] = self::getCountry(strtoupper($code), $fieldname);
+		if(self::$_countries[$code]){
+			return self::$_countries[$code]->loadFieldValues(false);
+		} else {
+			return false;
 		}
 
-		return $countries[$code];
     }
 
     /**

@@ -33,16 +33,13 @@ defined('_JEXEC') or die('Restricted access');
 			<td style="border:0px; width: 5%;"></td>
 			<td style="border:0px;">
 				<?php 
-				if (!class_exists ('VirtueMartModelUser')) {
-					require(VMPATH_ADMIN . DS . 'models' . DS . 'user.php');
-				}
 
 				$currentUser = $this->cart->user->virtuemart_user_id;
 				echo JHtml::_('Select.genericlist', $this->userList, 'userID', 'class="vm-chzn-select" style="width: 200px"', 'id', 'displayedName', $currentUser,'userIDcart');
 				?>
 			</td>
 			<td style="border:0px;">
-				<input type="submit" name="changeShopper" title="<?php echo vmText::_('COM_VIRTUEMART_SAVE'); ?>" value="<?php echo vmText::_('COM_VIRTUEMART_SAVE'); ?>" class="button"  style="margin-left: 10px;"/>
+				<input type="submit" name="changeShopper" title="<?php echo vmText::_('COM_VIRTUEMART_GO'); ?>" value="<?php echo vmText::_('COM_VIRTUEMART_GO'); ?>" class="button"  style="margin-left: 10px;width:100px"/>
 				<input type="hidden" name="view" value="cart"/>
 				<input type="hidden" name="task" value="changeShopper"/>
 			</td>

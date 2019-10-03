@@ -6,7 +6,7 @@
  * @author Valérie Isaksen
  * @version $Id:$
  * @package VirtueMart
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * See /administrator/components/com_virtuemart/COPYRIGHT.php for copyright notices and details.
  *

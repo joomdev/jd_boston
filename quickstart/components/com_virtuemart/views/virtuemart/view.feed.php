@@ -19,11 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die('Restricted access');
 
-// Load the view framework
-if (!class_exists ('VmView')) {
-	require(VMPATH_SITE . DS . 'helpers' . DS . 'vmview.php');
-}
-
 class VirtueMartViewVirtueMart extends VmView {
 
 	public function display ($tpl = NULL) {
@@ -31,14 +26,7 @@ class VirtueMartViewVirtueMart extends VmView {
 		$doc = JFactory::getDocument ();
 
 		$show_prices = VmConfig::get ('show_prices', 1);
-		if ($show_prices == '1') {
-			if (!class_exists ('calculationHelper')) {
-				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
-			}
-		}
 
-		if (!class_exists('VmImage'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 		$productModel = VmModel::getModel ('product');
 		$feed_show_prices = VmConfig::get ('feed_home_show_prices', 0);
 		$feed_show_images = VmConfig::get ('feed_home_show_images', 0);

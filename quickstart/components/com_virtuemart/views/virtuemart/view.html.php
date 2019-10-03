@@ -7,20 +7,17 @@
  * @subpackage
  * @author
  * @link https://virtuemart.net
- * @copyright Copyright (c) 2004 - 2011 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2017 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 9560 2017-05-30 14:13:21Z Milbo $
+ * @version $Id: view.html.php 9989 2018-11-19 09:00:26Z Milbo $
  */
 
 # Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-# Load the view framework
-if(!class_exists('VmView'))require(VMPATH_SITE.DS.'helpers'.DS.'vmview.php');
 
 /**
  * Default HTML View class for the VirtueMart Component
@@ -56,7 +53,6 @@ class VirtueMartViewVirtueMart extends VmView {
 		$menus = $app->getMenu();
 		$menu = $menus->getActive();
 
-		if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 		if(!empty($menu->id)){
 			ShopFunctionsF::setLastVisitedItemId($menu->id);
 		} else if($itemId = vRequest::getInt('Itemid',false)){
@@ -73,7 +69,7 @@ class VirtueMartViewVirtueMart extends VmView {
 				shopFunctionsF::triggerContentPlugin($this->vendor, 'vendor','vendor_terms_of_service');
 			}
 
-			if( ShopFunctionsF::isFEmanager('product.edit') ){
+			if( ShopFunctionsF::isFEmanager('product.add') ){
 				$add_product_link = JURI::root() . 'index.php?option=com_virtuemart&tmpl=component&view=product&task=edit&virtuemart_product_id=0&manage=1' ;
 				$add_product_link = $this->linkIcon($add_product_link, 'COM_VIRTUEMART_PRODUCT_FORM_NEW_PRODUCT', 'edit', false, false);
 			} else {
@@ -95,7 +91,6 @@ class VirtueMartViewVirtueMart extends VmView {
 
 			$this->assignRef('categories',	$categoryChildren);
 
-			if(!class_exists('CurrencyDisplay'))require(VMPATH_ADMIN.DS.'helpers'.DS.'currencydisplay.php');
 			$this->currency = CurrencyDisplay::getInstance( );
 			
 			$products_per_row = VmConfig::get('homepage_products_per_row',3);
@@ -149,9 +144,6 @@ class VirtueMartViewVirtueMart extends VmView {
 							}
 						}
 					} else {
-						if (!class_exists ('vmCustomPlugin')) {
-							require(VMPATH_PLUGINLIBS . DS . 'vmcustomplugin.php');
-						}
 						foreach($this->products as $pType => $productSeries) {
 							shopFunctionsF::sortLoadProductCustomsStockInd($this->products[$pType],$productModel);
 						}
@@ -212,7 +204,6 @@ class VirtueMartViewVirtueMart extends VmView {
 
 		}
 
-		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
 		vmTemplate::setTemplate();
 
 		parent::display($tpl);

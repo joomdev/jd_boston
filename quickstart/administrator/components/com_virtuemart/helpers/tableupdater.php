@@ -17,8 +17,6 @@ defined('_JEXEC') or die('Restricted access');
  * http://virtuemart.net
  */
 
-if(!class_exists('VmModel')) require VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php';
-
 class GenericTableUpdater extends VmModel{
 
 	public function __construct(){
@@ -54,7 +52,6 @@ class GenericTableUpdater extends VmModel{
 									'categories'=>'virtuemart_category_id',
 									'manufacturers'=>'virtuemart_manufacturer_id',
 									'manufacturercategories'=>'virtuemart_manufacturercategories_id',
-
 									'paymentmethods'=>'virtuemart_paymentmethod_id',
 									'shipmentmethods'=>'virtuemart_shipmentmethod_id');
 
@@ -67,7 +64,7 @@ class GenericTableUpdater extends VmModel{
 	public function createLanguageTables($langs=0){
 
 		if(empty($langs)){
-			$langs = VmConfig::get('active_languages',array(VmConfig::$jDefLang));
+			$langs = VmConfig::get('active_languages',array(VmConfig::$jDefLangTag));
 			if(empty($langs)){
 				$langs = (array)VmConfig::$defaultLang;
 			}
@@ -86,7 +83,7 @@ class GenericTableUpdater extends VmModel{
 
 // 			if($i>1) continue;
 			$className = 'Table'.ucfirst ($table);
-			if(!class_exists($className)) require(VMPATH_ADMIN.DS.'tables'.DS.$table.'.php');
+			if(!class_exists($className)) require(VMPATH_ADMIN.'/tables/'.$table.'.php');
 			$tableName = '#__virtuemart_'.$table;
 
 			$langTable = $this->getTable($table);
@@ -106,7 +103,7 @@ class GenericTableUpdater extends VmModel{
 			if(VmConfig::get('dblayoutstrict',true)){
 				if($table=='products'){
 					$fields['product_s_desc'] = 'varchar('.VmConfig::get('dbpsdescsize',2000).') '.$linedefault;
-					$fields['product_desc'] = 'varchar('.VmConfig::get('dbpdescsize',18400).') '.$linedefault;
+					$fields['product_desc'] = 'text '.$linedefaulttext;
 
 					$key = array_search('product_desc', $translatableFields);
 					unset($translatableFields[$key]);
@@ -305,7 +302,7 @@ class GenericTableUpdater extends VmModel{
 	public function updateMyVmTables($file = 0, $like ='_virtuemart_'){
 
 		if(empty($file)){
-			$file = VMPATH_ADMIN.DS.'install'.DS.'install.sql';
+			$file = VMPATH_ADMIN.'/install/install.sql';
 		}
 
 		if(is_array($file)){
@@ -322,7 +319,7 @@ class GenericTableUpdater extends VmModel{
 			vmError('updateMyVmTables '.$this->_db->getErrorMsg());
 			return false;
 		}
-
+		//vmdebug('updateMyVmTables $existingtables',$existingtables);
 		$i = 0;
 		$demandedTables = array();
 		//TODO ignore admin menu table

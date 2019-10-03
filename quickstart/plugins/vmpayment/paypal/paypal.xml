@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension version="2.5" type="plugin" group="vmpayment" method="upgrade">
     <name>PayPal</name>
-    <creationDate>March 31 2017</creationDate>
+    <creationDate>September 24 2019</creationDate>
     <author>VirtueMart Development Team</author>
     <authorUrl>https://virtuemart.net</authorUrl>
-    <copyright>Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <version>3.2.1</version>
+    <version>3.6.2</version>
     <description>PayPal</description>
     <files>
         <filename plugin="paypal">paypal.php</filename>
@@ -15,8 +15,8 @@
     <vmconfig>
         <fields name="params">
             <fieldset name="basic" addfieldpath="/plugins/vmpayment/paypal/paypal/fields">
+                <field name="checkConditionsCore" value="1" default="1" type="hidden"/>
                 <field type="getpaypal" default=""/>
-
                 <field class="level1" type="vmtitle" default="VMPAYMENT_PAYPAL_BASIC_PARAMS"/>
                 <field name="paypalproduct" type="list" default="std" label="VMPAYMENT_PAYPAL_PRODUCTS"
                        description="VMPAYMENT_PAYPAL_PRODUCTS_DESC">
@@ -41,23 +41,23 @@
                 <!-- param class="exp std hosted" type="credentials" default="" description=""/ -->
 
                 <field class="api live required" name="api_login_id" type="text" size="80" default=""
-                       label="VMPAYMENT_PAYPAL_USERNAME"/>
+                       label="VMPAYMENT_PAYPAL_USERNAME" autocomplete="off" />
                 <field class="api live required" name="api_password" type="password" size="80" default=""
-                       label="VMPAYMENT_PAYPAL_PASSWORD"/>
+                       label="VMPAYMENT_PAYPAL_PASSWORD" autocomplete="off"/>
 
 
                 <!-- certificate required in production mode -->
                 <field class="api live signature" name="api_signature" type="password" size="80" default=""
-                       label="VMPAYMENT_PAYPAL_SIGNATURE"/>
+                       label="VMPAYMENT_PAYPAL_SIGNATURE" autocomplete="off"/>
                 <field class="authentication live certificate" name="api_certificate" type="getcertificate"
                        directory="paypal" stripext="0" exclude="^_" default=""
-                       label="VMPAYMENT_PAYPAL_CERTIFICATE"/>
+                       label="VMPAYMENT_PAYPAL_CERTIFICATE" autocomplete="off"/>
 
 
                 <field class="api sandbox required" name="sandbox_api_login_id" type="text" size="80" default=""
-                       label="VMPAYMENT_PAYPAL_SANDBOX_USERNAME"/>
+                       label="VMPAYMENT_PAYPAL_SANDBOX_USERNAME" autocomplete="off"/>
                 <field class="api sandbox required" name="sandbox_api_password" type="password" size="80" default=""
-                       label="VMPAYMENT_PAYPAL_SANDBOX_PASSWORD"/>
+                       label="VMPAYMENT_PAYPAL_SANDBOX_PASSWORD" autocomplete="off"/>
                 <!-- sandbox : 2 choices -->
 
                 <field class="authentication sandbox live select" name="authentication" type="list" default="signature"
@@ -71,7 +71,7 @@
                        label="VMPAYMENT_PAYPAL_SANDBOX_SIGNATURE"/>
                 <field class="authentication sandbox certificate" name="sandbox_api_certificate" type="getcertificate"
                        directory="paypal" stripext="0" exclude="^_" default=""
-                       label="VMPAYMENT_PAYPAL_SANDBOX_CERTIFICATE"/>
+                       label="VMPAYMENT_PAYPAL_SANDBOX_CERTIFICATE" autocomplete="off"/>
 
                 <field class="hosted live" name="payflow_vendor" type="text" size="50" default=""
                        label="VMPAYMENT_PAYPAL_PAYFLOW_VENDOR" description="VMPAYMENT_PAYPAL_PAYFLOW_VENDOR_DESC"/>
@@ -102,7 +102,12 @@
                 <option value="0">COM_VIRTUEMART_NO</option>
                 <option value="1">COM_VIRTUEMART_YES</option>
                 </field-->
-
+                <field class="explayout" name="enable_smart_buttons" type="checkbox" default="0" label="VMPAYMENT_PAYPAL_ENABLE_SMART_BUTTONS" description="VMPAYMENT_PAYPAL_ENABLE_SMART_BUTTONS_TIP" />
+                <field class="explayout" name="offer_credit" type="list" default="0"
+                       label="VMPAYMENT_PAYPAL_OFFER_CREDIT" description="VMPAYMENT_PAYPAL_OFFER_CREDIT_TIP">
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
                 <!-- For _xclick mandatory, for _cart remove it -->
                 <field name="address_override" type="list" default="0" label="VMPAYMENT_PAYPAL_ADDRESS_OVERRIDE"
                        description="VMPAYMENT_PAYPAL_ADDRESS_OVERRIDE_DESC">
@@ -138,6 +143,7 @@
                     <option value="_xclick-payment-plan">VMPAYMENT_PAYPAL_PAYMENT_PLAN</option>
                     <option value="_xclick-auto-billing">VMPAYMENT_PAYPAL_AUTOBILLING</option-->
                 </field>
+
                 <!-- Cart -->
                 <field class="cart" type="vmtitle" default=""
                        description="VMPAYMENT_PAYPAL_PAYMENT_SHOPPING_CART_DESC"/>
@@ -156,6 +162,11 @@
 
                 <field class="add_prices_api" name="add_prices_api" type="list" default="0"
                        label="VMPAYMENT_PAYPAL_ADD_PRICES_API" description="VMPAYMENT_PAYPAL_ADD_PRICES_API_TIP">
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
+                <field class="explayout" name="itemise_in_cart" type="list" default="1"
+                       label="VMPAYMENT_PAYPAL_CART_ITEMISE" description="VMPAYMENT_PAYPAL_CART_ITEMISE_TIP">
                     <option value="0">COM_VIRTUEMART_NO</option>
                     <option value="1">COM_VIRTUEMART_YES</option>
                 </field>
@@ -225,6 +236,12 @@
                 <field class="billing billing_max_amount" name="billing_max_amount" type="text"
                        label="VMPAYMENT_PAYPAL_PAYMENT_BILLING_MAX_AMOUNT"/>
 
+                <field name="check_ips" class="check_ips" type="list" default="1"
+                       label="VMPAYMENT_PAYPAL_CHECK_IPS"
+                       description="VMPAYMENT_PAYPAL_CHECK_IPS_DESC">
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
                 <!-- Order status -->
                 <!-- ============ -->
 
@@ -239,6 +256,8 @@
                        label="VMPAYMENT_PAYPAL_STATUS_PENDING" description="VMPAYMENT_PAYPAL_STATUS_PENDING_TIP"/>
                 <field name="status_success" type="vmorderstate" scope="com_virtuemart" default="C"
                        label="VMPAYMENT_PAYPAL_STATUS_SUCCESS" description="VMPAYMENT_PAYPAL_STATUS_SUCCESS_TIP"/>
+                <field name="status_ipn_success_updateable" type="vmorderstate" scope="com_virtuemart" default=""  multiple="true"
+                       label="VMPAYMENT_PAYPAL_STATUS_UPDATEABLE" description="VMPAYMENT_PAYPAL_STATUS_UPDATEABLE_TIP"/>
                 <field name="status_canceled" type="vmorderstate" scope="com_virtuemart" default="X"
                        label="VMPAYMENT_PAYPAL_STATUS_CANCEL" description="VMPAYMENT_PAYPAL_STATUS_CANCEL_TIP"/>
                 <field class="Authorization" name="status_capture" type="vmorderstate" scope="com_virtuemart"
@@ -278,18 +297,18 @@
                 <!-- ============ -->
                 <field type="vmtitle" default="VMPAYMENT_PAYPAL_RESTRICTIONS_SECTION"
                        description="VMPAYMENT_PAYPAL_RESTRICTIONS_SECTION_DESC"/>
-                <field name="countries" type="vmcountries" scope="com_virtuemart" default="" multiple="true"
-                       label="VMPAYMENT_PAYPAL_COUNTRIES" description="VMPAYMENT_PAYPAL_COUNTRIES_DESC"/>
-                <field name="min_amount" type="text" label="VMPAYMENT_PAYPAL_MIN_AMOUNT"
+                <!--field name="countries" type="vmcountries" scope="com_virtuemart" default="" multiple="true"
+                       label="VMPAYMENT_PAYPAL_COUNTRIES" description="VMPAYMENT_PAYPAL_COUNTRIES_DESC"/-->
+                <!--field name="min_amount" type="text" label="VMPAYMENT_PAYPAL_MIN_AMOUNT"
                        description="VMPAYMENT_PAYPAL_MIN_AMOUNT_TIP"/>
                 <field name="max_amount" type="text" label="VMPAYMENT_PAYPAL_MAX_AMOUNT"
-                       description="VMPAYMENT_PAYPAL_MAX_AMOUNT_TIP"/>
+                       description="VMPAYMENT_PAYPAL_MAX_AMOUNT_TIP"/-->
                 <field name="publishup" type="calendar" default="" label="VMPAYMENT_PAYPAL_PUBLISH_UP"
                        description="VMPAYMENT_PAYPAL_PUBLISH_UP_DESC"/>
                 <field name="publishdown" type="calendar" default="" label="VMPAYMENT_PAYPAL_PUBLISH_DOWN"
                        description="VMPAYMENT_PAYPAL_PUBLISH_UP_DESC"/>
-                <field name="virtuemart_shipmentmethod_ids" type="vmListTable" default="" model="shipmentmethod" func = 'getShipments' lvalue="virtuemart_shipmentmethod_id" ltext="shipment_name" label="VMPAYMENT_PAYPAL_FOR_SHIPMENTS" multiple="true"
-                       description="VMPAYMENT_PAYPAL_FOR_SHIPMENTS_TIP"/>
+                <!--field name="virtuemart_shipmentmethod_ids" type="vmListTable" default="" model="shipmentmethod" func = 'getShipments' lvalue="virtuemart_shipmentmethod_id" ltext="shipment_name" label="VMPAYMENT_PAYPAL_FOR_SHIPMENTS" multiple="true"
+                       description="VMPAYMENT_PAYPAL_FOR_SHIPMENTS_TIP"/-->
                 <!-- Currencies -->
                 <!-- ============ -->
                 <field type="vmtitle" default="VMPAYMENT_PAYPAL_CURRENCIES_SECTION"
@@ -325,15 +344,51 @@
                 <!-- ============ -->
                 <field type="vmtitle" default="VMPAYMENT_PAYPAL_LAYOUT_SECTION"
                        description="VMPAYMENT_PAYPAL_LAYOUT_SECTION_DESC"/>
+
+                <field class="explayout" name="smbt_color" type="list" size="30" label="VMPAYMENT_PAYPAL_SMBT_COLOR"
+                       description="VMPAYMENT_PAYPAL_SMBT_COLOR_TIP" default="gold">
+                    <option value="gold">VMPAYMENT_PAYPAL_SMBT_COLOR_GOLD</option>
+                    <option value="blue">VMPAYMENT_PAYPAL_SMBT_COLOR_BLUE</option>
+                    <option value="silver">VMPAYMENT_PAYPAL_SMBT_COLOR_SILBER</option>
+                    <option value="black">VMPAYMENT_PAYPAL_SMBT_COLOR_BLACK</option>
+                </field>
+                <field class="explayout" name="smbt_layout" type="list" size="30" label="VMPAYMENT_PAYPAL_SMBT_LAYOUT"
+                       description="VMPAYMENT_PAYPAL_SMBT_LAYOUT_TIP" default="vertical">
+                    <option value="horizontal">VMPAYMENT_PAYPAL_SMBT_LAYOUT_HORIZONTAL</option>
+                    <option value="vertical">VMPAYMENT_PAYPAL_SMBT_LAYOUT_VERTICAL</option>
+                </field>
+                <field class="explayout" name="smbt_size" type="list" size="30" label="VMPAYMENT_PAYPAL_SMBT_SIZE"
+                       description="VMPAYMENT_PAYPAL_SMBT_SIZE_TIP" default="responsive">
+                    <option value="small">VMPAYMENT_PAYPAL_SMBT_SIZE_SMALL</option>
+                    <option value="medium">VMPAYMENT_PAYPAL_SMBT_SIZE_MEDIUM</option>
+                    <option value="large">VMPAYMENT_PAYPAL_SMBT_SIZE_LARGE</option>
+                    <option value="responsive">VMPAYMENT_PAYPAL_SMBT_SIZE_RESPONSIVE</option>
+                </field>
+                <field class="explayout" name="smbt_shape" type="list" size="30" label="VMPAYMENT_PAYPAL_SMBT_SHAPE"
+                       description="VMPAYMENT_PAYPAL_SMBT_SHAPE_TIP" default="rect">
+                    <option value="pill">VMPAYMENT_PAYPAL_SMBT_SHAPE_PILL</option>
+                    <option value="rect">VMPAYMENT_PAYPAL_SMBT_SHAPE_RECT</option>
+                </field>
+                <field class="explayout" name="smbt_label" type="list" size="30" label="VMPAYMENT_PAYPAL_SMBT_LABEL"
+                       description="VMPAYMENT_PAYPAL_SMBT_LABEL_TIP" default="checkout">
+                    <option value="checkout">VMPAYMENT_PAYPAL_SMBT_LABEL_CHECKOUT</option>
+                    <option value="credit">VMPAYMENT_PAYPAL_SMBT_LABEL_CREDIT</option>
+                    <option value="pay">VMPAYMENT_PAYPAL_SMBT_LABEL_PAY</option>
+                    <option value="buynow">VMPAYMENT_PAYPAL_SMBT_LABEL_BUYNOW</option>
+                    <option value="paypal">VMPAYMENT_PAYPAL_SMBT_LABEL_PAYPAL</option>
+                    <option value="installment">VMPAYMENT_PAYPAL_SMBT_LABEL_INSTALLMENT</option>
+                </field>
+                <field class="explayout" type="note" label="VMPAYMENT_PAYPAL_LOGOS_EXPRESS" description="VMPAYMENT_PAYPAL_LOGOS_EXPRESS_TIP">
+                </field>
                 <field name="payment_logos" type="vmfiles" multiple="true" scope="com_virtuemart" label="VMPAYMENT_PAYPAL_LOGOS"
-                       description="VMPAYMENT_PAYPAL_LOGOS_DESC" directory="/images/stories/virtuemart/payment"
+                       description="VMPAYMENT_PAYPAL_LOGOS_DESC" directory="/images/virtuemart/payment"
                        default="default" hide_default="1" hide_none="1" stripext="0" exclude="^_"/>
                 <!--param class="creditcard" name="cvv_images" type="vmfiles" label="VMPAYMENT_PAYPAL_CC_CVVIMAGES" description="VMPAYMENT_PAYPAL_CC_CVVIMAGES_DESC" directory="/images/virtuemart/payment" default="default" hide_default="1" hide_none="1" stripext="0" exclude="^_" / -->
                 <field class="std paypallayout" name="logoimg" type="filelist" label="VMPAYMENT_PAYPAL_LOGOIMAGE"
-                       description="VMPAYMENT_PAYPAL_LOGOIMAGE_DESC" directory="/images/stories/virtuemart/payment"
+                       description="VMPAYMENT_PAYPAL_LOGOIMAGE_DESC" directory="/images/virtuemart/payment"
                        default="" hide_default="0" hide_none="1" stripext="0" exclude="^_"/>
                 <field class="std paypallayout" name="headerimg" type="filelist" label="VMPAYMENT_PAYPAL_HEADERIMAGE"
-                       description="VMPAYMENT_PAYPAL_HEADERIMAGE_DESC" directory="/images/stories/virtuemart/payment"
+                       description="VMPAYMENT_PAYPAL_HEADERIMAGE_DESC" directory="/images/virtuemart/payment"
                        default="" hide_default="1" hide_none="0" stripext="0" exclude="^_"/>
                 <field class="warning_headerimg" type="vmtitle" default=""
                        description="VMPAYMENT_PAYPAL_HEADER_IMAGE_WARNING"/>
@@ -382,9 +437,9 @@
                 – Background image URL -->
                 <field class="hosted templateB templateC level3" type="vmtitle" default=""
                        description="VMPAYMENT_PAYPAL_TEMPLATE_PAGEBG"/>
-                <field class="hosted templateB templateC" type="vmfile" name="bodyBgImg" size="30"
+                <field class="hosted templateB templateC" type="vmfiles" name="bodyBgImg" size="30"
                        label="VMPAYMENT_PAYPAL_BODYBGIMG" description="VMPAYMENT_PAYPAL_BODYBGIMG_DESC"
-                       directory="/images/stories/virtuemart/payment" default="" hide_default="0" hide_none="1"
+                       directory="/images/virtuemart/payment" default="" hide_default="0" hide_none="1"
                        stripext="0"
                        exclude="^_"/>
                 <field class="hosted templateB templateC input-colorpicker" type="text" name="bodyBgColor" size="30"
@@ -433,10 +488,10 @@
                 <field class="hosted templateB input-colorpicker" type="text" name="orderSummaryBgColor" size="30"
                        label="VMPAYMENT_PAYPAL_ORDERSUMMARYBGCOLOR"
                        description="VMPAYMENT_PAYPAL_ORDERSUMMARYBGCOLOR_DESC" default=""/>
-                <field class="hosted templateB" type="vmfile" name="orderSummaryBgImage" size="30"
+                <field class="hosted templateB" type="vmfiles" name="orderSummaryBgImage" size="30"
                        label="VMPAYMENT_PAYPAL_ORDERSUMMARYBGIMAGE"
                        description="VMPAYMENT_PAYPAL_ORDERSUMMARYBGIMAGE_DESC"
-                       directory="/images/stories/virtuemart/payment" default="" hide_default="0" hide_none="1"
+                       directory="/images/virtuemart/payment" default="" hide_default="0" hide_none="1"
                        stripext="0"
                        exclude="^_"/>
 

@@ -41,6 +41,12 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
 
     public $nextCacheRefresh = 2145916800; // 2038
 
+    /**
+     * N2SmartSliderSlide constructor.
+     *
+     * @param $slider N2SmartSliderAbstract
+     * @param $data   array
+     */
     public function __construct($slider, $data) {
         $this->parameters = new N2Data($data['params'], true);
         unset($data['params']);
@@ -59,7 +65,6 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
         $this->sliderObject = $slider;
         $this->renderable   = $slider;
         $this->onCreate();
-
     }
 
     private static function fixOldZIndexes(&$layers) {
@@ -140,7 +145,7 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
     }
 
     public function isCurrentlyEdited() {
-        return N2Request::getInt('slideid') == $this->id;
+        return $this->isAdmin() && N2Request::getInt('slideid') == $this->id;
     }
 
     public function setIndex($index) {
@@ -167,7 +172,7 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
 
         $this->addSlideLink();
 
-        $this->attributes['data-slide-duration'] = n2_floatval($this->parameters->get('slide-duration', 0) / 1000);
+        $this->attributes['data-slide-duration'] = n2_floatval(max(0, $this->parameters->get('slide-duration', 0)) / 1000);
         $this->attributes['data-id']             = $this->id;
 
         $this->classes .= ' n2-ss-slide-' . $this->id;
@@ -178,7 +183,17 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
     }
 
     protected function addSlideLink() {
-        list($url, $target) = (array)N2Parse::parse($this->parameters->getIfEmpty('link', '|*|'));
+
+        $linkV1 = $this->parameters->getIfEmpty('link', '');
+        if (!empty($linkV1)) {
+            list($link, $target) = array_pad((array)N2Parse::parse($linkV1), 2, '');
+            $this->parameters->un_set('link');
+            $this->parameters->set('href', $link);
+            $this->parameters->set('href-target', $target);
+        }
+
+        $url    = $this->parameters->get('href');
+        $target = $this->parameters->get('href-target');
 
         if (!empty($url) && $url != '#') {
             $url = $this->fill($url);
@@ -201,13 +216,12 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
                 $url = N2LinkParser::parse($url, $this->linkAttributes);
 
                 $this->linkAttributes['data-href'] = (N2Platform::$isJoomla ? JRoute::_($url, false) : $url);
-                if (empty($this->linkAttributes['onclick'])) {
-                    if ($target == '_blank') {
-                        $this->linkAttributes['data-n2click'] = "window.open(this.getAttribute('data-href'),'_blank');";
-                    } else {
-                        $this->linkAttributes['data-n2click'] = "window.location=this.getAttribute('data-href')";
+                if (empty($this->linkAttributes['onclick']) && !isset($this->linkAttributes['n2-lightbox'])) {
+                    if (!empty($target) && $target != '_self') {
+                        $this->linkAttributes['data-target'] = $target;
                     }
-                    $this->linkAttributes['data-n2middleclick'] = "window.open(this.getAttribute('data-href'),'_blank');";
+                    $this->linkAttributes['data-n2click']       = "n2ss.openUrl(event);";
+                    $this->linkAttributes['data-n2middleclick'] = "n2ss.openUrl(event, '_blank');";
                 }
             }
             if (!isset($this->linkAttributes['style'])) {
@@ -219,7 +233,20 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
     }
 
     public function getRawLink() {
-        return $this->parameters->getIfEmpty('link', '|*|');
+        $linkV1 = $this->parameters->getIfEmpty('link', '');
+        if(!empty($linkV1)){
+            list($link, $target) = array_pad((array)N2Parse::parse($linkV1), 2, '');
+            return $link;
+        }
+        return $this->parameters->getIfEmpty('href', '');
+    }
+    public function getRawLinkHref() {
+        $linkV1 = $this->parameters->getIfEmpty('link', '');
+        if(!empty($linkV1)){
+            list($link, $target) = array_pad((array)N2Parse::parse($linkV1), 2, '');
+            return $target;
+        }
+        return $this->parameters->getIfEmpty('href-target', '_self');
     }
 
     public function getSlider() {
@@ -234,6 +261,42 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
             $mainContainer = new N2SSSlideComponentMain(null, $this, null, $this->slide);
 
             $this->html = N2Html::tag('div', $this->containerAttributes, $mainContainer->render($this->sliderObject->isAdmin));
+        }
+    }
+
+    public function finalize() {
+
+        if ($this->sliderObject->exposeSlideData['title']) {
+            $title = $this->getTitle();
+            if (!empty($title)) {
+                $this->attributes['data-title'] = N2SmartSlider::addCMSFunctions(N2Translation::_($title));
+            }
+        }
+
+        if ($this->sliderObject->exposeSlideData['description']) {
+            $description = $this->getDescription();
+            if (!empty($description)) {
+                $this->attributes['data-description'] = N2SmartSlider::addCMSFunctions(N2Translation::_($description));
+            }
+        }
+
+        if ($this->sliderObject->exposeSlideData['thumbnail']) {
+            $thumbnail = $this->getThumbnailDynamic();
+            if (!empty($thumbnail)) {
+                $this->attributes['data-thumbnail'] = $this->sliderObject->features->optimize->optimizeThumbnail($thumbnail);
+            }
+        }
+
+        if ($this->sliderObject->exposeSlideData['thumbnailType']) {
+            $thumbnailType = $this->parameters->get('thumbnailType', 'default');
+
+            if ($thumbnailType != 'default') {
+                $this->attributes['data-thumbnail-type'] = $thumbnailType;
+            }
+        }
+
+        if ($this->hasLink) {
+            $this->attributes['data-haslink'] = 1;
         }
     }
 
@@ -442,14 +505,13 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
         return N2ImageHelper::fixed($this->fill($image));
     }
 
-    public function getThumbnailTypeHTML() {
-        $type = $this->parameters->get('thumbnailType', 'default');
-
-        if ($type == 'default') {
-            return '';
+    public function getThumbnailDynamic() {
+        $image = $this->thumbnail;
+        if (empty($image)) {
+            $image = $this->parameters->get('backgroundImage');
         }
 
-        return '<img class="n2-ss-thumbnail-type n2-ow" src="' . N2ImageHelperAbstract::SVGToBase64('$ss$/images/thumbnail-types/' . $type . '.svg') . '"/>';
+        return $this->fill($image);
     }
 
     public function getLightboxImage() {
@@ -558,8 +620,12 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
         return $this->getSlider()->elementId;
     }
 
-    public function addScript($script) {
-        $this->sliderObject->features->addInitCallback($script);
+    public function addScript($script, $name = false) {
+        $this->sliderObject->addScript($script, $name);
+    }
+
+    public function isScriptAdded($name) {
+        return $this->sliderObject->isScriptAdded($name);
     }
 
     public function addLess($file, $context) {
@@ -597,9 +663,16 @@ class N2SmartSliderSlide extends N2SmartSliderComponentOwnerAbstract {
 
         $imagePath = N2ImageHelper::fixed($image, true);
         if (isset($imagePath[0]) && $imagePath[0] == '/' && $imagePath[1] != '/' && $lazyLoad->layerImageSizeBase64 && $lazyLoad->layerImageSizeBase64Size && filesize($imagePath) < $lazyLoad->layerImageSizeBase64Size) {
-            return array(
-                'src' => N2Image::base64($imagePath, $image)
-            );
+            $extension = pathinfo($image, PATHINFO_EXTENSION);
+            if ($extension != 'svg') {
+                return array(
+                    'src' => N2Image::base64($imagePath, $image)
+                );
+            } else {
+                return array(
+                    'src' => N2ImageHelperAbstract::SVGToBase64($image)
+                );
+            }
         }
 
         $fixedImageUrl = N2ImageHelper::fixed($image);

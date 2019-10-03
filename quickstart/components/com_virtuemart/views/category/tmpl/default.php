@@ -15,7 +15,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: default.php 9669 2017-11-15 14:25:58Z Milbo $
+ * @version $Id: default.php 9988 2018-11-19 08:48:01Z Milbo $
  */
 
 defined ('_JEXEC') or die('Restricted access');
@@ -44,7 +44,7 @@ jQuery(document).ready(function () {
 	)
 });
 ";
-vmJsApi::addJScript('vm.hover',$js);
+vmJsApi::addJScript('vm-hover',$js);
 
 if ($this->show_store_desc and !empty($this->vendor->vendor_store_desc)) { ?>
 	<div class="vendor-store-desc">
@@ -92,9 +92,25 @@ if ($this->showsearch or $this->keyword !== false) {
 			</div>
 			<?php } ?>
 
-			<?php if(!empty($this->searchCustomValues)) { ?>
+			<?php if(!empty($this->searchCustomValuesAr)) { ?>
 			<div class="vm-search-custom-values">
-				<?php echo $this->searchCustomValues ?>
+				<?php
+                echo ShopFunctionsF::renderVmSubLayoutAsGrid(
+                    'searchcustomvalues',
+                    array (
+                        'searchcustomvalues' => $this->searchCustomValuesAr,
+                        'options' => array (
+                            'items_per_row' => array (
+                                'xs' => 2,
+                                'sm' => 2,
+                                'md' => 2,
+                                'lg' => 2,
+                                'xl' => 2,
+                            ),
+                        ),
+                    )
+                );
+                ?>
 			</div>
 			<?php } ?>
 			<div class="vm-search-custom-search-input">

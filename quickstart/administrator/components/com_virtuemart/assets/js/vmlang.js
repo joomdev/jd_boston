@@ -23,7 +23,7 @@ function updateLanguageValues(data, langCode, flagClass) {
 
 		jQuery.each(data.fields , function(key, val) {
 			cible = jQuery("#"+key);
-			if (window.oldflag !== "") jQuery('.allflags').removeClass(window.oldflag)
+			if (window.oldflag !== "") jQuery('.allflags').removeClass(window.oldflag);
 
 			if (! cible.parent().hasClass(flagClass)) {
 				if (tmce_ver >= "4") {

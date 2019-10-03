@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension version="2.5" type="plugin" group="vmpayment" method="upgrade">
     <name>Sofort</name>
-    <creationDate>March 31 2017</creationDate>
+    <creationDate>September 24 2019</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>https://virtuemart.net</authorUrl>
-    <copyright>Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <version>3.2.1</version>
+    <version>3.6.2</version>
     <description><![CDATA[<a href="http:/www.sofort.com" target="_blank">Sofort</a> is a popular
 	payment provider and available in many countries. ]]>
     </description>
@@ -22,6 +22,7 @@
     <fields name="params">
 
     <fieldset name="basic" addfieldpath="/plugins/vmpayment/sofort/sofort/fields">
+        <field name="checkConditionsCore" value="1" default="1" type="hidden"/>
          <field type="spacer" default="VMPAYMENT_SOFORT_PAYMENT_TITLE" level="level1"/>
          <field type="getsofort" level="level1"/>
 
@@ -29,7 +30,7 @@
          <field type="vmtitle" default="VMPAYMENT_SOFORT_PAYMENT_SETTINGS" level="level1"/>
          <field name="payment_logos" type="vmfiles" multiple="true" label="VMPAYMENT_SOFORT_LOGOS"
                description="VMPAYMENT_SOFORT_LOGOS_DESC"
-               directory="/images/stories/virtuemart/payment"
+               directory="/images/virtuemart/payment"
                default="default" hide_default="1" hide_none="1"
                stripext="0" exclude="^_"/>
          <field type="vmtitle" default="VMPAYMENT_SOFORT_PARAMS" level="level1"/>

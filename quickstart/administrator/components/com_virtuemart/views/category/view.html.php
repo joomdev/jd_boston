@@ -14,14 +14,11 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 9802 2018-03-20 15:22:11Z Milbo $
+ * @version $Id: view.html.php 9831 2018-05-07 13:45:33Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * HTML View class for maintaining the list of categories
@@ -34,11 +31,6 @@ class VirtuemartViewCategory extends VmViewAdmin {
 
 	function display($tpl = null) {
 
-		if(!class_exists('VirtueMartModelConfig'))require(VMPATH_ADMIN .'models/config.php');
-
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-
 		$model = VmModel::getModel();
 		$layoutName = $this->getLayout();
 
@@ -50,12 +42,12 @@ class VirtuemartViewCategory extends VmViewAdmin {
 
 			vmLanguage::loadJLang('com_virtuemart_config');
 
-			$category = $model->getCategory('', false, false);
+			$category = $model->getCategory('', false);
 			if(!empty($category->_loadedWithLangFallback)){
 				vmInfo('COM_VM_LOADED_WITH_LANGFALLBACK',$category->_loadedWithLangFallback);
 			}
 			$this->setOrigLang($category);
-			if(!class_exists('VirtuemartViewConfig')) require (VMPATH_ADMIN .'/views/config/view.html.php');
+
 			// Toolbar
 			$text='';
 			if (isset($category->category_name)) $name = $category->category_name; else $name ='';
@@ -76,8 +68,6 @@ class VirtuemartViewCategory extends VmViewAdmin {
 
 			$parent = $model->getParentCategory( $category->virtuemart_category_id );
 			$this->assignRef('parent', $parent);
-
-			if(!class_exists('ShopFunctions'))require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 
 			$this->jTemplateList = ShopFunctions::renderTemplateList(vmText::_('COM_VIRTUEMART_ADMIN_CFG_JOOMLA_TEMPLATE_DEFAULT'));
 
@@ -134,9 +124,6 @@ class VirtuemartViewCategory extends VmViewAdmin {
 			}
 
 			$this->catpagination = $model->getPagination();
-
-			//we need a function of the FE shopfunctions helper to cut the category descriptions
-			if (!class_exists ('shopFunctionsF')) require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		}
 
 		parent::display($tpl);

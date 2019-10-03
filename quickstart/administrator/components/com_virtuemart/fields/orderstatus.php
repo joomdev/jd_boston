@@ -23,12 +23,13 @@ class JFormFieldOrderstatus extends JFormField {
 
 		VmConfig::loadConfig ();
 		vmLanguage::loadJLang('com_virtuemart');
-		$key = ($this->element['key_field'] ? $this->element['key_field'] : 'value');
-		$val = ($this->element['value_field'] ? $this->element['value_field'] : $this->name);
 		$model = VmModel::getModel ('Orderstatus');
 		$orderStatus = $model->getOrderStatusList (true);
 		foreach ($orderStatus as $orderState) {
 			$orderState->order_status_name = vmText::_ ($orderState->order_status_name);
+		}
+		if(!is_array($this->value)){
+			$this->value = explode(',',$this->value);
 		}
 		return JHtml::_ ('select.genericlist', $orderStatus, $this->name, 'class="inputbox" multiple="true" size="1"', 'order_status_code', 'order_status_name', $this->value, $this->id);
 	}

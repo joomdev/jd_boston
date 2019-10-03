@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: edit.php 9413 2017-01-04 17:20:58Z Milbo $
+* @version $Id: edit.php 10110 2019-08-27 15:37:31Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -56,14 +56,14 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_USERFIELD_DETAILS');
 					</fieldset>
 				</div>
 
-				<div id="divAgeVerification" style="text-align:left;">
+				<!--div id="divAgeVerification" style="text-align:left;">
 					<fieldset>
-					<legend><?php echo vmText::_('COM_VIRTUEMART_FIELDS_AGEVERIFICATION_ATTRIBUTES'); ?></legend>
+					<legend><?php /*echo vmText::_('COM_VIRTUEMART_FIELDS_AGEVERIFICATION_ATTRIBUTES'); ?></legend>
 						<table class="admintable">
-							<?php echo VmHTML::row('raw','COM_VIRTUEMART_FIELDS_AGEVERIFICATION_MINIMUM', $this->lists['minimum_age'] ); ?>
+							<?php echo VmHTML::row('raw','COM_VIRTUEMART_FIELDS_AGEVERIFICATION_MINIMUM', $this->lists['minimum_age'] );*/?>
 						</table>
 					</fieldset>
-				</div>
+				</div-->
 
 				<div id="divWeb">
 					<fieldset>
@@ -124,7 +124,7 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_USERFIELD_DETAILS');
 			</td>
 			<td>
 				<?php
-				$lang = JFactory::getLanguage();
+				$lang = vmLanguage::getLanguage();
 				$text = $lang->hasKey($this->userField->title) ? vmText::_($this->userField->title) : $this->userField->title;
 				?>
 				<input class="required" type="text" name="title" id="title" size="50" value="<?php echo $this->userField->title; ?>" />(<?php echo $text ?>)

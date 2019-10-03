@@ -256,7 +256,5 @@ if (typeof Virtuemart === "undefined")
 			var f = jQuery(event.currentTarget).closest('form');
 			f.submit();
 		}
-		/*var acti = jQuery(f).attr(\'action\');
-		jQuery(f).attr(\'action\', acti+"&tmpl=component");*/
-	}
+	};
 })(jQuery)

@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: default_pricing.php 9444 2017-02-06 13:18:21Z Milbo $
+ * @version $Id: default_pricing.php 10015 2019-02-04 17:21:56Z StefanSTS $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -29,6 +29,8 @@ vmJsApi::addJScript('show_prices',$js,true);
 				<table class="admintable">
 					<?php
 					echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_PRICE_SHOW_TAX','show_tax',VmConfig::get('show_tax',1));
+					echo VmHTML::row('checkbox','COM_VM_CFG_PRICE_SHOW_INFO_TAX','vm_prices_info_tax',VmConfig::get('vm_prices_info_tax',0));
+					echo VmHTML::row('checkbox','COM_VM_CFG_PRICE_SHOW_INFO_DELIVERY','vm_prices_info_delivery',VmConfig::get('vm_prices_info_delivery',0));
 					echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_PRICE_ASKPRICE','askprice',VmConfig::get('askprice',1));
 					echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_PRICE_RAPPENRUNDUNG','rappenrundung',VmConfig::get('rappenrundung',0));
 					echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_PRICE_ROUNDINDIG','roundindig',VmConfig::get('roundindig',1));

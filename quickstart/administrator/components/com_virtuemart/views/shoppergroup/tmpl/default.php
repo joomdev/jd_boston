@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 9413 2017-01-04 17:20:58Z Milbo $
+* @version $Id: default.php 10099 2019-08-20 06:24:30Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -107,7 +107,7 @@ AdminUIHelper::startAdminArea($this);
 			<td align="center">
 				<?php
 				if ($row->default != 0) {
-					echo JHtml::_('image','menu/icon-16-default.png', vmText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT'), NULL, true);
+					echo JHtml::_('image','admin/featured.png', vmText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT'), NULL, true);
 				}
 				?>
 			</td>
@@ -122,7 +122,7 @@ AdminUIHelper::startAdminArea($this);
 			<td align="center">
 				<?php 
 				if ($row->sgrp_additional == 1) {
-					echo JHtml::_('image','menu/icon-16-apply.png', vmText::_('COM_VIRTUEMART_SHOPPERGROUP_ADDITIONAL'), NULL, true);
+					echo JHtml::_('image','admin/icon-16-add.png', vmText::_('COM_VIRTUEMART_SHOPPERGROUP_ADDITIONAL'), NULL, true);
 				}
 				?>
 			</td>

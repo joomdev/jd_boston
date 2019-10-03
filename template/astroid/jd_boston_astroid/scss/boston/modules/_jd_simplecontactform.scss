@@ -1,0 +1,16 @@
+div .jd-simple-contact-form .btn-primary {
+	background-color: $primary;
+	border-color: $primary;
+
+	&:hover,
+	&:focus {
+		background: lighten($primary, 10%);
+		border-color: lighten($primary, 10%);
+	}
+}
+.jd-simple-contact-form {
+	.btn {
+		height: auto;
+		background-clip: unset;
+	}
+}

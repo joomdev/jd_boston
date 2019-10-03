@@ -21,8 +21,6 @@ defined('_JEXEC') or die();
 
 define('USE_SQL_CALC_FOUND_ROWS' , true);
 
-if(!class_exists('vObject')) require(VMPATH_ADMIN .'/helpers/vobject.php');
-
 class VmModel extends vObject{
 
 	/**
@@ -68,7 +66,7 @@ class VmModel extends vObject{
 
 	var $_id 			= 0;
 	var $_data			= null;
-	private static $_cache = array();
+	protected $_cache = array();
 	var $_query 		= null;
 
 	var $_total			= null;
@@ -393,12 +391,12 @@ class VmModel extends vObject{
 			}
 		}
 
-		if ($table = $this->_createTable($name, $prefix, $options))
+		if ($table = self::_createTable($name, $prefix, $options))
 		{
 			return $table;
 		}
 
-		JError::raiseError(0, vmText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name));
+		vmError(vmText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name),vmText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name));
 
 		return null;
 	}
@@ -723,7 +721,6 @@ class VmModel extends vObject{
 	 */
 	public function getPagination($perRow = 5) {
 
-		if(!class_exists('VmPagination')) require(VMPATH_ADMIN .'/helpers/vmpagination.php');
 		if(empty($this->_limit) ){
 			$this->setPaginationLimits();
 		}
@@ -733,40 +730,45 @@ class VmModel extends vObject{
 		return $this->_pagination;
 	}
 
-	public function setPaginationLimits(){
+	public function setPaginationLimits($force = false){
 
-		$app = JFactory::getApplication();
-		$view = vRequest::getCmd('view');
-		if (empty($view)) $view = $this->_maintablename;
+		static $exe = true;
+		if($exe or $force){
+			$app = JFactory::getApplication();
+			$view = vRequest::getCmd('view');
+			if (empty($view)) $view = $this->_maintablename;
 
-		$limit = (int)$app->getUserStateFromRequest('com_virtuemart.'.$view.'.limit', 'limit');
-		if(empty($limit)){
-			if($app->isSite()){
-				$limit = VmConfig::get ('llimit_init_FE',24);
-			} else {
-				$limit = VmConfig::get ('llimit_init_BE',30);
+			$limit = (int)$app->getUserStateFromRequest('com_virtuemart.'.$view.'.limit', 'limit');
+			if(empty($limit)){
+				if($app->isSite()){
+					$limit = VmConfig::get ('llimit_init_FE',24);
+				} else {
+					$limit = VmConfig::get ('llimit_init_BE',30);
+				}
 			}
+
+			if(empty($limit)){
+				$limit = 24;
+			}
+			if($limit>$this->_maxItems){
+				$limit = $this->_maxItems;
+			}
+
+			$this->setState('limit', $limit);
+			$this->setState('com_virtuemart.'.$view.'.limit',$limit);
+			$this->_limit = $limit;
+
+			$limitStart = $app->getUserStateFromRequest('com_virtuemart.'.$view.'.limitstart', 'limitstart',  vRequest::getInt('limitstart',0,'GET'), 'int');
+
+			//There is a strange error in the frontend giving back 9 instead of 10, or 24 instead of 25
+			//This functions assures that the steps of limitstart fit with the limit
+			$limitStart = ceil((float)$limitStart/(float)$limit) * $limit;
+			$this->setState('limitstart', $limitStart);
+			$this->setState('com_virtuemart.'.$view.'.limitstart',$limitStart);
+			$this->_limitStart = $limitStart;
+			$exe = false;
 		}
 
-		if(empty($limit)){
-			$limit = 24;
-		}
-		if($limit>$this->_maxItems){
-			$limit = $this->_maxItems;
-		}
-
-		$this->setState('limit', $limit);
-		$this->setState('com_virtuemart.'.$view.'.limit',$limit);
-		$this->_limit = $limit;
-
-		$limitStart = $app->getUserStateFromRequest('com_virtuemart.'.$view.'.limitstart', 'limitstart',  vRequest::getInt('limitstart',0,'GET'), 'int');
-
-		//There is a strange error in the frontend giving back 9 instead of 10, or 24 instead of 25
-		//This functions assures that the steps of limitstart fit with the limit
-		$limitStart = ceil((float)$limitStart/(float)$limit) * $limit;
-		$this->setState('limitstart', $limitStart);
-		$this->setState('com_virtuemart.'.$view.'.limitstart',$limitStart);
-		$this->_limitStart = $limitStart;
 
 		return array($this->_limitStart,$this->_limit);
 	}
@@ -826,7 +828,7 @@ class VmModel extends vObject{
 		}
 
 		if($nbrReturnProducts){
-			$limitStart = 0;
+			$limitStart = $this->_limitStart;
 			$limit = $nbrReturnProducts;
 			$this->_withCount = false;
 		} else if($this->_noLimit){
@@ -834,15 +836,15 @@ class VmModel extends vObject{
 			$limitStart = 0;
 			$limit = 0;
 		} else {
-			$limits = $this->setPaginationLimits();
-			$limitStart = $limits[0];
-			$limit = $limits[1];
+			if(empty($this->_limit)) $this->setPaginationLimits();
+			$limitStart = $this->_limitStart;
+			$limit = $this->_limit;
 		}
 
 		if($this->_withCount){
-			$q = 'SELECT SQL_CALC_FOUND_ROWS '.$select.$joinedTables;
+			$q = 'SELECT SQL_CALC_FOUND_ROWS '.$select.' '.$joinedTables;
 		} else {
-			$q = 'SELECT '.$select.$joinedTables;
+			$q = 'SELECT '.$select.' '.$joinedTables;
 		}
 
 		if($this->_noLimit or empty($limit)){
@@ -862,7 +864,7 @@ class VmModel extends vObject{
 			vmError('exeSortSearchListQuery '.$err);
 		}
 		if($this->debug === 1) vmdebug('exeSortSearchListQuery result ',$this->ids );
-		if($this->_withCount){
+		if( $this->_withCount ){
 
 			$db->setQuery('SELECT FOUND_ROWS()');
 			$count = $db->loadResult();
@@ -1000,7 +1002,7 @@ class VmModel extends vObject{
 		}
 
 		$keywords_plural = preg_replace('/\s+/', '%" AND `'.$searchField.'` LIKE "%', $keyword);
-		vmdebug('joinLangLikeField',$keyword,$keywords_plural);
+		//vmdebug('joinLangLikeField',$keyword,$keywords_plural);
 		$filter_search[] =  'l.`'.$searchField . '` LIKE ' . $keywords_plural;
 		if($useFb){
 			$filter_search[] =  'ld.`'.$searchField . '` LIKE ' . $keywords_plural;
@@ -1031,10 +1033,9 @@ class VmModel extends vObject{
 			$this->_cache[$this->_id]->load($this->_id);
 
 			//just an idea
-			if(isset($this->_cache[$this->_id]->virtuemart_vendor_id) && empty($this->_data->virtuemart_vendor_id)){
-				if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN .'/models/vendor.php');
-				$this->_cache[$this->_id]->virtuemart_vendor_id = VirtueMartModelVendor::getLoggedVendor();
-			}
+			/*if(isset($this->_cache[$this->_id]->virtuemart_vendor_id) && empty($this->_data->virtuemart_vendor_id)){
+				$this->_cache[$this->_id]->virtuemart_vendor_id = vmAccess::isSuperVendor();
+			}*/
 		}
 
 		return $this->_cache[$this->_id];

@@ -1,5 +1,5 @@
 if (typeof Virtuemart === "undefined")
-	Virtuemart = {};
+	var Virtuemart = {};
 
 jQuery(function($) {
 	Virtuemart.customUpdateVirtueMartCartModule = function(el, options){

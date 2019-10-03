@@ -88,6 +88,10 @@ defined('_JEXEC') or die('Restricted access');
 					<textarea title="<?php echo $ask_comment ?>" class="validate[required,minSize[<?php echo $min ?>],maxSize[<?php echo $max ?>]] field" id="comment" name="comment" cols="30" rows="10"></textarea>
 				</label>
 				<div class="submit">
+					<?php // captcha addition
+					echo $this->captcha;
+					// end of captcha addition
+					?>
 					<input class="highlight-button" type="submit" name="submit_ask" title="<?php echo vmText::_('COM_VIRTUEMART_ASK_SUBMIT')  ?>" value="<?php echo vmText::_('COM_VIRTUEMART_ASK_SUBMIT')  ?>" />
 
 					<div class="width50 floatright right paddingtop">

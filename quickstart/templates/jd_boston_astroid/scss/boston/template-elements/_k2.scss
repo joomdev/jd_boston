@@ -1,0 +1,693 @@
+#k2Container {
+	padding: 0;
+
+	div.catItemView {
+		border: 1px solid $light;
+		padding: 0 15px;
+		border-radius: 4px;
+		-moz-border-radius: 4px;
+		-webkit-border-radius: 4px;
+		background: $white;
+	}
+
+	.catItemTitle {
+		a {
+			color: $primary;
+			font-size: 30px;
+			font-weight: normal;
+			text-decoration: none;
+		}
+	}
+
+	.catItemIntroText {
+		p {
+			font-size: 18px;
+		}
+	}
+
+	span.catItemEditLink a.modal {
+		color: $white;
+		z-index: 999;
+		font-size: 20px;
+		position: relative;
+		background: $primary;
+		font-weight: normal;
+	}
+
+	.bottom-blog {
+		width: 100%;
+		display: flex;
+		font-size: 16px;
+		background: $white;
+		margin-bottom: 15px;
+		border: 1px solid $light;
+
+		.catItemAuthor {
+			padding-left: 15px;
+		}
+
+		a {
+			color: $gray-500;
+			text-decoration: none;
+
+			&:hover {
+				color: $secondary;
+			}
+		}
+
+		.catItemHeader {
+			width: 50%;
+			padding: 15px 0;
+			border-right: 2px solid $light;
+		}
+
+		.catItemLinks {
+			width: 50%;
+			margin: 0px;
+			color: $gray-500;
+			padding: 15px 0;
+
+			.catItemDateCreated {
+				float: right;
+				padding: 0 15px 0 5px;
+			}
+
+			.catItemCategory {
+				padding: 0;
+				float: right;
+			}
+		}
+	}
+
+	ul.itemCommentsList {
+		.commentAuthorName {
+			font-size: 24px;
+			margin-left: 22px;
+			font-weight: normal;
+			color: $primary;
+
+			a {
+				text-decoration: none;
+			}
+		}
+
+		.commentDate {
+			color: $gray-500;
+			border: none;
+			font-size: 20px;
+			padding-left: 20px;
+			font-weight: normal;
+
+			&:before {
+				top: -4px;
+				width: 5px;
+				content: "";
+				left: -10px;
+				height: 5px;
+				position: relative;
+				display: inline-block;
+				background-color: $gray-500;
+				transform: rotate(45deg);
+			}
+		}
+
+		.authorResponse {
+			background: none;
+		}
+
+		li {
+			background: none;
+			padding: 30px 0;
+			border-bottom: 1px dashed $light;
+
+			&:last-child {
+				border: none;
+			}
+
+			p {
+				color: $gray-500;
+				font-size: 14px;
+				margin-left: 100px;
+			}
+		}
+
+	}
+
+	.itemAuthorBlock {
+		background: $white;
+
+		.itemAuthorAvatar {
+			@include media-breakpoint-down(sm) {
+				float: none;
+			}
+		}
+
+		.itemAuthorDetails {
+			overflow: hidden;
+		}
+	}
+
+	/*----- K2 Comments -----*/
+	.itemComments {
+		background: $white;
+
+		div.itemCommentsForm form input#submitCommentButton {
+			background: $primary;
+			border-radius: 2px;
+			-webkit-border-radius: 2px;
+			transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+			-moz-transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+			-webkit-transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) 0s;
+
+			&:hover,
+			&:focus {
+				background: $secondary;
+			}
+		}
+	}
+
+	.itemImageBlock {
+		margin: 0;
+		padding: 8px 0 0;
+	}
+
+	h2 {
+		font-weight: normal;
+		text-decoration: capitalize;
+	}
+
+	div.catItemIntroText {
+		font-size: 18px;
+	}
+
+	.catItemImageBlock {
+		margin: 0;
+		padding-bottom: 0;
+	}
+
+	.catItemTitle {
+		margin: 10px 0;
+	}
+
+	.catItemReadMore {
+		margin-bottom: 20px;
+		display: inline-block;
+
+		a.k2ReadMore {
+			font-size: 15px;
+			padding: 8px 21px;
+			line-height: normal;
+			text-decoration: none;
+			display: inline-block;
+			border: 1px solid $primary;
+
+			&:hover,
+			&:focus {
+				color: $white;
+				background: $primary;
+			}
+		}
+	}
+
+	.latestItemReadMore {
+		margin-bottom: 20px;
+		display: inline-block;
+
+		a.k2ReadMore {
+			border: 1px solid $primary;
+			text-decoration: none;
+			display: inline-block;
+			padding: 7px 21px;
+			font-size: 15px;
+			line-height: normal;
+
+			&:hover,
+			&:focus {
+				color: $white;
+				background: $primary;
+			}
+		}
+	}
+
+	.latestItemList .latestItemView {
+		padding: 0 15px;
+		background: $white;
+		margin-bottom: 45px;
+		border: 1px solid $light;
+	}
+
+	span.latestItemDateCreated {
+		font-size: 16px;
+	}
+
+	div.latestItemCategory {
+		padding: 0;
+	}
+
+	.latestItemBody {
+		padding-bottom: 0;
+
+		.latestItemIntroText {
+			padding-bottom: 0;
+		}
+	}
+
+	/*----- Pagination -----*/
+	.k2Pagination {
+		.pagination {
+			float: none;
+
+			li {
+
+				&:first-child,
+				&:last-child {
+					display: none;
+				}
+
+				&.active a {
+					background: $primary;
+					color: $white;
+					border-color: $primary;
+				}
+
+				&.disabled a {
+
+					&:hover,
+					&:focus {
+						background: $white;
+						border-color: $light;
+						color: $gray-500;
+					}
+				}
+
+				a {
+					padding: 7px 12px;
+					border-color: $light;
+					border-radius: 0px;
+
+					&:hover,
+					&:focus {
+						background: $secondary;
+						color: $white;
+						border-color: $secondary;
+					}
+				}
+			}
+		}
+	}
+
+	span.itemImage {
+		text-align: left;
+	}
+}
+
+div.itemTagsBlock ul.itemTags li a:before {
+	display: none;
+}
+
+div.itemTagsBlock ul.itemTags li a:after {
+	content: ",";
+}
+
+div.itemTagsBlock ul.itemTags li:last-child a:after {
+	display: none;
+}
+
+#k2Frontend {
+
+	#toolbar-cancel a,
+	#toolbar-save a {
+		background: none;
+
+		&:hover,
+		&:focus {
+			background: none;
+		}
+	}
+}
+
+/*----- K2 Gridview start -----*/
+#k2Container.gridview {
+	text-align: center;
+
+	a {
+		color: $gray-500;
+		text-decoration: none;
+
+		&:hover {
+			color: $secondary;
+		}
+	}
+
+	.itemContainer {
+		padding: 0 1%;
+
+		.catItemView {
+			padding: 0;
+			border-radius: 0;
+		}
+
+		.catItemBody {
+			padding: 0;
+
+			.catItemImageBlock {
+				padding: 0;
+			}
+		}
+
+		.catItemTitle a {
+			display: block;
+			padding: 0 10px;
+			font-size: 25px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+
+	.catItemIntroText {
+		padding: 10px;
+	}
+
+	.catItemHeader {}
+
+	.catItemLinks {
+		padding: 10px 0;
+
+		span {
+			color: $gray-500;
+		}
+
+		.catItemDateCreated {}
+
+		.catItemCategory {
+			padding: 0 5px 0;
+		}
+	}
+
+	div.catItemImageBlock {
+		margin-bottom: 0;
+		padding-bottom: 0;
+
+		.catItemImage {
+			margin-bottom: 0;
+		}
+	}
+
+	.bottom-info {
+
+		.catItemDateCreated,
+		.catItemCategory {
+			display: inline-block;
+		}
+	}
+}
+
+.top-status-bar {
+	margin: 20px 0;
+	padding: 5px 0;
+	display: inline-block;
+	width: 100%;
+	border-top: 1px solid $light;
+	border-bottom: 1px solid $light;
+	color: $gray-500;
+	line-height: 30px;
+
+	a {
+		color: $gray-500;
+		text-decoration: none;
+	}
+
+	.itemAuthor {
+		float: left;
+	}
+
+	.itemDateCreated {
+		padding: 0 12px;
+		float: left;
+	}
+
+	.itemCategory {
+		float: left;
+	}
+
+	div.itemToolbar {
+		background: transparent;
+		margin: 0;
+		padding: 0;
+		border-radius: 0;
+
+		a,
+		.fa {
+			font-size: 14px;
+		}
+	}
+}
+
+.buttom-tools {
+	width: 100%;
+	margin-bottom: 15px;
+	display: inline-block;
+	border-top: 1px solid $light;
+	border-bottom: 1px solid $light;
+
+	.itemSocialSharing {
+		float: left;
+		padding: 8px 0 0;
+
+		.itemTwitterButton {
+			float: left;
+			width: auto;
+		}
+
+		.itemFacebookButton {
+			float: left;
+			width: auto;
+		}
+
+		.itemGooglePlusOneButton {
+			float: left;
+			width: auto;
+		}
+	}
+
+	.itemLinks {
+		float: right;
+		margin: 5px 0;
+	}
+}
+
+div.itemHeader span.itemDateCreated {
+	font-size: 14px;
+}
+
+div.itemHeader h2.itemTitle {
+	text-transform: capitalize;
+	font-weight: normal;
+}
+
+/*----- gridview end end  -----*/
+
+/*----- K2 END END -----*/
+
+/*----- K2 Category Styles -----*/
+div.k2CategoriesListBlock {
+	margin: 0 -20px -20px;
+	font-family: 'Raleway', sans-serif;
+
+	ul {
+		padding: 0;
+
+		li {
+			margin: 0;
+			border-bottom: 1px solid $light;
+
+			&:last-child {
+				border: none;
+			}
+
+			a {
+				color: $secondary;
+				text-decoration: none;
+
+				span {
+					font-size: 18px;
+				}
+			}
+
+			&.activeCategory,
+			&:hover {
+				background: $primary;
+
+				a {
+					color: $white;
+					font-weight: normal;
+				}
+			}
+
+			.catCounter {
+				float: right;
+			}
+		}
+	}
+}
+
+/*----- START START K2 Search ------*/
+div.k2SearchBlock {
+	form {
+		overflow: hidden;
+
+		input.inputbox {
+			float: left;
+			width: 100%;
+			height: auto;
+			box-shadow: none;
+			border-radius: 0;
+			padding: 5px 12px;
+			background: $light;
+			border: 2px solid $light;
+		}
+
+		input.button {
+			color: $white;
+			float: left;
+			position: absolute;
+			border: none;
+			right: 0;
+			box-shadow: none;
+			padding: 7px 22px 6px;
+			text-indent: -999999px;
+			height: 100%;
+			background: $primary url(../images/search-icon.png) no-repeat center center;
+		}
+	}
+}
+
+/*----- START START k2 Tag Cloud Block -----*/
+div.k2TagCloudBlock {
+	a {
+		color: $secondary;
+		background: none;
+		padding: 5px 10px;
+		margin-right: 5px;
+		margin-bottom: 5px;
+		line-height: normal;
+		text-decoration: none;
+		font-size: 15px !important;
+		border: 1px solid $primary;
+
+		&:hover,
+		&:focus {
+			color: $white;
+			padding: 5px 10px;
+			background: $primary;
+		}
+	}
+}
+
+/*----- START START k2 Items Block -----*/
+[class*="sidebar-"] {
+	.moduletable .k2ItemsBlock {
+		li:hover {
+			background-color: transparent;
+			a {
+				color: inherit;
+			}
+		}
+		ul li a {
+			padding: 0;
+			&:hover {
+				color: $primary;
+			}
+		}
+	}
+}
+div.k2ItemsBlock {
+	ul {
+		padding: 0;
+
+		li {
+			text-align: center;
+			margin-bottom: 15px;
+			padding: 15px 0 !important;
+			border-bottom: 1px solid $light;
+
+			div.moduleItemIntrotext {
+				a.moduleItemImage img {
+					float: none;
+					max-width: 100%;
+					margin: 0 !important;
+				}
+			}
+
+			a.moduleItemTitle {
+				color: $gray-500;
+				font-weight: normal;
+				line-height: normal;
+				text-decoration: none;
+				font-size: 24px !important;
+				text-transform: capitalize;
+
+				&:hover {
+					color: $primary;
+				}
+			}
+
+			&:last-child {
+				border: none;
+				margin-bottom: 0;
+				padding-bottom: 0 !important;
+			}
+		}
+	}
+}
+
+/*----- START START K2 Responsive -----*/
+@media (max-width: 767px) {
+	#k2Container div.bottom-blog {
+		display: block;
+	}
+
+	#k2Container div.bottom-blog div.catItemHeader {
+		width: 100%;
+		border-bottom: 1px solid $light;
+		border-right: 0;
+	}
+
+	#k2Container div.bottom-blog .catItemLinks {
+		width: 100%;
+		border-top: 1px solid $light;
+		border-right: 0;
+	}
+
+	#k2Container div.bottom-blog .catItemLinks .catItemDateCreated,
+	#k2Container div.bottom-blog .catItemLinks .catItemCategory {
+		float: left;
+	}
+
+	.top-status-bar {
+
+		.itemAuthor,
+		.itemDateCreated,
+		.itemCategory,
+		.itemToolbar {
+			float: left;
+		}
+	}
+
+	.buttom-tools {
+
+		div.itemSocialSharing,
+		div.itemLinks {
+			float: left;
+		}
+	}
+
+	.container {
+		width: 100%;
+	}
+
+	.container>div.row {
+		margin: 0;
+	}
+}

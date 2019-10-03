@@ -38,6 +38,7 @@ jQuery(document).ready(function($){
 		var rr = $(this).parent().find("[name='media[media_action]']:checked");
 		if (typeof $(rr[0]).val() != 'undefined' && $(rr[0]).val() == 0) {
 			var rs = $(this).parent().find("[id='media[media_action]upload']").attr('checked', true);
+			//var rs = $(this).parent().find("[id='media[media_action]replace']").attr('checked', true);
 		}
 	});
 	$('#ImagesContainer').sortable({

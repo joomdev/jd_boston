@@ -37,6 +37,12 @@ class VmView extends JViewLegacy{
 		}
 		$this->useSSL = vmURI::useSSL();
 
+		$bs = VmConfig::get('bootstrap','');
+		if($bs!==''){
+			$l = $this->getLayout();
+			$this->setLayout($bs.'-'.$l);
+			vmdebug('my layout here ',$bs.$l);
+		}
 		$result = $this->loadTemplate($tpl);
 		if ($result instanceof Exception) {
 			return $result;
@@ -54,7 +60,6 @@ class VmView extends JViewLegacy{
 
 	public function withKeepAlive(){
 
-		if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$cart = VirtueMartCart::getCart();
 		if(!empty($cart->cartProductsData)){
 			vmJsApi::keepAlive(1,4);
@@ -95,28 +100,34 @@ class VmView extends JViewLegacy{
 	}
 
 	static public function getVmSubLayoutPath($name){
-		$lPath = false;
-		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+
 		$vmStyle = VmTemplate::loadVmTemplateStyle();
 		$template = $vmStyle['template'];
-		// get the template and default paths for the layout if the site template has a layout override, use it
-		$templatePath = JPATH_SITE . DS . 'templates' . DS . $template . DS . 'html' . DS . 'com_virtuemart' . DS . 'sublayouts' . DS . $name . '.php';
 
-		if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
-		if (JFile::exists ($templatePath)) {
-			$lPath =  $templatePath;
+		// get the template and default paths for the layout if the site template has a layout override, use it
+		$tP = VMPATH_ROOT .'/templates/'. $template .'/html/com_virtuemart/sublayouts/'. $name .'.php';
+		$nP = VMPATH_SITE .'/sublayouts/'. $name . '.php';
+
+		if (JFile::exists ($tP)) {
+			return $tP;
+		} else if (JFile::exists ($nP)) {
+			return $nP;
 		} else {
-			if (JFile::exists (VMPATH_SITE . DS . 'sublayouts' . DS . $name . '.php')) {
-				$lPath = VMPATH_SITE . DS . 'sublayouts' . DS . $name . '.php';
-			}
+			return false;
 		}
-		return $lPath;
+
 	}
 
-	function prepareContinueLink(){
+	function prepareContinueLink($product=false){
 
 		$virtuemart_category_id = shopFunctionsF::getLastVisitedCategoryId ();
 		$categoryStr = '';
+
+		if (empty($virtuemart_category_id) and $product) {
+			$virtuemart_category_id = $product->canonCatId;
+			vmdebug('Using product canon cat ',$virtuemart_category_id);
+		}
+
 		if ($virtuemart_category_id) {
 			$categoryStr = '&virtuemart_category_id=' . $virtuemart_category_id;
 		}

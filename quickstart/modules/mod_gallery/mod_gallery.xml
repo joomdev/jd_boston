@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="1.0" client="site" method="upgrade">
+	<name>MOD_GALLERY_JD_GALLERY</name>
+	<author>JoomDev</author>
+	<creationDate>June 2018</creationDate>
+	<copyright>Copyright (C) 2008 - 2018 joomdev.com. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>info@joomdev.com</authorEmail>
+	<authorUrl>www.joomdev.com</authorUrl>
+	<version>1.0</version>
+	<description>MOD_GALLERY_JD_GALLERY</description>
+	<files>
+		<filename module="mod_gallery">mod_gallery.php</filename>
+		<folder>tmpl</folder>
+		<filename>helper.php</filename>
+		<filename>index.html</filename>
+	</files>
+	<media folder="media" destination="mod_gallery">
+		<folder>css</folder>
+	</media>
+	<languages>
+		<language folder="admin" tag="en-GB">en-GB.mod_gallery.ini</language>
+		<language folder="admin" tag="en-GB">en-GB.mod_gallery.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+		<fieldset name="basic">
+            <field name="photo_in_row_lx" type="list" default="3" label="MOD_GALLERY_PHOTOS_PER_ROW_LARGE" description="">
+            	<option value="1">J1</option>
+            	<option value="2">J2</option>
+            	<option value="3">J3</option>
+            	<option value="4">J4</option>
+            	<option value="6">J6</option>
+            </field>
+			<field name="photo_in_row_md" type="list" default="2" label="MOD_GALLERY_PHOTOS_PER_ROW_MEDIUM" description="">
+            	<option value="1">J1</option>
+            	<option value="2">J2</option>
+            	<option value="3">J3</option>
+            	<option value="4">J4</option>
+            	<option value="6">J6</option>
+            </field>
+			<field name="photo_in_row_sm" type="list" default="1" label="MOD_GALLERY_PHOTOS_PER_ROW_SMALL" description="">
+            	<option value="1">J1</option>
+            	<option value="2">J2</option>
+            	<option value="3">J3</option>
+            	<option value="4">J4</option>
+            	<option value="6">J6</option>
+            </field>
+
+			<field name="photo_gallery"
+			type="repeatable"
+			description=""
+			label="MOD_GALLERY_PHOTOS_GALLERY" >
+			<fieldset hidden="true" name="list_templates_modal" repeat="true">
+				<field name="photo_gallery_image"
+					label="MOD_GALLERY_IMAGE"
+					type="media" 
+				/>
+				<field name="photo_gallery_title"
+					label="MOD_GALLERY_TITLE"
+					type="text"
+				/>
+				<field name="photo_gallery_description"
+					label="MOD_GALLERY_DESCRIPTION"
+					type="textarea" />
+			</fieldset>
+            </field>
+		</fieldset>
+			<fieldset name="advanced">
+				<field
+						name="layout"
+						type="modulelayout"
+						label="JFIELD_ALT_LAYOUT_LABEL"
+						description="JFIELD_ALT_MODULE_LAYOUT_DESC"
+						default="default"
+					/>
+				<field name="moduleclass_sfx" type="textarea"  label="moduleclass_sfx" description="moduleclass_sfx" />    
+			</fieldset>
+	    </fields>
+	</config>
+</extension>

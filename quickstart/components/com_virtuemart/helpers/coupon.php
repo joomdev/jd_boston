@@ -12,7 +12,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
- * @version $Id: coupon.php 9775 2018-03-06 20:49:50Z Milbo $
+ * @version $Id: coupon.php 10058 2019-05-17 13:42:16Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -36,7 +36,7 @@ abstract class CouponHelper
 		}
 		$couponData = 0;
 
-		JPluginHelper::importPlugin('vmcoupon');
+		VmConfig::importVMPlugins('vmcoupon');
 		$dispatcher = JDispatcher::getInstance();
 		$returnValues = $dispatcher->trigger('plgVmValidateCouponCode', array($_code, $_billTotal));
 		if(!empty($returnValues)){
@@ -55,7 +55,7 @@ abstract class CouponHelper
     				, `coupon_value_valid`
     				, `coupon_used`
     				FROM `#__virtuemart_coupons`
-    				WHERE `coupon_code` = "' . $_db->escape($_code) . '"';
+    				WHERE `coupon_code` = "' . $_db->escape($_code) . '" and published="1"';
 			$_db->setQuery($_q);
 			$couponData = $_db->loadObject();
 		}
@@ -79,8 +79,7 @@ abstract class CouponHelper
 		}
 
 		if ($_billTotal < $couponData->coupon_value_valid) {
-			if (!class_exists('CurrencyDisplay'))
-			    require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
+
 			$currency = CurrencyDisplay::getInstance();
 
 			$coupon_value_valid = $currency->priceDisplay($couponData->coupon_value_valid);
@@ -117,7 +116,7 @@ abstract class CouponHelper
 	 */
 	static public function RemoveCoupon($_code, $_force = false)
 	{
-		JPluginHelper::importPlugin('vmcoupon');
+		VmConfig::importVMPlugins('vmcoupon');
 		$dispatcher = JDispatcher::getInstance();
 		$returnValues = $dispatcher->trigger('plgVmRemoveCoupon', array($_code, $_force));
 		if(!empty($returnValues)){
@@ -148,7 +147,7 @@ abstract class CouponHelper
 	 * @return boolean True on success
 	 */
 	static public function setInUseCoupon($code, $in_use=true, $coupon_used = null){
-		JPluginHelper::importPlugin('vmcoupon');
+		VmConfig::importVMPlugins('vmcoupon');
 		$dispatcher = JDispatcher::getInstance();
 		$returnValues = $dispatcher->trigger('plgVmCouponInUse', array($code));
 		if(!empty($returnValues)){
@@ -169,7 +168,7 @@ abstract class CouponHelper
 			$db->setQuery($q);
 			$coupon_session_id=$db->loadResult();
 			if ($coupon_used !=$coupon_session_id) {
-				return;
+				return false;
 			}
 			$coupon_used=0;
 		}

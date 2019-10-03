@@ -13,14 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: view.html.php 9463 2017-03-06 10:45:33Z Milbo $
+* @version $Id: view.html.php 9987 2018-11-18 20:29:25Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * HTML View class for maintaining the list of order types
@@ -37,9 +34,6 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 		$option = vRequest::getCmd( 'option');
 		$mainframe = JFactory::getApplication() ;
 
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-
 		$layoutName = vRequest::getCmd('layout', 'default');
 		$model = VmModel::getModel();
 
@@ -53,11 +47,8 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 			$this->userField = $model->getUserfield();
 			//vmdebug('user plugin $this->userField',$this->userField);
             $this->SetViewTitle('USERFIELD',$this->userField->name );
-            $this->assignRef('viewName',$viewName);
-			$userFieldPlugin = '';
 
-			if (!class_exists('ShopFunctions'))
-				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
+			$userFieldPlugin = '';
 
 			$this->ordering = ShopFunctions::renderOrderingList('userfields','name',$this->userField->ordering);
 
@@ -80,10 +71,10 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 
 			}
 			$this->assignRef('userFieldPlugin',	$userFieldPlugin);
-			JToolBarHelper::divider();
-			JToolBarHelper::save();
-			JToolBarHelper::apply();
-			JToolBarHelper::cancel();
+			JToolbarHelper::divider();
+			JToolbarHelper::save();
+			JToolbarHelper::apply();
+			JToolbarHelper::cancel();
 
 			$notoggle = ''; // (in_array($this->userField->name, $lists['coreFields']) ? 'class="readonly"' : '');
 
@@ -123,7 +114,7 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 				$i = 1;
 			} else {
 				$lists['userfield_values'] = '';
-				$lang =JFactory::getLanguage();
+				$lang =vmLanguage::getLanguage();
 				for ($i = 0; $i < $n; $i++) {
 					$translate= $lang->hasKey($userFieldValues[$i]->fieldtitle) ? " (".vmText::_($userFieldValues[$i]->fieldtitle).")" : "";
 					$lists['userfield_values'] .=
@@ -150,28 +141,28 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 			$this->assignRef('userFieldValues', $userFieldValues);
 
 		} else {
-			JToolBarHelper::title( vmText::_('COM_VIRTUEMART_MANAGE_USER_FIELDS'),'vm_user_48 head');
-			JToolBarHelper::addNew();
-			JToolBarHelper::editList();
-			JToolBarHelper::divider();
-			JToolBarHelper::custom('toggle.required.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_REQUIRE');
-			JToolBarHelper::custom('toggle.required.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_UNREQUIRE');
-			JToolBarHelper::publishList();
-			JToolBarHelper::unpublishList();
-			JToolBarHelper::divider();
+			JToolbarHelper::title( vmText::_('COM_VIRTUEMART_MANAGE_USER_FIELDS'),'vm_user_48 head');
+			JToolbarHelper::addNew();
+			JToolbarHelper::editList();
+			JToolbarHelper::divider();
+			JToolbarHelper::custom('toggle.required.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_REQUIRE');
+			JToolbarHelper::custom('toggle.required.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_UNREQUIRE');
+			JToolbarHelper::publishList();
+			JToolbarHelper::unpublishList();
+			JToolbarHelper::divider();
 			$barText = vmText::_('COM_VIRTUEMART_FIELDMANAGER_SHOW_HIDE');
 
 			$bar= JToolBar::getInstance( 'toolbar' );
 			$bar->appendButton( 'Separator', '"><span class="bartext">'.$barText.'</span><hr style="display: none;' );
 //$bar->appendButton( 'publish', 'upload', $alt, '', 550, 400 );
-			JToolBarHelper::custom('toggle.registration.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_REGISTRATION');
-			JToolBarHelper::custom('toggle.registration.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_REGISTRATION');
-			JToolBarHelper::custom('toggle.shipment.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_SHIPPING');
-			JToolBarHelper::custom('toggle.shipment.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_SHIPPING');
-			JToolBarHelper::custom('toggle.account.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_ACCOUNT');
-			JToolBarHelper::custom('toggle.account.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_ACCOUNT');
-			JToolBarHelper::divider();
-			JToolBarHelper::deleteList();
+			JToolbarHelper::custom('toggle.registration.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_REGISTRATION');
+			JToolbarHelper::custom('toggle.registration.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_REGISTRATION');
+			JToolbarHelper::custom('toggle.shipment.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_SHIPPING');
+			JToolbarHelper::custom('toggle.shipment.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_SHIPPING');
+			JToolbarHelper::custom('toggle.account.1', 'publish','','COM_VIRTUEMART_FIELDMANAGER_SHOW_ACCOUNT');
+			JToolbarHelper::custom('toggle.account.0', 'unpublish','','COM_VIRTUEMART_FIELDMANAGER_HIDE_ACCOUNT');
+			JToolbarHelper::divider();
+			JToolbarHelper::deleteList();
 
 			$this->addStandardDefaultViewLists($model,'ordering','ASC');
 
@@ -227,15 +218,13 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 
 	function renderUserfieldPlugin(){
 
-		if(!class_exists('vmUserfieldPlugin')) require(VMPATH_PLUGINLIBS.DS.'vmuserfieldtypeplugin.php');
-
 		vmLanguage::loadJLang('plg_vmpsplugin', false);
-		JForm::addFieldPath(VMPATH_ADMIN . DS . 'fields');
+		JForm::addFieldPath(VMPATH_ADMIN .'/fields');
 		//$selected = $this->userField->userfield_jplugin_id;
 		//vmdebug('renderUserfieldPlugin $this->userField->element',$this->userField->type,$this->userField->element);
 		$this->userField->element = substr($this->userField->type, 6);
 
-		$path = VMPATH_ROOT .DS. 'plugins' .DS. 'vmuserfield' . DS . $this->userField->element . DS . $this->userField->element . '.xml';
+		$path = VMPATH_ROOT .'/plugins/vmuserfield/'. $this->userField->element . '/' . $this->userField->element . '.xml';
 		// Get the payment XML.
 		$formFile	= vRequest::filterPath( $path );
 		if (file_exists($formFile)){
@@ -253,7 +242,7 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 		if ($this->userField->form) {
 			$form = $this->userField->form;
 			ob_start();
-			include(VMPATH_ADMIN.DS.'fields'.DS.'formrenderer.php');
+			include(VMPATH_ADMIN .'/fields/formrenderer.php');
 			$body = ob_get_contents();
 			ob_end_clean();
 			return $body;

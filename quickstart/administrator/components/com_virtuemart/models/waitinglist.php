@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: waitinglist.php 9413 2017-01-04 17:20:58Z Milbo $
+ * @version $Id: waitinglist.php 10027 2019-03-13 10:44:26Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -67,9 +67,6 @@ class VirtueMartModelWaitingList extends VmModel {
 		$virtuemart_product_id = (int)$virtuemart_product_id;
 		$max_number = (int)$max_number;
 
-		if (!class_exists ('shopFunctionsF')) {
-			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
-		}
 		$vars = array();
 		$waiting_users = $this->getWaitingusers ($virtuemart_product_id);
 
@@ -110,7 +107,7 @@ class VirtueMartModelWaitingList extends VmModel {
 		$i = 0;
 		foreach ($waiting_users as $waiting_user) {
 			$vars['user'] =  $waiting_user->name ;
-			if (shopFunctionsF::renderMail ('productdetails', $waiting_user->notify_email, $vars, 'productdetails')) {
+			if (shopFunctionsF::renderMail ('productdetails', $waiting_user->notify_email, $vars, 'productdetails', true)) {
 				$db->setQuery ('UPDATE #__virtuemart_waitingusers SET notified=1 WHERE virtuemart_waitinguser_id=' . $waiting_user->virtuemart_waitinguser_id);
 				$db->execute ();
 				$i++;

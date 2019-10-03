@@ -24,7 +24,7 @@ class N2SSPluginItemFactoryText extends N2SSPluginItemFactoryAbstract {
 
     public function __construct() {
         $this->title = n2_x('Text', 'Slide item');
-        $this->group = n2_('Content');
+        $this->group = n2_x('Content', 'Layer group');
     }
 
     private function initDefaultFont() {
@@ -84,7 +84,9 @@ class N2SSPluginItemFactoryText extends N2SSPluginItemFactoryAbstract {
         return dirname(__FILE__) . DIRECTORY_SEPARATOR . $this->type . DIRECTORY_SEPARATOR;
     }
 
-    public static function getFilled($slide, $data) {
+    public function getFilled($slide, $data) {
+        $data = parent::getFilled($slide, $data);
+
         $data->set('content', $slide->fill($data->get('content', '')));
         $data->set('contenttablet', $slide->fill($data->get('contenttablet', '')));
         $data->set('contentmobile', $slide->fill($data->get('contentmobile', '')));
@@ -93,11 +95,15 @@ class N2SSPluginItemFactoryText extends N2SSPluginItemFactoryAbstract {
     }
 
     public function prepareExport($export, $data) {
+        parent::prepareExport($export, $data);
+
         $export->addVisual($data->get('font'));
         $export->addVisual($data->get('style'));
     }
 
     public function prepareImport($import, $data) {
+        $data = parent::prepareImport($import, $data);
+
         $data->set('font', $import->fixSection($data->get('font')));
         $data->set('style', $import->fixSection($data->get('style')));
 

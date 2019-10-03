@@ -118,17 +118,16 @@ legacylayouts=0
     img_resize_enable=1
     img_width=0
     img_height=90
-    no_image_set=noimage.gif
+    no_image_set=noimage_new.gif
     no_image_found=warning.png
-    
+
 ##Product order settings
 
 browse_orderby_field=pc.ordering,product_name
 browse_cat_orderby_field=c.ordering,category_name
 browse_orderby_fields=array:`p`.product_sku|mf_name|product_name|pc.ordering
 
-browse_search_fields=array:`p`.product_sku|mf_name|product_name|product_s_desc|product_desc
-
+browse_search_fields=array:`p`.product_sku|mf_name|product_name|product_s_desc
 
 ##Pricing
 	askprice=1
@@ -191,4 +190,4 @@ email_os_v=array:U|C|X|R
     seo_translate=0
     seo_use_id=0
 
-	
+

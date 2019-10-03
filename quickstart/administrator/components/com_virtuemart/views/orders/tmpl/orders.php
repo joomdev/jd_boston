@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id$
+ * @version $Id: orders.php 10025 2019-03-13 10:08:09Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die('Restricted access');
@@ -64,6 +64,7 @@ $styleDateCol = 'style="width:5%;min-width:110px"';
 			<th style="min-width:100px;width:5%;"><?php echo vmText::_ ('COM_VIRTUEMART_PRINT_VIEW'); ?></th>
 			<th class="admin-dates"><?php echo $this->sort ('created_on', 'COM_VIRTUEMART_ORDER_CDATE')  ?></th>
 			<th class="admin-dates"><?php echo $this->sort ('modified_on', 'COM_VIRTUEMART_ORDER_LIST_MDATE')  ?></th>
+            <th><?php echo $this->sort ('paid', 'COM_VM_ORDER_PAID')  ?></th>
 			<th><?php echo $this->sort ('order_status', 'COM_VIRTUEMART_STATUS')  ?></th>
 			<th style="min-width:130px;width:5%;"><?php echo vmText::_ ('COM_VIRTUEMART_ORDER_LIST_NOTIFY'); ?></th>
 			<th width="10%"><?php echo $this->sort ('order_total', 'COM_VIRTUEMART_TOTAL')  ?></th>
@@ -80,6 +81,7 @@ $styleDateCol = 'style="width:5%;min-width:110px"';
 
 			foreach ($this->orderslist as $key => $order) {
 				$checked = JHtml::_ ('grid.id', $i, $order->virtuemart_order_id);
+
 				//vmdebug('My order',$order);
 				?>
 			<tr class="row<?php echo $k . ' status-'. strtolower($order->order_status); ?>">
@@ -120,6 +122,7 @@ $styleDateCol = 'style="width:5%;min-width:110px"';
 				<!-- Last modified -->
 				<td><?php echo vmJsApi::date ($order->modified_on, 'LC2', TRUE); ?></td>
 				<!-- Status -->
+                <td><?php echo $this->toggle($order->paid, $i,'toggle.paid'); ?></td>
 				<?php
 				$colorStyle = '';
 				if (!empty($this->orderStatesColors[$order->order_status])) {
@@ -127,7 +130,13 @@ $styleDateCol = 'style="width:5%;min-width:110px"';
 				}
 				?>
 				<td style="position:relative;<?php echo $colorStyle ?>">
-					<?php echo JHtml::_ ('select.genericlist', $this->orderstatuses, "orders[" . $order->virtuemart_order_id . "][order_status]", 'class="orderstatus_select" style="width:180px;"', 'order_status_code', 'order_status_name', $order->order_status, 'order_status' . $i, TRUE); ?>
+					<?php
+					if($order->paid < $order->order_total){
+						$orderStati = $this->orderStatesUnpaid;
+					} else {
+						$orderStati = $this->orderstatuses;
+					}
+					echo JHtml::_ ('select.genericlist', $orderStati, "orders[" . $order->virtuemart_order_id . "][order_status]", 'class="orderstatus_select" style="width:180px;"', 'order_status_code', 'order_status_name', $order->order_status, 'order_status' . $i, TRUE); ?>
 					<input type="hidden" name="orders[<?php echo $order->virtuemart_order_id; ?>][current_order_status]" value="<?php echo $order->order_status; ?>"/>
 					<input type="hidden" name="orders[<?php echo $order->virtuemart_order_id; ?>][coupon_code]" value="<?php echo $order->coupon_code; ?>"/>					<br/>
 					<textarea class="element-hidden vm-order_comment vm-showable" name="orders[<?php echo $order->virtuemart_order_id; ?>][comments]" cols="5" rows="5"></textarea>

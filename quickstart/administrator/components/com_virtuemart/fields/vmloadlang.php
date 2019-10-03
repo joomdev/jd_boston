@@ -16,7 +16,7 @@
  */
 defined('JPATH_BASE') or die;
 
-if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
+
 
 jimport('joomla.form.formfield');
 
@@ -34,6 +34,8 @@ class JFormFieldVmLoadLang extends JFormField {
 	 */
 	function getInput() {
 
+		if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
+		VmConfig::loadConfig();
 		$langs = explode(',',$this->fieldname);
 		foreach($langs as $lang){
 			vmLanguage::loadJLang(trim($lang));

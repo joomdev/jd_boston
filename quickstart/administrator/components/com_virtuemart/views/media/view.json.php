@@ -19,9 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
-
 /**
  * Json View class for the VirtueMart Component
  *
@@ -58,7 +55,6 @@ class VirtuemartViewMedia extends VmViewAdmin {
 			}
 		}
 		else {
-			if (!class_exists('VmMediaHandler')) require(VMPATH_ADMIN.DS.'helpers'.DS.'mediahandler.php');
 			$start = vRequest::getInt('start',0);
 
 			$type = vRequest::getCmd('mediatype',0);

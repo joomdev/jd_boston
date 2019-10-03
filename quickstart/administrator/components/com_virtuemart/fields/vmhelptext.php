@@ -16,7 +16,7 @@
  */
 
 defined('JPATH_BASE') or die;
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+
 if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
 
 class JFormFieldVmhelptext extends JFormField {
@@ -32,8 +32,8 @@ class JFormFieldVmhelptext extends JFormField {
         VmConfig::loadConfig();
         vmLanguage::loadJLang('com_virtuemart');
         vmLanguage::loadJLang('com_virtuemart_config');
-        //vmdebug('my this',$this);
-        $this->name = (string) $this->element['name'];
+
+		$this->name = (string) $this->element['name'];
         return vmText::_($this->name);
     }
 

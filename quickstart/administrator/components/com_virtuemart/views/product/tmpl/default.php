@@ -45,6 +45,7 @@ if ($product_parent_id=vRequest::getInt('product_parent_id', false))   $col_prod
 					echo $this->lists['search_type'];
 					echo $this->lists['search_order'];
 					echo vmJsApi::jDate($this->search_date, 'search_date');
+					echo $this->lists['customlist'];
 					echo $this->lists['vendors'];
 				?>
 				<button  class="btn btn-small" onclick="this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?></button>
@@ -60,12 +61,14 @@ if ($product_parent_id=vRequest::getInt('product_parent_id', false))   $col_prod
 <?php
 // $this->productlist
 $mediaLimit = (int)VmConfig::get('mediaLimit',20);
+$total = $this->pagination->total;
 $totalList = count($this->productlist);
 if($this->pagination->limit<=$mediaLimit or $totalList<=$mediaLimit){
 	$imgWidth = 90;
 } else {
 	$imgWidth = 30;
 }
+
 
 ?>
 	<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
@@ -79,7 +82,7 @@ if($this->pagination->limit<=$mediaLimit or $totalList<=$mediaLimit){
                 <?php } ?>
                 <th width="80px" ><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_PARENT_LIST_CHILDREN'); ?></th>
                 <th style="min-width:<?php echo $imgWidth ?>px;width:5%;"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_MEDIA'); ?></th>
-		<th><?php echo $this->sort('product_sku') ?></th>
+		<th><?php echo $this->sort('`p`.product_sku', 'COM_VIRTUEMART_PRODUCT_SKU') ?></th>
 		<th width="90px" ><?php echo $this->sort('product_price', 'COM_VIRTUEMART_PRODUCT_PRICE_TITLE') ; ?></th>
 <?php /*		<th><?php echo JHtml::_('grid.sort', 'COM_VIRTUEMART_CATEGORY', 'c.category_name', $this->lists['filter_order_Dir'], $this->lists['filter_order'] ); ?></th> */ ?>
 <th width="15%"><?php echo vmText::_( 'COM_VIRTUEMART_CATEGORY'); ?></th>
@@ -101,7 +104,7 @@ if($this->pagination->limit<=$mediaLimit or $totalList<=$mediaLimit){
 	</thead>
 	<tbody>
 	<?php
-	$total = $this->pagination->total;
+
 
 	if ($totalList ) {
 		$i = 0;
@@ -109,7 +112,7 @@ if($this->pagination->limit<=$mediaLimit or $totalList<=$mediaLimit){
 		$keyword = vRequest::getCmd('keyword');
 		foreach ($this->productlist as $key => $product) {
 			$checked = JHtml::_('grid.id', $i , $product->virtuemart_product_id,null,'virtuemart_product_id');
-			$published = JHtml::_('grid.published', $product, $i );
+			//$published = JHtml::_('grid.published', $product, $i );
 			$published = $this->gridPublished( $product, $i );
 
 			$is_featured = $this->toggle($product->product_special, $i,'toggle.product_special');
@@ -125,7 +128,7 @@ if($this->pagination->limit<=$mediaLimit or $totalList<=$mediaLimit){
 				if(empty($product->product_name)){
 					$product->product_name = vmText::sprintf('COM_VM_TRANSLATION_MISSING','virtuemart_product_id',$product->virtuemart_product_id);
 				}
-				echo JHtml::_('link', JRoute::_($link), $product->product_name, array('title' => vmText::_('COM_VIRTUEMART_EDIT').' '. htmlentities($product->product_name))); ?>
+				echo JHtml::_('link', JRoute::_($link), vRequest::vmHtmlEntities( $product->product_name), array('title' => vmText::_('COM_VIRTUEMART_EDIT').' '. vRequest::vmHtmlEntities($product->product_name))); ?>
 					<!-- </span>  -->
 				</td>
 
@@ -158,7 +161,7 @@ if($this->pagination->limit<=$mediaLimit or $totalList<=$mediaLimit){
 						//echo JHtml::_('link', $link, '<span class="icon-nofloat vmicon vmicon-16-media"></span> ('.$product->mediaitems.')', array('title' => vmText::_('COM_VIRTUEMART_MEDIA_MANAGER').' '.$product->product_name) );
 						$img = '<span class="icon-nofloat vmicon vmicon-16-media"></span> ('.$product->mediaitems.')';
 					}
-					echo JHtml::_('link', $link, $img,  array('title' => vmText::_('COM_VIRTUEMART_MEDIA_MANAGER').' '.htmlentities($product->product_name)));
+					echo JHtml::_('link', $link, $img,  array('title' => vmText::_('COM_VIRTUEMART_MEDIA_MANAGER').' '.vRequest::vmHtmlEntities($product->product_name)));
 					?>
 					</td>
 				<!-- Product SKU -->
@@ -172,14 +175,21 @@ if($this->pagination->limit<=$mediaLimit or $totalList<=$mediaLimit){
 				<!-- Category name -->
 				<td><?php
 					echo $product->categoriesList;
+					//  show canonical category if set
+					if(!empty($product->product_canon_category_id)  && $product->product_canon_category_id > 0){
+						echo '<p style = "color:red;">CanonCat: '. $product->canonCatIdname.'</p>';
+					}
 				?></td>
 				<!-- Reorder only when category ID is present -->
 				<?php if ($this->categoryId ) { ?>
 					<td class="order" >
-						<span class="vmicon vmicon-16-move"></span>
+						<?php if($this->showDrag){ ?>
+							<span class="vmicon vmicon-16-move"></span>
+						<?php }?>
 						<span><?php echo $this->pagination->vmOrderUpIcon( $i, $product->ordering, 'orderup', vmText::_('COM_VIRTUEMART_MOVE_UP')  ); ?></span>
 						<span><?php echo $this->pagination->vmOrderDownIcon( $i, $product->ordering, $total , true, 'orderdown', vmText::_('COM_VIRTUEMART_MOVE_DOWN') ); ?></span>
-						<input class="ordering" type="text" name="order[<?php echo $product->id?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $product->ordering; ?>" style="text-align: center" />
+<!--						quorvia -->
+						<input class="ordering" type="text" name="order[<?php echo $product->virtuemart_product_id?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $product->ordering; ?>" style="text-align: center" />
 
 						<?php // echo vmCommonHTML::getOrderingField( $product->ordering ); ?>
 					</td>
@@ -228,9 +238,8 @@ if($this->pagination->limit<=$mediaLimit or $totalList<=$mediaLimit){
 
 // DONE BY stephanbais
 /// DRAG AND DROP PRODUCT ORDER HACK
-if ($this->categoryId ) {
+if ($this->categoryId && $this->showDrag) {
 	vmJsApi::addJScript( '/administrator/components/com_virtuemart/assets/js/products.js', false, false );
-	//vmJsApi::addJScript( 'sortableProducts', 'Virtuemart.sortableProducts;' );
 	vmJsApi::addJScript('sortable','Virtuemart.sortable;');
 }
 

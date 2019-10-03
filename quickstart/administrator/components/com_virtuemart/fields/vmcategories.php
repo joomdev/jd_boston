@@ -15,15 +15,9 @@ defined('_JEXEC') or die();
  * other free or open source software licenses.
  * @version $Id$
  */
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
-if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
 
-if (!class_exists('ShopFunctions'))
-	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
-if (!class_exists('VmHtml'))
-	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-if (!class_exists('TableCategories'))
-	require(VMPATH_ADMIN . DS . 'tables' . DS . 'categories.php');
+
+
 jimport('joomla.form.formfield');
 
 /*
@@ -36,6 +30,7 @@ class JFormFieldVmcategories extends JFormField {
 
 	protected function getInput() {
 
+		if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
 		VmConfig::loadConfig();
 		vmLanguage::loadJLang('com_virtuemart');
 

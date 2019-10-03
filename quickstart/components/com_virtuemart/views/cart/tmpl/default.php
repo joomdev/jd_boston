@@ -63,7 +63,6 @@ vmJsApi::vmValidator();
 	?><form method="post" id="checkoutForm" name="checkoutForm" action="<?php echo JRoute::_ ('index.php?option=com_virtuemart&view=cart' . $taskRoute, $this->useXHTML, $this->useSSL); ?>">
 		<?php
 		if(!$this->isPdf and VmConfig::get('multixcart')=='byselection'){
-			if (!class_exists('ShopFunctions')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 			echo shopFunctions::renderVendorFullVendorList($this->cart->vendorId);
 			?><input type="submit" name="updatecart" title="<?php echo vmText::_('COM_VIRTUEMART_SAVE'); ?>" value="<?php echo vmText::_('COM_VIRTUEMART_SAVE'); ?>" class="button"  style="margin-left: 10px;"/><?php
 		}
@@ -101,8 +100,8 @@ vmJsApi::vmValidator();
 
 if(VmConfig::get('oncheckout_ajax',false)){
 	vmJsApi::addJScript('updDynamicListeners',"
-if (typeof Virtuemart.containerSelector === 'undefined') Virtuemart.containerSelector = '#cart-view';
-if (typeof Virtuemart.container === 'undefined') Virtuemart.container = jQuery(Virtuemart.containerSelector);
+if (typeof Virtuemart.containerSelector === 'undefined') { Virtuemart.containerSelector = '#cart-view'; }
+if (typeof Virtuemart.container === 'undefined') { Virtuemart.container = jQuery(Virtuemart.containerSelector); }
 
 jQuery(document).ready(function() {
 	if (Virtuemart.container)
@@ -112,7 +111,7 @@ jQuery(document).ready(function() {
 
 $orderDoneLink = JRoute::_('index.php?option=com_virtuemart&view=cart&task=orderdone');
 
-vmJsApi::addJScript('vm.checkoutFormSubmit',"
+vmJsApi::addJScript('vm-checkoutFormSubmit',"
 Virtuemart.bCheckoutButton = function(e) {
 	e.preventDefault();
 	jQuery(this).vm2front('startVmLoading');
@@ -139,7 +138,7 @@ jQuery(document).ready(function($) {
 	");
 
 if( !VmConfig::get('oncheckout_ajax',false)) {
-	vmJsApi::addJScript('vm.STisBT',"
+	vmJsApi::addJScript('vm-STisBT',"
 		jQuery(document).ready(function($) {
 
 			if ( $('#STsameAsBTjs').is(':checked') ) {
@@ -163,6 +162,8 @@ if( !VmConfig::get('oncheckout_ajax',false)) {
 }
 
 $this->addCheckRequiredJs();
+vmJsApi::addJScript( 'vmprices',false,false);
+
 ?><div style="display:none;" id="cart-js">
 <?php echo vmJsApi::writeJS(); ?>
 </div>

@@ -1,0 +1,91 @@
+<?php
+/**
+ * Admin form for the email configuration settings
+ *
+ * @package	VirtueMart
+ * @subpackage Config
+ * @author Oscar van Eijk
+ * @link https://virtuemart.net
+ * @copyright Copyright (c) 2015 VirtueMart Team. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * VirtueMart is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ * @version $Id: default_checkout.php 9008 2015-10-04 20:41:08Z Milbo $
+ */
+defined('_JEXEC') or die('Restricted access');
+?>
+<div class="well nr-well ">
+     <h4><?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_SHOP_EMAILS'); ?></h4>
+     <div class="well-desc"></div>
+  
+
+
+		<?php
+		$optOrderMail = array(
+			'0' => vmText::_('COM_VIRTUEMART_ADMIN_CFG_MAIL_FORMAT_TEXT'),
+			'1' => vmText::_('COM_VIRTUEMART_ADMIN_CFG_MAIL_FORMAT_HTML'),
+		);
+		echo VmHTML_override::row('genericlist', 'COM_VIRTUEMART_ADMIN_CFG_MAIL_FORMAT', $optOrderMail, 'order_mail_html', '', 'value', 'text', VmConfig::get('order_mail_html', 0));
+		echo VmHTML_override::row('checkbox', 'COM_VIRTUEMART_ADMIN_CFG_MAIL_USEVENDOR', 'useVendorEmail', VmConfig::get('useVendorEmail', 0));
+		echo VmHTML_override::row('checkbox', 'COM_VM_CFG_INVOICE_IN_USER_LANG', 'invoiceInUserLang', VmConfig::get('invoiceInUserLang', 0));
+		$optDebugEmail = array(
+			'0' => vmText::_('COM_VIRTUEMART_NO'),
+			'debug_email' => vmText::_('COM_VM_CFG_DEBUG_MAIL_YES'),
+			'debug_email_send' => vmText::_('COM_VM_CFG_DEBUG_MAIL_SEND'),
+		);
+		echo VmHTML_override::row('genericlist', 'COM_VM_CFG_DEBUG_MAIL', $optDebugEmail, 'debug_mail', '', 'value', 'text', VmConfig::get('debug_mail', 0));
+		echo VmHTML_override::row('input', 'COM_VM_CFG_EMAIL_ADDITIONAL_VENDOR_MAIL', 'addVendorEmail', VmConfig::get('addVendorEmail', ''));
+		$attrlist = 'class="inputbox" multiple="multiple" ';
+		echo VmHTML_override::row('genericlist', 'COM_VM_CFG_EMAIL_FIELDS_SHOPPER', $this->emailSf_Options, 'email_sf_s[]', $attrlist, 'name', 'title', VmConfig::get('email_sf_s', array('email')), 'email_sf_s', true);
+
+		echo VmHTML_override::row('genericlist', 'COM_VIRTUEMART_CFG_OSTATUS_EMAILS_SHOPPER', $this->osWoP_Options, 'email_os_s[]', $attrlist, 'order_status_code', 'order_status_name', VmConfig::get('email_os_s', array('U', 'C', 'S', 'R', 'X')), 'email_os_s', true);
+		echo VmHTML_override::row('genericlist', 'COM_VIRTUEMART_CFG_OSTATUS_EMAILS_VENDOR', $this->os_Options, 'email_os_v[]', $attrlist, 'order_status_code', 'order_status_name', VmConfig::get('email_os_v', array('U', 'C', 'R', 'X')), 'email_os_v', true);
+
+		echo VmHTML_override::row('input', 'COM_VIRTUEMART_CFG_ATTACH', 'attach', VmConfig::get('attach', ''));
+		echo VmHTML_override::row('genericlist', 'COM_VIRTUEMART_CFG_ATTACH_OS', $this->osWoP_Options, 'attach_os[]', $attrlist, 'order_status_code', 'order_status_name', VmConfig::get('attach_os', array('U', 'C', 'R', 'X')), 'attach_os', true);
+		?>
+
+</div>
+<?php if (VmConfig::get('ordersAddOnly', false)) { ?>
+<div class="well nr-well ">
+     <h4><?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_SHOP_ORDERS'); ?></h4>
+     <div class="well-desc"></div>
+	<table class="admintable">
+		<?php /*?>		<!-- NOT YET -->
+ 		echo VmHTML_override::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_MAIL_FROM_RECIPIENT','mail_from_recipient',VmConfig::get('mail_from_recipient',0));
+ 		echo VmHTML_override::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_MAIL_FROM_SETSENDER','mail_from_setsender',VmConfig::get('mail_from_setsender',0));
+<?php */
+
+		/* Should remove none ??? */
+
+			echo VmHTML_override::row('genericlist', 'COM_VIRTUEMART_ADMIN_CFG_STATUS_ORDER_ALLOWEDIT_OS', $this->os_Options, 'order_allowedit_os[]', $attrlist, 'order_status_code', 'order_status_name', VmConfig::get('order_allowedit_os', array('P', 'U')), 'order_allowedit_os', true);
+
+
+		?>
+	</table>
+</div>
+<?php } ?>
+<div class="well nr-well ">
+     <h4><?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_SHOP_INVOICES'); ?></h4>
+     <div class="well-desc"></div>
+
+	<table class="admintable">
+		<?php /*?>		<!-- NOT YET -->
+ 		echo VmHTML_override::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_MAIL_FROM_RECIPIENT','mail_from_recipient',VmConfig::get('mail_from_recipient',0));
+ 		echo VmHTML_override::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_MAIL_FROM_SETSENDER','mail_from_setsender',VmConfig::get('mail_from_setsender',0));
+<?php */
+
+		echo VmHTML_override::row('genericlist', 'COM_VIRTUEMART_ADMIN_CFG_STATUS_PDF_INVOICES', $this->osWoP_Options, 'inv_os[]', $attrlist, 'order_status_code', 'order_status_name', VmConfig::get('inv_os', array('C')), 'inv_os', true);
+
+		if (VmConfig::get('ChangedInvCreateNewInvNumber', false)) {
+			echo VmHTML_override::row('genericlist', 'COM_VIRTUEMART_ADMIN_CFG_STATUS_ORDER_REFUND', $this->osWoP_Options, 'refund_os[]', $attrlist, 'order_status_code', 'order_status_name', VmConfig::get('refund_os', array('R')), 'refund_os', true);
+		}
+
+
+		?>
+	</table>
+</div>
+
+

@@ -19,9 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if (!class_exists('VmTable'))
-    require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmtable.php');
-
 /**
  * Shipment  table class
  * The class is is used to manage the shipment in the shop.

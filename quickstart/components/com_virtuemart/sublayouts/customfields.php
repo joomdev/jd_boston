@@ -54,7 +54,7 @@ if (!empty($product->customfieldsSorted[$position])) {
 		<?php
 			$custom_title = $field->custom_title;
 		} ?>
-      <div class="clear"></div>
+		<div class="clear"></div>
 	</div>
 <?php
 } ?>

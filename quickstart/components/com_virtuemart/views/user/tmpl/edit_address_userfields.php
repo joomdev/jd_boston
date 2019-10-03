@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: edit_address_userfields.php 9625 2017-08-17 12:49:57Z Milbo $
+ * @version $Id: edit_address_userfields.php 9831 2018-05-07 13:45:33Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -26,7 +26,8 @@ $hiddenFields = '';
 
 $i=0;
 //When only one Delimiter exists, set it to begin of the array
-//not an elegant solution, but works for the moment.
+//not an elegant solution, but works.
+$tmp = false;
 foreach($this->userFields['fields'] as $k=>$field){
 	if($field['type'] == 'delimiter') {
 	    $tmp = $field;

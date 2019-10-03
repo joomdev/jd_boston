@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension version="2.5" type="plugin" group="vmshipment" method="upgrade">
     <name>By weight, ZIP and countries</name>
-    <creationDate>March 31 2017</creationDate>
+    <creationDate>September 24 2019</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>https://virtuemart.net</authorUrl>
-    <copyright>Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <version>3.2.1</version>
+    <version>3.6.2</version>
     <description>VMSHIPMENT_WEIGHT_COUNTRIES_PLUGIN_DESC</description>
     <languages>
         <language tag="en-GB">en-GB.plg_vmshipment_weight_countries.ini</language>
@@ -19,7 +19,7 @@
     <vmconfig>
         <fields name="params">
             <fieldset name="template">
-                <field name="shipment_logos" type="vmfiles" multiple="true" directory="/images/stories/virtuemart/shipment"
+                <field name="shipment_logos" type="vmfiles" multiple="true" directory="/images/virtuemart/shipment"
                         label="VMSHIPMENT_WEIGHT_COUNTRIES_LOGOS"
                        size="40"
                        default="" hide_default="1" hide_none="true"
@@ -34,12 +34,13 @@
                     <option value="0">COM_VIRTUEMART_NO</option>
                     <option value="1">COM_VIRTUEMART_YES</option>
                 </field>
-                <field name="categories" value_field="category_name" type="vmcategories" multiple="true" size="10" default="" label="VMSHIPMENT_WEIGHT_CATEGORIES"
+                <field name="checkConditionsCore" value="1" default="1" type="hidden"/>
+                <!--field name="categories" value_field="category_name" type="vmcategories" multiple="true" size="10" default="" label="VMSHIPMENT_WEIGHT_CATEGORIES"
                        description="VMSHIPMENT_WEIGHT_CATEGORIES_DESC"/>
                 <field name="blocking_categories" value_field="category_name" type="vmcategories" multiple="true" size="10" default="" label="VMSHIPMENT_WEIGHT_BLOCKING_CATEGORIES"
-                       description="VMSHIPMENT_WEIGHT_CATEGORIES_DESC"/>
+                       description="VMSHIPMENT_WEIGHT_BLOCKING_CATEGORIES_DESC"/>
                 <field name="countries" type="vmcountries" multiple="true" scope="com_virtuemart" default=""
-                       label="VMSHIPMENT_WEIGHT_COUNTRIES_COUNTRIES" description="VMSHIPMENT_WEIGHT_COUNTRIES_COUNTRIES_DESC"/>
+                       label="VMSHIPMENT_WEIGHT_COUNTRIES_COUNTRIES" description="VMSHIPMENT_WEIGHT_COUNTRIES_COUNTRIES_DESC"/-->
                 <field name="zip_start" type="text" size="10" default="" label="VMSHIPMENT_WEIGHT_COUNTRIES_ZIP_START"
                        description="VMSHIPMENT_WEIGHT_COUNTRIES_ZIP_START_DESC"/>
                 <field name="zip_stop" type="text" size="10" default="" label="VMSHIPMENT_WEIGHT_COUNTRIES_ZIP_STOP"
@@ -59,12 +60,12 @@
                 <field name="nbproducts_stop" type="text" size="10" default=""
                        label="VMSHIPMENT_WEIGHT_COUNTRIES_NBPRODUCTS_STOP"
                        description="VMSHIPMENT_WEIGHT_COUNTRIES_NBPRODUCTS_STOP_DESC"/>
-                <field name="orderamount_start" type="text" size="10" default=""
+                <!--field name="orderamount_start" type="text" size="10" default=""
                        label="VMSHIPMENT_WEIGHT_COUNTRIES_ORDERAMOUNT_START"
                        description="VMSHIPMENT_WEIGHT_COUNTRIES_ORDERAMOUNT_START_DESC"/>
                 <field name="orderamount_stop" type="text" size="10" default=""
                        label="VMSHIPMENT_WEIGHT_COUNTRIES_ORDERAMOUNT_STOP"
-                       description="VMSHIPMENT_WEIGHT_COUNTRIES_ORDERAMOUNT_STOP_DESC"/>
+                       description="VMSHIPMENT_WEIGHT_COUNTRIES_ORDERAMOUNT_STOP_DESC"/-->
             </fieldset>
             <fieldset name="fee">
                 <field name="shipment_cost" type="text" label="VMSHIPMENT_WEIGHT_COUNTRIES_COST"

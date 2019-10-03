@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: edit.php 9413 2017-01-04 17:20:58Z Milbo $
+* @version $Id: edit.php 10016 2019-02-11 18:55:08Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -31,7 +31,7 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_COUNTRY_DETAILS');
 	<legend><?php echo vmText::_('COM_VIRTUEMART_COUNTRY_DETAILS'); ?></legend>
 	<table class="admintable">
 		<?php
-		$lang = JFactory::getLanguage();
+		$lang = vmLanguage::getLanguage();
 		$prefix="COM_VIRTUEMART_COUNTRY_";
 		$country_string = $lang->hasKey($prefix.$this->country->country_3_code) ? ' (' . vmText::_($prefix.$this->country->country_3_code) . ')' : ' ';
         ?>
@@ -50,6 +50,7 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_COUNTRY_DETAILS');
 		</tr>*/ ?>
 		<?php echo VmHTML::row('input','COM_VIRTUEMART_COUNTRY_3_CODE','country_3_code',$this->country->country_3_code,'class="required"'); ?>
 		<?php echo VmHTML::row('input','COM_VIRTUEMART_COUNTRY_2_CODE','country_2_code',$this->country->country_2_code,'class="required"'); ?>
+		<?php echo VmHTML::row('input','COM_VIRTUEMART_ORDERING','ordering',$this->country->ordering,''); ?>
 	</table>
 	</fieldset>
 </div>

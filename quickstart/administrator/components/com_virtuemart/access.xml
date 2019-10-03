@@ -6,8 +6,8 @@
 		<action name="vm.manage" title="COM_VM_MANAGE_FE" description="COM_VM_ACL_MANAGE_FE_TIP" />
 		<action name="vm.managevendors" title="COM_VM_MANAGE_VENDORS" description="COM_VM_ACL_MANAGE_VENDORS_TIP" />
 		<!-- action name="core.edit.own" title="JACTION_EDITOWN" description="COM_CONFIG_ACTION_EDITOWN_TIP" /-->
-		<action name="vm.raw" title="COM_VM_ALRAW" description="COM_VM_ALRAW_TIP" />
-		<action name="vm.html" title="COM_VM_ALHTML" description="COM_VM_ALHTML_TIP" />
+		<!--action name="vm.raw" title="COM_VM_ALRAW" description="COM_VM_ALRAW_TIP" />
+		<action name="vm.html" title="COM_VM_ALHTML" description="COM_VM_ALHTML_TIP" /-->
 	</section>
 	<section name="component">
 		<action name="vm.category" title="COM_VM_CAT_MANAGE" description="COM_VM_CAT_MANAGE_TIP" />
@@ -60,6 +60,8 @@
 	<section name="component">
 		<action name="vm.user" title="COM_VM_USER_MANAGE" description="COM_VM_USER_MANAGE_TIP" />
 		<action name="vm.user.edit" title="COM_VM_USER_EDIT" description="COM_VM_USER_EDIT_TIP" />
+		<action name="vm.user.delete" title="COM_VM_USER_DELETE" description="COM_VM_USER_DELETE_TIP" />
+		<action name="vm.user.editvendor" title="COM_VM_USER_EDITVENDOR" description="COM_VM_USER_EDITVENDOR_TIP" />
 		<action name="vm.user.editshop" title="COM_VM_USER_EDITSHOP" description="COM_VM_USER_EDITSHOP_TIP" />
 		<action name="vm.shoppergroup" title="COM_VM_SHOPPERGROUP_MANAGE" description="COM_VM_SHOPPERGROUP_MANAGE_TIP" />
 		<action name="vm.shoppergroup.edit" title="COM_VM_SHOPPERGROUP_EDIT" description="COM_VM_SHOPPERGROUP_EDIT_TIP" />
@@ -73,6 +75,7 @@
 		<action name="vm.media.edit" title="COM_VM_MEDIA_EDIT" description="COM_VM_MEDIA_EDIT_TIP" />
 		<action name="vm.media.create" title="COM_VM_MEDIA_CREATE" description="COM_VM_MEDIA_CREATE_TIP" />
 		<action name="vm.media.delete" title="COM_VM_MEDIA_DELETE" description="COM_VM_MEDIA_DELETE_TIP" />
+		<action name="vm.media.remote" title="COM_VM_MEDIA_REMOTE" description="COM_VM_MEDIA_REMOTE_TIP" />
 		<action name="vm.media.potdang" title="COM_VIRTUEMART_MEDIA_POTENTIAL_DANGEROUS" description="COM_VIRTUEMART_MEDIA_POTENTIAL_DANGEROUS_TIP" />
 		<action name="vm.media.trusteduploader" title="COM_VM_MEDIA_POTENTIAL_TRUSTED_UPLOADER" description="COM_VM_MEDIA_POTENTIAL_TRUSTED_UPLOADER_TIP" />
 	</section>

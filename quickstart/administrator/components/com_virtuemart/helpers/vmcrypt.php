@@ -1,5 +1,6 @@
 <?php
-defined('VMPATH_ROOT') or die();
+defined ('_JEXEC') or die();
+
 /**
  * virtuemart encrypt class, with some additional behaviours.
  *
@@ -21,31 +22,76 @@ defined('VMPATH_ROOT') or die();
 class vmCrypt {
 
 	const ENCRYPT_SAFEPATH="keys";
+	//const VMCIPHER = "aes-128-gcm";
+	const VMCIPHER = "AES-128-OFB";
+	const VMCIPHER71 = "aes-128-gcm";
 
 	static function encrypt ($string) {
 
-		$key = self::_getKey ();
+		$key = self::_getKey (0,true);
 
-		if(!empty($key) and function_exists('mcrypt_encrypt')){
-			// create a random IV to use with CBC encoding
-			$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-			$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-			//vmdebug('vmCrypt encrypt the used key '.$key);
-			return base64_encode ($iv.mcrypt_encrypt (MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC,$iv));
-		} else {
-			vmdebug('vmCrypt no mcrypt_encrypt available');
-			return base64_encode ($string);
+		if(!empty($key)) {
+			if(empty($key['method'])) $key['method'] = '';
+			if( $key['method']=='openssl_' and function_exists('openssl_encrypt')){
+				//vmdebug('vmCrypt using openssl for encrypt');
+				//$iv = self::_getIvOpenSSL ();
+				//return base64_encode ( openssl_encrypt( $string, self::VMCIPHER, $key['key'], 0, $iv ) );
+				$ivlen = openssl_cipher_iv_length(self::VMCIPHER);
+				$iv = openssl_random_pseudo_bytes($ivlen);
+				/*if(version_compare(PHP_VERSION, '7.1.0', 'ge')) {
+					return base64_encode(openssl_encrypt($string, self::VMCIPHER, $key['key'], $options=OPENSSL_RAW_DATA, $iv));
+				} else {*/
+					$ciphertext_raw = openssl_encrypt($string, self::VMCIPHER, $key['key'], $options=OPENSSL_RAW_DATA, $iv);
+					$hmac = hash_hmac('sha256', $ciphertext_raw, $key['key'], $as_binary=true);
+					return base64_encode( $iv.$hmac.$ciphertext_raw );
+				//}
+
+			} else
+			if( function_exists('mcrypt_encrypt')) {
+				// create a random IV to use with CBC encoding
+				$iv_size = mcrypt_get_iv_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC );
+				$iv = mcrypt_create_iv( $iv_size, MCRYPT_RAND );
+				//vmdebug('vmCrypt encrypt the used key '.$key);
+				return base64_encode( $iv.mcrypt_encrypt( MCRYPT_RIJNDAEL_256, $key['key'], $string, MCRYPT_MODE_CBC, $iv ) );
+			}
 		}
 
+		vmdebug('vmCrypt no '.$key['method'].' available');
+		return base64_encode ($string);
 	}
 
 	static function decrypt ($string,$date=0) {
 
 		if(empty($string)) return '';
 
-		$key = self::_getKey ($date);
+		$key = self::_getKey ($date,true);
 		if(!empty($key)){
 			$ciphertext_dec = base64_decode($string);
+
+			if( $key['method']=='openssl_' and function_exists('openssl_decrypt')){
+				$ivlen = openssl_cipher_iv_length(self::VMCIPHER);
+
+				/*if(version_compare(PHP_VERSION, '7.1.0', 'ge')) {
+					//store $cipher, $iv, and $tag for decryption later
+					$iv = openssl_random_pseudo_bytes($ivlen);
+					return openssl_decrypt($string, self::VMCIPHER, $key['key'], $options=OPENSSL_RAW_DATA, $iv);
+				} else {*/
+					$iv = substr($ciphertext_dec, 0, $ivlen);
+					$hmac = substr($ciphertext_dec, $ivlen, $sha2len=32);
+					$ciphertext_raw = substr($ciphertext_dec, $ivlen+$sha2len);
+					$original_plaintext = openssl_decrypt($ciphertext_raw, self::VMCIPHER, $key['key'], $options=OPENSSL_RAW_DATA, $iv);
+					$calcmac = hash_hmac('sha256', $ciphertext_raw, $key['key'], $as_binary=true);
+					if (hash_equals($hmac, $calcmac))//PHP 5.6+ timing attack safe comparison
+					{
+						return $original_plaintext;
+					} else {
+						vmdebug('Timing attack?');
+						return $original_plaintext;
+					}
+				//}
+
+
+			} else
 			if(function_exists('mcrypt_decrypt')){
 				$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
 				//vmdebug('decrypt $iv_size', $iv_size ,MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
@@ -58,7 +104,7 @@ class vmCrypt {
 					//vmdebug('Seems something not encrytped should be decrypted, return default ',$string);
 					return $string;
 				} else {
-					$mcrypt_decrypt = mcrypt_decrypt (MCRYPT_RIJNDAEL_256, $key, $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec);
+					$mcrypt_decrypt = mcrypt_decrypt (MCRYPT_RIJNDAEL_256, $key['key'], $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec);
 					return rtrim ($mcrypt_decrypt, "\0");
 				}
 
@@ -68,31 +114,117 @@ class vmCrypt {
 			}
 
 		} else {
+			vmdebug('vmCrypt no key available',vmCrypt::$existingKeys);
 			return $string;
 		}
 
 	}
 
-	private static function _getKey ($date = 0) {
+	private static function _getIvOpenSSL(){
 
-		$key = self::_checkCreateKeyFile($date);
-
-		return $key;
-
+		static $iv = null;
+		if($iv===null){
+			$ivlen = openssl_cipher_iv_length(self::VMCIPHER);
+			$iv = openssl_random_pseudo_bytes($ivlen);
+		}
+		return $iv;
 	}
 
-	private static function _checkCreateKeyFile($date){
+
+	private static function _getKey($date, $set = false){
 		jimport('joomla.filesystem.file');
 
 		vmSetStartTime('_checkCreateKeyFile');
-		static $existingKeys = false;
+		if(vmCrypt::$existingKeys===null){
+			self::_getExistingKeys();
+		}
 
-		$keyPath = self::getEncryptSafepath ();
 
-		if(!$existingKeys){
+		if(vmCrypt::$existingKeys and is_array(vmCrypt::$existingKeys) and count(vmCrypt::$existingKeys)>0){
+			ksort(vmCrypt::$existingKeys);
+			$key = '';
+			$usedKey = '';
+			$uDate = 0;
+
+			if(empty($date)){
+				$date = new JDate('now');
+				$date = $date->toUnix();
+			}
+
+			if(!empty($date)){
+
+				foreach(vmCrypt::$existingKeys as $unixDate=>$values){
+					if(($unixDate) >= $date ){
+						//vmdebug('$unixDate '.$unixDate.' >= $date '.$date);
+						continue;
+					}
+					//vmdebug('$unixDate '.$unixDate.' < $date '.$date);
+					$usedKey = $values;
+					$uDate = $unixDate;
+				}
+			}
+
+			if( empty($usedKey)){
+				$usedKey = end(vmCrypt::$existingKeys);
+				$uDate = key(vmCrypt::$existingKeys);
+			}
+
+			//No key means, we wanna encrypt something, when it has not the new size,
+			//it is an old key and must be replaced
+			$ksize = VmConfig::get('keysize',24);
+			if(empty($usedKey['key']) or !isset($usedKey['b64']) or !isset($usedKey['size']) or $usedKey['size']!=$ksize or empty($usedKey['method']) or $usedKey['method'] != 'openssl_' ){
+				$key = self::_createKeyFile($ksize);
+				$k = $key['unixtime'];
+				unset($key['unixtime']);
+				vmCrypt::$existingKeys[$k] = $key;
+				return $set ? $key:$key['key'];
+			}
+
+			/*7if( empty($usedKey) or empty($usedKey['method']) ){
+
+				$usedKey = end(vmCrypt::$existingKeys);
+				$uDate = key(vmCrypt::$existingKeys);
+				//No key means, we wanna encrypt something, when it has not the new size,
+				//it is an old key and must be replaced
+				$ksize = VmConfig::get('keysize',24);
+				if(empty($usedKey['key']) or !isset($usedKey['b64']) or !isset($usedKey['size']) or $usedKey['size']!=$ksize){
+					$key = self::_createKeyFile($ksize);
+					$k = $key['unixtime'];
+					unset($key['unixtime']);
+					vmCrypt::$existingKeys[$k] = $key;
+					return $set ? $key:$key['key'];
+				}
+			}*/
+
+			if(!empty($usedKey['key']) and (!isset($usedKey['b64']) or $usedKey['b64']=='1')){
+
+				$usedKey['key'] = base64_decode($usedKey['key']);
+				$usedKey['b64'] = 0;
+				vmCrypt::$existingKeys[$uDate] = $usedKey;
+				//vmCrypt::$existingKeys[$uDate]['b64'] = 0;
+				vmdebug('Doing base64_decode '.$usedKey['key']. ' '.$key);
+			} /*else {
+				$key = $usedKey['key'];
+			}*/
+			//vmdebug('vmCrypt return key ',$usedKey);
+			return $set ? $usedKey:$usedKey['key'];
+		} else {
+			$key = self::_createKeyFile(VmConfig::get('keysize',24));
+			$k = $key['unixtime'];
+			unset($key['unixtime']);
+			vmCrypt::$existingKeys[$k] = $key;
+			return $set ? $key:$key['key'];
+		}
+	}
+
+	static $existingKeys = null;
+	private static function _getExistingKeys(){
+
+		if(vmCrypt::$existingKeys===null){
+			$keyPath = self::getEncryptSafepath ();
 			$dir = opendir($keyPath);
 			if(is_resource($dir)){
-				$existingKeys = array();
+				vmCrypt::$existingKeys = array();
 				while(false !== ( $file = readdir($dir)) ) {
 					if (( $file != '.' ) && ( $file != '..' )) {
 						if ( !is_dir($keyPath .DS. $file)) {
@@ -102,7 +234,7 @@ class vmCrypt {
 								if($content and is_array($content) and isset($content['unixtime'])){
 									$k = $content['unixtime'];
 									unset($content['unixtime']);
-									$existingKeys[$k] = $content;
+									vmCrypt::$existingKeys[$k] = $content;
 									//vmdebug('Reading '.$keyPath .DS. $file,$content);
 								}
 
@@ -120,78 +252,26 @@ class vmCrypt {
 				static $warn = false;
 				if(!$warn)vmWarn('Key folder in safepath unaccessible '.$keyPath);
 				$warn = true;
+				vmCrypt::$existingKeys= false;
 			}
 		}
-
-		if($existingKeys and is_array($existingKeys) and count($existingKeys)>0){
-			ksort($existingKeys);
-			$key = '';
-			$usedKey = '';
-			$uDate = 0;
-
-			if(empty($date)){
-				$date = new JDate('now');
-				$date = $date->toUnix();
-			}
-
-			if(!empty($date)){
-
-				foreach($existingKeys as $unixDate=>$values){
-					if(($unixDate) >= $date ){
-						//vmdebug('$unixDate '.$unixDate.' >= $date '.$date);
-						continue;
-					}
-					//vmdebug('$unixDate '.$unixDate.' < $date '.$date);
-					$usedKey = $values;
-					$uDate = $unixDate;
-				}
-			}
-
-			if(empty($usedKey)){
-				$usedKey = end($existingKeys);
-				$uDate = key($existingKeys);
-				//No key means, we wanna encrypt something, when it has not the new size,
-				//it is an old key and must be replaced
-				$ksize = VmConfig::get('keysize',24);
-				if(empty($usedKey['key']) or !isset($usedKey['b64']) or !isset($usedKey['size']) or $usedKey['size']!=$ksize){
-					$key = self::_createKeyFile($keyPath,$ksize);
-					$k = $key['unixtime'];
-					unset($key['unixtime']);
-					$existingKeys[$k] = $key;
-					return $key['key'];
-				}
-			}
-
-			if(!empty($usedKey['key']) and (!isset($usedKey['b64']) or $usedKey['b64']=='1')){
-
-				$key = base64_decode($usedKey['key']);
-				$existingKeys[$uDate]['key'] = $key;
-				$existingKeys[$uDate]['b64'] = 0;
-				//vmdebug('Doing base64_decode '.$usedKey['key']. ' '.$key);
-			} else {
-				$key = $usedKey['key'];
-			}
-
-			return $key;
-		} else {
-			$key = self::_createKeyFile($keyPath,VmConfig::get('keysize',24));
-			$k = $key['unixtime'];
-			unset($key['unixtime']);
-			$existingKeys[$k] = $key;
-			return $key['key'];
-		}
+		return vmCrypt::$existingKeys;
 	}
 
+	private static function _createKeyFile($size = 32){
 
-	private static function _createKeyFile($keyPath, $size = 32){
-
+		$keyPath = self::getEncryptSafepath ();
 		$usedKey = date("ymd");
 		$filename = $keyPath . DS . $usedKey . '.ini';
 		if (!JFile::exists ($filename)) {
 
 			$key = self::crypto_rand_secure($size);
+			if(function_exists('openssl_encrypt')){
+				$method = 'openssl_';
+			} else if(function_exists('mcrypt_encrypt')){
+				$method = 'mcrypt_';
+			}
 
-			vmdebug('create key file '.$size.' '.$key);
 			$date = JFactory::getDate();
 			$today = $date->toUnix();
 			$dat = date("Y-m-d H:i:s");
@@ -203,8 +283,12 @@ class vmCrypt {
 						date = "'.$dat.'"
 						b64 = "'.$encb64.'"
 						size = "'.$size.'"
+						method = "'.$method.'"
 						; */ ?>';
-			$result = JFile::write($filename, $content);
+			if(JFile::write($filename, $content)){
+				vmdebug('created key file '.$method.' '.$size.' '.$key);
+			}
+
 			//b64 must be 0, else it will be b64 decoded again
 			return array('key'=>$key,'unixtime'=>$today,'date'=>$dat,'b64'=>0,'size'=>$size);
 		} else {
@@ -214,19 +298,10 @@ class vmCrypt {
 
 	public static function getEncryptSafepath () {
 
-		if (!class_exists('ShopFunctions'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
-		$safePath = ShopFunctions::checkSafePath();
-		if (empty($safePath)) {
-			return NULL;
-		}
-		$encryptSafePath = $safePath . self::ENCRYPT_SAFEPATH;
-		self::createEncryptFolder($encryptSafePath);
-
-		return $encryptSafePath;
+		return ShopFunctions::getSafePathFor(1, self::ENCRYPT_SAFEPATH);
 	}
 
-	private static function createEncryptFolder ($folderName) {
+	public static function createEncryptFolder ($folderName) {
 		jimport('joomla.filesystem.folder');
 
 		//$folderName = self::_getEncryptSafepath ();
@@ -335,9 +410,9 @@ class vmCrypt {
 
 		if((strlen($bytes) < $r) && function_exists('openssl_random_pseudo_bytes')) {
 			$bytes = openssl_random_pseudo_bytes($r);
-			if(!$used){
-				vmdebug('with openssl_random_pseudo_bytes',$bytes); $used = true;
-			}
+			//if(!$used){
+				//vmdebug('with openssl_random_pseudo_bytes',$bytes); $used = true;
+			//}
 		}
 
 		if((strlen($bytes) < $r) && function_exists('mcrypt_create_iv'))
@@ -346,39 +421,10 @@ class vmCrypt {
 			// (http://bugs.php.net/55169).
 			$flag = (version_compare(PHP_VERSION, '5.3.7', '<') && strncasecmp(PHP_OS, 'WIN', 3) == 0) ? MCRYPT_RAND : MCRYPT_DEV_URANDOM ;
 			$bytes = mcrypt_create_iv($r,$flag);
-			if(!$used){
-				vmdebug('with mcrypt_create_iv',$bytes); $used = true;
-			}
+			//if(!$used){
+				//vmdebug('with mcrypt_create_iv',$bytes); $used = true;
+			//}
 		}
-
-		if((strlen($bytes) < $r) && is_readable('/dev/urandom') && ($urandom = fopen('/dev/urandom', 'rb')) !== false) {
-			$bytes = @fread($urandom, $r);
-			@fclose($urandom);
-			if(!$used){
-				vmdebug('with urandom',$bytes); $used = true;
-			}
-		}
-
-		/*if ((strlen($bytes) < $r) && class_exists('COM')) {
-			// Officially deprecated in Windows 7
-			// http://msdn.microsoft.com/en-us/library/aa388182%28v=vs.85%29.aspx
-			try
-			{
-				// @noinspection PhpUndefinedClassInspection
-				$CAPI_Util = new COM('CAPICOM.Utilities.1');
-				if(is_callable(array($CAPI_Util,'GetRandom')))
-				{
-					// @noinspection PhpUndefinedMethodInspection
-					$bytes = $CAPI_Util->GetRandom($r,0);
-					$bytes = base64_decode($bytes);
-				}
-			}
-			catch (Exception $e){
-			}
-			if(!$used){
-				vmdebug('with CAPICOM',$bytes); $used = true;
-			}
-		}//*/
 
 		if (strlen($bytes) < $r) {
 
@@ -404,15 +450,6 @@ class vmCrypt {
 				}
 			}
 		}
-		//vmdebug('returning '.$bytes.' '.base64_encode($bytes));
-		//*/
-		/*if (strlen($bytes) < $r) {
-			// do something to warn system owner that
-			// pseudorandom generator is missing
-			vmdebug('crypto_rand_secure pseudorandom generator is missing',$bytes);
-		} else {
-			//vmdebug('crypto_rand_secure pseudorandom bytes '.$bytes);
-		}*/
 
 		return $bytes;
 	}

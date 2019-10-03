@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: product_edit_images.php 9461 2017-02-28 15:37:01Z Milbo $
+* @version $Id: product_edit_images.php 9851 2018-05-30 07:41:14Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -32,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
 	<div>
 		<?php
 			//echo '<div width="100px">'.vmText::_('COM_VIRTUEMART_RTB_AD').'</div>';
-			$jlang =JFactory::getLanguage();
+			$jlang =vmLanguage::getLanguage();
 			$tag = $jlang->getTag();
 			$imgUrl = 'https://www.pixelz.com/images/gmail.png';
 			if(strpos($tag,'de')!==FALSE){

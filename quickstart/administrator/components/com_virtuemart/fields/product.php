@@ -1,16 +1,10 @@
 <?php
-
-
-defined('JPATH_BASE') or die;
-
-jimport('joomla.form.formfield');
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
-if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
-if (!class_exists('ShopFunctions'))
-require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
-
-if (!class_exists('TableCategories'))
-require(VMPATH_ADMIN . DS . 'tables' . DS . 'categories.php');
+defined ('_JEXEC') or die();
+/**
+ * @author Max Milbers
+ * @copyright Copyright (C) VirtueMart Team - All rights reserved.
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL 2, see COPYRIGHT.php
+ */
 
 
 /**
@@ -38,15 +32,14 @@ class JFormFieldProduct extends JFormField
 
 
 	function getInput() {
-
+		if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
 		$key = ($this->element['key_field'] ? $this->element['key_field'] : 'value');
 		$val = ($this->element['value_field'] ? $this->element['value_field'] : $this->name);
 		VmConfig::loadConfig();
 		return JHtml::_('select.genericlist',  $this->_getProducts(), $this->name, 'class="inputbox"   ', 'value', 'text', $this->value, $this->id);
 	}
 	private function _getProducts() {
-		if (!class_exists('VmModel'))
-		require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmmodel.php');
+
 		$productModel = VmModel::getModel('Product');
 		$productModel->_noLimit = true;
 		if(vmAccess::manager('managevendors')){

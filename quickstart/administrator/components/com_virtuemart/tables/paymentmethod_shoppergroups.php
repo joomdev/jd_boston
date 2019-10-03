@@ -18,8 +18,6 @@
 
 defined('_JEXEC') or die();
 
-if(!class_exists('VmTableXarray'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtablexarray.php');
-
 /**
  * Calculator table class
  * The class is is used to manage the media in the shop.

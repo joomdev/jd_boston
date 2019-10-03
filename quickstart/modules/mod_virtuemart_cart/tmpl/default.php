@@ -56,7 +56,8 @@ if ($show_product_list) {
 </div>
 <div style="clear:both;"></div>
 <?php
-if(vRequest::getCmd('view')!='cart'){
+$view = vRequest::getCmd('view');
+if($view!='cart' and $view!='user'){
 	?><div class="payments-signin-button" ></div><?php
 }
 ?>

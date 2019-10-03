@@ -13,14 +13,11 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 9802 2018-03-20 15:22:11Z Milbo $
+ * @version $Id: view.html.php 10102 2019-08-20 06:50:21Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * HTML View class for maintaining the list of users
@@ -33,11 +30,6 @@ class VirtuemartViewUser extends VmViewAdmin {
 
 	function display($tpl = null) {
 
-
-		// Load the helper(s)
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-
 		$model = VmModel::getModel();
 		$currentUser = JFactory::getUser();
 
@@ -49,7 +41,6 @@ class VirtuemartViewUser extends VmViewAdmin {
 			if(empty($isSuperOrVendor)){
 				JFactory::getApplication()->redirect( 'index.php?option=com_virtuemart', vmText::_('JERROR_ALERTNOAUTHOR'), 'error');
 			} else {
-				if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
 				$userId = VirtueMartModelVendor::getUserIdByVendorId($isSuperOrVendor);
 			}
 			$this->SetViewTitle('STORE'  );
@@ -70,9 +61,6 @@ class VirtuemartViewUser extends VmViewAdmin {
 		if ($layoutName == 'edit' || $layoutName == 'edit_shipto') {
 
 			$editor = JFactory::getEditor();
-
-			if (!class_exists('VmImage'))
-				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 
 			$userDetails = $model->getUser();
 
@@ -108,14 +96,13 @@ class VirtuemartViewUser extends VmViewAdmin {
 			$this->lists['shoppergroups'] = ShopFunctions::renderShopperGroupList($userDetails->shopper_groups,true, 'virtuemart_shoppergroup_id');
 			$this->lists['vendors'] = '';
 			if($this->showVendors()){
-				$this->lists['vendors'] = ShopFunctions::renderVendorList($userDetails->virtuemart_vendor_id);
+				$this->lists['vendors'] = ShopFunctions::renderVendorList($userDetails->virtuemart_vendor_id, 'virtuemart_vendor_id', false);
 			}
 
 			$model->setId($userDetails->JUser->get('id'));
 			$this->lists['custnumber'] = $model->getCustomerNumberById();
 
 			// Shipment address(es)
-			if(!class_exists('ShopFunctionsF')) require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 			$this->lists['shipTo'] = shopFunctionsF::generateStAddressList($this, $model, 'addST');
 
 			$new = false;
@@ -172,7 +159,6 @@ class VirtuemartViewUser extends VmViewAdmin {
 
 
 			if (count($orderList) > 0 || !empty($userDetails->user_is_vendor)) {
-				if (!class_exists('CurrencyDisplay')) require(VMPATH_ADMIN.DS.'helpers'.DS.'currencydisplay.php');
 				$currency = CurrencyDisplay::getInstance();
 				$this->assignRef('currency',$currency);
 			}
@@ -213,23 +199,44 @@ class VirtuemartViewUser extends VmViewAdmin {
 
 		} else {
 
-			JToolBarHelper::divider();
-			JToolBarHelper::custom('toggle.user_is_vendor.1', 'publish','','COM_VIRTUEMART_USER_ISVENDOR');
-			JToolBarHelper::custom('toggle.user_is_vendor.0', 'unpublish','','COM_VIRTUEMART_USER_ISNOTVENDOR');
-			JToolBarHelper::divider();
-			JToolBarHelper::deleteList();
-			JToolBarHelper::editList();
+			JToolbarHelper::divider();
+			if($this->showVendors()){
+				JToolbarHelper::custom('toggle.user_is_vendor.1', 'publish','','COM_VIRTUEMART_USER_ISVENDOR');
+				JToolbarHelper::custom('toggle.user_is_vendor.0', 'unpublish','','COM_VIRTUEMART_USER_ISNOTVENDOR');
+				JToolbarHelper::divider();
+			}
+
+			if (vmAccess::manager('user.delete')) {
+				JToolbarHelper::deleteList();
+			}
+
+			JToolbarHelper::editList();
 			self::showACLPref('user');
 			//This is intentionally, creating new user via BE is buggy and can be done by joomla
-			//JToolBarHelper::addNewX();
+			//JToolbarHelper::addNewX();
 			$this->addStandardDefaultViewLists($model,'ju.id');
 
+			$orders = VmModel::getModel('orders');
 			$this->userList = $model->getUserList();
-			$this->searchTable = $model->searchTable;
+			foreach($this->userList as $i=>$user){
+
+				$this->userList[$i]->orderCount = $orders->getOrderCount($user->id);
+				$this->userList[$i]->shoppergroups = VirtueMartModelShopperGroup::getShoppergroupById($user->id);
+			}
 			$this->pagination = $model->getPagination();
 
 			$shoppergroupmodel = VmModel::getModel('shopperGroup');
 			$this->defaultShopperGroup = $shoppergroupmodel->getDefault(0)->shopper_group_name;
+
+			$searchOptionTables = array(
+			'0' => array('searchTable' => 'juser', 'searchTable_name' => vmText::_('COM_VIRTUEMART_ONLY_JUSER')),
+			'1' => array('searchTable' => 'all', 'searchTable_name' => vmText::_('JALL'))
+			);
+
+			if($this->showVendors()){
+				$searchOptionTables[] = array('searchTable' => 'vendors', 'searchTable_name' => vmText::_('COM_VM_ONLY_VENDORS'));
+			}
+			$this->searchOptions = JHtml::_('Select.genericlist', $searchOptionTables, 'searchTable', '', 'searchTable', 'searchTable_name', $model->searchTable );
 		}
 
 
@@ -258,11 +265,7 @@ class VirtuemartViewUser extends VmViewAdmin {
 	}
 
 	private function checkTCPDFinstalled(){
-
-		if(!file_exists(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php')){
-			vmLanguage::loadJLang('com_virtuemart_config');
-			vmWarn('COM_VIRTUEMART_TCPDF_NINSTALLED');
-		}
+		return vmDefines::tcpdf();
 	}
 
 }

@@ -36,7 +36,7 @@ class JFormFieldVMFiles extends JFormFieldFileList {
 
 				$dirNew = str_replace('images/stories','images',$dir);
 				if(!class_exists('JFolder')){
-					require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
+					require(VMPATH_LIBS .'/joomla/filesystem/folder.php');
 				}
 				if(JFolder::exists(VMPATH_ROOT .$dirNew)){
 					$this->directory = $dirNew;

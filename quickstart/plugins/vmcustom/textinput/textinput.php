@@ -8,7 +8,7 @@ defined('_JEXEC') or 	die( 'Direct Access to ' . basename( __FILE__ ) . ' is not
  * @subpackage payment
  * @author Max Milbers
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
- * @copyirght Copyright (C) 2011 - 2014 The VirtueMart Team and authors
+ * @copyirght Copyright (C) 2011 - 2019 The VirtueMart Team and authors
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -18,8 +18,6 @@ defined('_JEXEC') or 	die( 'Direct Access to ' . basename( __FILE__ ) . ' is not
  *
  * http://virtuemart.org
  */
-
-if (!class_exists('vmCustomPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmcustomplugin.php');
 
 class plgVmCustomTextinput extends vmCustomPlugin {
 
@@ -68,26 +66,6 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 		return true;
 	}
 
-
-	/**
-	 * Function for vm3
-	 * @see components/com_virtuemart/helpers/vmCustomPlugin::plgVmOnViewCart()
-	 * @author Patrick Kohl
-	 */
-	function plgVmOnViewCart($product,$row,&$html) {
-		if (empty($product->productCustom->custom_element) or $product->productCustom->custom_element != $this->_name) return '';
-		if (!$plgParam = $this->GetPluginInCart($product)) return '' ;
-
-		foreach($plgParam as $k => $item){
-
-			if(!empty($item['comment']) ){
-				if($product->productCustom->virtuemart_customfield_id==$k){
-					$html .='<span>'.vmText::_($product->productCustom->custom_title).' '.$item['comment'].'</span>';
-				}
-			}
-		}
-		return true;
-	}
 
 	/**
 	 * Trigger for VM3
@@ -156,20 +134,26 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 *
 	 * @author Max Milbers
 	 */
-	public function plgVmOnStoreInstallPluginTable($psType,$data,$table) {
+	public function plgVmOnStoreInstallPluginTable($plgType,$data,$table) {
 
-		if($psType!=$this->_psType) return false;
-		if(empty($table->custom_element) or $table->custom_element!=$this->_name ){
+		if($plgType!=$this->_psType){
 			return false;
 		}
+		if(!empty($data['custom_element']) and $data['custom_element']!=$this->_name){
+			return false;
+		}
+
+		$this->onStoreInstallPluginTable ($plgType, $data['custom_element']);
+
 		if(empty($table->is_input)){
 			vmInfo('COM_VIRTUEMART_CUSTOM_IS_CART_INPUT_SET');
 			$table->is_input = 1;
 			$table->store();
 		}
+
 		//Should the textinput use an own internal variable or store it in the params?
 		//Here is no getVmPluginCreateTableSQL defined
- 		//return $this->onStoreInstallPluginTable($psType);
+ 		//return $this->onStoreInstallPluginTable($psType,$data,$table);
 	}
 
 	/**
@@ -219,14 +203,10 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	}
 
 
-	public function plgVmDisplayInOrderCustom(&$html,$item, $param,$productCustom, $row ,$view='FE'){
-		$this->plgVmDisplayInOrderCustom($html,$item, $param,$productCustom, $row ,$view);
-	}
-
-	public function plgVmCreateOrderLinesCustom(&$html,$item,$productCustom, $row ){
-// 		$this->createOrderLinesCustom($html,$item,$productCustom, $row );
-	}
 	function plgVmOnSelfCallFE($type,$name,&$render) {
+		if ($name != $this->_name || $type != 'vmcustom') {
+			return FALSE;
+		}
 		$render->html = '';
 	}
 

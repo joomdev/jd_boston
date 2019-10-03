@@ -21,7 +21,7 @@ $product = $viewData['product'];
 $currency = $viewData['currency'];
 
 ?>
-<div class="product-price" id="productPrice<?php echo $product->virtuemart_product_id ?>">
+<div class="product-price" id="productPrice<?php echo $product->virtuemart_product_id ?>" data-vm="product-prices">
 	<?php
 	if (!empty($product->prices['salesPrice'])) {
 		//echo '<div class="vm-cart-price">' . vmText::_ ('COM_VIRTUEMART_CART_PRICE') . '</div>';
@@ -52,7 +52,7 @@ $currency = $viewData['currency'];
 	echo $currency->createPriceDiv ('salesPriceTt', 'COM_VIRTUEMART_PRODUCT_SALESPRICE_TT', $product->prices);
 	$infotax = vmConfig::get('vm_prices_info_tax', 0);
 	$infodelivery = vmConfig::get('vm_prices_info_delivery', 0);
-	if ($infotax == 1 OR $infodelivery == 1) { ?>
+	if ($infotax == 1 or $infodelivery == 1) { ?>
 		<div class="vm-prices-info">
 		<?php
 		if ($infotax == 1) {
@@ -63,7 +63,7 @@ $currency = $viewData['currency'];
 			}
 			echo vmText::_($taxclusive);
 		}
-		if ($infotax == 1 AND $infodelivery == 1) {
+		if ($infotax == 1 and $infodelivery == 1) {
 			echo vmText::_('COM_VM_PRICES_INFO_DIVIDER');
 		}
 		if ($infodelivery == 1) {
@@ -85,7 +85,7 @@ $currency = $viewData['currency'];
 	echo $currency->createPriceDiv ('discountAmountTt', 'COM_VIRTUEMART_PRODUCT_DISCOUNT_AMOUNT_TT', $product->prices);
 	echo $currency->createPriceDiv ('taxAmount', 'COM_VIRTUEMART_PRODUCT_TAX_AMOUNT', $product->prices);
 	echo $currency->createPriceDiv ('taxAmountTt', 'COM_VIRTUEMART_PRODUCT_TAX_AMOUNT_TT', $product->prices);
-	$unitPriceDescription = vmText::sprintf ('COM_VIRTUEMART_PRODUCT_UNITPRICE', vmText::_('COM_VIRTUEMART_UNIT_SYMBOL_'.$product->product_unit));
+	$unitPriceDescription = vmText::sprintf ('COM_VIRTUEMART_PRODUCT_UNITPRICE', vmText::_('COM_VIRTUEMART_UNIT_SYMBOL_'.strtoupper($product->product_unit)));
 	echo $currency->createPriceDiv ('unitPrice', $unitPriceDescription, $product->prices);
 	}
 	?>

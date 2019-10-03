@@ -1,0 +1,58 @@
+/*-- New Version-6 --*/
+.acym_module {
+	.acym_module_form {
+		text-align: center;
+
+		input {
+			max-width: 100%;
+		}
+	}
+
+	.acym_introtext {
+		max-width: 800px;
+		width: 100%;
+		margin: 0 auto 40px !important;
+	}
+
+	table.acym_form {
+		display: inline-block;
+		max-width: 950px;
+		width: 100%;
+
+		@include media-breakpoint-down(sm) {
+			display: inline-table;
+		}
+
+		.acyfield_2.acyfield_text {
+			width: 100%;
+
+			.cell {
+				height: 60px;
+				padding: 9px;
+				cursor: text;
+			}
+
+			input {
+				max-width: 100%;
+				width: 100%;
+			}
+		}
+
+		.acysubbuttons {
+			.subbutton {
+				@extend .btn-secondary;
+				height: 60px;
+				padding: 0 60px;	
+			}
+		}
+
+		tr td {
+			@include media-breakpoint-down(sm) {
+				display: inline-block;
+				margin-bottom: 10px;
+				word-wrap: break-word;
+				width: 100%;
+			}
+		}
+	}
+}

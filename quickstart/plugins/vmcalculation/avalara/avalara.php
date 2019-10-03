@@ -16,7 +16,7 @@ die('Direct Access to ' . basename(__FILE__) . ' is not allowed.');
  *
  */
 
-if (!class_exists('vmCalculationPlugin')) require(JPATH_VM_PLUGINS.DS.'vmcalculationplugin.php');
+if (!class_exists('vmCalculationPlugin')) require(VMPATH_PLUGINLIBS.DS.'vmcalculationplugin.php');
 
 defined('AVATAX_DEBUG') or define('AVATAX_DEBUG', 1);
 
@@ -55,29 +55,24 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 		$this->_tableId = 'id';
 		$this->_tablepkey = 'id';
 		$this->_tableId = 'id';
-		if (JVM_VERSION > 1) {
-			define ('VMAVALARA_PATH', JPATH_ROOT . DS . 'plugins' . DS . 'vmcalculation' . DS . 'avalara' );
-		} else {
-			define ('VMAVALARA_PATH', JPATH_ROOT . DS . 'plugins' . DS . 'vmcalculation' );
-		}
-		define('VMAVALARA_CLASS_PATH', VMAVALARA_PATH . DS . 'classes' );
 
-		require(VMAVALARA_PATH.DS.'AvaTax.php');	// include in all Avalara Scripts
+		define ('VMAVALARA_PATH', JPATH_ROOT .'/plugins/vmcalculation/avalara' );
 
+		define('VMAVALARA_CLASS_PATH', VMAVALARA_PATH .'/classes' );
+
+		require(VMAVALARA_PATH .'/AvaTax.php');	// include in all Avalara Scripts
+		//require(VMAVALARA_PATH .'/classes/BatchSvc/AvaTaxBatchSvc.php');
 		if(!class_exists('ATConfig')) require (VMAVALARA_CLASS_PATH.DS.'ATConfig.class.php');
+
+		spl_autoload_register('avatax_autoload_register');
 
 	}
 
 
 	function plgVmOnStoreInstallPluginTable($jplugin_name,$name,$table=0) {
 		//vmdebug('plgVmOnStoreInstallPluginTable',$jplugin_name,$name);
-		if(!defined('VM_VERSION') or VM_VERSION < 3){
-			return $this->onStoreInstallPluginTable($jplugin_name,$name);
-		} else {
-			$this->onStoreInstallPluginTable ($jplugin_name);
-			$this->plgVmStorePluginInternalDataCalc($name);
-		}
-
+		$this->onStoreInstallPluginTable ($jplugin_name);
+		$this->plgVmStorePluginInternalDataCalc($name);
 	}
 
 	function getTableSQLFields() {
@@ -202,9 +197,6 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 
 	public function plgVmStorePluginInternalDataCalc(&$data){
 
-		if (!class_exists ('TableCalcs')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . 'calcs.php');
-		}
 		if(!empty($data['avatax_virtuemart_country_id'])){
 			$data['avatax_virtuemart_country_id'] = json_encode($data['avatax_virtuemart_country_id']);
 		}
@@ -222,9 +214,6 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 
 		$calcData->setParameterable ($this->_xParams, $this->_varsToPushParam);
 
-		if (!class_exists ('VmTable')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmtable.php');
-		}
 		VmTable::bindParameterable ($calcData, $this->_xParams, $this->_varsToPushParam);
 		if(!is_array($calcData->avatax_virtuemart_country_id)){
 			//Suppress Warning
@@ -460,7 +449,6 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 					$this->addresses = $this->fillValidateAvalaraAddress($rule,$vmadd);
 				}
 				if($this->addresses){
-					if (!class_exists ('calculationHelper')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
 					$calculator = calculationHelper::getInstance ();
 					$orderModel = VmModel::getModel('orders');
 					$invoiceNumber = 'onr_'.$order['details']['BT']->order_number;
@@ -497,7 +485,6 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 			}
 			//We need for the tax calculation the shipment Address
 			//We have this usually in our cart.
-			if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 			$cart = VirtueMartCart::getCart();
 
 			//Test first for ST
@@ -842,7 +829,6 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 		//So when the vendor has a shipment address, we assume that it is his warehouse
 		//Later we can combine products with shipment addresses for different warehouse (yehye, future music)
 		//But for now we just use the BT address
-		if (!class_exists ('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'vendor.php');
 
 		$userId = VirtueMartModelVendor::getUserIdByVendorId ($calc['virtuemart_vendor_id']);
 		$userModel = VmModel::getModel ('user');
@@ -868,7 +854,6 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 			return FALSE;
 		}
 
-		if (!class_exists ('calculationHelper')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
 		$calculator = calculationHelper::getInstance ();
 		$request->setCurrencyCode($calculator->_currencyDisplay->_vendorCurrency_code_3); //CurrencyCode
 		$request->setDestinationAddress	($destination);     //Address
@@ -919,9 +904,6 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 			if(!empty($product['categories'])){
 
 				//avadebug('AvaTax setTaxCode Product has categories !',$catNames);
-				if (!class_exists ('TableCategories')) {
-					require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . 'categories.php');
-				}
 				$db = JFactory::getDbo();
 				$catTable = new TableCategories($db);
 				foreach($product['categories'] as $cat){
@@ -970,7 +952,12 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 			}
 
 			if(!empty($product['shipment'])){
-				if(!empty($calc->taxfreightcode)) $line->setTaxCode($calc->taxfreightcode);
+				if(is_object($calc)){
+					if(!empty($calc->taxfreightcode)) $line->setTaxCode($calc->taxfreightcode);
+				} else {
+					if(!empty($calc['taxfreightcode'])) $line->setTaxCode($calc['taxfreightcode']);
+				}
+
 			}
 			$lines[] = $line;
 		}
@@ -1334,7 +1321,6 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 
 		$app = JFactory::getApplication();
 		if($app->isSite()){
-			if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 			$cart = VirtueMartCart::getCart();
 			$cart->blockConfirm();
 		}

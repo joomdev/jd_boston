@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: edit.php 9413 2017-01-04 17:20:58Z Milbo $
+* @version $Id: edit.php 9924 2018-09-09 07:51:12Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -37,7 +37,7 @@ AdminUIHelper::buildTabs ( $this,  $tabarray ,$this->manufacturer->virtuemart_ma
 	<?php echo $this->addStandardHiddenToForm(); ?>
 </form>
 <?php
-vmJsApi::addJScript('vm.toggle','
+vmJsApi::addJScript('vm-toggle','
 function toggleDisable( elementOnChecked, elementDisable, disableOnChecked ) {
 	try {
 		if( !disableOnChecked ) {

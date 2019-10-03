@@ -1,0 +1,22 @@
+div.jd-profiler-wrapper {
+	.jd-team-columns .card-team {
+		border-color: $light;
+		border-radius: 0;
+		.card-img-top {
+			border-radius: 0;
+		}
+		.card-team-footer {
+			border-color: $light;
+		}
+	}
+	.card-team-body {
+		.card-img-overlayteam-member-name {
+			font-size: 18px;
+			margin-bottom: 5px;
+		}
+		.card-img-overlayteam-member-bio {
+			margin-bottom: 0;
+		}
+	}
+	
+}

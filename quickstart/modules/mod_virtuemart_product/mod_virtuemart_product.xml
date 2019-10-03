@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" version="2.5.0">
   <name>mod_virtuemart_product</name>
-  <creationDate>March 31 2017</creationDate>
+  <creationDate>September 24 2019</creationDate>
   <author>The VirtueMart Development Team</author>
   <authorUrl>https://virtuemart.net</authorUrl>
-  <copyright>Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.</copyright>
+  <copyright>Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.</copyright>
   <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-  <version>3.2.1</version>
+  <version>3.6.2</version>
   <description>MOD_VIRTUEMART_PRODUCT_DESC</description>
   <files>
     <filename module="mod_virtuemart_product">mod_virtuemart_product.php</filename>
@@ -19,10 +19,15 @@
     <fields name="params" addfieldpath="/administrator/components/com_virtuemart/fields">
       <fieldset name="basic">
         <field
+          name="com_virtuemart,com_virtuemart_config"
+          type="vmloadlang"
+          />
+        <field
           name="layout"
           type="vmlayout"
           label="MOD_VIRTUEMART_PRODUCT_LAYOUT"
           required="true"
+          allowGlobal="0"
           extension="com_virtuemart"
           view="mod_virtuemart_product"
           description="MOD_VIRTUEMART_PRODUCT_LAYOUT_DESC"
@@ -135,6 +140,23 @@
           description="MOD_VIRTUEMART_PRODUCT_CATEGORY_ID_DESC"
         />
         <field
+          name="filter_manufacturer"
+          type="list"
+          default="0"
+          label="MOD_VIRTUEMART_PRODUCT_FILTER_MANUFACTURER"
+          description="MOD_VIRTUEMART_PRODUCT_FILTER_MANUFACTURER_DESC"
+          >
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field>
+        <field
+          name="virtuemart_manufacturer_id"
+          type="manufacturer"
+          value_field="manufacturer_name"
+          label="MOD_VIRTUEMART_PRODUCT_MANUFACTURER_ID"
+          description="MOD_VIRTUEMART_PRODUCT_MANUFACTURER_ID_DESC"
+        />
+        <field
           name="vmcache"
           type="list"
           default="1"
@@ -156,7 +178,7 @@
         <field
           name="cache"
           type="list"
-          default="1"
+          default="0"
           label="COM_MODULES_FIELD_CACHING_LABEL"
           description="COM_MODULES_FIELD_CACHING_DESC"
           >

@@ -39,8 +39,6 @@ class JFormFieldVmLayout extends JFormField
 
 		if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
 		VmConfig::loadConfig();
-		if (!class_exists('VirtueMartModelConfig'))
-			require(VMPATH_ADMIN . DS . 'models' . DS . 'config.php');
 
 		vmLanguage::loadJLang('com_virtuemart');
 

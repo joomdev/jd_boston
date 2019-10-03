@@ -13,13 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: manufacturer.php 9589 2017-06-26 13:52:48Z Milbo $
+* @version $Id: manufacturer.php 9831 2018-05-07 13:45:33Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmModel'))require(VMPATH_ADMIN .'/helpers/vmmodel.php');
 
 /**
  * Model class for VirtueMart Manufacturers

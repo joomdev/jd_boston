@@ -18,8 +18,6 @@ defined('_JEXEC') or die();
 */
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
-
 /**
  * VirtueMart default administrator controller
  *
@@ -34,15 +32,14 @@ class VirtuemartControllerPlugin extends VmController
 	 *
 	 * @access	public
 	 */
-	function Plugin()
-	{
+	function display($cachable = false, $urlparams = false)  {
 
 		if(!vmAccess::manager()){
 			return false;
 		}
 
 		$type = vRequest::getCmd('type', 'vmcustom');
-		$typeWhiteList = array('vmshopper','vmcustom','vmcalculation','vmpayment','vmshipment', 'vmuserfield');
+		$typeWhiteList = array('vmshopper','vmcustom','vmcalculation','vmpayment','vmshipment', 'vmuserfield', 'vmextended');
 		if(!in_array($type,$typeWhiteList)) return false;
 		$name = vRequest::getString('name','');
 
@@ -72,4 +69,24 @@ class VirtuemartControllerPlugin extends VmController
 		}
 		return true;
 	}
+
+/*	public function getMemberStatus(){
+
+		JLoader::register('JFormFieldReminder', VMPATH_ADMIN .'/fields/reminder.php');
+
+		$element = vRequest::getCmd('name',false);
+		vmdebug('getMemberStatus was geht ab?');
+		if($element){
+
+			$q = 'SELECT * FROM `#__extensions` WHERE `element`="'.$element.'" AND `state`=0';
+			$db = JFactory::getDbo();
+			$db->setQuery($q);
+			$ext = $db->loadAssoc();
+
+			$remField = new JFormFieldReminder();
+			$remField->getMemberStatus($ext);
+		}
+
+	}
+*/
 }

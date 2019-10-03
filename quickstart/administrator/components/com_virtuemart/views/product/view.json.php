@@ -13,16 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: view.json.php 9760 2018-02-14 21:44:17Z Milbo $
+* @version $Id: view.json.php 9982 2018-11-02 21:32:43Z kkmediaproduction $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
-		// Load some common models
-if(!class_exists('VirtueMartModelCustomfields')) require(VMPATH_ADMIN.DS.'models'.DS.'customfields.php');
 
 /**
  * HTML View class for the VirtueMart Component
@@ -72,7 +67,7 @@ class VirtuemartViewProduct extends VmViewAdmin {
 				$field = 'l.'.$langField;
 			}
 
-			$query .= ' CONCAT('.$field.', "::", product_sku) AS value';
+			$query .= ' CONCAT('.$field.', "::", p.product_sku) AS value';
 			$query .= ' FROM `#__virtuemart_products` AS p ';
 
 			$joinedTables = VmModel::joinLangTables('#__virtuemart_products','p','virtuemart_product_id');
@@ -81,7 +76,7 @@ class VirtuemartViewProduct extends VmViewAdmin {
 				$filter = '"%'.$this->db->escape( $filter, true ).'%"';
 				$fields = VmModel::joinLangLikeFields(array('product_name'),$filter);
 				$query .=  ' WHERE '.implode (' OR ', $fields) ;
-				$query .= ' OR product_sku LIKE '.$filter;
+				$query .= ' OR p.product_sku LIKE '.$filter;
 			}
 
 			self::setRelatedHtml($product_id,$query,'R');
@@ -127,9 +122,7 @@ class VirtuemartViewProduct extends VmViewAdmin {
 		}
 		else if ($this->type=='fields')
 		{
-			if (!class_exists ('VirtueMartModelCustom')) {
-				require(VMPATH_ADMIN . DS . 'models' . DS . 'custom.php');
-			}
+
 			$fieldTypes = VirtueMartModelCustom::getCustomTypes();
 			$model = VmModel::getModel('custom');
 			$q = 'SELECT `virtuemart_custom_id` FROM `#__virtuemart_customs`
@@ -222,14 +215,16 @@ class VirtuemartViewProduct extends VmViewAdmin {
 
 			if ($status) {
 				$option = vRequest::getCmd('option');
-				$lists['filter_order'] = JFactory::getApplication()->getUserStateFromRequest($option.'filter_order_orders', 'filter_order', 'email', 'cmd');
-				$lists['filter_order_Dir'] = JFactory::getApplication()->getUserStateFromRequest($option.'filter_order_Dir', 'filter_order_Dir', 'ASC', 'word');
+				//$lists['filter_order'] = JFactory::getApplication()->getUserStateFromRequest($option.'filter_order_orders', 'filter_order', 'email', 'cmd');
+				//$lists['filter_order_Dir'] = JFactory::getApplication()->getUserStateFromRequest($option.'filter_order_Dir', 'filter_order_Dir', 'ASC', 'word');
+
+				$lists['filter_order'] = JFactory::getApplication()->getUserStateFromRequest('com_virtuemart.product.productShoppers.filter_order', 'filter_order', 'email', 'cmd');
+				$lists['filter_order_Dir'] = JFactory::getApplication()->getUserStateFromRequest('com_virtuemart.product.productShoppers.filter_order_Dir', 'filter_order_Dir', 'ASC', 'word');
 
 				$productModel = VmModel::getModel('product');
 				$productShoppers = $productModel->getProductShoppersByStatus($product_id ,$status,$lists['filter_order'],$lists['filter_order_Dir']);
 			}
 
-			if(!class_exists('ShopFunctions'))require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 			$html = ShopFunctions::renderProductShopperList($productShoppers);
 			$this->json['value'] = $html;
 
@@ -251,7 +246,6 @@ class VirtuemartViewProduct extends VmViewAdmin {
 			//TODO Why do we not use the states of the model directly?
 			//$productModel = VmModel::getModel('product');
 			//$own_category_id = $productModel->filter_order;
-			if(!class_exists('ShopFunctions'))require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 			if($own_category_id){
 				$html = ShopFunctions::categoryListTree($categories, 0, 0, (array) $own_category_id);
 			} else {

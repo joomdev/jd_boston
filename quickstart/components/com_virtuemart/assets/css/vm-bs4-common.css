@@ -1,0 +1,14 @@
+/*region Review Rating Stars */
+.vm-store-product-rating-stars {
+    background: url("../images/color-stars-small.png") repeat-x scroll 0 bottom transparent;
+    display: block;
+    height: 12px;
+    position: relative;
+    width: 60px;
+}
+
+.vm-store-product-rating-stars div {
+    background: url(../images/color-stars-small.png) repeat-x 0 0 !important;
+    height: 12px;
+}
+/*endregion*/

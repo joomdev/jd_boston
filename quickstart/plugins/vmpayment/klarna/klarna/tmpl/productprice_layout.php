@@ -1,6 +1,6 @@
 <?php defined('_JEXEC') or die('Restricted access');
 /**
- * @version $Id: productprice_layout.php 7538 2014-01-06 11:36:43Z Milbo $
+ * @version $Id: productprice_layout.php 9524 2017-05-05 16:25:08Z Milbo $
  *
  * @author Valérie Isaksen
  * @package VirtueMart
@@ -12,7 +12,8 @@
  * other free or open source software licenses.
  */
 
-JHTML::stylesheet('style.css', VMKLARNAPLUGINWEBROOT . '/klarna/assets/css/', false);
+vmJsApi::css ('style', VMKLARNAPLUGINWEBROOT . '/klarna/assets/css/');
+
 JHTML::script('klarna_pp.js', VMKLARNAPLUGINWEBASSETS.'/js/', false);
 JHTML::script('klarnapart.js', 'https://static.klarna.com:444/external/js/', false);
 $document = JFactory::getDocument();

@@ -3,10 +3,10 @@ defined('_JEXEC') or die('Restricted access');
 
 /**
  * @author Valérie Isaksen
- * @version $Id: sofort_ideal.php 9420 2017-01-12 09:35:36Z Milbo $
+ * @version $Id: sofort_ideal.php 10153 2019-09-19 15:51:37Z Milbo $
  * @package VirtueMart
  * @subpackage payment
- * @copyright Copyright (C) 2004-Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.   - All rights reserved.
+ * @copyright Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -17,11 +17,11 @@ defined('_JEXEC') or die('Restricted access');
  * http://virtuemart.net
  */
 if (!class_exists('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+	require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 }
 
 class plgVmPaymentSofort_Ideal extends vmPSPlugin {
-	const RELEASE = 'VM 3.2.1';
+	const RELEASE = 'VM 3.6.2';
 	const PAYMENT_CURRENCY_CODE_3 = 'EUR';
 
 	function __construct(& $subject, $config) {
@@ -799,7 +799,7 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 
 		$this->convert_condition_amount($method);
 		$amount = $this->getCartAmount($cart_prices);
-		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
+		$address = $cart->getST();
 
 		$amount_cond = ($amount >= $method->min_amount AND $amount <= $method->max_amount
 		OR

@@ -22,7 +22,6 @@ defined('_JEXEC') or die('Restricted access');
 if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
 VmConfig::loadConfig();
 
-if(!class_exists('vmLanguage')) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/vmlanguage.php');
 vmLanguage::loadJLang('com_virtuemart.sys');
 vmLanguage::loadJLang('com_virtuemart');
 
@@ -31,10 +30,9 @@ $option = vRequest::getString('option');
 
 if($option=='com_virtuemart'){
 
-	if (!class_exists('AdminUIHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'adminui.php');
-	if (!class_exists('JToolBarHelper')) require(JPATH_ADMINISTRATOR.DS.'includes'.DS.'toolbar.php');
+	//if (!class_exists('JToolbarHelper')) require(JPATH_ADMINISTRATOR .'/includes/toolbar.php');
 	if (!class_exists ('VirtuemartViewUpdatesMigration'))
-		require(VMPATH_ADMIN . DS . 'views' . DS . 'updatesmigration' .DS. 'view.html.php');
+		require(VMPATH_ADMIN .'/views/updatesmigration/view.html.php');
 
 	$view = new VirtuemartViewUpdatesMigration();
 	AdminUIHelper::startAdminArea($view);
@@ -72,7 +70,9 @@ if($option=='com_virtuemart'){
 
 			</td>
 			<td>
-				<?php echo vmText::sprintf('COM_VM_INSTALLATION_SOURCE',htmlspecialchars(VMPATH_ROOT)); ?>
+				<?php
+				$s = empty($instPath)? VMPATH_ROOT:$instPath;
+				echo vmText::sprintf('COM_VM_INSTALLATION_SOURCE',htmlspecialchars($s)); ?>
             </td>
 		</tr>
 		<?php  if (vRequest::getCmd('view','')=='install') {

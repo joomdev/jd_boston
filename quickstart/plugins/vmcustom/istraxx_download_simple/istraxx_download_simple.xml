@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension method="upgrade" version="2.5" type="plugin" group="vmcustom" >
+    <name>VM - Custom, Virtuemart Simple Download Plugin</name>
+    <creationDate>September 06 2019</creationDate>
+    <author>Max Milbers</author>
+    <authorUrl>https://extensions.virtuemart.net</authorUrl>
+    <copyright>Copyright (C) 2012-2019 iStraxx UG (haftungsbeschränkt). All rights reserved</copyright>
+    <license>http://www.gnu.org/licenses/lgpl-3.0.html GNU/GPL</license>
+    <version>${PHING.VERSION}</version>
+    <description><![CDATA[
+<b>${PHING.DESCRIPTION}</b>
+<br/><a target="_blank" href="http://www.extensions.virtuemart.net">Visit extensions.virtuemart.net for more extensions</a>
+<p><img src="../plugins/${PHING.GROUP}/${PHING.FILENAME}/assets/images/vm-istraxx.png" align="bottom"/></p>
+
+<br style="clear: both;">
+<br/>
+First installation:
+<a target="_blank" href="index.php?option=com_virtuemart&view=custom&task=edit">
+  Click here to configure the new customfield using the custom field type plugin</a>
+<br/>
+See also:
+<br/>
+<a target="_blank" href="https://extensions.virtuemart.net/all-tutorials">
+  Installation Guide</a>
+
+]]></description>
+    <scriptfile>install/install.php</scriptfile>
+    <files>
+        <filename plugin="istraxx_download_simple">istraxx_download_simple.php</filename>
+        <filename>istraxx_downloader.php</filename>
+        <filename>istraxx_license.txt</filename>
+        <folder>assets</folder>
+        <folder>layouts</folder>
+        <folder>install</folder>
+        <folder>language</folder>
+        <folder>layouts</folder>
+        <folder>tmpl</folder>
+    </files>
+    <vmconfig>
+        <fields name="params" addpath="/administrator/components/com_virtuemart/fields">
+            <fieldset name="template" addfieldpath="/plugins/vmcustom/istraxx_download_simple/fields" >
+                <!--field name="VMCUSTOM_ISTRAXX_DOWNLOAD_ADV" type="vmhelptext" /-->
+                <field name="istraxx_download_simple" type="teaser" plugin="istraxx_download_simple" layout="teaser" />
+                <field name="free_download" type="checkbox" size="" default="0" label="VMCUSTOM_ISTRAXX_DOWNLOAD_FREE" description="VMCUSTOM_ISTRAXX_DOWNLOAD_FREE_TIP" />
+            </fieldset>
+        </fields>
+    </vmconfig>
+
+    
+		<updateservers>
+        <!-- Note: No spaces or linebreaks allowed between the server tags -->
+        <server type="extension" name="VirtueMart, ${PHING.COMPANY} - ${PHING.NAME.EXTSHORT} - Update Site"><![CDATA[http://virtuemart.net/releases/vm3/plg_vmcustom_download_simple_update.xml]]></server>
+    </updateservers>
+</extension>

@@ -19,10 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-
-if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
-
-
 /**
  * Translate Controller
  *
@@ -107,7 +103,7 @@ class VirtuemartControllerTranslate extends VmController {
 		}
 
 		$lang = vRequest::getVar('lg');
-		$langs = VmConfig::get('active_languages',array(VmConfig::$jDefLang)) ;
+		$langs = VmConfig::get('active_languages',array(VmConfig::$jDefLangTag)) ;
 
 		if (!in_array($lang, $langs) ) {
 			$json['msg'] = 'Invalid language ! '.$lang;

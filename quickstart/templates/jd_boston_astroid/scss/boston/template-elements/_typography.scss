@@ -1,0 +1,48 @@
+/** Color Theme Circles **/
+.color-background .circle-color {
+	display: inline-block;
+	height: 140px;
+	width: 140px;
+}
+
+/** Fa UL **/
+.fa-ul>li {
+	[class*="fa"] {
+		margin-right: 10px;
+		color: $primary;
+	}
+}
+
+/** Typography Table **/
+.typography-table {
+	box-shadow: $box-shadow;
+
+	tbody {
+
+		tr th,
+		tr td {
+			border: 1px solid $light;
+		}
+	}
+}
+
+/*-- Blockquote --*/
+blockquote {
+	border-color: $primary;
+	font-style: inherit;
+	font-weight: inherit;
+	padding: 10px 20px;
+	font-size: 18px;
+
+	p {
+		margin: 0;
+	}
+}
+
+/*-- Buttons --*/
+body {
+	.jdb-button.jdb-button-primary > .jdb-button-link {
+		@extend .btn;
+		@extend .btn-primary;
+	}
+}

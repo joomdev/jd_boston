@@ -19,11 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the view framework
-if (!class_exists('VmViewAdmin')) {
-	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmviewadmin.php');
-}
-
 /**
  * HTML View class for log files
  *
@@ -49,10 +44,9 @@ class VirtuemartViewLog extends VmViewAdmin {
 			$this->SetViewTitle('LOG', $logFile);
 			$fileContent = file_get_contents($log_path . DS . $logFile);
 			$this->fileContentByLine = explode("\n", $fileContent);
-			JToolBarHelper::cancel();
+			JToolbarHelper::cancel();
 
 		} else {
-			if(!class_exists('JFolder')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
 
 			$this->logFiles = JFolder::files($log_path, $filter = '.', true, false, array('index.html'));
 

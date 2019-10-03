@@ -240,3 +240,15 @@ a:hover.signin-button-link {text-decoration:none;background: #D7D7D7;}
 #show_hide_prices.admintable tr:nth-child(2n) {background-color: #f8f8f8;}
 #show_hide_prices.admintable th, #show_hide_prices.admintable td {min-width: 72px;padding: 0 4px;text-align: center;border-left: 1px solid #ccc;}
 #show_hide_prices.admintable th:first-child, #show_hide_prices.admintable td:first-child {border-left: 0;text-align: left;}
+
+/* Modal */
+.modal-body {
+  max-height: none !important;
+}
+.modal-body iframe {
+  height: 80vh;
+}
+/* Modal */
+.modal-body {
+  max-height: none !important;
+}

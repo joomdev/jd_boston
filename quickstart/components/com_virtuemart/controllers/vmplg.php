@@ -61,8 +61,7 @@ class VirtueMartControllerVmplg extends JControllerLegacy {
      */
     function PaymentResponseReceived() {
 
-	if (!class_exists('vmPSPlugin'))
-	    require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php'); JPluginHelper::importPlugin('vmpayment');
+	JPluginHelper::importPlugin('vmpayment');
 
 	$return_context = "";
 	$dispatcher = JDispatcher::getInstance();
@@ -87,8 +86,6 @@ class VirtueMartControllerVmplg extends JControllerLegacy {
     function ShipmentResponseReceived() {
 		// TODO: not ready yet
 
-	    if (!class_exists('vmPSPlugin'))
-		    require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 	    JPluginHelper::importPlugin('vmshipment');
 
 	    $return_context = "";
@@ -109,17 +106,9 @@ class VirtueMartControllerVmplg extends JControllerLegacy {
      */
     function pluginUserPaymentCancel() {
 
-	if (!class_exists('vmPSPlugin'))
-	    require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
-
-	if (!class_exists('VirtueMartCart'))
-	    require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
-
     $cart = VirtueMartCart::getCart ();
-		$cart->prepareCartData();
+	$cart->prepareCartData();
     if (!empty($cart->couponCode)) {
-	    if (!class_exists('CouponHelper'))
-		    require(VMPATH_SITE . DS . 'helpers' . DS . 'coupon.php');
 	    CouponHelper::setInUseCoupon($cart->couponCode, false);
     }
 
@@ -147,15 +136,6 @@ class VirtueMartControllerVmplg extends JControllerLegacy {
      * @return success of update
      */
     function pluginNotification() {
-
-	if (!class_exists('vmPSPlugin'))
-	    require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
-
-	if (!class_exists('VirtueMartCart'))
-	    require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
-
-	if (!class_exists('VirtueMartModelOrders'))
-	    require( VMPATH_ADMIN . DS . 'models' . DS . 'orders.php' );
 
 	JPluginHelper::importPlugin('vmpayment');
 

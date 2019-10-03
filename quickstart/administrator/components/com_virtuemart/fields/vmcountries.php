@@ -45,9 +45,12 @@ class JFormFieldVmCountries extends JFormFieldList {
 			$options[] = JHtml::_('select.option', $v->value, $v->text);
 		}
 
+		if(!empty($this->element->xpath)){
+			$options = array_merge(parent::getOptions(), $options);
+		}
 		//BAD $class = 'multiple="true" size="10"';
 		// Merge any additional options in the XML definition.
-		$options = array_merge(parent::getOptions(), $options);
+
 
 		return $options;
 	}

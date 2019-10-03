@@ -9,7 +9,7 @@ defined('_JEXEC') or 	die( 'Direct Access to ' . basename( __FILE__ ) . ' is not
  * @version $Id: standard.php 3681 2011-07-08 12:27:36Z alatak $
  * @package VirtueMart
  * @subpackage payment
- * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
+ * @copyright Copyright (C) 2004-2008 soeren, 2019 The VirtueMart Team - All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -19,8 +19,6 @@ defined('_JEXEC') or 	die( 'Direct Access to ' . basename( __FILE__ ) . ' is not
  *
  * http://virtuemart.org
  */
-
-if (!class_exists('vmCustomPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmcustomplugin.php');
 
 class plgVmCustomSpecification extends vmCustomPlugin {
 
@@ -42,6 +40,7 @@ class plgVmCustomSpecification extends vmCustomPlugin {
 		$this->setConfigParameterable('custom_params',$this->varsToPush);
 
 	}
+
 	/**
 	 * Create the table for this plugin if it does not yet exist.
 	 * @author Val�rie Isaksen
@@ -156,11 +155,20 @@ class plgVmCustomSpecification extends vmCustomPlugin {
 		return $this->OnStoreProduct($data,$plugin_param);
 	}
 	/**
-	 * We must reimplement this triggers for joomla 1.7
-	 * vmplugin triggers note by Max Milbers
+	 * Trigger while storing an object using a plugin to create the plugin internal tables in case
+	 *
+	 * @author Max Milbers
 	 */
-	public function plgVmOnStoreInstallPluginTable($psType,$name) {
-		return $this->onStoreInstallPluginTable($psType,$name);
+	public function plgVmOnStoreInstallPluginTable($plgType,$data,$table) {
+
+		if($plgType!=$this->_psType){
+			return false;
+		}
+		if(!empty($data['custom_element']) and $data['custom_element']!=$this->_name){
+			return false;
+		}
+
+		return $this->onStoreInstallPluginTable ($plgType, $data['custom_element']);
 	}
 
 	function plgVmSetOnTablePluginParamsCustom($name, $id, &$table){

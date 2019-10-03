@@ -19,9 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access'); 
 
-if(!file_exists(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php')){
-	vmError('vmPdf: For the pdf, you must install the tcpdf library at '.VMPATH_LIBS.DS.'tcpdf');
-}
 if(!vmAccess::manager('user.editshop')){
 	?><div><?php echo vmText::_('COM_VM_PERM_MISSING_VENDOR');?></div> <?php
 }

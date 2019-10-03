@@ -17,8 +17,6 @@
  */
 defined('_JEXEC') or die;
 
-if(!class_exists('VmView'))require(VMPATH_SITE.DS.'helpers'.DS.'vmview.php');
-
 class VirtueMartViewPdf extends VmView
 {
 
@@ -35,15 +33,13 @@ class VirtueMartViewPdf extends VmView
 
 	function display($tpl = 'pdf'){
 
-		if(!file_exists(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php')){
-			vmError('View pdf: For the pdf invoice, you must install the tcpdf library at '.VMPATH_LIBS.DS.'tcpdf');
-		} else {
+		if(vmDefines::tcpdf()){
 			$vendorModel = VmModel::getModel('vendor');
 			$vendor = $vendorModel->getVendor($this->virtuemart_vendor_id);
 
 			$viewName = vRequest::getCmd('view','productdetails');
 			$class= 'VirtueMartView'.ucfirst($viewName);
-			if(!class_exists($class)) require(VMPATH_SITE.DS.'views'.DS.$viewName.DS.'view.html.php');
+			if(!class_exists($class)) require(VMPATH_SITE.'/views/'.$viewName.'/view.html.php');
 			$view = new $class ;
 
 			if($vendor->vendor_letter_for_product_pdf) {
@@ -52,7 +48,6 @@ class VirtueMartViewPdf extends VmView
 				$html = ob_get_contents();
 				ob_end_clean();
 
-				if(!class_exists('VmPdf')) require(VMPATH_SITE.DS.'helpers'.DS.'vmpdf.php');
 				$pdf = new VmVendorPDF();
 				$pdf->AddPage();
 				$pdf->PrintContents($html);

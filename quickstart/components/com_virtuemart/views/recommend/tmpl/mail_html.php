@@ -60,7 +60,7 @@ defined('_JEXEC') or die('');
 							<table width="100%" cellpadding="0" cellspacing="0">
 								<tr>
 									<?php
-									$menuItemID = shopFunctionsF::getMenuItemId(JFactory::getLanguage()->getTag());
+									$menuItemID = shopFunctionsF::getMenuItemId(vmLanguage::getLanguage()->getTag());
 									$product_link = JURI::root().'index.php?option=com_virtuemart&view=productdetails
 													&virtuemart_product_id=' . $this->product->virtuemart_product_id . '&Itemid=' . $menuItemID;
 									?>

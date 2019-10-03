@@ -18,7 +18,7 @@
 * @author Max Milbers, Valerie Isaksen
 *
 * @link https://virtuemart.net
-* @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+* @copyright Copyright (c) 2004 - 2018 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 * VirtueMart is free software. This version may have been modified pursuant
 * to the GNU General Public License, and as distributed it includes or
@@ -58,8 +58,11 @@ if( VmConfig::get('ordertracking','guests') == 'guestlink' or (VmConfig::get('or
 	<tr><td colspan="3" style="padding: 5px"></td></tr>
   <tr>
     <td colspan="1" align="left">
-				<?php echo vmText::sprintf('COM_VIRTUEMART_MAIL_SHOPPER_TOTAL_ORDER',$this->currency->priceDisplay($this->orderDetails['details']['BT']->order_total,$this->user_currency_id) ); ?></td>
-				<td colspan="2" align="right"><?php echo vmText::sprintf('COM_VIRTUEMART_MAIL_ORDER_STATUS',vmText::_($this->orderDetails['details']['BT']->order_status_name)) ; ?></td>
+			<?php echo vmText::sprintf('COM_VIRTUEMART_MAIL_SHOPPER_TOTAL_ORDER',$this->currency->priceDisplay($this->orderDetails['details']['BT']->order_total,$this->user_currency_id) ); ?>
+		</td>
+		<td colspan="2" align="right">
+			<?php echo vmText::sprintf('COM_VIRTUEMART_MAIL_ORDER_STATUS',vmText::_($this->orderstatuses[$this->orderDetails['details']['BT']->order_status])) ; ?>
+		</td>
   </tr>
   <?php $nb=count($this->orderDetails['history']);
   if($this->orderDetails['history'][$nb-1]->customer_notified && !(empty($this->orderDetails['history'][$nb-1]->comments))) { ?>

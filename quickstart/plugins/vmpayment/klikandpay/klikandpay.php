@@ -10,7 +10,7 @@ defined('_JEXEC') or die('Direct Access to ' . basename(__FILE__) . 'is not allo
  * @subpackage Payment
  * @author Valérie Isaksen
  * @link https://virtuemart.net
- * @copyright Copyright (c) 2004 - March 31 2017 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2018 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -30,7 +30,7 @@ defined('_JEXEC') or die('Direct Access to ' . basename(__FILE__) . 'is not allo
 
  */
 if (!class_exists('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+	require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 }
 if (!class_exists('KlikandpayHelperKlikandpay')) {
 	require(JPATH_SITE . '/plugins/vmpayment/klikandpay/klikandpay/helpers/klikandpay.php');
@@ -152,7 +152,7 @@ class plgVmpaymentKlikandpay extends vmPSPlugin {
 			"RETOURVOK" => $retourParams,
 			"RETOURVHS" => $retourParams,
 			"MODULE" => 'VirtueMart',
-			"MODULE_VERSION" => '3.2.1',
+			"MODULE_VERSION" => '3.6.2',
 		);
 
 		$subscribe = array();
@@ -603,7 +603,7 @@ class plgVmpaymentKlikandpay extends vmPSPlugin {
 			//return false;
 		}
 		$this->convert_condition_amount($method);
-		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
+		$address = $cart->getST();
 
 		$amount = $this->getCartAmount($cart_prices);
 		$amount_cond = ($amount >= $this->_currentMethod->min_amount AND $amount <= $this->_currentMethod->max_amount
@@ -850,7 +850,7 @@ class plgVmpaymentKlikandpay extends vmPSPlugin {
 
 		$html = '';
 		if ($this->_currentMethod->debug) {
-			$html .= '<form action="' . $server . '" method="post" name="vm_klikandpay_form" target="paypal">';
+			$html .= '<form action="' . $server . '" method="post" name="vm_klikandpay_form" target="klikandpay">';
 		} else {
 			$html .= '<form action="' . $server . '" method="post" name="vm_klikandpay_form" id="vmPaymentForm" accept-charset="UTF-8">';
 		}
@@ -862,12 +862,12 @@ class plgVmpaymentKlikandpay extends vmPSPlugin {
 		if ($this->_currentMethod->debug) {
 
 			$html .= '<div style="background-color:red;color:white;padding:10px;">
-						<input type="submit"  value="The method is in debug mode. Click here to be redirected to PayPal" />
+						<input type="submit"  value="The method is in debug mode. Click here to be redirected to klikandpay" />
 						</div>';
 			$this->debugLog($post_variables, 'getConfirmedHtml:', 'debug');
 
 		} else {
-			$html .= '<input type="submit"  value="' . vmText::_('VMPAYMENT_PAYPAL_REDIRECT_MESSAGE') . '" />';
+			$html .= '<input type="submit"  value="' . vmText::_('VMPAYMENT_KLIKANDPAY_REDIRECT_MESSAGE') . '" />';
 
 		}
 		$html .= '</form>';

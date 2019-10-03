@@ -13,13 +13,11 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: media.php 9660 2017-10-27 08:01:38Z Milbo $
+ * @version $Id: media.php 10121 2019-09-09 08:12:44Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Model for VirtueMart Product Files
@@ -55,8 +53,6 @@ class VirtueMartModelMedia extends VmModel {
 			$data = $this->getTable('medias');
 			$data->load((int)$this->_id);
 
-			if (!class_exists('VmMediaHandler')) require(VMPATH_ADMIN.DS.'helpers'.DS.'mediahandler.php');
-
 			$this->_data = VmMediaHandler::createMedia($data,$type,$mime);
 		}
 
@@ -73,8 +69,6 @@ class VirtueMartModelMedia extends VmModel {
 	 * @param string $mime
 	 */
 	function createMediaByIds($virtuemart_media_ids,$type='',$mime='',$limit =0){
-
-		if (!class_exists('VmMediaHandler')) require(VMPATH_ADMIN.DS.'helpers'.DS.'mediahandler.php');
 
 		$app = JFactory::getApplication();
 
@@ -106,7 +100,7 @@ class VirtueMartModelMedia extends VmModel {
 						$mime		= empty($data->file_mimetype)? $mime:$data->file_mimetype;
 						if($app->isSite()){
 							$selectedLangue = explode(",", $data->file_lang);
-							$lang =  JFactory::getLanguage();
+							$lang =  vmLanguage::getLanguage();
 							if(in_array($lang->getTag(), $selectedLangue) || $data->file_lang == '') {
 								$_medias[$id] = VmMediaHandler::createMedia($data,$file_type,$mime);
 								if(is_object($virtuemart_media_id) && !empty($virtuemart_media_id->product_name)) $_medias[$id]->product_name = $virtuemart_media_id->product_name;
@@ -299,6 +293,68 @@ class VirtueMartModelMedia extends VmModel {
 
 	}
 
+	function findMissingMedias($virtuemart_product_id=null, $cat_id=null){
+
+		if(empty($this->_limit)) $limits =$this->setPaginationLimits();
+		$sec = 0;
+		$idc = 0;
+		$this->_limitStart = 0;	//Else a user have to click on the first page to get all orphaned
+		while($idc<$limits[1] and $sec<1000){
+			$ids = $this->getFiles(false, false, $virtuemart_product_id, $cat_id, array(), $this->_limit * 2);
+			if(!empty($ids)){
+				$medias = $this->createMediaByIds($ids);
+				foreach($medias as $m){
+					if($m->file_is_forSale){
+						$fSizeFnamePath = $m->file_url_folder.$m->file_name.'.'.$m->file_extension;
+					} else {
+						$fSizeFnamePath = VMPATH_ROOT.DS.$m->file_url_folder.$m->file_name.'.'.$m->file_extension;
+					}
+					$fSizeFnamePath = vRequest::filterPath($fSizeFnamePath);
+
+					if(!file_exists($fSizeFnamePath)){
+						$data[] = $m;
+					}
+				}
+
+				$idc = count($data);
+				$this->_limitStart += $this->_limit * 2;
+				$sec++;
+			} else {
+				break;
+			}
+		}
+
+		if(empty($data)){
+			return array();
+		}
+
+		return $data;
+	}
+
+
+	function findUnusedMedias(){
+
+		$select = 'm.virtuemart_media_id';
+
+		$joinedTables = 'FROM #__virtuemart_medias as m
+LEFT JOIN #__virtuemart_category_medias as cm ON cm.virtuemart_media_id = m.virtuemart_media_id
+LEFT JOIN #__virtuemart_product_medias as pm ON pm.virtuemart_media_id = m.virtuemart_media_id
+LEFT JOIN #__virtuemart_manufacturer_medias as mm ON mm.virtuemart_media_id = m.virtuemart_media_id
+LEFT JOIN #__virtuemart_vendor_medias as vm ON pm.virtuemart_media_id = m.virtuemart_media_id';
+
+		$whereString = 'WHERE m.file_is_forSale = "0"
+  and cm.virtuemart_media_id IS NULL 
+  and pm.virtuemart_media_id IS NULL 
+  and mm.virtuemart_media_id IS NULL 
+  and vm.virtuemart_media_id IS NULL';
+
+		$this->_data = $this->exeSortSearchListQuery(2, $select, $joinedTables, $whereString);
+		if(empty($this->_data)){
+			return array();
+		}
+		$this->_data = $this->createMediaByIds($this->_data);
+		return $this->_data;
+	}
 	/**
 	 * This function stores a media and updates then the refered table
 	 *
@@ -387,7 +443,6 @@ class VirtueMartModelMedia extends VmModel {
 		}
 
 		vmLanguage::loadJLang('com_virtuemart_media');
-		if (!class_exists('VmMediaHandler')) require(VMPATH_ADMIN.DS.'helpers'.DS.'mediahandler.php');
 
 		$table = $this->getTable('medias');
 
@@ -401,6 +456,10 @@ class VirtueMartModelMedia extends VmModel {
 			$data['published'] = $data['media_published'];
 		}
 
+		if(strpos($data['file_url'],'//')===0 and !vmAccess::manager('media.remote')){
+			vmWarn('You are not allowed to add/edit remote medias');
+			return $table->virtuemart_media_id;
+		}
 		$table->bindChecknStore($data);
 
 		if($tmpPublished){

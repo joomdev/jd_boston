@@ -1,0 +1,99 @@
+/*-- Bottom Section (Footer) --*/
+.astroid-section.bottom-section {
+	padding: 20px 0 50px 0;
+
+	@include media-breakpoint-down(md) {
+		padding: 20px 0 50px 0;
+	}
+
+	.moduletable {
+		margin-top: 30px;
+
+		.module-title {
+			font-size: 25px;
+			font-weight: 600;
+			line-height: 1.2;
+			margin-bottom: 24px;
+		}
+
+		li:not(:last-child) {
+			margin-bottom: 20px;
+		}
+	}
+
+	.moduletable .social-icons {
+		ul {
+			padding: 0px;
+			margin: 0px;
+		}
+
+		li {
+			display: inline-block;
+			padding-right: 14px;
+			line-height: 32px;
+			margin-bottom: 0;
+		}
+
+		a {
+			font-size: 22px;
+		}
+
+		a:before {
+			content: none;
+		}
+	}
+
+	.k2ItemsBlock {
+		ul li {
+			border: none;
+			margin: 0 0 15px 0;
+			padding: 0 !important;
+			text-align: left;
+
+			&:last-child {
+				margin: 0;
+			}
+
+			.clearList {
+				display: none;
+			}
+
+			a.moduleItemTitle {
+				line-height: normal;
+				font-size: 17px !important;
+
+				&:hover {
+					color: $primary;
+				}
+			}
+
+			span.moduleItemDateCreated {
+				font-size: 12px;
+			}
+		}
+	}
+}
+
+.address-info {
+	&:not(:last-child) {
+		margin-bottom: 15px;
+	}
+
+	.icon {
+		float: left;
+		font-size: 20px;
+		margin-right: 15px;
+		line-height: normal;
+	}
+
+	.content {
+		overflow: hidden;
+	}
+}
+
+/*-- Copyright Section (Footer) --*/
+.astroid-footer-section {
+	.astroid-footer a:hover {
+		text-decoration: underline;
+	}
+}

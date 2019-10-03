@@ -6,7 +6,7 @@
  * @version $Id: authorize.php 5122 2011-12-18 22:24:49Z alatak $
  * @package VirtueMart
  * @subpackage payment
- * @copyright Copyright (C) 2004-2008 soeren, 2012-2015 The VirtueMart team and authors - All rights reserved.
+ * @copyright Copyright (C) 2004-2008 soeren, 2012-2019 The VirtueMart team and authors - All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -22,7 +22,7 @@ if (!class_exists('Creditcard')) {
 	require_once(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'creditcard.php');
 }
 if (!class_exists('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+	require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 }
 
 class plgVmpaymentAuthorizenet extends vmPSPlugin {
@@ -76,6 +76,7 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
 		$this->tableFields = array_keys($this->getTableSQLFields());
 		$varsToPush = $this->getVarsToPush();
 
+		$this->addVarsToPushCore($varsToPush, 1);
 		$this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
 	}
 
@@ -252,52 +253,6 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
 			'JCB',
 		);
 
-	}
-
-	/**
-	 * Check if the payment conditions are fulfilled for this payment method
-	 *
-	 * @author: Valerie Isaksen
-	 *
-	 * @param $cart_prices: cart prices
-	 * @param $payment
-	 * @return true: if the conditions are fulfilled, false otherwise
-	 *
-	 */
-	protected function checkConditions($cart, $method, $cart_prices) {
-		$this->convert_condition_amount($method);
-		$amount = $this->getCartAmount($cart_prices);
-		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
-
-		$amount_cond = ($amount >= $method->min_amount AND $amount <= $method->max_amount
-			OR
-			($method->min_amount <= $amount AND ($method->max_amount == 0)));
-		if (!$amount_cond) {
-			return FALSE;
-		}
-		$countries = array();
-		if (!empty($method->countries)) {
-			if (!is_array($method->countries)) {
-				$countries[0] = $method->countries;
-			} else {
-				$countries = $method->countries;
-			}
-		}
-
-		// probably did not gave his BT:ST address
-		if (!is_array($address)) {
-			$address = array();
-			$address['virtuemart_country_id'] = 0;
-		}
-
-		if (!isset($address['virtuemart_country_id'])) {
-			$address['virtuemart_country_id'] = 0;
-		}
-		if (count($countries) == 0 || in_array($address['virtuemart_country_id'], $countries) || count($countries) == 0) {
-			return TRUE;
-		}
-
-		return FALSE;
 	}
 
 
@@ -554,7 +509,6 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
 
 		$this->debugLog($response, "plgVmConfirmedOrder", 'debug');
 
-
 		$authnet_values = array(); // to check the values???
 		// evaluate the response
 		$html = $this->_handleResponse($response, $authnet_values, $order, $dbValues['payment_name']);
@@ -570,6 +524,13 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
 				if ($this->declined) {
 					vRequest::setVar('html', $html);
 					$new_status = $this->_currentMethod->payment_declined_status;
+					// GJC added for declined order statuses
+					$modelOrder = VmModel::getModel('orders');
+					$order['order_status'] = $new_status;
+					$order['customer_notified'] = 1;
+					$order['comments'] = '';
+					$modelOrder->updateStatusForOneOrder($order['details']['BT']->virtuemart_order_id, $order, TRUE);
+					// GJC added for declined order statuses
 					$this->_handlePaymentCancel($order['details']['BT']->virtuemart_order_id, $html);
 					return;
 				} else {
@@ -601,7 +562,8 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
 		// error while processing the payment
 		$mainframe = JFactory::getApplication();
 		vmWarn($html);
-		$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&task=editpayment', FALSE), vmText::_('COM_VIRTUEMART_CART_ORDERDONE_DATA_NOT_VALID'));
+//GJC you can redirect to cart only
+		$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart', FALSE), vmText::_('COM_VIRTUEMART_CART_ORDERDONE_DATA_NOT_VALID'));
 	}
 
 	/**

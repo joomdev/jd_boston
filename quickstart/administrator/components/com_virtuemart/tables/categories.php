@@ -13,13 +13,12 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: categories.php 9431 2017-01-26 12:45:13Z Milbo $
+* @version $Id: categories.php 9881 2018-06-20 09:03:58Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
 /**
  * Category table class
  * The class is is used to table-level abstraction for Categories.
@@ -191,7 +190,7 @@ class TableCategories extends VmTable {
 			if (!$this->_db->execute())
 			{
 				$err = $this->_db->getErrorMsg();
-				JError::raiseError( 500, 'TableCategories move isset row this->k '.$err );
+				vmError( 'TableCategories move isset row this->k '.$err, 'TableCategories move isset row this->k ' );
 			}
 
 			$query = 'UPDATE '.$this->_tbl
@@ -203,7 +202,7 @@ class TableCategories extends VmTable {
 			if (!$this->_db->execute())
 			{
 				$err = $this->_db->getErrorMsg();
-				JError::raiseError( 500, 'TableCategories move isset row $row->$k '.$err );
+				vmError( 'TableCategories move isset row this->k '.$err, 'TableCategories move isset row $row->$k ' );
 			}
 
 			$this->ordering = $row->ordering;
@@ -219,7 +218,7 @@ class TableCategories extends VmTable {
 			if (!$this->_db->execute())
 			{
 				$err = $this->_db->getErrorMsg();
-				JError::raiseError( 500, 'TableCategories move update '.$err );
+				vmError('TableCategories move update '.$err );
 			}
 		}
 		return true;

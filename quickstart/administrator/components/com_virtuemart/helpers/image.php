@@ -8,12 +8,11 @@
  * @package	VirtueMart
  * @subpackage Helpers
  * @author Max Milbers
- * @copyright Copyright (c) 2004-2008 Soeren Eberhardt-Biermann, 2009 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004-2008 Soeren Eberhardt-Biermann, 2009 2018 VirtueMart Team. All rights reserved.
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL 2, see COPYRIGHT.php
  */
 
 defined('_JEXEC') or die();
-
-if (!class_exists('VmMediaHandler')) require(VMPATH_ADMIN.DS.'helpers'.DS.'mediahandler.php');
 
 class VmImage extends VmMediaHandler {
 
@@ -22,32 +21,6 @@ class VmImage extends VmMediaHandler {
 
 		if(empty($data['media_action'])) return $data;
 		$data = parent::processAction($data);
-
-		if( $data['media_action'] == 'upload_create_thumb' ){
-			$oldFileUrl = $this->file_url;
-			$file_name = $this->uploadFile($this->file_url_folder);
-			if($file_name){
-
-				if($file_name!=$oldFileUrl && !empty($this->filename)){
-					$this->deleteFile($oldFileUrl);
-				}
-				$this->file_url = $this->file_url_folder.$file_name;
-				$this->filename = $file_name;
-
-				if(!empty($this->file_url_thumb)){
-					$oldFileUrlThumb = $this->file_url_thumb;
-
-					$this->file_url_thumb = $this->createThumb();
-					if($this->file_url_thumb!=$oldFileUrlThumb){
-						$this->deleteFile($oldFileUrlThumb);
-					}
-				}
-
-			}
-		} //creating the thumbnail image
-		else if( $data['media_action'] == 'create_thumb' ){
-			$this->file_url_thumb = $this->createThumb();
-		}
 
 		if(empty($this->file_title) && !empty($file_name)) $this->file_title = $file_name;
 
@@ -58,12 +31,12 @@ class VmImage extends VmMediaHandler {
 
 		if(!$this->file_is_forSale){
 			// Remote image URL
-			if( substr( $this->file_url, 0, 4) == "http" ) {
+			if( substr( $this->file_url, 0, 2) == "//" ) {
 				$file_url = $this->file_url;
 				$file_alt = $this->file_title;
 			} else {
-				$rel_path = str_replace('/',DS,$this->file_url_folder);
-				$fullSizeFilenamePath = VMPATH_ROOT.DS.$rel_path.$this->file_name.'.'.$this->file_extension;
+				//$rel_path = str_replace('/',DS,$this->file_url_folder);
+				$fullSizeFilenamePath = vRequest::filterPath(VMPATH_ROOT.'/'.$this->file_url_folder.$this->file_name.'.'.$this->file_extension);
 				if (!file_exists($fullSizeFilenamePath)) {
 					$file_url = $this->theme_url.'assets/images/vmgeneral/'.VmConfig::get('no_image_found');
 					$file_alt = vmText::_('COM_VIRTUEMART_NO_IMAGE_FOUND').' '.$this->file_description;
@@ -173,26 +146,36 @@ class VmImage extends VmMediaHandler {
 		$root = '';
 		$this->file_name_thumb = $this->createThumbName($width,$height);
 
-		if($this->file_is_forSale==0){
-			$rel_path = str_replace('/',DS,$this->file_url_folder);
-			$fullSizeFilenamePath = VMPATH_ROOT.DS.$rel_path.$this->file_name.'.'.$this->file_extension;
+
+		$exists = false;
+		if(strpos($this->file_url,'//')===0){
+			$fullSizeFilenamePath = $this->file_url;
+			$exists = true;
+			//$resizedFilenamePath = vRequest::filterPath(VMPATH_ROOT.'/'.$this->file_url_folder_thumb.$this->file_name_thumb);
+			vmdebug('Set file url as $fullSizeFilenamePath',$fullSizeFilenamePath,$this->file_name_thumb);
 		} else {
-			$fullSizeFilenamePath = $this->file_url_folder.$this->file_name.'.'.$this->file_extension;
-		}
+			if($this->file_is_forSale==0){
 
-		$file_path_thumb = str_replace('/',DS,$this->file_url_folder_thumb);
-		$resizedFilenamePath = VMPATH_ROOT.DS.$file_path_thumb.$this->file_name_thumb.'.'.$this->file_extension;
-
-		$this->checkPathCreateFolders($file_path_thumb);
-
-		if (file_exists($fullSizeFilenamePath)) {
-			if (!class_exists('Img2Thumb')) require(VMPATH_ADMIN.DS.'helpers'.DS.'img2thumb.php');
-			$createdImage = new Img2Thumb($fullSizeFilenamePath, (int)$width, (int)$height, $resizedFilenamePath, $maxsize, $bgred, $bggreen, $bgblue);
-			if($createdImage){
-				return $this->file_url_folder_thumb.$this->file_name_thumb.'.'.$this->file_extension;
+				$fullSizeFilenamePath = VMPATH_ROOT.'/'.$this->file_url_folder.$this->file_name.'.'.$this->file_extension;
 			} else {
-				return 0;
+				$fullSizeFilenamePath = $this->file_url_folder.$this->file_name.'.'.$this->file_extension;
 			}
+			$fullSizeFilenamePath = vRequest::filterPath($fullSizeFilenamePath);
+			$exists = file_exists($fullSizeFilenamePath);
+
+		}
+		$resizedFilenamePath = vRequest::filterPath(VMPATH_ROOT.'/'.$this->file_url_folder_thumb.$this->file_name_thumb.'.'.$this->file_extension);
+
+		$this->checkPathCreateFolders(vRequest::filterPath($this->file_url_folder_thumb));
+
+		if ($exists) {
+			if(!file_exists($resizedFilenamePath)) {
+				$createdImage = new Img2Thumb( $fullSizeFilenamePath, (int)$width, (int)$height, $resizedFilenamePath, $maxsize, $bgred, $bggreen, $bgblue );
+				if(!$createdImage){
+						return 0;
+				}
+			}
+			return $this->file_url_folder_thumb.$this->file_name_thumb.'.'.$this->file_extension;
 		} else {
 			vmError('Couldnt create thumb, file not found '.$fullSizeFilenamePath);
 			return 0;
@@ -204,9 +187,7 @@ class VmImage extends VmMediaHandler {
 
 		$elements = explode(DS,$path);
 		$examine = VMPATH_ROOT;
-		if(!class_exists('JFolder')){
-			require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
-		}
+
 		foreach($elements as $piece){
 			$examine = $examine.DS.$piece;
 			if(!JFolder::exists($examine)){
@@ -232,4 +213,3 @@ class VmImage extends VmMediaHandler {
 	}
 
 }
-

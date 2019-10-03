@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: edit_shopper.php 9496 2017-03-29 19:08:32Z Milbo $
+ * @version $Id: edit_shopper.php 10030 2019-03-15 12:32:26Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -35,6 +35,17 @@ defined('_JEXEC') or die('Restricted access');
 			<td>
 				<?php echo $this->lists['vendors']; ?>
 			</td>
+			<?php if($this->showVendors()) { ?>
+
+            <td class="key">
+                <label for="is_vendor">
+					<?php echo vmText::_('COM_VIRTUEMART_USER_FORM_ISVENDOR') ?>:
+                </label>
+            </td>
+            <?php } ?>
+            <td>
+				<?php echo VmHTML::checkbox('user_is_vendor', $this->userDetails->user_is_vendor); ?>
+            </td>
 		</tr>
 
 		<tr>

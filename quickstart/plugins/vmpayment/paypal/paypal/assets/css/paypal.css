@@ -9,7 +9,26 @@
     height: 40px;
     padding-left: 100px !important;
 }
-
-
-
-
+.pp-credit {
+    padding: 6px 0;
+}
+.pp-credit button, .pp-credit a {
+    display: inline-block;
+    vertical-align: bottom;
+}
+.pp-img-credit {
+    background-color: #fff;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+.pp-img-credit:hover {
+    background-color: #f2f2f2;
+    border-radius: 3px;
+}
+.vm-payment-plugin-single {
+    padding: 6px;
+}
+.pp-mark-credit-modal:hover {
+    background: #ccc none repeat scroll 0 0;
+}

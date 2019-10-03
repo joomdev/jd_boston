@@ -5,6 +5,7 @@
 * @version $Id: SKRILL.php 7487 2013-12-17 15:03:42Z alatak $
 * @package VirtueMart
 * @subpackage payment
+* @copyright Copyright (c) 2014 - 2019 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 * VirtueMart is free software. This version may have been modified pursuant
 * to the GNU General Public License, and as distributed it includes or
@@ -17,7 +18,7 @@
 
 defined ('_JEXEC') or die('Restricted access');
 if (!class_exists ('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+	require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 }
 
 class plgVmpaymentSkrill extends vmPSPlugin {
@@ -52,7 +53,7 @@ class plgVmpaymentSkrill extends vmPSPlugin {
 		                    'status_pending'      => array('', 'char'),
 		                    'status_success'      => array('', 'char'),
 		                    'status_canceled'     => array('', 'char'));
-
+		$this->addVarsToPushCore($varsToPush, 1);
 		$this->setConfigParameterable ($this->_configTableFieldName, $varsToPush);
 	}
 
@@ -581,43 +582,7 @@ class plgVmpaymentSkrill extends vmPSPlugin {
 		return $html;
 	}
 
-	protected function checkConditions ($cart, $method, $cart_prices) {
 
-		$this->convert_condition_amount($method);
-
-		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
-
-		$amount = $this->getCartAmount($cart_prices);
-		$amount_cond = ($amount >= $method->min_amount AND $amount <= $method->max_amount
-			OR
-			($method->min_amount <= $amount AND ($method->max_amount == 0)));
-
-		$countries = array();
-		if (!empty($method->countries)) {
-			if (!is_array ($method->countries)) {
-				$countries[0] = $method->countries;
-			} else {
-				$countries = $method->countries;
-			}
-		}
-
-		// probably did not gave his BT:ST address
-		if (!is_array ($address)) {
-			$address = array();
-			$address['virtuemart_country_id'] = 0;
-		}
-
-		if (!isset($address['virtuemart_country_id'])) {
-			$address['virtuemart_country_id'] = 0;
-		}
-		if (in_array ($address['virtuemart_country_id'], $countries) || count ($countries) == 0) {
-			if ($amount_cond) {
-				return TRUE;
-			}
-		}
-
-		return FALSE;
-	}
 
 
 	/**

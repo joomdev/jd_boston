@@ -136,7 +136,7 @@ class VmConnector {
 	    curl_close( $CR );
 
 	    if( !empty( $error )) {
-			//JError::raiseError(1, $error );
+
 			return false;
 	    } else {
 			return $result;
@@ -208,7 +208,6 @@ class VmConnector {
 			    }
 			}
 			else {
-//				JError::raiseNotice(1, 'Host:'. $urlParts['host'].' path: '. $urlParts['path'] );
 			    fputs($fp, 'GET '.$urlParts['path']." HTTP/1.0\r\n");
 			    fputs($fp, 'Host:'. $urlParts['host']."\r\n");
 			}

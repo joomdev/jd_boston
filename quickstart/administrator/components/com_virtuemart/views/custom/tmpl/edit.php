@@ -21,7 +21,7 @@ vmJsApi::JvalideForm();
 AdminUIHelper::startAdminArea($this);
 ?>
 <form name="adminForm" id="adminForm" method="post" action="">
-    <fieldset>
+	<fieldset>
 	<legend><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_CUSTOM_FIELD'); ?></legend>
 	<?php
 	$this->addHidden('view', 'custom');
@@ -32,58 +32,54 @@ AdminUIHelper::startAdminArea($this);
 //if ($this->custom->custom_parent_id) $this->customfields->addHidden('custom_parent_id',$this->custom->custom_parent_id);
 	$attribute_id = vRequest::getVar('attribute_id', '');
 	if (!empty($attribute_id))
-	    $this->customfields->addHidden('attribute_id', $attribute_id);
+		$this->customfields->addHidden('attribute_id', $attribute_id);
 	?>
 	<table class="admintable">
-	    <?php echo $this->displayCustomFields($this->custom); ?>
-
-	    <tr id="custom_plg">
+		<?php echo $this->displayCustomFields($this->custom); ?>
+		<tr id="custom_plg">
 		<td valign="top"><?php echo vmText::_('COM_VIRTUEMART_SELECT_CUSTOM_PLUGIN') ?></td>
 		<td>
-		    <fieldset>
+			<fieldset>
 			<?php if (!$this->custom->form) {
 				echo $this->pluginList;
 			} ?>
-			<div class="clear"></div>
-    			<div id="plugin-Container">
+				<div class="clear"></div>
+				<div id="plugin-Container">
 				<?php
 				defined('_JEXEC') or die('Restricted access');
-
 				if ($this->custom->form) {
-
 					?>
 					<h2 style="text-align: center;"><?php echo vmText::_($this->custom->custom_title) ?></h2>
 					<div style="text-align: center;"><?php echo VmText::_('COM_VIRTUEMART_CUSTOM_CLASS_NAME').": ".$this->custom->custom_element ?></div>
 					<?php
 					if ($this->custom->form) {
 						$form = $this->custom->form;
-						include(VMPATH_ADMIN.DS.'fields'.DS.'formrenderer.php');
+						include(VMPATH_ADMIN .'/fields/formrenderer.php');
 					}
 				} else {
 					echo vmText::_('COM_VIRTUEMART_SELECT_CUSTOM_PLUGIN');
 				}
 				?>
-
-    			</div>
-    		    </fieldset>
-    		</td>
-    	    </tr>
-	    <?php //} ?>
+				</div>
+			</fieldset>
+		</td>
+			</tr>
+		<?php //} ?>
 	</table>
-    </fieldset>
+	</fieldset>
 </form>
 <?php
 
 
 $js = "function submitbutton(pressbutton) {
 	if (pressbutton=='cancel'){
-        submitform(pressbutton);
-        return true;
-    }
+		submitform(pressbutton);
+		return true;
+	}
 	if (jQuery('#adminForm').validationEngine('validate')== true){
-        submitform(pressbutton);
-        return true;
-    }
+		submitform(pressbutton);
+		return true;
+	}
 	else return false ;
 }
 jQuery(function($) {";
@@ -95,17 +91,17 @@ $js .= '$(\'#field_type\').change(function () {
 	var $selected = $(this).val();
 	if ($selected == "E" ) $(\'#custom_plg\').show();
 	else { $(\'#custom_plg\').hide();
-	    $(\'#custom_jplugin_id option:eq(0)\').attr("selected", "selected");
-	    $(\'#custom_jplugin_id\').change();
+		$(\'#custom_jplugin_id option:eq(0)\').attr("selected", "selected");
+		$(\'#custom_jplugin_id\').change();
 	}
 
-    });
-    $(\'#custom_jplugin_id\').change(function () {
+	});
+	$(\'#custom_jplugin_id\').change(function () {
 	var $id = $(this).val();
 	$(\'#plugin-Container\').load( \'index.php?option=com_virtuemart&view=custom&task=viewJson&format=json&custom_jplugin_id=\'+$id , function() {
 	$(this).find("[title]").vm2admin(\'tips\',tip_image) });
 
-    });
+	});
 }); ';
 
 vmJsApi::addJScript('showPlugin',$js);

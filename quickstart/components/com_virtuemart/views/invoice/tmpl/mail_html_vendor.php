@@ -25,7 +25,14 @@ defined('_JEXEC') or die('Restricted access');
     <td>
 <?php
 //	echo vmText::_('COM_VIRTUEMART_CART_MAIL_VENDOR_TITLE').$this->vendor->vendor_name.'<br/>';
-	echo vmText::sprintf('COM_VIRTUEMART_MAIL_VENDOR_CONTENT',$this->vendor->vendor_store_name,$this->shopperName,$this->currency->priceDisplay($this->orderDetails['details']['BT']->order_total),$this->orderDetails['details']['BT']->order_number);
+
+    $lang = vmLanguage::getLanguage();
+    if($lang->hasKey('COM_VIRTUEMART_MAIL_VENDOR_CONTENT_'.$this->orderDetails['details']['BT']->order_status)){
+		echo vmText::sprintf('COM_VIRTUEMART_MAIL_VENDOR_CONTENT_'.$this->orderDetails['details']['BT']->order_status,$this->vendor->vendor_store_name,$this->shopperName,$this->currency->priceDisplay($this->orderDetails['details']['BT']->order_total),$this->orderDetails['details']['BT']->order_number, $this->orderDetails['details']['BT']->order_status_name);
+    } else {
+		echo vmText::sprintf('COM_VIRTUEMART_MAIL_VENDOR_CONTENT',$this->vendor->vendor_store_name,$this->shopperName,$this->currency->priceDisplay($this->orderDetails['details']['BT']->order_total),$this->orderDetails['details']['BT']->order_number, $this->orderDetails['details']['BT']->order_status_name);
+    }
+
 
 if(!empty($this->orderDetails['details']['BT']->customer_note)){
 	echo '<br /><br />'.vmText::sprintf('COM_VIRTUEMART_CART_MAIL_VENDOR_SHOPPER_QUESTION',$this->orderDetails['details']['BT']->customer_note).'<br />';

@@ -12,7 +12,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: default_checkout.php 9653 2017-10-18 12:59:33Z Milbo $
+ * @version $Id: default_checkout.php 10007 2019-01-16 09:59:34Z Milbo $
  */
 defined('_JEXEC') or die('Restricted access');
 
@@ -28,6 +28,7 @@ defined('_JEXEC') or die('Restricted access');
 		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_ONCHECKOUT_SHOW_STEPS','oncheckout_show_steps',VmConfig::get('oncheckout_show_steps',1));
 		echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_AUTOMATIC_SHIPMENT',$this->listShipment,'set_automatic_shipment','','virtuemart_shipmentmethod_id','shipment_name',VmConfig::get('set_automatic_shipment',0));
 		echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_AUTOMATIC_PAYMENT',$this->listPayment,'set_automatic_payment','','virtuemart_paymentmethod_id','payment_name',VmConfig::get('set_automatic_payment',0));
+		echo VmHTML::row('checkbox','COM_VM_CFG_RADICAL_VAT','radicalShipPaymentVat',VmConfig::get('radicalShipPaymentVat',1));
 		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_AGREE_TERMS_ONORDER','agree_to_tos_onorder',VmConfig::get('agree_to_tos_onorder',1));
 
 		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_ONCHECKOUT_SHOW_PRODUCTIMAGES','oncheckout_show_images',VmConfig::get('oncheckout_show_images',1));

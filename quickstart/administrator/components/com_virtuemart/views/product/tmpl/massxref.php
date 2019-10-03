@@ -1,4 +1,5 @@
 <?php
+defined ('_JEXEC') or die();
 /**
 *
 * Description
@@ -17,9 +18,9 @@
 */
 
 if($this->task=='massxref_cats' or $this->task=='massxref_cats_exe'){
-	include(VMPATH_ADMIN.DS.'views'.DS.'category'.DS.'tmpl'.DS.'default.php');
+	include(VMPATH_ADMIN .'/views/category/tmpl/default.php');
 }
 
 if($this->task=='massxref_sgrps' or $this->task=='massxref_sgrps_exe'){
-	include(VMPATH_ADMIN.DS.'views'.DS.'shoppergroup'.DS.'tmpl'.DS.'default.php');
+	include(VMPATH_ADMIN .'/views/shoppergroup/tmpl/default.php');
 }

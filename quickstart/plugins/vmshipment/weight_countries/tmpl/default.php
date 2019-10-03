@@ -22,12 +22,16 @@ $currency = $viewData['currency'];
 if(!empty($viewData['method']->countries) and is_array($viewData['method']->countries) and count($viewData['method']->countries)>0){
 	$countryM = VmModel::getModel('country');
 	echo vmText::_('VMSHIPMENT_WEIGHT_COUNTRIES_SHIP_TO');
+	$countryNames = array();
 	foreach($viewData['method']->countries as $virtuemart_country_id){
-		$country = $countryM->getData($virtuemart_country_id);
-		echo $country->country_name;
+		$c = $countryM->getData($virtuemart_country_id);
+		$countryNames[] = $c->country_name;
 		//vmdebug('my country ',$country);
 	}
-	echo '<br/>';
+	if(!empty($countryNames)){
+		echo implode(', ',$countryNames).'<br/>';
+	}
+
 }
 
 echo vmtext::sprintf('VMSHIPMENT_WEIGHT_COUNTRIES_WITH_SHIPMENT', $viewData['method']->shipment_name, $currency->priceDisplay($viewData['product']->prices['shipmentPrice']));

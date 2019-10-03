@@ -8,7 +8,7 @@
  * @version $Id: paypal.php 7217 2013-09-18 13:42:54Z alatak $
  * @package VirtueMart
  * @subpackage payment
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2018 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -48,10 +48,6 @@ class PaypalHelperCustomerData {
 
 	public function load() {
 
-		//$this->clear();
-		if (!class_exists('vmCrypt')) {
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmcrypt.php');
-		}
 		$session = JFactory::getSession();
 		$sessionData = $session->get('paypal', 0, 'vm');
 
@@ -85,9 +81,7 @@ class PaypalHelperCustomerData {
 	}
 
 	public function loadPost() {
-		if (!class_exists('vmCrypt')) {
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmcrypt.php');
-		}
+
 		// card information
 		$virtuemart_paymentmethod_id = vRequest::getVar('virtuemart_paymentmethod_id', 0);
 		//if ($virtuemart_paymentmethod_id) {
@@ -144,9 +138,7 @@ class PaypalHelperCustomerData {
 	}
 
 	public function save() {
-		if (!class_exists('vmCrypt')) {
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmcrypt.php');
-		}
+
 		$session = JFactory::getSession();
 		$sessionData = new stdClass();
 		$sessionData->selected_method = $this->_selected_method;

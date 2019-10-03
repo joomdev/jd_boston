@@ -19,8 +19,6 @@ defined ( '_JEXEC' ) or die ( 'Restricted access' );
 * @version $Id: about.php 2641 2010-11-09 19:25:13Z milbo $
 */
 
-if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
-
 /**
  * VirtueMart default administrator controller
  *

@@ -39,7 +39,8 @@ class  N2SSLayersContainer {
                         try {
                             if (empty($node['item'])) {
                                 if (empty($node['items'])) {
-                                    continue;
+                                    $i--;
+                                    break;
                                 }
                                 $node['item'] = $node['items'][0];
                             }
@@ -48,6 +49,7 @@ class  N2SSLayersContainer {
                             $this->layers[] = $layer;
 
                         } catch (Exception $e) {
+                            $i--;
                             N2Message::error($e->getMessage());
                         }
                         break;
@@ -76,7 +78,6 @@ class  N2SSLayersContainer {
                 'bgimage'                   => '',
                 'bgimagex'                  => 50,
                 'bgimagey'                  => 50,
-                'bgimageparallax'           => 0,
                 'bgcolor'                   => '00000000',
                 'bgcolorgradient'           => 'off',
                 'verticalalign'             => 'center',

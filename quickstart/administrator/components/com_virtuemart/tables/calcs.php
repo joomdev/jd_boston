@@ -17,7 +17,6 @@
 */
 defined('_JEXEC') or die();
 
-if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
 /**
  * Calculator table class
  * The class is is used to manage the calculation in the shop.

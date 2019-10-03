@@ -288,7 +288,8 @@ INSERT IGNORE INTO `#__virtuemart_countries` (`virtuemart_country_id`, `virtuema
 (245, 1, 'Serbia', 'SRB', 'RS'),
 (246, 1, 'Sint Maarten (French Antilles)', 'MAF', 'MF'),
 (247, 1, 'Sint Maarten (Netherlands Antilles)', 'SXM', 'SX'),
-(248, 1, 'Palestinian Territory, occupied','PSE','PS');
+(248, 1, 'Palestinian Territory, occupied','PSE','PS'),
+(249, 1, 'Montenegro', 'MNE', 'ME');
 
 /*!40000 ALTER TABLE `#__virtuemart_countries` ENABLE KEYS */;
 
@@ -784,7 +785,7 @@ INSERT IGNORE INTO `#__virtuemart_states` (`virtuemart_state_id`, `virtuemart_co
 	(315, 105, 0, 'Verbano Cusio Ossola', 'VCO', 'VB', 1),
 	(316, 105, 0, 'Vercelli', 'VER', 'VC', 1),
 	(317, 105, 0, 'Verona', 'VRN', 'VR', 1),
-	(318, 105, 0, 'Vibo Valenzia', 'VIV', 'VV', 1),
+	(318, 105, 0, 'Vibo Valentia', 'VIV', 'VV', 1),
 	(319, 105, 0, 'Vicenza', 'VII', 'VI', 1),
 	(320, 105, 0, 'Viterbo', 'VIT', 'VT', 1),
 	(321, 195, 0, 'A Coru', 'ACO', '15', 1),
@@ -1331,6 +1332,10 @@ INSERT INTO `#__virtuemart_states`
 (NULL, 1, 47,'Cundinamarca','CUN','CU'),
 (NULL, 1, 47,'Bolivar','BOL','BV'),
 (NULL, 1, 47,'Bogotá D.C.','BOG','BG');
+
+INSERT INTO `#__virtuemart_states`
+(`virtuemart_state_id`, `virtuemart_vendor_id`, `virtuemart_country_id`, `state_name`, `state_3_code`, `state_2_code`) VALUES
+(NULL, 1, 105, 'Barletta-Andria-Trani','BAT', 'BT');
 
 /*!40000 ALTER TABLE `#__virtuemart_states` ENABLE KEYS */;
 

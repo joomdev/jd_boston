@@ -19,9 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the view framework
-if(!class_exists('VmView'))require(VMPATH_SITE.DS.'helpers'.DS.'vmview.php');
-
 /**
 * Product details
 *
@@ -63,11 +60,8 @@ class virtuemartViewrecommend extends VmView {
 			return true;
 		}
 
-		$show_prices  = VmConfig::get('show_prices',1);
-		if($show_prices == '1'){
-			if(!class_exists('calculationHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'calculationh.php');
-		}
-		$this->assignRef('show_prices', $show_prices);
+		$this->show_prices  = VmConfig::get('show_prices',1);
+
 		$document = JFactory::getDocument();
 		$document->setMetaData('robots','NOINDEX, NOFOLLOW, NOARCHIVE, NOSNIPPET');
 		/* add javascript for price and cart */
@@ -76,10 +70,6 @@ class virtuemartViewrecommend extends VmView {
 		$mainframe = JFactory::getApplication();
 		$pathway = $mainframe->getPathway();
 		$task = vRequest::getCmd('task');
-
-		if (!class_exists('VmImage'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
-
 
 		if(empty($virtuemart_product_id)){
 			self::showLastCategory($tpl);
@@ -112,7 +102,6 @@ class virtuemartViewrecommend extends VmView {
 			if (array_key_exists('0', $this->product->categories)) $virtuemart_category_id = $this->product->categories[0];
 		}
 
-		if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 		shopFunctionsF::setLastVisitedCategoryId($virtuemart_category_id);
 
 		if($category_model){

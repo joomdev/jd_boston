@@ -33,9 +33,15 @@ defined('_JEXEC') or die('Restricted access'); ?>
 							<?php echo JHtml::_('Select.genericlist', $this->orderByFieldsProduct->select, 'browse_orderby_field', 'size=1', 'value', 'text', VmConfig::get('browse_orderby_field', 'product_name'), 'product_name');
 
 							echo JHtml::_('select.genericlist', $this->orderDirs, 'prd_brws_orderby_dir', 'size=10', 'value', 'text', VmConfig::get('prd_brws_orderby_dir', 'ASC') ); ?>
+						</td>
+					</tr>
+					<tr>
+						<td class="key">
 							<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_BROWSE_CAT_ORDERBY_DEFAULT_FIELD_LBL_TIP'); ?>">
-									<?php echo vmText::_('COM_VIRTUEMART_BROWSE_CAT_ORDERBY_DEFAULT_FIELD_LBL'); ?>
-								</span>
+								<?php echo vmText::_('COM_VIRTUEMART_BROWSE_CAT_ORDERBY_DEFAULT_FIELD_LBL'); ?>
+							</span>
+						</td>
+						<td>
 							<?php //Fallback, if someone used an old ordering: "ordering"
 							$ordering = VmConfig::get('browse_cat_orderby_field', 'c.ordering,category_name');
 							if(!in_array($ordering,VirtueMartModelCategory::$_validOrderingFields)){

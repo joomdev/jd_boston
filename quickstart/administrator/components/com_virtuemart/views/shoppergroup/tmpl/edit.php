@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: edit.php 9612 2017-07-31 07:52:19Z Milbo $
+ * @version $Id: edit.php 9831 2018-05-07 13:45:33Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -76,7 +76,6 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_SHOPPERGROUP_NAME');
 		$params = $this->shoppergroup;
 		$show_prices = $this->shoppergroup->show_prices;
 		$showPricesLine = true;
-		if(!class_exists('VirtuemartViewConfig')) require (VMPATH_ADMIN .'/views/config/view.html.php');
             include(VMPATH_ADMIN .'/views/config/tmpl/default_priceconfig.php');
         ?>
 

@@ -9,7 +9,7 @@
  * Defines class loading search path.
  */
  
-function __autoload($class_name) 
+function avatax_autoload_register($class_name)
 { 	
 	
 	$path= VMAVALARA_PATH.'/classes/'.$class_name . '.class.php';
@@ -23,8 +23,11 @@ function __autoload($class_name)
 	{
 		$path= VMAVALARA_PATH.'/classes/AvaCert2Svc/'.$class_name . '.class.php';
 	}
-	
-	require_once $path;
+
+	if(file_exists($path)){
+		require_once $path;
+	}
+
     
      
 }

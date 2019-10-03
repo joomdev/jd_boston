@@ -1,0 +1,723 @@
+/*----- Aply on all Astroid Section -----*/
+.astroid-section {
+	padding: 60px 0;
+
+	@include media-breakpoint-down(md) {
+		padding: 50px 0;
+	}
+}
+
+/*----- MainBody Section -----*/
+.hide-body-padding .astroid-section.astroid-component-section {
+	padding: 0px;
+}
+
+/*----- Button Style -----*/
+.modal-header {
+	button.close {
+		opacity: 1;
+		width: auto;
+		color: $white;
+		height: auto;
+		border: 0 none;
+		cursor: pointer;
+		font-size: 30px;
+		padding: 5px 15px;
+		border-radius: 0;
+		text-shadow: none;
+		background-color: $secondary;
+		line-height: normal;
+
+		&:hover,
+		&:focus {
+			opacity: 1;
+			color: $white;
+		}
+	}
+}
+
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+	color: $white;
+	background: $primary;
+	border: 1px solid $primary;
+}
+
+/*----- Section 2 -----*/
+.section-2 {
+	padding: 60px 0 50px;
+
+	@include media-breakpoint-down(md) {
+		padding: 50px 0;
+	}
+}
+
+/*----- Section 4 -----*/
+.section-4 {
+	padding: 40px 0;
+}
+
+/*------ AddressBarBottom Section ------*/
+.main-contact-block-horizontal {
+	display: flex;
+	display: -webkit-flex;
+
+	.contact-block-horizontal {
+		margin: 0;
+		padding: 0;
+		display: flex;
+		display: -webkit-flex;
+
+		.contact-icon {
+			width: 25%;
+			font-size: 40px;
+			text-align: center;
+			float: left;
+			position: relative;
+			color: $white;
+			background: rgba($black, 0.5);
+			padding: 0;
+
+			i {
+				left: 0;
+				position: absolute;
+				right: 0;
+				top: 37%;
+			}
+		}
+
+		.content {
+			position: relative;
+			width: 75%;
+			float: left;
+			color: $white;
+			padding: 10% 25px;
+
+			@include media-breakpoint-down(sm) {
+				padding: 30px 25px;
+			}
+
+			.content-inner {
+				margin: 20% 0;
+
+				@include media-breakpoint-down(sm) {
+					margin: 0;
+				}
+			}
+
+			.arrow {
+				left: 0;
+				top: 40%;
+				position: absolute;
+				border-top: 10px solid transparent;
+				border-bottom: 10px solid transparent;
+				border-left: 10px solid rgba($black, 0.5);
+			}
+
+			h3 {
+				margin: 0;
+				font-size: 24px;
+			}
+
+			&:hover {
+				background: rgba($primary, 0.3);
+			}
+		}
+
+		.content p {
+			font-family: arial;
+		}
+
+		a {
+			width: 100%;
+			display: flex;
+			display: -webkit-flex;
+			text-decoration: none;
+		}
+	}
+}
+
+/*----- Sidebar Section -----*/
+[class*="sidebar-"] {
+	.moduletable {
+		display: block;
+		padding: 20px;
+		//margin: 0 0 20px;
+		background: $white;
+		border-radius: 4px;
+		border: 1px solid $light;
+		&:not(:last-child) {
+			margin-bottom: 20px;
+		}
+
+		.module-title {
+			padding: 0;
+			font-size: 25px;
+			background: none;
+			margin: 0 0 20px;
+			position: relative;
+			font-weight: normal;
+			line-height: normal;
+
+			&:after {
+				content: "";
+				width: 35px;
+				height: 2px;
+				display: block;
+				margin-top: 5px;
+				background: $primary;
+			}
+		}
+
+		ul {
+			padding: 0;
+         margin: 0;
+         list-style: outside none none;
+         li {
+            border-bottom: 1px solid $light;
+   
+            &:hover {
+               background: $primary;
+   
+               a {
+                  color: $white;
+               }
+            }
+   
+            a {
+               color: $secondary;
+               display: block;
+               font-size: 18px;
+               text-decoration: none;
+               padding: 10px 20px;
+            }
+         }
+		}
+   }
+   
+	div.search {
+		position: relative;
+
+		#mod_virtuemart_search {
+			display: inline-block;
+			float: none;
+		}
+
+		#mod_virtuemart_search+input.button {
+			color: $white;
+			float: left;
+			position: absolute;
+			border: none;
+			right: 0;
+			box-shadow: none;
+			padding: 7px 22px 6px;
+			text-indent: -999999px;
+			height: 100%;
+		}
+	}
+}
+
+/*----- Images Hover Effects -----*/
+
+[class*="image_effect"] figure,
+.jdb-element[class*="image_effect"] figure{
+	margin-bottom: 20px;
+}
+
+/*----- Zoom In -----*/
+.image_effect_zoom figure {
+	overflow: hidden;
+}
+
+.image_effect_zoom figure img {
+	-webkit-transform: scale(1);
+	transform: scale(1);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+
+.image_effect_zoom figure:hover img {
+	-webkit-transform: scale(1.3);
+	transform: scale(1.3);
+}
+
+/*----- Zoom Out -----*/
+.image_effect_zoomout figure {
+	overflow: hidden;
+}
+
+.image_effect_zoomout figure img {
+	-webkit-transform: scale(1.5);
+	transform: scale(1.5);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+
+.image_effect_zoomout figure:hover img {
+	-webkit-transform: scale(1);
+	transform: scale(1);
+}
+
+/*----- Slide -----*/
+.image_effect_slide figure {
+	overflow: hidden;
+}
+
+.image_effect_slide figure img {
+	margin-left: 30px;
+	-webkit-transform: scale(1.5);
+	transform: scale(1.5);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+
+.image_effect_slide figure:hover img {
+	margin-left: 0;
+}
+
+/*----- Rotate -----*/
+.image_effect_rotate figure {
+	overflow: hidden;
+}
+
+.image_effect_rotate figure img {
+	-webkit-transform: rotate(15deg) scale(1.4);
+	transform: rotate(15deg) scale(1.4);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+
+.image_effect_rotate figure:hover img {
+	-webkit-transform: rotate(0) scale(1);
+	transform: rotate(0) scale(1);
+}
+
+/*----- Blur -----*/
+.image_effect_blur figure img {
+	-webkit-filter: blur(3px);
+	filter: blur(3px);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+
+.image_effect_blur figure:hover img {
+	-webkit-filter: blur(0);
+	filter: blur(0);
+}
+
+/*----- Gray Scale -----*/
+.image_effect_grayscale figure img {
+	-webkit-filter: grayscale(100%);
+	filter: grayscale(100%);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+
+.image_effect_grayscale figure:hover img {
+	-webkit-filter: grayscale(0);
+	filter: grayscale(0);
+}
+
+/*----- Blur + Gray Scale -----*/
+.image_effect_blurgrayscale figure {
+	overflow: hidden;
+}
+
+.image_effect_blurgrayscale figure img {
+	-webkit-filter: grayscale(0) blur(0);
+	filter: grayscale(0) blur(0);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+
+.image_effect_blurgrayscale figure:hover img {
+	-webkit-filter: grayscale(100%) blur(3px);
+	filter: grayscale(100%) blur(3px);
+}
+
+/*----- Opacity S1 -----*/
+.image_effect_opacity figure img {
+	opacity: 1;
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+
+.image_effect_opacity figure:hover img {
+	opacity: .5;
+}
+
+/* Shine */
+.image_effect_shine figure{
+	position: relative;
+	overflow:hidden;
+}
+.image_effect_shine figure::before {
+	position: absolute;
+	top: 0;
+	left: -75%;
+	z-index: 2;
+	display: block;
+	content: '';
+	width: 50%;
+	height: 100%;
+	background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+	background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+	-webkit-transform: skewX(-25deg);
+	transform: skewX(-25deg);
+}
+.image_effect_shine figure:hover::before {
+	animation: shine .75s;
+	-webkit-animation: shine .75s;
+}
+@-webkit-keyframes shine {
+	100% {
+		left: 125%;
+	}
+}
+@keyframes shine {
+	100% {
+		left: 125%;
+	}
+}
+
+/*----- Flashing -----*/
+.image_effect_flashing figure:hover img {
+	opacity: 1;
+	animation: flash 1.5s;
+}
+
+@-webkit-keyframes flash {
+	0% {
+		opacity: .4;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes flash {
+	0% {
+		opacity: .4;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+/*----- Images Hover Effects End -----*/
+
+/*----- Price Plane Style 1 -----*/
+.price-plane-s1 {
+	margin-top: 30px;
+	max-width: 350px;
+	overflow: hidden;
+	text-align: center;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 20px;
+	position: relative;
+
+	&.active {
+		box-shadow: 0 5px 23px 0 rgba($black, 0.15);
+
+		.h1 {
+			color: $primary;
+		}
+	}
+
+	.h1 {
+		padding: 0;
+		font-weight: normal;
+	}
+
+	h2 {
+		font-size: 30px;
+		font-weight: normal;
+	}
+
+	.box-planning-label {
+		background: $primary;
+		color: $white;
+		font-size: 17px;
+		padding: 3px 40px;
+		position: absolute;
+		right: -34px;
+		top: 23px;
+		transform: rotate(47deg);
+	}
+
+	ul.list {
+		li {
+			padding: 5px 0;
+
+			span {
+				font-size: 16px;
+
+				&.text-bold {
+					font-weight: bold;
+					padding-right: 5px;
+				}
+			}
+		}
+	}
+}
+
+/*----- Price Plane Style 2 -----*/
+.price-plane-s2 {
+	margin-top: 30px;
+	max-width: 350px;
+	text-align: center;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 20px;
+	position: relative;
+
+	&.active {
+		box-shadow: 0 5px 23px 0 rgba($black, 0.15);
+
+		.h1,
+		.h1 sup.up {
+			color: $primary;
+		}
+	}
+
+	.h1 {
+		padding: 0;
+		font-family: arial;
+		font-weight: normal;
+
+		sup {
+			font-size: 14px;
+
+			&.up {
+				font-size: 70%;
+				right: 2px;
+			}
+		}
+	}
+
+	h2 {
+		font-size: 30px;
+		font-weight: normal;
+	}
+
+	.box-planning-label {
+		top: 20px;
+		right: -25px;
+		width: 80px;
+		color: $white;
+		height: 80px;
+		font-size: 16px;
+		position: absolute;
+		line-height: normal;
+		background: $primary;
+		border-radius: 100%;
+
+		span {
+			left: 0;
+			top: 24%;
+			right: 0;
+			position: absolute;
+			transform: rotate(30deg);
+		}
+	}
+
+	ul.list {
+		li {
+			padding: 5px 0;
+
+			+li {
+				border-top: 1px solid $light;
+				margin-top: 8px;
+				padding-top: 7px;
+			}
+
+			span {
+				font-size: 16px;
+
+				&.text-bold {
+					font-weight: bold;
+					padding-right: 5px;
+				}
+			}
+		}
+	}
+}
+
+/*----- Price Plane Style 3 -----*/
+.price-plane-s3 {
+	margin-top: 30px;
+	max-width: 350px;
+	text-align: center;
+	display: block;
+	overflow: hidden;
+	margin-left: auto;
+	margin-right: auto;
+	border: 1px solid $light;
+	background: $white;
+	position: relative;
+
+	&.basic-plan {
+		.head-content {
+			background: #E84C3D;
+		}
+
+		.price-icon i {
+			background: #E84C3D;
+		}
+
+		ul.list li {
+			color: #E84C3D;
+		}
+
+		.btn {
+			color: #fff;
+			background: #E84C3D;
+
+			&:hover,
+			&:focus {
+				background: rgba(232, 76, 61, 0.7);
+			}
+		}
+	}
+
+	&.premium-plan {
+		.head-content {
+			background: #2DCC70;
+		}
+
+		.price-icon i {
+			background: #2DCC70;
+		}
+
+		ul.list li {
+			color: #2DCC70;
+		}
+
+		.btn {
+			color: #fff;
+			background: #2DCC70;
+
+			&:hover,
+			&:focus {
+				background: rgba(45, 204, 112, 0.7);
+			}
+		}
+	}
+
+	&.standard-plan {
+		.head-content {
+			background: #1B7C9D;
+		}
+
+		.price-icon i {
+			background: #1B7C9D;
+		}
+
+		ul.list li {
+			color: #1B7C9D;
+		}
+
+		.btn {
+			color: #fff;
+			background: #1B7C9D;
+
+			&:hover,
+			&:focus {
+				background: rgba(27, 124, 157, 0.7);
+			}
+		}
+	}
+
+	.head-content {
+		color: $white;
+		padding: 20px 0 0;
+		background: $primary;
+	}
+
+	.price-icon {
+		top: 30px;
+		margin-top: -15px;
+		position: relative;
+		margin-bottom: 30px;
+
+		i {
+			color: $white;
+			font-size: 20px;
+			background: $primary;
+			width: 55px;
+			height: 55px;
+			line-height: 55px;
+			border-radius: 100%;
+			border: 2px solid $white;
+		}
+	}
+
+	.box-planning-label {
+		background: $primary;
+		color: $white;
+		font-size: 16px;
+		padding: 3px 0;
+		position: absolute;
+		right: -37px;
+		text-align: center;
+		top: 30px;
+		transform: rotate(47deg);
+		width: 160px;
+	}
+
+	.price {
+		margin: 30px 0;
+		padding: 0;
+		font-size: 45px;
+		font-family: arial;
+	}
+
+	.season {
+		font-size: 30px;
+		margin: 0;
+		padding: 0;
+	}
+
+	.divider {
+		border-color: $white;
+	}
+
+	.bottom-content {
+		padding-bottom: 20px;
+	}
+
+	ul.list {
+		li {
+			padding: 7px 0;
+			font-size: 18px;
+			border-bottom: 1px solid $light;
+
+			span {
+				padding: 0 2px;
+			}
+		}
+	}
+
+}
+
+/** Location Map**/
+.moduletable.location-map {
+	iframe {
+		display: block;
+	}
+}
+
+/*---------------------------------------------------------------- JD BUILDER ---------------------------------------*/
+
+/** Services Section **/
+.services-circles .jdb-element .jdb-icon-wrapper {
+	width: 120px !important;
+	height: 120px !important;
+	line-height: 120px !important;
+}

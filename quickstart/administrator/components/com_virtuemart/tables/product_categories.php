@@ -16,8 +16,6 @@
 
 defined('_JEXEC') or die();
 
-if(!class_exists('VmTableXarray'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtablexarray.php');
-
 class TableProduct_categories extends VmTableXarray {
 
 	function __construct(&$db){

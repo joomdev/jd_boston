@@ -1,0 +1,13 @@
+.astroid-mobilemenu-open .burger-menu-button .inner,
+.astroid-mobilemenu-open .burger-menu-button .inner::before,
+.astroid-mobilemenu-open .burger-menu-button .inner::after {
+    background-color: $white;
+    opacity: 1;
+}
+
+.astroid-offcanvas .burger-menu-button .inner,
+.astroid-offcanvas .burger-menu-button .inner::before,
+.astroid-offcanvas .burger-menu-button .inner::after {
+    background-color: $white;
+    opacity: 1;
+}

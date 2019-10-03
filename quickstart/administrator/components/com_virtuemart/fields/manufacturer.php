@@ -1,15 +1,14 @@
 <?php
-
-
 defined('JPATH_BASE') or die;
+/**
+ * Supports a modal Manufacturer picker.
+ * @author Max Milbers
+ * @copyright Copyright (C) VirtueMart Team - All rights reserved.
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL 2, see COPYRIGHT.php
+ */
 
 jimport('joomla.form.formfield');
 
-/**
- * Supports a modal Manufacturer picker.
- *
- *
- */
 class JFormFieldManufacturer extends JFormField
 {
 	/**

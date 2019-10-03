@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: edit_vendor.php 9590 2017-06-27 12:46:05Z Milbo $
+* @version $Id: edit_vendor.php 9863 2018-06-07 07:32:06Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -37,6 +37,9 @@ if(!vmAccess::manager('user.editshop')){
 						echo VmHTML::row('input','COM_VIRTUEMART_STORE_FORM_MPOV','vendor_min_pov',$this->vendor->vendor_min_pov);
 						if(VmConfig::get('multix','none')!='none' and vmAccess::manager('managevendors')){
 							echo VmHTML::row('input','COM_VIRTUEMART_MAX_CATS_PER_PRODUCT','max_cats_per_product',$this->vendor->max_cats_per_product);
+							echo VmHTML::row('input','COM_VIRTUEMART_MAX_PRODUCTS','max_products',$this->vendor->max_products);
+							echo VmHTML::row('input','COM_VIRTUEMART_MAX_CUSTOMERS','max_customers',$this->vendor->max_customers);
+							echo VmHTML::row('input','COM_VIRTUEMART_FORCE_PRODUCT_PATTERN','force_product_pattern',$this->vendor->force_product_pattern);
 						}
 						?>
 					</table>

@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: default_shop.php 9561 2017-05-30 17:47:16Z Milbo $
+ * @version $Id: default_shop.php 10152 2019-09-19 14:40:28Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -55,7 +55,7 @@ defined('_JEXEC') or die('Restricted access');?>
                 <span class="hasTip" title="<?php echo htmlentities(vmText::_('COM_VM_MEMBER_ACCESSNBR_TIP'))?>'"><?php echo vmText::_('COM_VM_MEMBER_ACCESSNBR')?></span>
             </td>
             <td>
-                <?php echo VmHTML::input('member_access_number',VmConfig::get('member_access_number','')); ?>
+                <?php echo VmHTML::input('member_access_number',VmConfig::get('member_access_number',''),'', '',55); ?>
             </td>
             <td>
                 <span class="hasTip" title="<?php echo htmlentities(vmText::sprintf($host,'COM_VM_MEMBER_AGREEMENT_TIP',VmConfig::$vmlangTag,vmVersion::$RELEASE))?>'"><?php echo vmText::_('COM_VM_MEMBER_AGREEMENT')?></span>

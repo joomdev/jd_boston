@@ -39,7 +39,7 @@ if( VmConfig::get('ordertracking','guests') == 'guestlink' or (VmConfig::get('or
 }
 	echo vmText::sprintf('COM_VIRTUEMART_MAIL_SHOPPER_CONTENT', $this->shopperName, $this->vendor->vendor_store_name, $this->orderDetails['details']['BT']->order_total, $this->orderDetails['details']['BT']->order_number, $pass, $this->orderDetails['details']['BT']->created_on) . "\n" . "\n";
 
-echo "\n" . strip_tags(vmText::sprintf('COM_VIRTUEMART_MAIL_ORDER_STATUS', $this->orderDetails['details']['BT']->order_status_name));
+echo "\n" . strip_tags(vmText::sprintf('COM_VIRTUEMART_MAIL_ORDER_STATUS', $this->orderstatuses[$this->orderDetails['details']['BT']->order_status]));
 
 echo "\n\n";
 $nb = count($this->orderDetails['history']);

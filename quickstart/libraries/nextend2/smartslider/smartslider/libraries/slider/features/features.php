@@ -5,6 +5,9 @@ N2Loader::import('libraries.image.manager');
 
 class N2SmartSliderFeatures {
 
+    /**
+     * @var N2SmartSliderRenderableAbstract
+     */
     private $slider;
 
     public $allowBGImageAttachmentFixed = true;
@@ -58,11 +61,15 @@ class N2SmartSliderFeatures {
      */
     public $slideBackground;
 
-
     /**
      * @var N2SmartSliderFeaturePostBackgroundAnimation
      */
     public $postBackgroundAnimation;
+
+    /**
+     * @var N2SmartSliderFeatureFocus
+     */
+    public $focus;
 
     /**
      * @var N2SmartSliderFeatureSpinner
@@ -71,8 +78,11 @@ class N2SmartSliderFeatures {
 
     public $optimize;
 
-    private $initCallbacks = array();
-
+    /**
+     * N2SmartSliderFeatures constructor.
+     *
+     * @param $slider N2SmartSliderRenderableAbstract
+     */
     public function __construct($slider) {
         $this->slider = $slider;
 
@@ -89,6 +99,7 @@ class N2SmartSliderFeatures {
         $this->translateUrl    = new N2SmartSliderFeatureTranslateUrl($slider);
         $this->layerMode       = new N2SmartSliderFeatureLayerMode($slider);
         $this->slideBackground = new N2SmartSliderFeatureSlideBackground($slider);
+        $this->focus           = new N2SmartSliderFeatureFocus($slider);
         $this->loadSpinner = new N2SmartSliderFeatureSpinner($slider);
     }
 
@@ -129,7 +140,8 @@ class N2SmartSliderFeatures {
         $this->autoplay->makeJavaScriptProperties($properties);
         $this->layerMode->makeJavaScriptProperties($properties);
         $this->slideBackground->makeJavaScriptProperties($properties);
-        $properties['initCallbacks'] = &$this->initCallbacks;
+        $this->focus->makeJavaScriptProperties($properties);
+        $properties['initCallbacks'] = &$this->slider->initCallbacks;
     }
 
     /**
@@ -148,7 +160,7 @@ class N2SmartSliderFeatures {
         return $this->slideBackground->make($slide);
     }
 
-    public function addInitCallback($callback) {
-        $this->initCallbacks[] = $callback;
+    public function addInitCallback($callback, $name = false) {
+        $this->slider->addScript($callback, $name);
     }
 }

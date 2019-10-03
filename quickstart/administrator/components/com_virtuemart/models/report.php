@@ -1,14 +1,12 @@
 <?php
-if (!defined ('_JEXEC')) {
-	die('Direct Access to ' . basename (__FILE__) . ' is not allowed.');
-}
+defined('_JEXEC') or die('Restricted access');
 
 /**
  *
  * Report Model
  *
  * @author Max Milbers, Wicksj
- * @version $Id: report.php 9802 2018-03-20 15:22:11Z Milbo $
+ * @version $Id: report.php 9880 2018-06-19 14:36:18Z Milbo $
  * @package VirtueMart
  * @subpackage Report
  * @copyright Copyright (C) 2011 - 2014VirtueMart Team - All rights reserved.
@@ -21,10 +19,6 @@ if (!defined ('_JEXEC')) {
  *
  * http://virtuemart.org
  */
-
-if (!class_exists ('VmModel')) {
-	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmmodel.php');
-}
 
 class VirtuemartModelReport extends VmModel {
 

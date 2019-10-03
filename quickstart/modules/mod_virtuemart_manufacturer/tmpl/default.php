@@ -10,10 +10,19 @@ $col= 1 ;
 if ($display_style =="div") { ?>
 	<div class="vmmanufacturer<?php echo $params->get('moduleclass_sfx'); ?>">
 	<?php foreach ($manufacturers as $manufacturer) {
+		/*if ($col == 1) {
+			echo '<div class="row">';
+		} elseif ($col == $manufacturers_per_row + 1) {
+			echo '<div class="row">';
+			$col = 1;
+		}*/
 		$link = JROUTE::_('index.php?option=com_virtuemart&view=manufacturer&virtuemart_manufacturer_id=' . $manufacturer->virtuemart_manufacturer_id);
-
+		$bootcolmd = round(12/$manufacturers_per_row);
+		$bootcolsm = round(24/$manufacturers_per_row);
+		$bootcolxs = round(36/$manufacturers_per_row);
 		?>
-		<div style="float:left;">
+		<div class="col-md-<?php echo $bootcolmd?> col-sm-<?php echo $bootcolsm?> col-xs-<?php echo $bootcolxs?>" style="float:left;">
+			<div class="spacer">
 			<a href="<?php echo $link; ?>">
 		<?php
 		if ($manufacturer->images && ($show == 'image' or $show == 'all' )) { ?>
@@ -25,11 +34,13 @@ if ($display_style =="div") { ?>
 		<?php
 		} ?>
 			</a>
+
+			</div>
 		</div>
 		<?php
-		if ($col == $manufacturers_per_row) {
-			echo "</div><div style='clear:both;'>";
-			$col= 1 ;
+		if ($col == $manufacturers_per_row && $manufacturers_per_row && $col < $totalManus) {
+			echo "	</div><div style='clear:both;'>";
+			$col = 1;
 		} else {
 			$col++;
 		}

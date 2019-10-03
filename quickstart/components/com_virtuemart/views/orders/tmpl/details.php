@@ -7,18 +7,25 @@
 * @subpackage Orders
 * @author Oscar van Eijk, Valerie Isaksen
 * @link https://virtuemart.net
-* @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+* @copyright Copyright (c) 2004 - 2018 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 * VirtueMart is free software. This version may have been modified pursuant
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: details.php 9523 2017-05-04 10:23:55Z Milbo $
+* @version $Id: details.php 9952 2018-10-01 12:01:00Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 vmJsApi::css('vmpanels');
+
+if (empty($this->orderdetails) ) {
+	echo '<div class="vm-wrap">';
+	echo shopFunctionsF::getLoginForm(false,$this->trackingByOrderPass);
+	echo '</div>';
+	return true;
+}
 if($this->print){
 	?>
 
@@ -38,7 +45,7 @@ if($this->print){
 		echo $this->loadTemplate('items');
 		?>
 		</div>
-		<?php if(!class_exists('VirtuemartViewInvoice')) require_once(VMPATH_SITE .DS. 'views'.DS.'invoice'.DS.'view.html.php');
+		<?php
 		echo VirtuemartViewInvoice::replaceVendorFields($this->vendor->vendor_letter_footer_html, $this->vendor); ?>
 		</body>
 		<?php

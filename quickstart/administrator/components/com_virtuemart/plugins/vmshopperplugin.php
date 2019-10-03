@@ -1,4 +1,5 @@
 <?php
+defined ('_JEXEC') or die();
 /**
  * Abstract class for order plugins
  *
@@ -28,7 +29,6 @@ jimport('joomla.plugin.plugin');
 * @subpackage Plugins
 * @author Max Milbers
 */
-if (!class_exists('vmPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmplugin.php');
 
 abstract class vmShopperPlugin extends VmPlugin
 {

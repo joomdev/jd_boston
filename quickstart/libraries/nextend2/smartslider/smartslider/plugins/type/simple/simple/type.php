@@ -35,9 +35,20 @@ class N2SmartSliderTypeSimple extends N2SmartSliderType {
         $this->loadResources();
 
         $background = $params->get('background');
+        $backgroundColor = $params->get('background-color', '');
         $sliderCSS  = $params->get('slider-css');
+		$borderRadius = $params->get('border-radius', 0);
+        if (!empty($borderRadius)) {
+            $sliderCSS .= 'overflow:hidden';
+        }
         if (!empty($background)) {
             $sliderCSS .= 'background-image: URL(' . N2ImageHelper::fixed($background) . ');';
+        }
+        if (!empty($backgroundColor)) {
+            $rgba = N2Color::hex2rgba($backgroundColor);
+            if ($rgba[3] != 0) {
+                $sliderCSS .= 'background-color:RGBA(' . $rgba[0] . ',' . $rgba[1] . ',' . $rgba[2] . ',' . round($rgba[3] / 127, 2) . ');';
+            }
         }
 
         $slideCSS = $params->get('slide-css');
@@ -48,7 +59,7 @@ class N2SmartSliderTypeSimple extends N2SmartSliderType {
         $this->widgets->echoAbove();
         ?>
 
-        <div class="n2-ss-slider-1 n2-ss-swipe-element n2-ow" style="<?php echo $sliderCSS; ?>">
+        <div class="n2-ss-slider-1 n2-ss-swipe-element n2-ow" style="<?php echo n2_esc_attr($sliderCSS); ?>">
             <?php
             echo $this->getBackgroundVideo($params);
             ?>
@@ -64,6 +75,8 @@ class N2SmartSliderTypeSimple extends N2SmartSliderType {
                     echo N2Html::tag('div', array('class' => 'n2-ss-slide-backgrounds'));
 
                     foreach ($this->slider->slides AS $i => $slide) {
+                        $slide->finalize();
+
                         echo N2Html::tag('div', N2HTML::mergeAttributes($slide->attributes, $slide->linkAttributes, array(
                             'class' => 'n2-ss-slide n2-ss-canvas n2-ow ' . $slide->classes,
                             'style' => $slide->style

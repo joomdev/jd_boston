@@ -3,10 +3,10 @@ defined ('_JEXEC') or die();
 
 /**
  * @author Valérie Isaksen
- * @version $Id: post_payment.php 7953 2014-05-18 14:06:25Z alatak $
+ * @version $Id: post_payment.php 10129 2019-09-09 12:48:11Z Milbo $
  * @package VirtueMart
  * @subpackage payment
- * @copyright Copyright (C) 2004-Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.   - All rights reserved.
+ * @copyright Copyright (C) 2004 - 2015 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -19,7 +19,7 @@ defined ('_JEXEC') or die();
 
 ?>
 <div class="post_payment_order_number" style="width: 100%">
-	<span class=post_payment_order_number_title"><?php echo vmText::_ ('COM_VIRTUEMART_ORDER_NUMBER'); ?> </span>
+	<span class="post_payment_order_number_title"><?php echo vmText::_ ('COM_VIRTUEMART_ORDER_NUMBER'); ?> </span>
 	<?php echo  $viewData["order"]['details']['BT']->order_number; ?>
 </div>
 <?php if ($viewData['paymentInfos']->sofort_ideal_response_transaction) { ?>

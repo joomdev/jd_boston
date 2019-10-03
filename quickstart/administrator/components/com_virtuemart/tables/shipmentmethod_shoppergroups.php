@@ -18,8 +18,6 @@
 
 defined('_JEXEC') or die();
 
-if(!class_exists('VmTableXarray'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtablexarray.php');
-
 /**
  * shipmentmethod_shoppergroups table class
  * The class is is used to manage the shopper groups with shipment.

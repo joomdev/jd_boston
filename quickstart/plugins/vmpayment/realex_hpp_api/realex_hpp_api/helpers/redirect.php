@@ -4,10 +4,10 @@
  * Realex payment plugin
  *
  * @author Valerie Isaksen
- * @version $Id: redirect.php 8892 2015-06-29 08:06:12Z alatak $
+ * @version $Id: redirect.php 10130 2019-09-11 08:36:03Z Milbo $
  * @package VirtueMart
  * @subpackage payment
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2019 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -119,9 +119,9 @@ class RealexHelperRealexRedirect extends RealexHelperRealex {
 		$post_variables['TIMESTAMP'] = $this->getTimestamp();
 		$post_variables['DCC_ENABLE'] = $this->_method->dcc;
 
-		$post_variables['COMMENT1'] = $this->setComment1();
-		$post_variables['COMMENT2'] = 'virtuemart-rlx';
-
+//		$post_variables['COMMENT1'] = $this->setComment1();
+//		$post_variables['COMMENT2'] = 'virtuemart-rlx';
+		
 		$post_variables['MERCHANT_RESPONSE_URL'] = JURI::root() . 'index.php?option=com_virtuemart&format=raw&view=pluginresponse&task=pluginnotification&notificationTask=handleRedirect&tmpl=component';
 		$post_variables['AUTO_SETTLE_FLAG'] = $this->getSettlement();
 
@@ -179,6 +179,84 @@ class RealexHelperRealexRedirect extends RealexHelperRealex {
 		}
 
 		$post_variables['gateway_url'] = $this->_getRealexUrl();
+		
+		$additionalHppData = array(
+			"HPP_VERSION" => 2,
+			"COMMENT1"    => "virtuemart"
+		);
+		
+		// billing address is guaranteed to be present
+		$billingAddress           = $BT;
+		
+		$additionalHppData[] = array(
+			// customer fields
+			"HPP_CUSTOMER_EMAIL" => $billingAddress->email ?: '',
+			// Magento 1 does not have any phone number
+		);
+		
+		$phoneCodes         = $this->getCountryPhoneCodes();
+		$billingPhoneNumber = $billingAddress->phone_1 ?: ($billingAddress->phone_2 ?: false);
+		$billingCountryAlpha2Code = ShopFunctions::getCountryByID($billingAddress->virtuemart_country_id, 'country_2_code');
+		if ($billingPhoneNumber && $billingCountryAlpha2Code && isset($phoneCodes[$billingCountryAlpha2Code])) {
+			$phoneCode = $phoneCodes[$billingCountryAlpha2Code];
+			
+			$formattedPhoneNumber = preg_replace("/^0+|[^\d]/", '', $billingPhoneNumber);
+			if (substr($formattedPhoneNumber, 0, strlen($phoneCode)) === $phoneCode) {
+				$formattedPhoneNumber = substr($formattedPhoneNumber, strlen($phoneCode));
+			}
+			
+			if (is_string($formattedPhoneNumber)) {
+				$additionalHppData["HPP_CUSTOMER_PHONENUMBER_MOBILE"] = $phoneCode . '|' . $formattedPhoneNumber;
+			}
+		}
+		
+		$hppBillingFields    = array(
+			"HPP_BILLING_STREET1"    => $billingAddress->address_1,
+			"HPP_BILLING_STREET2"    => $billingAddress->address_2,
+			"HPP_BILLING_STREET3"    => '',
+			"HPP_BILLING_CITY"       => $billingAddress->city,
+			"HPP_BILLING_STATE"      => $billingCountryAlpha2Code && in_array($billingCountryAlpha2Code, array('US', 'CA')) ? ShopFunctions::getStateByID($billingAddress->virtuemart_state_id, 'state_2_code') : '',
+			"HPP_BILLING_POSTALCODE" => $billingAddress->zip,
+			"HPP_BILLING_COUNTRY"    => $billingCountryAlpha2Code ? $this->getCountryNumericCode($billingCountryAlpha2Code) : '',
+		);
+		$additionalHppData[] = $hppBillingFields;
+		
+		$isOrderVirtual = false;
+		
+		$shippingAddress           = isset($this->order['details']['ST']) ? $this->order['details']['ST'] : false;
+		$shippingCountryAlpha2Code = ShopFunctions::getCountryByID($shippingAddress->virtuemart_country_id, 'country_2_code');
+		
+		$hppShippingFields = array(
+			"HPP_SHIPPING_STREET1"    => !$isOrderVirtual && $shippingAddress ? $shippingAddress->address_1 : '',
+			"HPP_SHIPPING_STREET2"    => !$isOrderVirtual && $shippingAddress ? $shippingAddress->address_2 : '',
+			"HPP_SHIPPING_STREET3"    => '',
+			"HPP_SHIPPING_CITY"       => !$isOrderVirtual && $shippingAddress ? $shippingAddress->city : '',
+			"HPP_SHIPPING_STATE"      => !$isOrderVirtual && $shippingAddress && $shippingCountryAlpha2Code
+				? (in_array($shippingCountryAlpha2Code, array('US', 'CA')) ? ShopFunctions::getStateByID($shippingAddress->virtuemart_state_id, 'state_2_code') : '')
+				: '',
+			"HPP_SHIPPING_POSTALCODE" => !$isOrderVirtual && $shippingAddress ? $shippingAddress->zip : '',
+			"HPP_SHIPPING_COUNTRY"    => !$isOrderVirtual && $shippingAddress && $shippingCountryAlpha2Code ? $this->getCountryNumericCode($shippingCountryAlpha2Code) : ''
+		);
+		
+		
+		// order and type matter
+		if (array_values($hppBillingFields) === array_values($hppShippingFields)) {
+			$additionalHppData["HPP_ADDRESS_MATCH_INDICATOR"] = "TRUE";
+			$additionalHppData[]                              = $hppShippingFields;
+		} else {
+			$additionalHppData["HPP_ADDRESS_MATCH_INDICATOR"] = "FALSE";
+			$additionalHppData[]                              = $hppShippingFields;
+		}
+		
+		foreach ($additionalHppData as $additionalHppProp => $additionalHppValue) {
+			if (is_array($additionalHppValue)) {
+				foreach ($additionalHppValue as $additionalHppPropChild => $additionalHppValueChild) {
+					$post_variables[$additionalHppPropChild] = $additionalHppValueChild;
+				}
+			} else {
+				$post_variables[$additionalHppProp] = $additionalHppValue;
+			}
+		}
 
 		return $post_variables;
 
@@ -345,5 +423,510 @@ class RealexHelperRealexRedirect extends RealexHelperRealex {
 	function getJumpUrl () {
 		return $this->_method->referring_url;
 
+	}
+	
+	/**
+	 * @return array
+	 */
+	private function getCountryNumericCodes()
+	{
+		return array(
+			'AF' => '004',
+			'AX' => '248',
+			'AL' => '008',
+			'DZ' => '012',
+			'AS' => '016',
+			'AD' => '020',
+			'AO' => '024',
+			'AI' => '660',
+			'AQ' => '010',
+			'AG' => '028',
+			'AR' => '032',
+			'AM' => '051',
+			'AW' => '533',
+			'AU' => '036',
+			'AT' => '040',
+			'AZ' => '031',
+			'BS' => '044',
+			'BH' => '048',
+			'BD' => '050',
+			'BB' => '052',
+			'BY' => '112',
+			'BE' => '056',
+			'BZ' => '084',
+			'BJ' => '204',
+			'BM' => '060',
+			'BT' => '064',
+			'BO' => '068',
+			'BQ' => '535',
+			'BA' => '070',
+			'BW' => '072',
+			'BV' => '074',
+			'BR' => '076',
+			'IO' => '086',
+			'BN' => '096',
+			'BG' => '100',
+			'BF' => '854',
+			'BI' => '108',
+			'CV' => '132',
+			'KH' => '116',
+			'CM' => '120',
+			'CA' => '124',
+			'KY' => '136',
+			'CF' => '140',
+			'TD' => '148',
+			'CL' => '152',
+			'CN' => '156',
+			'CX' => '162',
+			'CC' => '166',
+			'CO' => '170',
+			'KM' => '174',
+			'CG' => '178',
+			'CD' => '180',
+			'CK' => '184',
+			'CR' => '188',
+			'CI' => '384',
+			'HR' => '191',
+			'CU' => '192',
+			'CW' => '531',
+			'CY' => '196',
+			'CZ' => '203',
+			'DK' => '208',
+			'DJ' => '262',
+			'DM' => '212',
+			'DO' => '214',
+			'EC' => '218',
+			'EG' => '818',
+			'SV' => '222',
+			'GQ' => '226',
+			'ER' => '232',
+			'EE' => '233',
+			'ET' => '231',
+			'SZ' => '748',
+			'FK' => '238',
+			'FO' => '234',
+			'FJ' => '242',
+			'FI' => '246',
+			'FR' => '250',
+			'GF' => '254',
+			'PF' => '258',
+			'TF' => '260',
+			'GA' => '266',
+			'GM' => '270',
+			'GE' => '268',
+			'DE' => '276',
+			'GH' => '288',
+			'GI' => '292',
+			'GR' => '300',
+			'GL' => '304',
+			'GD' => '308',
+			'GP' => '312',
+			'GU' => '316',
+			'GT' => '320',
+			'GG' => '831',
+			'GN' => '324',
+			'GW' => '624',
+			'GY' => '328',
+			'HT' => '332',
+			'HM' => '334',
+			'VA' => '336',
+			'HN' => '340',
+			'HK' => '344',
+			'HU' => '348',
+			'IS' => '352',
+			'IN' => '356',
+			'ID' => '360',
+			'IR' => '364',
+			'IQ' => '368',
+			'IE' => '372',
+			'IM' => '833',
+			'IL' => '376',
+			'IT' => '380',
+			'JM' => '388',
+			'JP' => '392',
+			'JE' => '832',
+			'JO' => '400',
+			'KZ' => '398',
+			'KE' => '404',
+			'KI' => '296',
+			'KP' => '408',
+			'KR' => '410',
+			'KW' => '414',
+			'KG' => '417',
+			'LA' => '418',
+			'LV' => '428',
+			'LB' => '422',
+			'LS' => '426',
+			'LR' => '430',
+			'LY' => '434',
+			'LI' => '438',
+			'LT' => '440',
+			'LU' => '442',
+			'MO' => '446',
+			'MK' => '807',
+			'MG' => '450',
+			'MW' => '454',
+			'MY' => '458',
+			'MV' => '462',
+			'ML' => '466',
+			'MT' => '470',
+			'MH' => '584',
+			'MQ' => '474',
+			'MR' => '478',
+			'MU' => '480',
+			'YT' => '175',
+			'MX' => '484',
+			'FM' => '583',
+			'MD' => '498',
+			'MC' => '492',
+			'MN' => '496',
+			'ME' => '499',
+			'MS' => '500',
+			'MA' => '504',
+			'MZ' => '508',
+			'MM' => '104',
+			'NA' => '516',
+			'NR' => '520',
+			'NP' => '524',
+			'NL' => '528',
+			'NC' => '540',
+			'NZ' => '554',
+			'NI' => '558',
+			'NE' => '562',
+			'NG' => '566',
+			'NU' => '570',
+			'NF' => '574',
+			'MP' => '580',
+			'NO' => '578',
+			'OM' => '512',
+			'PK' => '586',
+			'PW' => '585',
+			'PS' => '275',
+			'PA' => '591',
+			'PG' => '598',
+			'PY' => '600',
+			'PE' => '604',
+			'PH' => '608',
+			'PN' => '612',
+			'PL' => '616',
+			'PT' => '620',
+			'PR' => '630',
+			'QA' => '634',
+			'RE' => '638',
+			'RO' => '642',
+			'RU' => '643',
+			'RW' => '646',
+			'BL' => '652',
+			'SH' => '654',
+			'KN' => '659',
+			'LC' => '662',
+			'MF' => '663',
+			'PM' => '666',
+			'VC' => '670',
+			'WS' => '882',
+			'SM' => '674',
+			'ST' => '678',
+			'SA' => '682',
+			'SN' => '686',
+			'RS' => '688',
+			'SC' => '690',
+			'SL' => '694',
+			'SG' => '702',
+			'SX' => '534',
+			'SK' => '703',
+			'SI' => '705',
+			'SB' => '090',
+			'SO' => '706',
+			'ZA' => '710',
+			'GS' => '239',
+			'SS' => '728',
+			'ES' => '724',
+			'LK' => '144',
+			'SD' => '729',
+			'SR' => '740',
+			'SJ' => '744',
+			'SE' => '752',
+			'CH' => '756',
+			'SY' => '760',
+			'TW' => '158',
+			'TJ' => '762',
+			'TZ' => '834',
+			'TH' => '764',
+			'TL' => '626',
+			'TG' => '768',
+			'TK' => '772',
+			'TO' => '776',
+			'TT' => '780',
+			'TN' => '788',
+			'TR' => '792',
+			'TM' => '795',
+			'TC' => '796',
+			'TV' => '798',
+			'UG' => '800',
+			'UA' => '804',
+			'AE' => '784',
+			'GB' => '826',
+			'US' => '840',
+			'UM' => '581',
+			'UY' => '858',
+			'UZ' => '860',
+			'VU' => '548',
+			'VE' => '862',
+			'VN' => '704',
+			'VG' => '092',
+			'VI' => '850',
+			'WF' => '876',
+			'EH' => '732',
+			'YE' => '887',
+			'ZM' => '894',
+			'ZW' => '716',
+		);
+	}
+	
+	private function getCountryPhoneCodes() {
+		return array (
+			'AD' => '376',
+			'AE' => '971',
+			'AF' => '93',
+			'AG' => '1268',
+			'AI' => '1264',
+			'AL' => '355',
+			'AM' => '374',
+			'AN' => '599',
+			'AO' => '244',
+			'AQ' => '672',
+			'AR' => '54',
+			'AS' => '1684',
+			'AT' => '43',
+			'AU' => '61',
+			'AW' => '297',
+			'AZ' => '994',
+			'BA' => '387',
+			'BB' => '1246',
+			'BD' => '880',
+			'BE' => '32',
+			'BF' => '226',
+			'BG' => '359',
+			'BH' => '973',
+			'BI' => '257',
+			'BJ' => '229',
+			'BL' => '590',
+			'BM' => '1441',
+			'BN' => '673',
+			'BO' => '591',
+			'BR' => '55',
+			'BS' => '1242',
+			'BT' => '975',
+			'BW' => '267',
+			'BY' => '375',
+			'BZ' => '501',
+			'CA' => '1',
+			'CC' => '61',
+			'CD' => '243',
+			'CF' => '236',
+			'CG' => '242',
+			'CH' => '41',
+			'CI' => '225',
+			'CK' => '682',
+			'CL' => '56',
+			'CM' => '237',
+			'CN' => '86',
+			'CO' => '57',
+			'CR' => '506',
+			'CU' => '53',
+			'CV' => '238',
+			'CX' => '61',
+			'CY' => '357',
+			'CZ' => '420',
+			'DE' => '49',
+			'DJ' => '253',
+			'DK' => '45',
+			'DM' => '1767',
+			'DO' => '1809',
+			'DZ' => '213',
+			'EC' => '593',
+			'EE' => '372',
+			'EG' => '20',
+			'ER' => '291',
+			'ES' => '34',
+			'ET' => '251',
+			'FI' => '358',
+			'FJ' => '679',
+			'FK' => '500',
+			'FM' => '691',
+			'FO' => '298',
+			'FR' => '33',
+			'GA' => '241',
+			'GB' => '44',
+			'GD' => '1473',
+			'GE' => '995',
+			'GH' => '233',
+			'GI' => '350',
+			'GL' => '299',
+			'GM' => '220',
+			'GN' => '224',
+			'GQ' => '240',
+			'GR' => '30',
+			'GT' => '502',
+			'GU' => '1671',
+			'GW' => '245',
+			'GY' => '592',
+			'HK' => '852',
+			'HN' => '504',
+			'HR' => '385',
+			'HT' => '509',
+			'HU' => '36',
+			'ID' => '62',
+			'IE' => '353',
+			'IL' => '972',
+			'IM' => '44',
+			'IN' => '91',
+			'IQ' => '964',
+			'IR' => '98',
+			'IS' => '354',
+			'IT' => '39',
+			'JM' => '1876',
+			'JO' => '962',
+			'JP' => '81',
+			'KE' => '254',
+			'KG' => '996',
+			'KH' => '855',
+			'KI' => '686',
+			'KM' => '269',
+			'KN' => '1869',
+			'KP' => '850',
+			'KR' => '82',
+			'KW' => '965',
+			'KY' => '1345',
+			'KZ' => '7',
+			'LA' => '856',
+			'LB' => '961',
+			'LC' => '1758',
+			'LI' => '423',
+			'LK' => '94',
+			'LR' => '231',
+			'LS' => '266',
+			'LT' => '370',
+			'LU' => '352',
+			'LV' => '371',
+			'LY' => '218',
+			'MA' => '212',
+			'MC' => '377',
+			'MD' => '373',
+			'ME' => '382',
+			'MF' => '1599',
+			'MG' => '261',
+			'MH' => '692',
+			'MK' => '389',
+			'ML' => '223',
+			'MM' => '95',
+			'MN' => '976',
+			'MO' => '853',
+			'MP' => '1670',
+			'MR' => '222',
+			'MS' => '1664',
+			'MT' => '356',
+			'MU' => '230',
+			'MV' => '960',
+			'MW' => '265',
+			'MX' => '52',
+			'MY' => '60',
+			'MZ' => '258',
+			'NA' => '264',
+			'NC' => '687',
+			'NE' => '227',
+			'NG' => '234',
+			'NI' => '505',
+			'NL' => '31',
+			'NO' => '47',
+			'NP' => '977',
+			'NR' => '674',
+			'NU' => '683',
+			'NZ' => '64',
+			'OM' => '968',
+			'PA' => '507',
+			'PE' => '51',
+			'PF' => '689',
+			'PG' => '675',
+			'PH' => '63',
+			'PK' => '92',
+			'PL' => '48',
+			'PM' => '508',
+			'PN' => '870',
+			'PR' => '1',
+			'PT' => '351',
+			'PW' => '680',
+			'PY' => '595',
+			'QA' => '974',
+			'RO' => '40',
+			'RS' => '381',
+			'RU' => '7',
+			'RW' => '250',
+			'SA' => '966',
+			'SB' => '677',
+			'SC' => '248',
+			'SD' => '249',
+			'SE' => '46',
+			'SG' => '65',
+			'SH' => '290',
+			'SI' => '386',
+			'SK' => '421',
+			'SL' => '232',
+			'SM' => '378',
+			'SN' => '221',
+			'SO' => '252',
+			'SR' => '597',
+			'ST' => '239',
+			'SV' => '503',
+			'SY' => '963',
+			'SZ' => '268',
+			'TC' => '1649',
+			'TD' => '235',
+			'TG' => '228',
+			'TH' => '66',
+			'TJ' => '992',
+			'TK' => '690',
+			'TL' => '670',
+			'TM' => '993',
+			'TN' => '216',
+			'TO' => '676',
+			'TR' => '90',
+			'TT' => '1868',
+			'TV' => '688',
+			'TW' => '886',
+			'TZ' => '255',
+			'UA' => '380',
+			'UG' => '256',
+			'US' => '1',
+			'UY' => '598',
+			'UZ' => '998',
+			'VA' => '39',
+			'VC' => '1784',
+			'VE' => '58',
+			'VG' => '1284',
+			'VI' => '1340',
+			'VN' => '84',
+			'VU' => '678',
+			'WF' => '681',
+			'WS' => '685',
+			'XK' => '381',
+			'YE' => '967',
+			'YT' => '262',
+			'ZA' => '27',
+			'ZM' => '260',
+			'ZW' => '263',
+		);
+	}
+	
+	/**
+	 * @param $alpha2
+	 *
+	 * @return mixed|string
+	 */
+	private function getCountryNumericCode($alpha2)
+	{
+		$countries = $this->getCountryNumericCodes();
+		
+		return isset($countries[$alpha2]) ? $countries[$alpha2] : '';
 	}
 }

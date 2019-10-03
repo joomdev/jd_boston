@@ -57,7 +57,7 @@
 .chzn-container-single .chzn-single span {
   display: block;
   overflow: hidden;
-  margin-right: 26px;
+  margin-right: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: left !important;
@@ -140,6 +140,8 @@
   padding: 0 0 0 4px;
   max-height: 240px;
   -webkit-overflow-scrolling: touch;
+  clear:both;
+  text-align:left !important;
 }
 .chzn-container .chzn-results li {
   display: none;

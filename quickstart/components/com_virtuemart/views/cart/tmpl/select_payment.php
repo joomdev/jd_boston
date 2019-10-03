@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: select_payment.php 9614 2017-07-31 11:47:48Z Milbo $
+ * @version $Id: select_payment.php 9821 2018-04-16 18:04:39Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');

@@ -13,14 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: view.html.php 9467 2017-03-08 22:45:00Z Milbo $
+* @version $Id: view.html.php 9987 2018-11-18 20:29:25Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * HTML View class for ratings (and customer reviews)
@@ -33,12 +30,6 @@ class VirtuemartViewRatings extends VmViewAdmin {
 
 		$mainframe = Jfactory::getApplication();
 		$option = vRequest::getCmd('option');
-
-		//Load helpers
-
-
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 
 		/* Get the review IDs to retrieve (input variable may be cid, cid[] or virtuemart_rating_review_id */
 		$cids = vRequest::getInt('cid', vRequest::getVar('virtuemart_rating_review_id',0));
@@ -88,7 +79,7 @@ class VirtuemartViewRatings extends VmViewAdmin {
 				$cids = vRequest::getInt('virtuemart_product_id',0);
 			case 'edit_review':
 				$this->setLayout('edit_review');
-				JToolBarHelper::divider();
+				JToolbarHelper::divider();
 
 				// Get the data
 				$this->rating = $model->getReview($cids,$new);
@@ -96,14 +87,14 @@ class VirtuemartViewRatings extends VmViewAdmin {
 				if(!empty($this->rating)){
 					$this->SetViewTitle('REVIEW_RATE',$this->rating->product_name." (". $this->rating->customer.")" );
 
-					JToolBarHelper::custom('saveReview', 'save', 'save',  vmText::_('COM_VIRTUEMART_SAVE'), false);
-					JToolBarHelper::custom('applyReview', 'apply', 'apply',  vmText::_('COM_VIRTUEMART_APPLY'), false);
+					JToolbarHelper::custom('saveReview', 'save', 'save',  vmText::_('COM_VIRTUEMART_SAVE'), false);
+					JToolbarHelper::custom('applyReview', 'apply', 'apply',  vmText::_('COM_VIRTUEMART_APPLY'), false);
 
 				} else {
 					$this->SetViewTitle('REVIEW_RATE','ERROR' );
 				}
 
-				JToolBarHelper::custom('cancelEditReview', 'cancel', 'cancel',  vmText::_('COM_VIRTUEMART_CANCEL'), false);
+				JToolbarHelper::custom('cancelEditReview', 'cancel', 'cancel',  vmText::_('COM_VIRTUEMART_CANCEL'), false);
 
 				break;
 			default:

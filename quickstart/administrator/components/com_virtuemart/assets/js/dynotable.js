@@ -49,7 +49,7 @@ if (typeof Virtuemart === "undefined")
 
 				insertRow(clonedRow, tbod);
 				options.onRowClone();
-			}
+			};
 
 			var insertRow = function (clonedRow, tbod) {
 				var numRows = $(tbod).children("tr").length;
@@ -76,7 +76,7 @@ if (typeof Virtuemart === "undefined")
                 console.log('executed insertRow');
 				jQuery("select.vm-chzn-add").chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text,disable_search_threshold: 5});
 				$(tbod).children("tr:last").hide().fadeIn(options.insertFadeSpeed);
-			}
+			};
 
 			var removeRow = function (btn) {
 				var tbod = $(btn).parents("tbody:first");
@@ -97,11 +97,11 @@ if (typeof Virtuemart === "undefined")
 						}
 					});
 				}
-			}
+			};
 
 			var bindClick = function (elem, fn) {
 				$(elem).click(fn);
-			}
+			};
 
 			var bindCloneLink = function (lnk) {
 				bindClick(lnk, function () {
@@ -109,7 +109,7 @@ if (typeof Virtuemart === "undefined")
 					cloneRow(btn);
 					return false;
 				});
-			}
+			};
 
 			var bindRemoveLink = function (lnk) {
 				bindClick(lnk, function () {
@@ -117,7 +117,7 @@ if (typeof Virtuemart === "undefined")
 					removeRow(btn);
 					return false;
 				});
-			}
+			};
 
 			var bindActions = function (obj) {
 				obj.find(options.removeClass).each(function () {
@@ -127,7 +127,7 @@ if (typeof Virtuemart === "undefined")
 				obj.find(options.cloneClass).each(function () {
 					bindCloneLink($(this));
 				});
-			}
+			};
 
 			return this.each(function () {
 				//Sanity check to make sure we are dealing with a single case

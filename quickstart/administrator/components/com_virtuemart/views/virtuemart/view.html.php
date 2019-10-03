@@ -13,14 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: view.html.php 9420 2017-01-12 09:35:36Z Milbo $
+* @version $Id: view.html.php 9924 2018-09-09 07:51:12Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 
 /**
@@ -33,10 +30,7 @@ class VirtuemartViewVirtuemart extends VmViewAdmin {
 
 	function display($tpl = null) {
 
-		if (!class_exists('VmImage'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 		vmLanguage::loadJLang('com_virtuemart_orders',TRUE);
-
 
 		if(JFactory::getApplication()->isSite()){
 			$bar = JToolBar::getInstance('toolbar');
@@ -64,7 +58,6 @@ class VirtuemartViewVirtuemart extends VmViewAdmin {
 			$this->ordersByStatus= $ordersByStatus;
 
 			$recentOrders = $model->getRecentOrders();
-			if(!class_exists('CurrencyDisplay'))require(VMPATH_ADMIN.DS.'helpers'.DS.'currencydisplay.php');
 
 			/* Apply currency This must be done per order since it's vendor specific */
 			$_currencies = array(); // Save the currency data during this loop for performance reasons
@@ -89,7 +82,7 @@ class VirtuemartViewVirtuemart extends VmViewAdmin {
 				$this->report = $revenueBasic['report'];
 
 				vmJsApi::addJScript( "jsapi","//google.com/jsapi",false,false, false, '' );
-				vmJsApi::addJScript('vm.stats_chart',$revenueBasic['js'],false,true);
+				vmJsApi::addJScript('vm-stats_chart',$revenueBasic['js'],false,true);
 				vmTime('Created report','report');
 			}
 

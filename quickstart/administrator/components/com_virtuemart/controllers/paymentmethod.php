@@ -13,14 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: paymentmethod.php 9478 2017-03-16 09:33:17Z Milbo $
+* @version $Id: paymentmethod.php 10036 2019-04-01 10:28:12Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
-
 
 /**
  * Calculator Controller
@@ -45,18 +42,11 @@ class VirtuemartControllerPaymentmethod extends VmController {
 
 	function save($data = 0){
 		$data = vRequest::getPost();
-		if(vmAccess::manager('raw')){
-			$data['payment_name'] = vRequest::get('payment_name','');
-			$data['payment_desc'] = vRequest::get('payment_desc','');
-			if(isset($data['params'])){
-				$data['params'] = vRequest::get('params','');
-			}
-		} else {
-			$data['payment_name'] = vRequest::getHtml('payment_name','');
-			$data['payment_desc'] = vRequest::getHtml('payment_desc','');
-			if(isset($data['params'])){
-				$data['params'] = vRequest::getHtml('params','');
-			}
+
+		$data['payment_name'] = vRequest::getHtml('payment_name','');
+		$data['payment_desc'] = vRequest::getHtml('payment_desc','');
+		if(isset($data['params'])){
+			$data['params'] = vRequest::getHtml('params','');
 		}
 
 		parent::save($data);

@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default_tools.php 9633 2017-09-07 08:16:00Z Milbo $
+* @version $Id: default_tools.php 9911 2018-08-22 09:14:05Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -140,8 +140,8 @@ if(!VmConfig::get('dangeroustools', false)){
 			<?php echo $this->renderTaskButton('deleteVmTables','COM_VIRTUEMART_UPDATE_REMOVETABLES'); ?>
 		</td>
     </tr>
-
-		<td align="center">
+    <tr>
+    	<td align="center">
 			<?php echo $this->renderTaskButton('updateDatabaseJoomla','Update Joomla Database for pros, use only if you know what you do'); ?>
 		</td>
 	</tr>

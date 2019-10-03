@@ -17,10 +17,6 @@
 
 if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not allowed.' );
 
-if(!class_exists('VmModel'))
-require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmmodel.php');
-
-
 class Migrator extends VmModel{
 
 	private $_stop = false;
@@ -199,8 +195,6 @@ class Migrator extends VmModel{
 
 		//$imageExtensions = array('jpg','jpeg','gif','png');
 
-		if(!class_exists('VirtueMartModelMedia'))
-		require(VMPATH_ADMIN . DS . 'models' . DS . 'media.php');
 		$this->mediaModel = VmModel::getModel('Media');
 		//First lets read which files are already stored
 		$this->storedMedias = $this->mediaModel->getFiles(false, true);
@@ -271,20 +265,33 @@ class Migrator extends VmModel{
 			return $msg = vmText::sprintf('COM_VIRTUEMART_UPDATE_PORT_MEDIA_RESULT_NOT_FINISH', $countTotal);
 		}
 
-		$url = VmConfig::get('media_vendor_path');
-		$type = 'vendor';
-		$count = $this->_portMediaByType($url, $type);
-		$countTotal += $count;
-		$this->_app->enqueueMessage(vmText::sprintf('COM_VIRTUEMART_UPDATE_PORT_MEDIA_RESULT', $count, $type, $url));
-
 		$url = VmConfig::get('forSale_path');
 		$type = 'forSale';
 		$count = $this->_portMediaByType($url, $type);
 		$countTotal += $count;
 		$this->_app->enqueueMessage(vmText::sprintf('COM_VIRTUEMART_UPDATE_PORT_MEDIA_RESULT', $count, $type, $url));
 
+		if((microtime(true)-$this->starttime) >= ($this->maxScriptTime)){
+			return $msg = vmText::sprintf('COM_VIRTUEMART_UPDATE_PORT_MEDIA_RESULT_NOT_FINISH', $countTotal);
+		}
 
+		$url = VmConfig::get('media_vendor_path');
+		$type = 'vendor';
+		$count = $this->_portMediaByType($url, $type);
+		$countTotal += $count;
+		$this->_app->enqueueMessage(vmText::sprintf('COM_VIRTUEMART_UPDATE_PORT_MEDIA_RESULT', $count, $type, $url));
+
+		//We went through the whole process in correct time, so lets delete the progress table
+		$this->dropMediaSynchroniseProzess();
 		return $msg = vmText::sprintf('COM_VIRTUEMART_UPDATE_PORT_MEDIA_RESULT_FINISH', $countTotal);
+	}
+
+	private function dropMediaSynchroniseProzess(){
+
+		$q = 'DELETE FROM `#__virtuemart_migration_oldtonew_ids` WHERE  `id`=1; ';
+		$this->_db->setQuery($q);
+		$this->_db->execute();
+
 	}
 
 	private function _portMediaByType($url, $type){
@@ -514,7 +521,6 @@ class Migrator extends VmModel{
 			return false;
 		}
 
-		if(!class_exists('VirtueMartModelUser')) require(VMPATH_ADMIN . DS . 'models' . DS . 'user.php');
 		$userModel = VmModel::getModel('user');
 
 		$ok = true;
@@ -925,8 +931,6 @@ class Migrator extends VmModel{
 				$manu['mf_url'] = $oldmanu['mf_url'];
 				$manu['published'] = 1;
 
-				if(!class_exists('TableManufacturers'))
-				require(VMPATH_ADMIN . DS . 'tables' . DS . 'manufacturers.php');
 				$table = $this->getTable('manufacturers');
 
 				$ok = $table->bindChecknStore($manu);
@@ -1211,10 +1215,6 @@ class Migrator extends VmModel{
 			return;
 		}
 
-		if(!class_exists('VirtueMartModelOrderstatus'))
-		require(VMPATH_ADMIN . DS . 'models' . DS . 'orderstatus.php');
-
-		if (!class_exists('ShopFunctions')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 		$this->_db->setQuery('select `order_status_code` FROM `#__virtuemart_orderstates` ');
 		$vm2Fields = $this->_db->loadColumn ();
 		$this->_db->setQuery('select * FROM `#__vm_order_status`');
@@ -1257,9 +1257,6 @@ class Migrator extends VmModel{
 
 		$reWriteOrderNumber = vRequest::getInt('reWriteOrderNumber',0);
 		$userOrderId = vRequest::getInt('userOrderId',0);
-
-		if(!class_exists('VirtueMartModelOrders'))
-			VmModel::getModel('orders');
 
 		while($continue){
 

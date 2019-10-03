@@ -188,7 +188,6 @@ abstract class  N2SSSlideComponent {
     protected function renderPlugins($html) {
         $this->pluginRotation();
         $html = $this->pluginCrop($html);
-        $this->pluginAnimations();
         $this->pluginShowOn();
         $this->pluginFontSize();
         $this->pluginParallax();
@@ -240,30 +239,137 @@ abstract class  N2SSSlideComponent {
         return $html;
     }
 
-
-    private function pluginAnimations() {
-        $animations = $this->data->get('animations');
-        if (!empty($animations)) {
-            //Fix empty assoc arrays as they json_encoded into [] instead of {}
-            if (isset($animations['in']) && is_array($animations['in'])) {
-                for ($i = 0; $i < count($animations['in']); $i++) {
-                    $animations['in'][$i] = (object)$animations['in'][$i];
-                }
-            }
-            if (isset($animations['loop']) && is_array($animations['loop'])) {
-                for ($i = 0; $i < count($animations['loop']); $i++) {
-                    $animations['loop'][$i] = (object)$animations['loop'][$i];
-                }
-            }
-            if (isset($animations['out']) && is_array($animations['out'])) {
-                for ($i = 0; $i < count($animations['out']); $i++) {
-                    $animations['out'][$i] = (object)$animations['out'][$i];
-                }
-            }
-            $this->attributes['data-animations'] = n2_base64_encode(json_encode($animations));
+    /**
+     * Transform V1 animations to V2
+     *
+     * @param $data
+     *
+     * @return array
+     */
+    private function pluginAnimationsConvertV1ToV2($data) {
+        if (empty($data)) {
+            return array();
         }
 
-        $this->pluginAnimationGetEventAttributes();
+        if (isset($data['in'])) {
+            if (!isset($data['basic'])) {
+                $data['basic'] = array(
+                    'in' => array()
+                );
+            } else if (!isset($data['basic']['in'])) {
+                $data['basic']['in'] = array();
+            }
+            $this->pluginAnimationsConvertV1ToV2RemoveName($data['in']);
+            if (isset($data['in'][0]['delay']) && isset($data['repeatable']) && $data['repeatable'] == 1) {
+                if ($data['in'][0]['delay'] > 0) {
+                    $data['startDelay'] = $data['in'][0]['delay'];
+                }
+                unset($data['in'][0]['delay']);
+            }
+            $data['basic']['in']['keyFrames'] = $data['in'];
+            unset($data['in']);
+        }
+
+        if (isset($data['specialZeroIn'])) {
+            if (isset($data['basic']['in'])) {
+                $data['basic']['in']['specialZero'] = $data['specialZeroIn'];
+            }
+            unset($data['specialZeroIn']);
+        }
+
+        if (isset($data['transformOriginIn'])) {
+            if (isset($data['basic']['in'])) {
+                $data['basic']['in']['transformOrigin'] = $data['transformOriginIn'];
+            }
+            unset($data['transformOriginIn']);
+        }
+
+        if (isset($data['loop'])) {
+            if (!isset($data['basic'])) {
+                $data['basic'] = array(
+                    'loop' => array()
+                );
+            } else if (!isset($data['basic']['loop'])) {
+                $data['basic']['loop'] = array();
+            }
+            $this->pluginAnimationsConvertV1ToV2RemoveName($data['loop']);
+            $data['basic']['loop']['keyFrames'] = $data['loop'];
+            unset($data['loop']);
+        }
+
+        if (isset($data['repeatCount'])) {
+            if (isset($data['basic']['loop'])) {
+                $data['basic']['loop']['repeatCount'] = $data['repeatCount'];
+            }
+            unset($data['repeatCount']);
+        }
+
+        if (isset($data['repeatStartDelay'])) {
+            if (isset($data['basic']['loop'])) {
+                $data['basic']['loop']['repeatStartDelay'] = $data['repeatStartDelay'];
+            }
+            unset($data['repeatStartDelay']);
+        }
+
+        if (isset($data['transformOriginLoop'])) {
+            if (isset($data['basic']['loop'])) {
+                $data['basic']['loop']['transformOrigin'] = $data['transformOriginLoop'];
+            }
+            unset($data['transformOriginLoop']);
+        }
+
+        if (isset($data['out'])) {
+            if (!isset($data['basic'])) {
+                $data['basic'] = array(
+                    'out' => array()
+                );
+            } else if (!isset($data['basic']['out'])) {
+                $data['basic']['out'] = array();
+            }
+            $this->pluginAnimationsConvertV1ToV2RemoveName($data['out']);
+            $data['basic']['out']['keyFrames'] = $data['out'];
+            unset($data['out']);
+        }
+
+        if (isset($data['transformOriginOut'])) {
+            if (isset($data['basic']['out'])) {
+                $data['basic']['out']['transformOrigin'] = $data['transformOriginOut'];
+            }
+            unset($data['transformOriginOut']);
+        }
+
+        if (!isset($data['instantOut']) || $data['instantOut'] == '1') {
+            if (empty($data['outPlayEvent']) && $this->owner->getSlider()->params->get('layer-animation-play-mode') === 'forced') {
+                $data['outPlayEvent'] = 'InstantOut';
+            }
+        }
+
+        if (isset($data['instantOut'])) {
+            unset($data['instantOut']);
+        }
+
+        return $data;
+    }
+
+    private function pluginAnimationsConvertV1ToV2RemoveName(&$keyFrames) {
+        for ($i = 0; $i < count($keyFrames); $i++) {
+            if (isset($keyFrames[$i]['name'])) {
+                unset($keyFrames[$i]['name']);
+            }
+        }
+
+    }
+
+
+    private function pluginAnimations() {
+    }
+
+    private static function fixAnimationArray(&$array, $key) {
+        if (isset($array[$key]) && is_array($array[$key])) {
+            for ($i = 0; $i < count($array[$key]); $i++) {
+                $array[$key][$i] = (object)$array[$key][$i];
+            }
+        }
     }
 
 
@@ -399,9 +505,9 @@ abstract class  N2SSSlideComponent {
         if ($image != '') {
             $x          = intval($this->data->get('bgimagex', 50));
             $y          = intval($this->data->get('bgimagey', 50));
-            $background .= 'URL("' . N2ImageHelper::fixed($image) . '") ' . $x . '% ' . $y . '% / cover no-repeat' . ($this->data->get('bgimageparallax', 0) ? ' fixed' : '');
+            $background .= 'URL("' . N2ImageHelper::fixed($image) . '") ' . $x . '% ' . $y . '% / cover no-repeat';
 
-            $gradientBackgroundProps = ' ' . $x . '% ' . $y . '% / cover no-repeat' . ($this->data->get('bgimageparallax', 0) ? ' fixed' : '');
+            $gradientBackgroundProps = ' ' . $x . '% ' . $y . '% / cover no-repeat';
         }
 
         $color    = $this->data->get('bgcolor', '00000000');
@@ -414,13 +520,13 @@ abstract class  N2SSSlideComponent {
         $gradientHover    = $this->data->get('bgcolorgradient-hover');
         $colorEndHover    = $this->data->get('bgcolorgradientend-hover');
         $isHoverDifferent = false;
-        if (!empty($colorHover) || $colorHover != $color) {
+        if (!empty($colorHover) && $colorHover != $color) {
             $isHoverDifferent = true;
         }
-        if (!empty($gradientHover) || $gradientHover != $gradient) {
+        if (!empty($gradientHover) && $gradientHover != $gradient) {
             $isHoverDifferent = true;
         }
-        if (!empty($colorEndHover) || $colorEndHover != $colorEnd) {
+        if (!empty($colorEndHover) && $colorEndHover != $colorEnd) {
             $isHoverDifferent = true;
         }
         if ($isHoverDifferent) {
@@ -441,16 +547,16 @@ abstract class  N2SSSlideComponent {
             }
             switch ($gradient) {
                 case 'horizontal':
-                    return 'background:-moz-linear-gradient(left, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';' . 'background:-webkit-linear-gradient(left, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';' . 'background:linear-gradient(to right, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';';
+                    return 'background:linear-gradient(to right, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';';
                     break;
                 case 'vertical':
-                    return 'background:-moz-linear-gradient(top, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';' . 'background:-webkit-linear-gradient(top, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';' . 'background:linear-gradient(to bottom, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';';
+                    return 'background:linear-gradient(to bottom, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';';
                     break;
                 case 'diagonal1':
-                    return 'background:-moz-linear-gradient(45deg, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';' . 'background:-webkit-linear-gradient(45deg, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';' . 'background:linear-gradient(45deg, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';';
+                    return 'background:linear-gradient(45deg, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';';
                     break;
                 case 'diagonal2':
-                    return 'background:-moz-linear-gradient(-45deg, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';' . 'background:-webkit-linear-gradient(-45deg, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';' . 'background:linear-gradient(135deg, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';';
+                    return 'background:linear-gradient(135deg, ' . N2Color::colorToRGBA($color) . ' 0%,' . N2Color::colorToRGBA($colorend) . ' 100%)' . $after . ';';
                     break;
                 case 'off':
                 default:
@@ -550,9 +656,8 @@ abstract class  N2SSSlideComponent {
             if (empty($uniqueClass)) {
                 $uniqueClass = self::generateUniqueIdentifier('n-uc-');
                 $this->data->set('uniqueclass', $uniqueClass);
-            } else {
-                $uniqueClass .= $this->owner->unique;
             }
+            $uniqueClass .= $this->owner->unique;
 
             $this->getOwner()
                  ->addCSS(str_replace('@rule', 'div#' . $this->owner->getElementID() . ' .' . $uniqueClass, $css));
@@ -586,48 +691,54 @@ abstract class  N2SSSlideComponent {
     }
 
     private static function translateUniqueIdentifierID(&$idTranslation, &$layers) {
-        for ($i = 0; $i < count($layers); $i++) {
-            if (!empty($layers[$i]['id'])) {
-                $newId                            = self::generateUniqueIdentifier();
-                $idTranslation[$layers[$i]['id']] = $newId;
-                $layers[$i]['id']                 = $newId;
-            }
-            if (isset($layers[$i]['type']) && $layers[$i]['type'] == 'group') {
-                self::translateUniqueIdentifierID($idTranslation, $layers[$i]['layers']);
+        if (is_array($layers)) {
+            for ($i = 0; $i < count($layers); $i++) {
+                if (!empty($layers[$i]['id'])) {
+                    $newId                            = self::generateUniqueIdentifier();
+                    $idTranslation[$layers[$i]['id']] = $newId;
+                    $layers[$i]['id']                 = $newId;
+                }
+                if (isset($layers[$i]['type']) && $layers[$i]['type'] == 'group') {
+                    self::translateUniqueIdentifierID($idTranslation, $layers[$i]['layers']);
+                }
             }
         }
     }
 
     private static function translateUniqueIdentifierParentID(&$idTranslation, &$layers) {
-        for ($i = 0; $i < count($layers); $i++) {
-            if (!empty($layers[$i]['parentid'])) {
-                if (isset($idTranslation[$layers[$i]['parentid']])) {
-                    $layers[$i]['parentid'] = $idTranslation[$layers[$i]['parentid']];
-                } else {
-                    $layers[$i]['parentid'] = '';
+        if (is_array($layers)) {
+            for ($i = 0; $i < count($layers); $i++) {
+                if (!empty($layers[$i]['parentid'])) {
+                    if (isset($idTranslation[$layers[$i]['parentid']])) {
+                        $layers[$i]['parentid'] = $idTranslation[$layers[$i]['parentid']];
+                    } else {
+                        $layers[$i]['parentid'] = '';
+                    }
                 }
-            }
-            if (isset($layers[$i]['type']) && $layers[$i]['type'] == 'group') {
-                self::translateUniqueIdentifierParentID($idTranslation, $layers[$i]['layers']);
+                if (isset($layers[$i]['type']) && $layers[$i]['type'] == 'group') {
+                    self::translateUniqueIdentifierParentID($idTranslation, $layers[$i]['layers']);
+                }
             }
         }
     }
 
     private static function translateUniqueIdentifierClass(&$layers) {
-        for ($i = 0; $i < count($layers); $i++) {
-            if (!empty($layers[$i]['uniqueclass'])) {
-                $layers[$i]['uniqueclass'] = self::generateUniqueIdentifier('n-uc-');
-            }
-            if (isset($layers[$i]['type'])) {
-                switch ($layers[$i]['type']) {
-                    case 'row':
-                        self::translateUniqueIdentifierClass($layers[$i]['cols']);
-                        break;
-                    case 'col':
-                    case 'content':
-                    case 'group':
-                        self::translateUniqueIdentifierClass($layers[$i]['layers']);
-                        break;
+        if (is_array($layers)) {
+            for ($i = 0; $i < count($layers); $i++) {
+                if (!empty($layers[$i]['uniqueclass'])) {
+                    $layers[$i]['uniqueclass'] = self::generateUniqueIdentifier('n-uc-');
+                }
+                if (isset($layers[$i]['type'])) {
+                    switch ($layers[$i]['type']) {
+                        case 'row':
+                            self::translateUniqueIdentifierClass($layers[$i]['cols']);
+                            break;
+                        case 'col':
+                        case 'content':
+                        case 'group':
+                            self::translateUniqueIdentifierClass($layers[$i]['layers']);
+                            break;
+                    }
                 }
             }
         }

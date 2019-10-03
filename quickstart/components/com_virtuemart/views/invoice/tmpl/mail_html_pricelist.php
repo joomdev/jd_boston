@@ -27,35 +27,10 @@ if ($this->doctype != 'invoice') {
     $colspan -= 1;
 }
 
-$handled = array();
-$discountsBill = false;
-$taxBill = false;
-$vats = 0;
-foreach($this->orderDetails['calc_rules'] as $rule){
-	if(isset($sumRules[$rule->virtuemart_calc_id])){	// or $rule->calc_kind=='payment' or $rule->calc_kind=='shipment'){
-		continue;
-	}
-	$handled[$rule->virtuemart_calc_id] = true;
-	$r = new stdClass();
-	$r->calc_result = $rule->calc_result;
-	$r->calc_amount = $rule->calc_amount;
-	$r->calc_rule_name = $rule->calc_rule_name;
-	$r->calc_kind = $rule->calc_kind;
-	$r->calc_value = $rule->calc_value;
+$discountsBill = $this->discountsBill;
+$taxBill = $this->taxBill;
 
-	if($rule->calc_kind == 'DBTaxRulesBill' or $rule->calc_kind == 'DATaxRulesBill'){
-		$discountsBill[$rule->virtuemart_calc_id] = $r;
-	}
-	if($rule->calc_kind == 'taxRulesBill' or $rule->calc_kind == 'VatTax' or $rule->calc_kind=='payment' or $rule->calc_kind=='shipment'){
-		//vmdebug('method rule',$rule);
-		$r->label = shopFunctionsF::getTaxNameWithValue($rule->calc_rule_name,$rule->calc_value);
-		if(isset($taxBill[$rule->virtuemart_calc_id])){
-			$taxBill[$rule->virtuemart_calc_id]->calc_amount += $r->calc_amount;
-		} else {
-			$taxBill[$rule->virtuemart_calc_id] = $r;
-		}
-	}
-} ?>
+?>
 
 <table class="html-email" width="100%" cellspacing="0" cellpadding="5" border="0" style="border-collapse: collapse; margin: 0 auto;<?php echo $this->isMail ? ' font-family: Arial, Helvetica, sans-serif; font-size: 12px;' : ''; ?>">
 	<tr style="text-align: left;" class="sectiontableheader">
@@ -85,7 +60,7 @@ foreach($this->orderDetails['calc_rules'] as $rule){
 
 <?php
 $menuItemID = shopFunctionsF::getMenuItemId($this->orderDetails['details']['BT']->order_language);
-if(!class_exists('VirtueMartModelCustomfields'))require(VMPATH_ADMIN.DS.'models'.DS.'customfields.php');
+
 VirtueMartModelCustomfields::$useAbsUrls = ($this->isMail or $this->isPdf);
 foreach($this->orderDetails['items'] as $item) {
 	$qtt = $item->product_quantity ;

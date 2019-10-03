@@ -15,14 +15,10 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 9663 2017-11-09 00:00:38Z Milbo $
+ * @version $Id: view.html.php 10100 2019-08-20 06:30:34Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-// Load the view framework
-if (!class_exists('VmView'))
-    require(VMPATH_SITE . DS . 'helpers' . DS . 'vmview.php');
 
 // Set to '0' to use tabs i.s.o. sliders
 // Might be a config option later on, now just here for testing.
@@ -100,7 +96,6 @@ class VirtuemartViewUser extends VmView {
 
 		$userFields = null;
 
-		if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$this->cart = VirtueMartCart::getCart();
 		$task = vRequest::getCmd('task', '');
 
@@ -110,8 +105,7 @@ class VirtuemartViewUser extends VmView {
 
 			//New Address is filled here with the data of the cart (we are in the cart)
 			$fieldtype = $this->address_type . 'address';
-
-			$this->cart->prepareAddressFieldsInCart();
+			$this->cart->setupAddressFieldsForCart(true);
 			$userFields = $this->cart->$fieldtype;
 
 		} else {
@@ -259,8 +253,6 @@ class VirtuemartViewUser extends VmView {
 	    $this->_orderList = $orders->getOrdersList($this->_model->getId(), true);
 
 	    if (empty($this->currency)) {
-		if (!class_exists('CurrencyDisplay'))
-		    require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 
 		$currency = CurrencyDisplay::getInstance();
 		$this->assignRef('currency', $currency);
@@ -275,9 +267,6 @@ class VirtuemartViewUser extends VmView {
     function shopper($userFields) {
 
 		// Shopper info
-		if (!class_exists('VirtueMartModelShopperGroup'))
-			require(VMPATH_ADMIN . DS . 'models' . DS . 'shoppergroup.php');
-
 		$_shoppergroup = VirtueMartModelShopperGroup::getShoppergroupById($this->_model->getId());
 
 		$this->_lists['shoppergroups'] = '';
@@ -286,7 +275,7 @@ class VirtuemartViewUser extends VmView {
 			foreach($_shoppergroup as $group){
 				$shoppergrps[] = $group['virtuemart_shoppergroup_id'];
 			}
-			if (!class_exists('ShopFunctions'))	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
+
 			$this->_lists['shoppergroups'] = ShopFunctions::renderShopperGroupList($shoppergrps);
 		} else {
 			foreach($_shoppergroup as $group){
@@ -296,7 +285,6 @@ class VirtuemartViewUser extends VmView {
 		}
 
 		if (!empty($this->userDetails->virtuemart_vendor_id)) {
-			if (!class_exists('ShopFunctions'))	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 			$this->_lists['vendors'] = ShopFunctions::renderVendorList($this->userDetails->virtuemart_vendor_id);
 		} else {
 			$this->_lists['vendors'] = vmText::_('COM_VIRTUEMART_USER_NOT_A_VENDOR');
@@ -365,13 +353,6 @@ class VirtuemartViewUser extends VmView {
     }
 
 
-	public function vmValidator (){
-		$prefiks = '';
-		if($this->address_type=='ST'){
-			$prefiks = 'shipto_';
-		}
-		vmJsApi::vmValidator($this->userDetails->JUser->guest,$this->userFields['fields'],$prefiks);
-	}
 
     /**
      * renderMailLayout

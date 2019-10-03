@@ -10,6 +10,7 @@ class N2SmartSliderSlideBuilderLayer extends N2SmartSliderSlideBuilderComponent 
             "specialZeroIn"       => 0,
             "transformOriginIn"   => "50|*|50|*|0",
             "inPlayEvent"         => "",
+            "loopRepeatSelfOnly"  => 0,
             "repeatCount"         => 0,
             "repeatStartDelay"    => 0,
             "transformOriginLoop" => "50|*|50|*|0",
@@ -18,7 +19,6 @@ class N2SmartSliderSlideBuilderLayer extends N2SmartSliderSlideBuilderComponent 
             "loopStopEvent"       => "",
             "transformOriginOut"  => "50|*|50|*|0",
             "outPlayEvent"        => "",
-            "instantOut"          => 1,
             "in"                  => array(),
             "loop"                => array(),
             "out"                 => array()

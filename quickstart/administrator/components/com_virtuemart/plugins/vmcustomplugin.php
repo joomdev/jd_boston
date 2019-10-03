@@ -17,17 +17,9 @@ defined ('_JEXEC') or die('Direct Access to ' . basename (__FILE__) . ' is not a
  * other free or open source software licenses.
  * @version $Id: vmpsplugin.php 4007 2011-08-31 07:31:35Z alatak $
  */
-// Load the helper functions that are needed by all plugins
-if (!class_exists ('VmHTML')) {
-	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-}
 
 // Get the plugin library
 jimport ('joomla.plugin.plugin');
-
-if (!class_exists ('vmPlugin')) {
-	require(VMPATH_PLUGINLIBS . DS . 'vmplugin.php');
-}
 
 /**
  * @package    VirtueMart
@@ -73,10 +65,7 @@ abstract class vmCustomPlugin extends vmPlugin {
 			$this->plugin = $this->getVmPluginMethod ($this->plugin->virtuemart_custom_id);
 
 			if (empty($this->plugin->virtuemart_vendor_id)) {
-				if (!class_exists ('VirtueMartModelVendor')) {
-					require(VMPATH_ADMIN . DS . 'models' . DS . 'vendor.php');
-				}
-				$this->plugin->virtuemart_vendor_id = VirtueMartModelVendor::getLoggedVendor ();
+				$this->plugin->virtuemart_vendor_id = vmAccess::isSuperVendor();
 			}
 			$customPlugin = $this->plugin;
 			//   		return $this->plugin;

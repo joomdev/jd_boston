@@ -144,7 +144,7 @@ class N2Html {
                 }
             } else if (isset($specialAttributesNoValue[$name])) {
                 $html .= ' ' . $name;
-            } elseif ($value !== null) $html .= ' ' . $name . '="' . ($raw ? $value : self::encode($value)) . '"';
+            } else if ($value !== null) $html .= ' ' . $name . '="' . ($raw ? $value : self::encode($value)) . '"';
         }
 
         return $html;
@@ -375,6 +375,7 @@ class N2Html {
             'lbAttributes'       => array(),
             'rbAttributes'       => array(),
             'overlay'            => false,
+            'placeholderAlign'   => '',
             'placeholderContent' => ''
         );
 
@@ -409,26 +410,75 @@ class N2Html {
         include(dirname(__FILE__) . '/fragments/heading.phtml');
     }
 
-	/**
-	 * @param array $array1
-	 * @param array $array2 [optional]
-	 * @param array $_ [optional]
-	 * @return array the resulting array.
-	 * @since 4.0
-	 * @since 5.0
-	 */
-    public static function mergeAttributes($array1, $array2 = null, $_ = null){
-  		$arguments = func_get_args();
-  		$target = array_shift($arguments);
-  		foreach($arguments AS $array){
-  			if(isset($array['style'])){
-  				if(!isset($target['style'])) $target['style'] = '';
-  				$target['style'].=$array['style'];
-  				unset($array['style']);
-  			}
-  			$target = array_merge($target, $array);
-  		}
+    public static function banner($options = array()) {
+        static $params = array(
+            'id'          => '',
+            'image'       => '',
+            'imageLink'   => '',
+            'title'       => '',
+            'description' => '',
+            'buttons'     => array()
+        );
 
-		return $target;
+        $options = array_merge($params, $options);
+
+        extract($options);
+
+        include(dirname(__FILE__) . '/fragments/banner.phtml');
+    }
+
+    /**
+     * @param array $array1
+     * @param array $array2 [optional]
+     * @param array $_      [optional]
+     *
+     * @return array the resulting array.
+     * @since 4.0
+     * @since 5.0
+     */
+    public static function mergeAttributes($array1, $array2 = null, $_ = null) {
+        $arguments = func_get_args();
+        $target    = array_shift($arguments);
+        foreach ($arguments AS $array) {
+            if (isset($array['style'])) {
+                if (!isset($target['style'])) $target['style'] = '';
+                $target['style'] .= $array['style'];
+                unset($array['style']);
+            }
+            if (isset($array['class'])) {
+                if (!isset($target['class'])) $target['class'] = '';
+                $target['class'] .= ' ' . $array['class'];
+                unset($array['class']);
+            }
+
+            $target = array_merge($target, $array);
+        }
+
+        return $target;
+    }
+
+    public static function addExcludeLazyLoadAttributes($target) {
+
+        return self::mergeAttributes($target, self::getExcludeLazyLoadAttributes());
+    }
+
+    public static function getExcludeLazyLoadAttributes() {
+        static $attrs;
+        if ($attrs === null) {
+            $attrs = array(
+                'data-no-lazy' => 1,
+                'data-hack'    => 'data-lazy-src'
+            );
+
+            if (class_exists('\FlorianBrinkmann\LazyLoadResponsiveImages\Plugin', false)) {
+                $attrs['data-no-lazyload'] = 1;
+            }
+
+            if (function_exists('thb_lazy_images_filter') || defined('WP_SMUSH_VERSION')) {
+                $attrs['class'] = 'no-lazyload';
+            }
+        }
+
+        return $attrs;
     }
 }

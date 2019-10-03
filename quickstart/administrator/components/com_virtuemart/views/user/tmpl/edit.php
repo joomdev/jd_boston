@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: edit.php 9623 2017-08-15 12:15:33Z Milbo $
+* @version $Id: edit.php 9898 2018-06-29 11:09:01Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -21,8 +21,8 @@ defined('_JEXEC') or die('Restricted access');
 
 AdminUIHelper::startAdminArea($this);
 
-// Implement Joomla's form validation
-vmJsApi::vmValidator();
+
+
 ?>
 <style type="text/css">
 .invalid {
@@ -66,5 +66,6 @@ AdminUIHelper::buildTabs ( $this, $tabarray,'vm-user');
 <?php echo $this->addStandardHiddenToForm(); ?>
 </form>
 
-<?php vmJsApi::vmValidator($this->userDetails->JUser->guest); ?>
+<?php // Implement Joomla's form validation
+ vmJsApi::vmValidator($this->userDetails->JUser->guest); ?>
 <?php AdminUIHelper::endAdminArea(); ?>

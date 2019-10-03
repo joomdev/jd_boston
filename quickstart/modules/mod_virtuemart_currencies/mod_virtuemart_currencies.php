@@ -5,7 +5,7 @@ defined('_JEXEC') or  die( 'Direct Access to '.basename(__FILE__).' is not allow
 *
 * NOTE: THIS MODULE REQUIRES THE VIRTUEMART COMPONENT!
 /*
-* @version $Id: mod_virtuemart_currencies.php 9422 2017-01-16 18:12:35Z Milbo $
+* @version $Id: mod_virtuemart_currencies.php 9881 2018-06-20 09:03:58Z Milbo $
 * @package VirtueMart
 * @subpackage modules
 *
@@ -24,11 +24,10 @@ defined('_JEXEC') or  die( 'Direct Access to '.basename(__FILE__).' is not allow
  * to show the prices to the user in a later stadium.
   */
 
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
 
 VmConfig::loadConfig();
-vmLanguage::loadJLang('mod_virtuemart_currencies', true);
+vmLanguage::loadModJLang('mod_virtuemart_currencies');
 vmJsApi::jQuery();
 
 vmLanguage::loadJLang( 'com_virtuemart', true );
@@ -44,8 +43,6 @@ $currencyModel = VmModel::getModel('currency');
 
 $currencies = $currencyModel->getVendorAcceptedCurrrenciesList($vendorId);
 
-
-if (!class_exists('CurrencyDisplay')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
 $currencyDisplay = CurrencyDisplay::getInstance();
 
 $virtuemart_currency_id = $mainframe->getUserStateFromRequest( "virtuemart_currency_id", 'virtuemart_currency_id',vRequest::getInt('virtuemart_currency_id',$currencyDisplay->_vendorCurrency) );

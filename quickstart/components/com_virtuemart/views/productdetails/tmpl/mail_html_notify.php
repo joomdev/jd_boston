@@ -14,7 +14,7 @@ defined('_JEXEC') or die('');
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: mail_html_notify.php 9413 2017-01-04 17:20:58Z Milbo $
+ * @version $Id: mail_html_notify.php 10101 2019-08-20 06:43:25Z Milbo $
  */
 ?>
 
@@ -62,8 +62,11 @@ defined('_JEXEC') or die('');
 					<tr>
 						<td >
 							<?php
-							if(!empty($this->mailbody)) echo nl2br($this->mailbody);
-							else echo vmText::sprintf('COM_VIRTUEMART_CART_NOTIFY_MAIL_HTML', $this->productName,$this->link);
+							if(!empty($this->mailbody)){
+								echo nl2br($this->mailbody);
+							} else {
+								echo vmText::sprintf('COM_VIRTUEMART_CART_NOTIFY_MAIL_HTML', $this->productName,$this->link);
+							}
 							?>
 						</td>
 					</tr>

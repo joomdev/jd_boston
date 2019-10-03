@@ -1,0 +1,14 @@
+.megamenu-container:not(.nav-submenu-container) {
+	border-bottom: 3px solid $primary;
+}
+
+.nav-item-dropdown .nav-submenu {
+	padding: 10px;
+	border-bottom: 3px solid $primary;
+}
+
+.nav-item-megamenu .nav-submenu .item-link-heading.item-level-2,
+.nav-item-megamenu .nav-submenu .item-link-separator.item-level-2 {
+	border-color: $light;
+	font-weight: 700;
+}

@@ -8,7 +8,8 @@
  * @package	VirtueMart
  * @subpackage Helpers
  * @author Eugen Stranz, Max Milbers
- * @copyright Copyright (c) 2004-2008 Soeren Eberhardt-Biermann, 2009-2016 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004-2008 Soeren Eberhardt-Biermann, 2009-2018 VirtueMart Team. All rights reserved.
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL 2, see COPYRIGHT.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -62,7 +63,7 @@ class AdminUIHelper {
 		vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/vm2admin.js');
 
 		$vm2string = "editImage: 'edit image',select_all_text: '".vmText::_('COM_VIRTUEMART_DRDOWN_SELALL')."',select_some_options_text: '".vmText::_($selectText)."'" ;
-		vmJsApi::addJScript ('vm.remindTab', "
+		vmJsApi::addJScript ('vm-remindTab', "
 		var tip_image='".JURI::root(true)."/components/com_virtuemart/assets/js/images/vtip_arrow.png';
 		var vm2string ={".$vm2string."} ;
 		jQuery( function($) {
@@ -91,7 +92,7 @@ class AdminUIHelper {
 			</script>
 		<![endif]-->
 		<?php if (!self::$backEnd ){
-			//JToolBarHelper
+			//JToolbarHelper
 			$bar = JToolbar::getInstance('toolbar');
 			?><div class="toolbar-box" style="height: 84px;position: relative;"><?php echo $bar->render()?></div>
 		<?php } ?>
@@ -133,11 +134,7 @@ class AdminUIHelper {
 		$ackey = VmConfig::get('member_access_number','');
 		//$host = JUri::getInstance()->getHost();
 
-		if(!class_exists('vmCrypt'))
-			require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
-
-		$keyPath = vmCrypt::getEncryptSafepath();
-
+		$keyPath = shopfunctions::getSafePathFor(1,'regcache');
 		if(!empty($keyPath)){
 			$keyPath .= DS.'vmm.ini';
 			if (JFile::exists($keyPath)){
@@ -201,9 +198,9 @@ class AdminUIHelper {
 
 		?>
         <style>#<?php echo $prefix ?>vmver-<?php echo $token ?> { <?php echo $dplyVer ?>}</style>
-        <div class="vm-installed-version">VirtueMart <?php echo vmVersion::$RELEASE ?></div>
+        <div class="vm-installed-version">VirtueMart <?php echo vmVersion::$RELEASE.' '.vmVersion::$REVISION ?></div>
         <div id="<?php echo $prefix ?>vmver-<?php echo $token ?>" class="vm-installed-version" >
-			<?php echo vmVersion::$CODENAME.' '.vmVersion::$REVISION ?>
+			<?php echo vmVersion::$CODENAME ?>
         </div>
         <div id="<?php echo $prefix.$token ?>">
 			<?php echo $nag; ?>
@@ -235,7 +232,7 @@ class AdminUIHelper {
 	static public function buildTabs($view, $load_template = array(),$cookieName='') {
 		$cookieName = vRequest::getCmd('view','virtuemart').$cookieName;
 
-		vmJsApi::addJScript ( 'vm.cookie', '
+		vmJsApi::addJScript ( 'vm-cookie', '
 		var virtuemartcookie="'.$cookieName.'";
 		');
 
@@ -263,7 +260,7 @@ class AdminUIHelper {
 	static function imitateTabs($return,$language = '') {
 		if ($return == 'start') {
 
-			vmJsApi::addJScript ( 'vm.cookietab','
+			vmJsApi::addJScript ( 'vm-cookietab','
 			var virtuemartcookie="vm-tab";
 			');
 			$html = 	'<div id="admin-ui-tabs">

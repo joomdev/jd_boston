@@ -88,7 +88,7 @@ foreach ($viewData['products'] as $type => $products ) {
 		<div class="spacer product-container">
 			<div class="vm-product-media-container">
 
-					<a title="<?php echo $product->product_name ?>" href="<?php echo $product->link.$ItemidStr; ?>">
+					<a title="<?php echo $product->product_name ?>" href="<?php echo JRoute::_($product->link.$ItemidStr); ?>">
 						<?php
 						echo $product->images[0]->displayMediaThumb('class="browseProductImage"', false);
 						?>

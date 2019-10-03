@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 9802 2018-03-20 15:22:11Z Milbo $
+* @version $Id: default.php 10058 2019-05-17 13:42:16Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -50,23 +50,28 @@ AdminUIHelper::startAdminArea($this);
 			<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" />
 		    </th>
 		    <th width="25%">
-			<?php echo vmText::_('COM_VIRTUEMART_COUPON_CODE'); ?>
+            <?php echo $this->sort('coupon_code' , 'COM_VIRTUEMART_COUPON_CODE'); ?>
 		    </th>
 		    <th width="16%">
-			<?php echo vmText::_('COM_VIRTUEMART_COUPON_PERCENT_TOTAL'); ?>
-		    </th>
+			<?php echo $this->sort('percent_or_total' , 'COM_VIRTUEMART_COUPON_PERCENT_TOTAL'); ?>
+            </th>
 		    <th width="16%">
-			<?php echo vmText::_('COM_VIRTUEMART_COUPON_TYPE'); ?>
-		    </th>
+			<?php echo $this->sort('coupon_type' , 'COM_VIRTUEMART_COUPON_TYPE'); ?>
+            </th>
 		    <th width="16%">
-			<?php echo vmText::_('COM_VIRTUEMART_VALUE'); ?>
-		    </th>
+			<?php echo $this->sort('coupon_value' , 'COM_VIRTUEMART_VALUE'); ?>
+            </th>
 		    <th min-width="130px" width="18%">
 			<?php echo vmText::_('COM_VIRTUEMART_COUPON_VALUE_VALID_AT'); ?>
 		    </th>
 			<th min-width="100px" width="18%">
-				<?php echo vmText::_('COM_VIRTUEMART_COUPON_USED'); ?>
+				<?php echo $this->sort('coupon_used' , 'COM_VIRTUEMART_COUPON_USED'); ?>
 			</th>
+            <th><?php echo $this->sort('coupon_start_date' , 'COM_VIRTUEMART_START_DATE'); ?></th>
+            <th><?php echo $this->sort('coupon_expiry_date' , 'COM_VIRTUEMART_END_DATE'); ?></th>
+            <th width="20">
+				<?php echo $this->sort('published' , 'COM_VIRTUEMART_PUBLISHED') ?>
+            </th>
 		     <th><?php echo $this->sort('virtuemart_coupon_id', 'COM_VIRTUEMART_ID')  ?></th>
 		</tr>
 	    </thead>
@@ -77,6 +82,7 @@ AdminUIHelper::startAdminArea($this);
 
 		$checked = JHtml::_('grid.id', $i, $row->virtuemart_coupon_id);
 		$editlink = JROUTE::_('index.php?option=com_virtuemart&view=coupon&task=edit&cid[]=' . $row->virtuemart_coupon_id);
+		$published = $this->gridPublished( $row, $i );
 		?>
 	    <tr class="row<?php echo $k; ?>">
 		<td class="admin-checkbox">
@@ -99,17 +105,31 @@ AdminUIHelper::startAdminArea($this);
 		<td align="left">
 			<?php echo vmText::_($row->coupon_value_valid); ?> <?php echo $this->vendor_currency; ?>
 		</td>
-		    <td align="center">
-			    <?php
-			    if( $row->coupon_type=='gift'){
-				    if ($row->coupon_used ) {
-					    echo vmText::_('COM_VIRTUEMART_YES');
-				    } else  {
-					    echo vmText::_('COM_VIRTUEMART_NO');
-				    }
-			     }
-			    ?>
-		    </td>
+
+        <td align="center">
+            <?php
+            if( $row->coupon_type=='gift'){
+                if ($row->coupon_used ) {
+                    echo vmText::_('COM_VIRTUEMART_YES');
+                } else  {
+                    echo vmText::_('COM_VIRTUEMART_NO');
+                }
+             }
+            ?>
+        </td>
+            <td>
+				<?php
+				echo vmJsApi::date( $row->coupon_start_date, 'LC4',true);
+				?>
+            </td>
+            <td>
+				<?php
+				echo vmJsApi::date( $row->coupon_expiry_date, 'LC4',true);
+				?>
+            </td>
+        <td align="center">
+            <?php echo $published; ?>
+        </td>
 		<td align="left">
 			<?php echo vmText::_($row->virtuemart_coupon_id); ?>
 		</td>
@@ -127,13 +147,8 @@ AdminUIHelper::startAdminArea($this);
 	    </tfoot>
 	</table>
     </div>
+    <?php echo $this->addStandardHiddenToForm(); ?>
 
-    <input type="hidden" name="option" value="com_virtuemart" />
-    <input type="hidden" name="controller" value="coupon" />
-    <input type="hidden" name="view" value="coupon" />
-    <input type="hidden" name="task" value="" />
-    <input type="hidden" name="boxchecked" value="0" />
-    <?php echo JHtml::_( 'form.token' ); ?>
 </form>
 
 

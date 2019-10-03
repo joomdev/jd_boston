@@ -3,11 +3,11 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * @version $Id: klarnahandler.php 9420 2017-01-12 09:35:36Z Milbo $
+ * @version $Id: klarnahandler.php 10150 2019-09-16 12:22:07Z Milbo $
  *
  * @author Valérie Isaksen
  * @package VirtueMart
- * @copyright Copyright (C) 2012 iStraxx - All rights reserved.
+ * @copyright Copyright (C) 2012 - 2019 iStraxx - All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -216,12 +216,6 @@ class KlarnaHandler {
 		$method_invoice_fee = self::getInvoiceFee($method, $country);
 		$invoice_tax_id = self::getInvoiceTaxId($method, $country);
 		vmdebug('getInvoiceFeeInclTax', $cartPaymentCurrency, $invoice_fee);
-		if (!class_exists('calculationHelper')) {
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
-		}
-		if (!class_exists('CurrencyDisplay')) {
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
-		}
 
 		if (!class_exists('VirtueMartModelVendor')) {
 			require(VMPATH_ADMIN . DS . 'models' . DS . 'vendor.php');
@@ -1402,7 +1396,7 @@ class KlarnaHandler {
 		if (VMKLARNA_SHIPTO_SAME_AS_BILLTO) {
 			$shipTo = $cart->BT;
 		} else {
-			$shipTo = (($cart->ST == 0 or empty($cart->ST)) ? $cart->BT : $cart->ST);
+			$shipTo = $cart->getST();
 		}
 		return self::getKlarnaFieldsFromVmShopperFields($shipTo, $cart->BT['email']);
 

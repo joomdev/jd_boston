@@ -13,14 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: userfields.php 9478 2017-03-16 09:33:17Z Milbo $
+* @version $Id: userfields.php 10036 2019-04-01 10:28:12Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
-
 
 /**
  * Controller class for the Order status
@@ -55,17 +52,11 @@ class VirtuemartControllerUserfields extends VmController {
 
 		if($data===0) $data = vRequest::getPost();
 
-		if(vmAccess::manager('raw')){
-			$data['description'] = vRequest::get('description','');
-			if(isset($data['params'])){
-				$data['params'] = vRequest::get('params','');
-			}
-		} else {
-			$data['description'] = vRequest::getHtml('description','');
-			if(isset($data['params'])){
-				$data['params'] = vRequest::getHtml('params','');
-			}
+		$data['description'] = vRequest::getHtml('description','');
+		if(isset($data['params'])){
+			$data['params'] = vRequest::getHtml('params','');
 		}
+
 		$data['name'] = vRequest::getCmd('name');
 		// onSaveCustom plugin;
 		parent::save($data);

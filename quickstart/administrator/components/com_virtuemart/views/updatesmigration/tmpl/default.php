@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 9633 2017-09-07 08:16:00Z Milbo $
+* @version $Id: default.php 9924 2018-09-09 07:51:12Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -43,4 +43,4 @@ $j = 'function confirmation(message, destnUrl) {
 	}
 }';
 
-vmJsApi::addJScript('vm.confirm',$j);
+vmJsApi::addJScript('vm-confirm',$j);

@@ -18,9 +18,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the view framework
-if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
-
 /**
  * HTML View class for the VirtueMart Component
  *
@@ -30,16 +27,6 @@ if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmi
 class VirtuemartViewOrders extends VmViewAdmin {
 
 	function display($tpl = null) {
-
-
-		//Load helpers
-		if (!class_exists('CurrencyDisplay'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
-
-		if (!class_exists('VmHTML'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
-
-		if(!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS.DS.'vmpsplugin.php');
 
 		$app = JFactory::getApplication();
 		$orderStatusModel=VmModel::getModel('orderstatus');
@@ -55,9 +42,6 @@ class VirtuemartViewOrders extends VmViewAdmin {
 		if ($curTask == 'edit') {
 			vmLanguage::loadJLang('com_virtuemart_shoppers',TRUE);
 			vmLanguage::loadJLang('com_virtuemart_orders', true);
-
-			//For getOrderStatusName
-			if (!class_exists('ShopFunctions'))	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 
 			// Load addl models
 			$userFieldsModel = VmModel::getModel('userfields');
@@ -115,34 +99,79 @@ class VirtuemartViewOrders extends VmViewAdmin {
 					,'ST_'
 			);
 
-			// Create an array to allow orderlinestatuses to be translated
-			// We'll probably want to put this somewhere in ShopFunctions...
+
 			$_orderStatusList = array();
-			foreach ($orderStates as $orderState) {
-				//$_orderStatusList[$orderState->virtuemart_orderstate_id] = $orderState->order_status_name;
-				//When I use update, I have to use this?
-				$_orderStatusList[$orderState->order_status_code] = vmText::_($orderState->order_status_name);
-			}
+			$orderStatesUnpaid = array();
+			$os_trigger_refunds = VmConfig::get('os_trigger_refunds', array('R'));
+			$this->adjustOrderStatuslists($orderStates, $_orderStatusList, $orderStatesUnpaid);
 
 			$_itemStatusUpdateFields = array();
 			$_itemAttributesUpdateFields = array();
+
+			$attr = array('class' => 'selectItemStatusCode', 'style' => 'width:160px');
 			// for the order item template
-			$_itemStatusUpdateFields[0] = JHtml::_('select.genericlist', $orderStates, "item_id[0][order_status]", 'class="selectItemStatusCode"', 'order_status_code', 'order_status_name', 'P', 'order_item_status_0',true);
+			$_itemStatusUpdateFields[0] = JHtml::_('select.genericlist', $orderStates, "item_id[0][order_status]", $attr, 'order_status_code', 'order_status_name', 'P', 'order_item_status_0',true);
 
-			foreach($order['items'] as $_item) {
-				$_itemStatusUpdateFields[$_item->virtuemart_order_item_id] = JHtml::_('select.genericlist', $orderStates, "item_id[".$_item->virtuemart_order_item_id."][order_status]", 'class="selectItemStatusCode" style="width:160px;', 'order_status_code', 'order_status_name', $_item->order_status, 'order_item_status'.$_item->virtuemart_order_item_id,true);
 
-				$_item->linkedit = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$_item->virtuemart_product_id;
+			$this->toRefund = array();
+			$orderbt->toPay = floatval($orderbt->order_total);
+			foreach($order['items'] as $i => $_item) {
+
+
+				$order['items'][$i]->linkedit = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$_item->virtuemart_product_id;
+
+				//I dont like this solution, but it would need changing how an item is loaded
+				$order['items'][$i]->tax_rule_id = array();
+				foreach($order['calc_rules'] as $r =>$rule){
+					if( $rule->virtuemart_order_item_id == $_item->virtuemart_order_item_id){
+
+						if( $rule->calc_kind == 'VatTax' or $rule->calc_kind == 'Tax'){
+							//$order['items'][$i]->tax_rule[$rule->virtuemart_calc_id] = $rule;
+							$order['items'][$i]->tax_rule_id[] = $rule->virtuemart_calc_id;
+						}
+						//$order['items'][$i]->calc_rules[$rule->virtuemart_calc_id] = $rule;
+
+					}
+
+				}
+
+				if(in_array($_item->order_status,$os_trigger_refunds)){
+					$this->toRefund[] = $_item;
+					$orderbt->toPay -= $this->currency->roundByPriceConfig($_item->product_subtotal_with_tax);
+				}
+
+				if($orderbt->paid < $orderbt->toPay){
+					$usedOStates = $orderStatesUnpaid;
+				} else {
+					$usedOStates = $orderStates;
+				}
+
+				$_itemStatusUpdateFields[$_item->virtuemart_order_item_id] = JHtml::_('select.genericlist', $usedOStates, "item_id[".$_item->virtuemart_order_item_id."][order_status]", $attr, 'order_status_code', 'order_status_name', $_item->order_status, 'order_item_status'.$_item->virtuemart_order_item_id,true);
+
 			}
+			$orderbt->toPay = $this->currency->roundByPriceConfig(($orderbt->toPay));
 
+
+			$rulesSorted = shopFunctionsF::summarizeRulesForBill($order);
+			$this->discountsBill = $rulesSorted['discountsBill'];
+			$this->taxBill = $rulesSorted['taxBill'];
+//vmdebug('my taxBill rules',$this->taxBill);
 			if(!isset($_orderStatusList[$orderbt->order_status])){
 				if(empty($orderbt->order_status)){
 					$orderbt->order_status = 'unknown';
 				}
-				$_orderStatusList[$orderbt->order_status] = vmText::_('COM_VIRTUEMART_UNKNOWN_ORDER_STATUS');
+				$_orderStatusList[$orderbt->order_status] = vmText::sprintf('COM_VIRTUEMART_UNKNOWN_ORDER_STATUS',$orderbt->order_status);
 			}
 
-
+			VmModel::getModel('calc');
+			$this->taxList = array();
+			$this->taxList[0] = array('text'=>vmText::_('COM_VIRTUEMART_PRODUCT_TAX_NONE'), 'value'=>0);
+			$taxes = VirtueMartModelCalc::getTaxes();
+			if($taxes){
+				foreach ($taxes as $i=>$tax) {
+					$this->taxList[$tax->virtuemart_calc_id] = array('text'=>vmText::_($tax->calc_name), 'value'=>$tax->virtuemart_calc_id);
+				}
+			}
 
 			/* Assign the data */
 			$this->assignRef('orderdetails', $order);
@@ -159,20 +188,19 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			/* Data for the Edit Status form popup */
 			$_currentOrderStat = $order['details']['BT']->order_status;
 			// used to update all item status in one time
-			$_orderStatusSelect = JHtml::_('select.genericlist', $orderStates, 'order_status', 'style="width:200px;', 'order_status_code', 'order_status_name', $_currentOrderStat, 'order_items_status',true);
+			$_orderStatusSelect = JHtml::_('select.genericlist', $orderStates, 'order_status', 'style="width:200px;"', 'order_status_code', 'order_status_name', $_currentOrderStat, 'order_items_status',true);
 			$this->assignRef('orderStatSelect', $_orderStatusSelect);
 			$this->assignRef('currentOrderStat', $_currentOrderStat);
 
 			/* Toolbar */
 			if (JVM_VERSION < 3) { $backward="back"; $list='back';} else {$backward='backward';$list='list';}
-			JToolBarHelper::custom( 'prevItem', $backward,'','COM_VIRTUEMART_ITEM_PREVIOUS',false);
-			JToolBarHelper::custom( 'nextItem', 'forward','','COM_VIRTUEMART_ITEM_NEXT',false);
-			JToolBarHelper::divider();
-			JToolBarHelper::custom( 'cancel', $list,'','COM_VIRTUEMART_ORDER_LIST_LBL',false,false);
+			JToolbarHelper::custom( 'prevItem', $backward,'','COM_VIRTUEMART_ITEM_PREVIOUS',false);
+			JToolbarHelper::custom( 'nextItem', 'forward','','COM_VIRTUEMART_ITEM_NEXT',false);
+			JToolbarHelper::divider();
+			JToolbarHelper::custom( 'cancel', $list,'','COM_VIRTUEMART_ORDER_LIST_LBL',false,false);
 			self::showhelp();
 		}
 		else if ($curTask == 'editOrderItem') {
-			if(!class_exists('calculationHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'calculationh.php');
 
 			$this->assignRef('orderstatuses', $orderStates);
 
@@ -191,9 +219,15 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			$model = VmModel::getModel();
 			$this->addStandardDefaultViewLists($model,'created_on');
 			$orderStatusModel =VmModel::getModel('orderstatus');
-			$orderstates = vRequest::getCmd('order_status_code','');
-			$this->lists['state_list'] = $orderStatusModel->renderOSList($orderstates,'order_status_code',FALSE,' onchange="this.form.submit();" style="width:180px;"');
-			$this->lists['bulk_state_list'] = $orderStatusModel->renderOSList($orderstates,'order_status_code_bulk',FALSE,'id="order_status_code_bulk" onchange="Virtuemart.set2status();" style="width:180px;"');
+			$order_status_code = vRequest::getCmd('order_status_code','');
+			$this->lists['state_list'] = $orderStatusModel->renderOSList($order_status_code,'order_status_code',FALSE,' onchange="this.form.submit();" style="width:180px;"');
+			$this->lists['bulk_state_list'] = $orderStatusModel->renderOSList($order_status_code,'order_status_code_bulk',FALSE,'id="order_status_code_bulk" onchange="Virtuemart.set2status();" style="width:180px;"');
+
+			$this->orderStatesUnpaid = array();
+			$_orderStatusList= array();
+			$this->adjustOrderStatuslists($orderStates, $_orderStatusList, $this->orderStatesUnpaid);
+			//$this->lists['state_list_unpaid'] = $orderStatusModel->renderOSList($orderStatesUnpaid,'order_status_code',FALSE,' onchange="this.form.submit();" style="width:180px;"');
+
 			$orderslist = $model->getOrdersList();
 
 			$this->assignRef('orderstatuses', $orderStates);
@@ -205,10 +239,8 @@ class VirtuemartViewOrders extends VmViewAdmin {
 
 			$this->lists['vendors']='';
 			if($this->showVendors()){
-				$this->lists['vendors'] = Shopfunctions::renderVendorList();
+			//	$this->lists['vendors'] = Shopfunctions::renderVendorList(userstate missing, 'virtuemart_vendor_id', true);
 			}
-
-			if(!class_exists('CurrencyDisplay'))require(VMPATH_ADMIN.DS.'helpers'.DS.'currencydisplay.php');
 
 			/* Apply currency This must be done per order since it's vendor specific */
 			$_currencies = array(); // Save the currency data during this loop for performance reasons
@@ -220,7 +252,6 @@ class VirtuemartViewOrders extends VmViewAdmin {
 				    if(!empty($order->order_currency)){
 					    $currency = $order->order_currency;
 				    } else {
-						if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
 						$vId = empty($order->virtuemart_vendor_id)? 1:$order->virtuemart_vendor_id;
 						$currObj = VirtueMartModelVendor::getVendorCurrency($vId);
 						$currency = $currObj->virtuemart_currency_id;
@@ -243,7 +274,7 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			$db->setQuery($q);
 			//$res = $db->loadRow();
 			if(true) {
-				JToolBarHelper::custom('updateCustomsOrderItems', 'new', 'new', vmText::_('COM_VIRTUEMART_REPORT_UPDATEORDERITEMS'),false);
+				JToolbarHelper::custom('updateCustomsOrderItems', 'new', 'new', vmText::_('COM_VIRTUEMART_REPORT_UPDATEORDERITEMS'),false);
 				vmError('COM_VIRTUEMART_UPDATEORDERITEMS_WARN');
 			}*/
 			/*
@@ -253,13 +284,13 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			 */
 
 			/* Toolbar */
-			//JToolBarHelper::customX( 'CreateOrderHead', 'new','new','New',false);
+			//JToolbarHelper::customX( 'CreateOrderHead', 'new','new','New',false);
 
-			JToolBarHelper::save('updatestatus', vmText::_('COM_VIRTUEMART_UPDATE_STATUS'));
+			JToolbarHelper::save('updatestatus', vmText::_('COM_VIRTUEMART_UPDATE_STATUS'));
 
 			if (vmAccess::manager('orders.delete') && !VmConfig::get('ordersAddOnly',false)) {
-				JToolBarHelper::spacer('80');
-				JToolBarHelper::deleteList();
+				JToolbarHelper::spacer('80');
+				JToolbarHelper::deleteList();
 			}
 			self::showhelp();
 			/* Assign the data */
@@ -273,12 +304,33 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			$bar->appendButton( 'Link', 'back', 'COM_VIRTUEMART_LEAVE', 'index.php?option=com_virtuemart&manage=0' );
 		}
 
-		shopFunctions::checkSafePath();
+		shopFunctions::checkSafePathBase();
 
 		parent::display($tpl);
 	}
 
+	function adjustOrderStatuslists ($orderStates, &$_orderStatusList, &$orderStatesUnpaid){
 
+		$os_trigger_refunds = VmConfig::get('os_trigger_refunds', array('R'));
+		// Create an array to allow orderlinestatuses to be translated
+		// We'll probably want to put this somewhere in ShopFunctions...
+
+		foreach ($orderStates as $orderState) {
+			//$_orderStatusList[$orderState->virtuemart_orderstate_id] = $orderState->order_status_name;
+			//When I use update, I have to use this?
+			$_orderStatusList[$orderState->order_status_code] = vmText::_($orderState->order_status_name);
+			$tmp = clone($orderState);
+			if(in_array($orderState->order_status_code,$os_trigger_refunds)) {
+
+				$tmp->order_status_name = 'Unrecommended '.vmText::_( $orderState->order_status_name );
+				$orderStatesUnpaid[] = $tmp;
+			} else {
+				$orderStatesUnpaid[] = $tmp;
+			}
+
+		}
+
+	}
 	/**
 	 * @author Max Milbers
 	 * @author Valérie Isaksen

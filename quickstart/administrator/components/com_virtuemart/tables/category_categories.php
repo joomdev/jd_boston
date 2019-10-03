@@ -18,8 +18,6 @@
 
 defined('_JEXEC') or die();
 
-if(!class_exists('VmTableData'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtabledata.php');
-
 class TableCategory_categories extends VmTableData {
 
 	var $category_parent_id = 0;

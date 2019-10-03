@@ -19,7 +19,7 @@ $tos = $field['value'];
 $app = JFactory::getApplication();
 if($app->isSite()){
 	vmJsApi::popup('#full-tos','#terms-of-service');
-	if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
+
 	$cart = VirtuemartCart::getCart();
 	$cart->prepareVendor();
 	if(empty($tos) and !VmConfig::get ('agree_to_tos_onorder', true)){
@@ -29,7 +29,6 @@ if($app->isSite()){
 	}
 }
 
-if(!class_exists('VmHtml')) require(VMPATH_ADMIN.DS.'helpers'.DS.'html.php');
 $class = 'terms-of-service';
 if(!empty($field['required'])){
 	$class .= ' required';

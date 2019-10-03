@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension version="2.5" type="plugin" group="vmpayment" method="upgrade">
     <name>VM Payment - Paybox</name>
-    <creationDate>March 31 2017</creationDate>
+    <creationDate>September 24 2019</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>https://virtuemart.net</authorUrl>
-    <copyright>Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2004 - 2018 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-    <!--version>3.2.1</version-->
-    <version>3.2.1</version>
+    <version>3.6.2</version>
     <description><![CDATA[<a href="http://paybox.com" target="_blank">Paybox</a> ]]>
     </description>
     <languages folder="language">
@@ -98,7 +97,7 @@
                 <!--param class="integration recurring" name="recurring_min_amount"  type="text" size="15" default=""
                        label="VMPAYMENT_PAYBOX_CONF_RECURRING_MIN_AMOUNT"
                        description="VMPAYMENT_PAYBOX_CONF_RECURRING_MIN_AMOUNT_TIP"/-->
-                <field   name="recurring_min_amount"  type="hidden" />
+
                 <field class="integration recurring" name="recurring_number" type="list" default="3"
                        label="VMPAYMENT_PAYBOX_CONF_RECURRING_NUMBER"
                        description="VMPAYMENT_PAYBOX_CONF_RECURRING_NUMBER_TIP">
@@ -130,7 +129,12 @@
                        label="VMPAYMENT_PAYBOX_CONF_INTEGRATION_SUBSCRIBE_DELAIS"
                        description="VMPAYMENT_PAYBOX_CONF_INTEGRATION_SUBSCRIBE_DELAIS_TIP"/>
 
-
+                <field class="" name="check_server_available" type="list" default="1"
+                       label="VMPAYMENT_PAYBOX_CONF_CHECK_SERVER_AVAILABLE"
+                       description="VMPAYMENT_PAYBOX_CONF_CHECK_SERVER_AVAILABLE_TIP">
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
                 <!-- end subscribe -->
 
                 <field class="level1 " type="vmtitle" default="VMPAYMENT_PAYBOX_CONF_ORDERSTATUS_OPTIONS"/>
@@ -197,8 +201,10 @@
                 <!-- ============ -->
                 <field  type="vmtitle" default="VMPAYMENT_PAYBOX_CONF_RESTRICTIONS_SECTION"
                        description="VMPAYMENT_PAYBOX_CONF_RESTRICTIONS_SECTION_TIP"/>
-                <field name="countries" type="vmcountries" scope="com_virtuemart" default=""
+
+                <field name="countries" type="vmcountries" scope="com_virtuemart"  multiple="true" default=""
                        label="VMPAYMENT_PAYBOX_CONF_COUNTRIES" description="VMPAYMENT_PAYBOX_CONF_COUNTRIES_TIP"/>
+
                 <field name="min_amount" type="text" label="VMPAYMENT_PAYBOX_CONF_MIN_AMOUNT"
                        description="VMPAYMENT_PAYBOX_CONF_MIN_AMOUNT_TIP"/>
                 <field name="max_amount" type="text" label="VMPAYMENT_PAYBOX_CONF_MAX_AMOUNT"
@@ -234,7 +240,7 @@
                        description=""/>
                 <field name="payment_logos" type="vmfiles" multiple="true" label="VMPAYMENT_PAYBOX_CONF_LOGOS"
                        description="VMPAYMENT_PAYBOX_CONF_LOGOS_TIP"
-                       directory="/images/stories/virtuemart/payment"
+                       directory="/images/virtuemart/payment"
                        default="default" hide_default="1" hide_none="1"
                        stripext="0" exclude="^_"/>
 

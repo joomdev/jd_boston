@@ -19,9 +19,6 @@
 
 defined('_JEXEC') or die();
 
-
-if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
-
 class VmTableData extends VmTable {
 
 
@@ -75,6 +72,10 @@ class VmTableData extends VmTable {
 			}
 		}
 
+		if(!empty($this->_hashName)){
+			$this->hashEntry();
+		}
+
 		if($res){
 			$returnCode = $this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
 		} else {
@@ -85,7 +86,7 @@ class VmTableData extends VmTable {
 				if($p!=$this->$tblKey and !in_array($tblKey,$this->_omittedHashFields)){
 					$this->hashEntry();
 					$ok = $this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
-					vmdebug('Updated entry with correct hash ',$this->_tbl_key,$p,$this->$tblKey,$oldH,$this->{$this->_hashName});
+					vmdebug('VmTableData Updated entry with correct hash ',$this->_tbl_key,$p,$this->$tblKey,$oldH,$this->{$this->_hashName});
 				}
 			}
 		}

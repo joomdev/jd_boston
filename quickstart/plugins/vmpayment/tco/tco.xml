@@ -4,9 +4,9 @@
     <creationDate>October 2015</creationDate>
     <author>Craig Christenson</author>
     <authorUrl>http://www.2checkout.com</authorUrl>
-    <copyright>Copyright (C) 2004-2015 Virtuemart Team. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2004-2019 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
-    <version>3.2.1</version>
+    <version>3.6.2</version>
     <description><![CDATA[<a href="https://www.2checkout.com/referral?r=virtuemart" target="_blank">2Checkout</a> is a popular payment provider and available in many countries. ]]>
     </description>
     <files>
@@ -14,14 +14,14 @@
         <folder>language</folder>
     </files>
     <params addpath="/administrator/components/com_virtuemart/elements">
-        <param type="vmjpluginwarning" />
+        <field name="checkConditionsCore" value="1" default="1" type="hidden"/>
         <param type="spacer" default="VMPAYMENT_TCO_PAYMENT_TITLE" level="level1" />
         <param type="spacer" default="VMPAYMENT_TCO_PAYMENT_WARNING"   />
         <param type="spacer" default="" level="level1" />
         <param type="spacer" default="VMPAYMENT_TCO_PAYMENT_SETTINGS" level="level1" />
         <param name="payment_logos" type="vmfiles" label="VMPAYMENT_TCO_LOGOS"
             description="VMPAYMENT_TCO_LOGOS_DESC"
-            directory="/images/stories/virtuemart/payment"
+            directory="/images/virtuemart/payment"
             default="default" hide_default="1" hide_none="1"
             stripext="0"  exclude="^_" />
         <param type="spacer" default="" level="level1" />
@@ -89,7 +89,7 @@
                 <field name="status_canceled" type="vmorderstate" scope="com_virtuemart" default="X" label="VMPAYMENT_TCO_STATUS_FAILED" description="VMPAYMENT_TCO_STATUS_FAILED_EXPLAIN" />
                 <field name="payment_logos" type="imagelist" label="VMPAYMENT_TCO_LOGOS" multiple="true"
                            description="VMPAYMENT_TCO_LOGOS_DESC"
-                           directory="/images/stories/virtuemart/payment"
+                           directory="/images/virtuemart/payment"
                            default="" hide_default="1" hide_none="1"
                            stripext="0" exclude="^_"/>
             </fieldset>

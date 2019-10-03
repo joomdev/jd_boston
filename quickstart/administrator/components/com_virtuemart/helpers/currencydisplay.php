@@ -5,7 +5,7 @@ if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not 
 
 /**
  *
- * @version $Id: currencydisplay.php 9573 2017-06-07 15:06:51Z kkmediaproduction $
+ * @version $Id: currencydisplay.php 10007 2019-01-16 09:59:34Z Milbo $
  * @package VirtueMart
  * @subpackage classes
  *
@@ -59,19 +59,22 @@ class CurrencyDisplay {
 
 		$converterFile  = VmConfig::get('currency_converter_module','convertECB.php');
 
-		if (file_exists( VMPATH_ADMIN.DS.'plugins'.DS.'currency_converter'.DS.$converterFile ) and !is_dir(VMPATH_ADMIN.DS.'plugins'.DS.'currency_converter'.DS.$converterFile)) {
+		$d = VMPATH_ADMIN .'/plugins/currency_converter/'. $converterFile;
+		if (file_exists( $d ) and !is_dir($d)) {
 			$module_filename=substr($converterFile, 0, -4);
-			require_once(VMPATH_ADMIN.DS.'plugins'.DS.'currency_converter'.DS.$converterFile);
-			if( class_exists( $module_filename )) {
-				$this->_currencyConverter = new $module_filename();
-			}
 		} else {
-
-			if(!class_exists('convertECB')) require(VMPATH_ADMIN.DS.'plugins'.DS.'currency_converter'.DS.'convertECB.php');
-			$this->_currencyConverter = new convertECB();
-
+			$converterFile = 'convertECB.php';
+			$module_filename = 'convertECB';
+			$d = VMPATH_ADMIN .'/plugins/currency_converter/'. $converterFile;
 		}
 
+		if( !class_exists( $module_filename )) {
+			require($d);
+		}
+
+		if( class_exists( $module_filename )) {
+			$this->_currencyConverter = new $module_filename();
+		}
 
 	}
 
@@ -124,7 +127,7 @@ class CurrencyDisplay {
 				vmLanguage::loadJLang('com_virtuemart');
 
 				if(empty(self::$_instance[$h]->_currency_id)){
-					$link = JURI::root().'administrator/index.php?option=com_virtuemart&view=user&task=editshop';
+					$link = JURI::root(false).'administrator/index.php?option=com_virtuemart&view=user&task=editshop';
 					vmWarn(vmText::sprintf('COM_VIRTUEMART_CONF_WARN_NO_CURRENCY_DEFINED','<a href="'.$link.'">'.$link.'</a>'));
 				} else{
 					if(vRequest::getCmd('view')!='currency'){
@@ -176,12 +179,11 @@ class CurrencyDisplay {
 		$user = $userModel->getCurrentUser();
 		$shopperModel = VmModel::getModel('shoppergroup');
 
-		if(count($user->shopper_groups)>0){
-			$sprgrp = $shopperModel->getShopperGroup($user->shopper_groups[0]);
+		if(is_array($user->shopper_groups) and count($user->shopper_groups)>0){
+			$sprgrp = $shopperModel->getShopperGroup(reset($user->shopper_groups));
 		} else {
 			//This Fallback is not tested
 			$sprgrp = $shopperModel->getDefault($user->JUser->guest);
-
 		}
 
 		if($sprgrp){
@@ -256,15 +258,19 @@ class CurrencyDisplay {
 			$nb = $this->_nbDecimal;
 		}
 
-		$price = (float)$price * (float)$quantity;
-
 		$price = $this->convertCurrencyTo($currencyId,$price,$inToShopCurrency);
 
-		if($this->_numeric_code===756 and VmConfig::get('rappenrundung',FALSE)=="1"){
-			$price = round((float)$price * 2,1) * 0.5;
+		if(VmConfig::get('roundindig')){
+			$price = round((float)$price * (float)$quantity,$nb); //('roundForDisplay roundindig',$price1);
 		} else {
-			$price = round($price,$nb);
+			$price = round((float)$price,$nb) * (float)$quantity;
 		}
+
+		if($this->_numeric_code===756 and VmConfig::get('rappenrundung',FALSE)=="1"){
+			//$price = (float)$price * (float)$quantity;
+			$price = round((float)$price * 2,1) * 0.5;
+		}
+
 		return $price;
 	}
 
@@ -332,7 +338,7 @@ class CurrencyDisplay {
 		if(!empty($this->_priceConfig[$name][0]) or $force){
 			if(!empty($price) or $name == 'billTotal' or $name == 'billTaxAmount'){
 				$vis = " vm-display vm-price-value";
-				$priceFormatted = $this->priceDisplay($price,0,(float)$quantity,false,$this->_priceConfig[$name][1],$name );
+				$priceFormatted = $this->priceDisplay($price,0,(float)$quantity,false,$this->_priceConfig[$name][1] );
 			} else {
 				$priceFormatted = '';
 				$vis = " vm-nodisplay";
@@ -363,6 +369,11 @@ class CurrencyDisplay {
 	 */
 	function convertCurrencyTo($currency,$price,$shop=true){
 
+		if(empty($price)){
+			$price = 0.0;
+		} else {
+			$price = (float)$price;
+		}
 
 		if(empty($currency)){
 			return $price;
@@ -425,8 +436,6 @@ class CurrencyDisplay {
 	function ensureUsingCurrencyCode($curr){
 
 		if(is_numeric($curr) and $curr!=0){
-			if (!class_exists('ShopFunctions'))
-				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 			return ShopFunctions::getCurrencyByID($curr,'currency_code_3');
 		}
 		return $curr;
@@ -441,9 +450,6 @@ class CurrencyDisplay {
 	 */
 	function getCurrencyIdByField($value=0,$fieldName ='currency_code_3'){
 		if(is_string($value) ){
-			if (!class_exists('ShopFunctions'))
-				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
-
 			return ShopFunctions::getCurrencyIDByName($value,$fieldName);
 		}
 		return $value;
@@ -475,6 +481,18 @@ class CurrencyDisplay {
 	 */
 	public function getId() {
 		return($this->_currency_id);
+	}
+
+	function roundByPriceConfig($val, $name = 'salesPrice') {
+		return round(floatval($val),(string)$this->_priceConfig[$name][1]);
+	}
+
+	function truncate($val, $name = 'salesPrice'/*, $f="0"*/) {
+		$f = (string)$this->_priceConfig[$name][1];
+		if(($p = strpos($val, '.')) !== false) {
+			$val = floatval(substr($val, 0, $p + 1 + $f));
+		}
+		return $val;
 	}
 
 }

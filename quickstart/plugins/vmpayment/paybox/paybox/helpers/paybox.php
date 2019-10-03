@@ -7,7 +7,7 @@
  * @version $Id$
  * @package VirtueMart
  * @subpackage payment
- * @copyright Copyright (c) 2004 - March 31 2017 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2018 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -123,7 +123,7 @@ class  PayboxHelperPaybox {
 		$subscribe = array();
 		$recurring = array();
 		$post_variables["PBX_CMD"] = $order['details']['BT']->order_number;
-		if ($this->_method->integration == "recurring" AND ($orderTotalVendorCurrency > $this->_method->recurring_min_amount)) {
+		if ($this->_method->integration == "recurring" ) {
 			$recurring = $this->getRecurringPayments($pbxOrderTotalInPaymentCurrency);
 			// PBX_TOTAL will be replaced in the array_merge.
 			$post_variables = array_merge($post_variables, $recurring);
@@ -835,7 +835,16 @@ jQuery().ready(function($) {
 		if ($this->_method->shop_mode == 'test') {
 			$url = 'https://preprod-tpeweb.paybox.com/php/';
 		} else {
-			$url = 'https://' . $this->getPayboxServerAvailable() . '/php/';
+			if (isset($this->_method->check_server_available)) {
+				if ($this->_method->check_server_available) {
+					$url = 'https://' . $this->getPayboxServerAvailable() . '/php/';
+				} else {
+					$url = 'https://tpeweb.paybox.com/php/';
+				}
+			} else {
+				$url = 'https://' . $this->getPayboxServerAvailable() . '/php/';
+			}
+
 		}
 		return $url;
 
@@ -908,10 +917,11 @@ jQuery().ready(function($) {
 		$address = $cart->getST();
 
 		$amount = $cart_prices['salesPrice'];
-		$amount_cond = true;
-
-		if ($method->integration == 'recurring' AND $amount <= $method->recurring_min_amount) {
-			$this->plugin->debugLog('recurring_min_amount FALSE' . $amount . ' ' . $method->recurring_min_amount, 'checkConditions', 'debug');
+		$amount_cond = ($amount >= $method->min_amount AND $amount <= $method->max_amount
+			OR
+			($method->min_amount <= $amount AND ($method->max_amount == 0)));
+		if ( !$amount_cond) {
+			$this->plugin->debugLog('min_amount FALSE' . $amount . ' ' . $method->min_amount, 'checkConditions', 'debug');
 			return false;
 		}
 

@@ -18,8 +18,6 @@
 
 defined('_JEXEC') or die();
 
-if(!class_exists('VmTableXarray'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtablexarray.php');
-
 class TableCalc_shoppergroups extends VmTableXarray {
 
 	function __construct(&$db){

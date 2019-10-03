@@ -1,15 +1,15 @@
 <?php
-
 /**
  *
  * A search plugin for com_search
  *
  * @author Valérie Isaksen
  * @author Samuel Mehrbrodt
+ * @author Franz-Peter Scherer
  * @version $Id: authorize.php 5122 2011-12-18 22:24:49Z alatak $
  * @package VirtueMart
  * @subpackage search
- * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
+ * @copyright Copyright (C) 2004-2008 soeren - All rights reserved. 2012 - 2017 The VirtueMart Team
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -23,31 +23,31 @@
 defined ('_JEXEC') or die('Restricted access');
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
-class PlgSearchVirtuemart extends JPlugin {
-	/**
-	 * @return array An array of search areas
-	 */
+
+// Get the product => categories.
+class plgSearchVirtuemart extends JPlugin
+{
+
+	public function __construct(&$subject, $config)
+	{
+		parent::__construct($subject, $config);
+		if (!class_exists( 'VmConfig' )) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
+		VmConfig::loadConfig();
+		$this->loadLanguage();
+	}
+
 	function onContentSearchAreas () {
 		$this->loadLanguage();
 		static $areas = array(
-			'virtuemart' => 'PLG_SEARCH_VIRTUEMART_PRODUCTS'
+		'products' => 'PLG_SEARCH_VIRTUEMART_PRODUCTS'
 		);
 		return $areas;
 	}
 
-	/**
-	 * Content Search method
-	 * The sql must return the following fields that are used in a common display
-	 * routine: href, title, section, created, text, browsernav
-	 *
-	 * @param string $text Target search string
-	 * @param string $phrase matching option, exact|any|all
-	 * @param string $ordering ordering option, newest|oldest|popular|alpha|category
-	 * @param mixed  $areas An array if the search it to be restricted to areas, null if search all
-	 *
-	 * @return array An array of database result objects
-	 */
-	function onContentSearch ($text, $phrase = '', $ordering = '', $areas = NULL) {
+
+
+	public function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
+	{
 		$db = JFactory::getDbo();
 
 		if (is_array($areas)) {
@@ -55,7 +55,6 @@ class PlgSearchVirtuemart extends JPlugin {
 				return array();
 			}
 		}
-
 		$limit = $this->params->get('search_limit', 50);
 		switch($this->params->get('subtitledisplay', '1')) {
 			case '1':
@@ -65,6 +64,7 @@ class PlgSearchVirtuemart extends JPlugin {
 				$category_field = 'customtitle';
 				break;
 		}
+
 		$search_product_description = (bool) $this->params->get('enable_product_description_search', TRUE);
 		$search_product_s_description = (bool) $this->params->get('enable_product_short_description_search', TRUE);
 		$search_customfields = (bool) $this->params->get('enable_customfields', TRUE);
@@ -83,136 +83,169 @@ class PlgSearchVirtuemart extends JPlugin {
 				}
 				// The custom field ID must be either in the list specified or NULL.
 				$customfield_ids_condition = "AND cf.virtuemart_custom_id IN (" .
-					implode(',', $customfield_ids) . ")";
+				implode(',', $customfield_ids) . ")";
+			} else {
+				$search_customfields = false;
 			}
 
 		}
-
-		if (!class_exists('VmConfig')) {
-			require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart' . DS . 'helpers' . DS . 'config.php');
-		}
-		VmConfig::loadConfig();
 
 		$text = trim($text);
 		if (empty($text))
 			return array();
 
-		switch ($phrase) {
+
+
+		switch ($phrase)
+		{
 			case 'exact':
-				$wheres2 = array();
-				// product_sku should be exact match
-				$wheres2[] = "p.product_sku=" . $db->quote($text, TRUE);
-				$text = $db->quote("%$text%", TRUE);
-				$wheres2[] = "a.product_name LIKE $text";
-				$wheres2[] = "b.$category_field LIKE $text";
+				$text      = $db->quote('%' . $db->escape($text, true) . '%', false);
+				$wheres2   = array();
+				$wheres2[] = 'p.product_sku LIKE ' . $text;
+				$wheres2[] = 'pd.product_name LIKE ' . $text;
 				if ($search_product_s_description)
-					$wheres2[] = "a.product_s_desc LIKE $text";
+					$wheres2[] = 'pd.product_s_desc LIKE ' . $text;
 				if ($search_product_description)
-					$wheres2[] = "a.product_desc LIKE $text";
+					$wheres2[] = 'pd.product_desc LIKE ' . $text;
+//				$wheres2[] = 'pd.metadesc LIKE ' . $text;
+//				$wheres2[] = 'pd.metakey LIKE ' . $text;
 				if ($search_customfields)
 					$wheres2[] = "(cf.customfield_value LIKE $text $customfield_ids_condition)";
-				$where = '(' . implode (') OR (', $wheres2) . ')';
+				$where     = '(' . implode(') OR (', $wheres2) . ')';
 				break;
+
 			case 'all':
 			case 'any':
 			default:
-				$words = explode (' ', $text);
+				$words = explode(' ', $text);
 				$wheres = array();
-				foreach ($words as $word) {
-					$wheres2 = array();
-					// product_sku should be exact match
-					$wheres2[] = "p.product_sku=" . $db->quote($word, TRUE);
-					$word = $db->quote("%$word%", TRUE);
-					$wheres2[] = "a.product_name LIKE $word";
-					$wheres2[] = "b.$category_field LIKE $word";
-					if ($search_product_s_description)
-						$wheres2[] = "a.product_s_desc LIKE $word";
-					if ($search_product_description)
-						$wheres2[] = "a.product_desc LIKE $word";
-					if ($search_customfields)
-						$wheres2[] = "(cf.customfield_value LIKE $word $customfield_ids_condition)";
 
-					$wheres[] = implode (' OR ', $wheres2);
+				foreach ($words as $word)
+				{
+					$word      = $db->quote('%' . $db->escape($word, true) . '%', false);
+					$wheres2   = array();
+					$wheres2[] = 'LOWER(pd.product_name) LIKE LOWER(' . $word . ')';
+					$wheres2[] 	= 'LOWER(p.product_sku) LIKE '.$word;
+					if ($search_product_s_description)
+						$wheres2[] = 'LOWER(pd.product_s_desc) LIKE LOWER(' . $word . ')';
+					if ($search_product_description)
+						$wheres2[] = 'LOWER(pd.product_desc) LIKE LOWER(' . $word . ')';
+//					$wheres2[] = 'LOWER(pd.metadesc) LIKE LOWER(' . $word . ')';
+//					$wheres2[] = 'LOWER(pd.metakey) LIKE LOWER(' . $word . ')';
+					if ($search_customfields)
+						$wheres2[] = 'cf.customfield_value LIKE LOWER(' . $word . ')';
+					$wheres[]  = implode(' OR ', $wheres2);
 				}
-				$where = '(' . implode (($phrase == 'all' ? ') AND (' : ') OR ('), $wheres) . ')';
+
+				$where = '(' . implode(($phrase === 'all' ? ') AND (' : ') OR ('), $wheres) . ')';
 				break;
 		}
-		switch($ordering) {
-			case 'alpha':
-				$order = 'a.product_name ASC';
-				break;
-			case 'category':
-				$order = 'b.category_name ASC, a.product_name ASC';
+
+		switch ($ordering)
+		{
+			case 'oldest':
+				$orderBy = 'created ASC';
 				break;
 			case 'popular':
-				$order = 'a.product_name ASC';
+				$orderBy = 'hits DESC';
 				break;
+			case 'alpha':
+				$orderBy = 'pd.product_name ASC';
+				break;
+			case 'category':
+				$orderBy = 'cd.category_name ASC, a.product_name ASC';
 			case 'newest':
-				$order = 'p.created_on DESC';
+				$orderBy = 'created DESC';
 				break;
-			case 'oldest':
-				$order = 'p.created_on ASC';
+			default :
+				$orderBy = 'product_id ASC';
 				break;
-			default:
-				$order = 'a.product_name ASC';
 		}
 
+
+
 		$shopper_group_condition="";
-		$currentVMuser = VmModel::getModel('user')->getUser();
+		$currentVMuser = VmModel::getModel('user')->getCurrentUser();
 		$virtuemart_shoppergroup_ids = (array)$currentVMuser->shopper_groups;
 
 		if (is_array($virtuemart_shoppergroup_ids)) {
 			$sgrgroups = array();
 			foreach($virtuemart_shoppergroup_ids as $virtuemart_shoppergroup_id) {
-				$sgrgroups[] = 'psgr.`virtuemart_shoppergroup_id`= "' . (int)$virtuemart_shoppergroup_id . '" ';
+				$sgrgroups[] = 'psgr.virtuemart_shoppergroup_id= "' . $virtuemart_shoppergroup_id . '" ';
 			}
-			$sgrgroups[] = 'psgr.`virtuemart_shoppergroup_id` IS NULL ';
+			$sgrgroups[] = 'psgr.virtuemart_shoppergroup_id IS NULL ';
 			$shopper_group_condition = " AND ( " . implode (' OR ', $sgrgroups) . " ) ";
 		}
-
 		$uncategorized_products_condition = VmConfig::get('show_uncat_child_products') ?
-			'' : ' AND b.virtuemart_category_id > 0 ';
+		'' : ' AND c.virtuemart_category_id > 0 ';
 
-		$query = "
-				SELECT DISTINCT
-					CONCAT( a.product_name, ' (', p.product_sku, ')' ) AS title,
-					a.virtuemart_product_id,
-					a.product_s_desc AS text,
-					p.created_on as created,
-					'2' AS browsernav,
-					GROUP_CONCAT(DISTINCT b.$category_field
-						ORDER BY b.$category_field SEPARATOR ', ') as section,
-					(SELECT pc2.virtuemart_category_id
-						FROM #__virtuemart_product_categories as pc2
-						WHERE pc2.virtuemart_product_id = a.virtuemart_product_id LIMIT 1) AS cat_id
-				FROM `#__virtuemart_products_" . VmConfig::$vmlang . "` AS a
-				JOIN #__virtuemart_products AS p USING (`virtuemart_product_id`)
-				LEFT JOIN `#__virtuemart_product_categories` AS xref
-						ON xref.`virtuemart_product_id` = a.`virtuemart_product_id`
-				LEFT JOIN `#__virtuemart_categories_" . VmConfig::$vmlang . "` AS b
-						ON b.`virtuemart_category_id` = xref.`virtuemart_category_id`
-				LEFT JOIN `#__virtuemart_product_shoppergroups` as `psgr`
-						ON (`psgr`.`virtuemart_product_id`=`a`.`virtuemart_product_id`)
-				LEFT JOIN `#__virtuemart_product_customfields` AS cf
-						ON cf.virtuemart_product_id = a.virtuemart_product_id
-				LEFT JOIN `#__virtuemart_customs` AS customs
-						ON customs.virtuemart_custom_id = cf.virtuemart_customfield_id
-				WHERE
-						$where
-						AND p.published=1
-						$shopper_group_condition
-						$uncategorized_products_condition
-				GROUP BY xref.virtuemart_product_id
-				ORDER BY $order";
+
+		$query = " SELECT pd.virtuemart_product_id as product_id, " .
+		" CONCAT( pd.product_name, ' (', p.product_sku, ')' ) AS title, pd.product_s_desc AS text, p.product_sales as hits, p.created_on AS created, cd.virtuemart_category_id as cat_id" .
+		" FROM #__virtuemart_products AS p" .
+		" INNER JOIN #__virtuemart_products_" . VmConfig::$vmlang . " AS pd ON pd.virtuemart_product_id = p.virtuemart_product_id " .
+		" LEFT JOIN #__virtuemart_product_shoppergroups as psgr ON pd.virtuemart_product_id = psgr.virtuemart_product_id " .
+		" LEFT JOIN #__virtuemart_product_categories as xref ON xref.virtuemart_product_id = pd.virtuemart_product_id " .
+		" LEFT JOIN #__virtuemart_product_customfields AS cf ON pd.virtuemart_product_id = cf.virtuemart_product_id " .
+		" LEFT JOIN #__virtuemart_categories as c ON c.virtuemart_category_id = xref.virtuemart_category_id " .
+		" LEFT JOIN #__virtuemart_categories_" . VmConfig::$vmlang . " AS cd ON cd.virtuemart_category_id = c.virtuemart_category_id " .
+		" WHERE ({$where}) " .
+		" {$shopper_group_condition} " .
+		" {$uncategorized_products_condition}  " .
+		" AND p.published = 1" .
+		" GROUP BY title" .
+		" ORDER BY {$orderBy}";
+
 		$db->setQuery($query, 0, $limit);
 
-		$rows = $db->loadObjectList();
-		if ($rows) {
-			foreach ($rows as $key => $row) {
-				$rows[$key]->href = 'index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' .
-					$row->virtuemart_product_id . '&virtuemart_category_id=' . $row->cat_id;
-			}
+		$results = $db->loadObjectList();
+
+		$rs = array();
+
+
+
+		if (empty($results))
+		{
+			return $rs;
 		}
-		return $rows;
+
+		foreach ($results as $result) {
+
+
+			$c = self::getCategoryNames($result->product_id, $category_field);
+			if (!empty($result->title)) {
+				$result->title = html_entity_decode($result->title);
+			}
+
+			if (empty ($c->cat_id)) {
+				$result->href = 'index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' .$result->product_id;
+
+			} else {
+				$result->href = 'index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' .$result->product_id . '&virtuemart_category_id=' . $c->cat_id;
+
+			}
+
+			$result->section = $c->cat_name;
+			$result->browsernav = 2;
+			$rs[] = $result;
+		}
+
+		return $rs;
+	}
+
+	protected static function getCategoryNames($id, $category_field)
+	{
+		$db = JFactory::getDbo();
+		$q = $db->getQuery(true);
+		$q = "SELECT GROUP_CONCAT(cd." . $category_field . " separator ', ') as cat_name, c.virtuemart_category_id as cat_id " .
+		" FROM #__virtuemart_product_categories AS cref " .
+		" JOIN #__virtuemart_categories AS c " .
+		" ON cref.virtuemart_category_id = c.virtuemart_category_id " .
+		" JOIN #__virtuemart_categories_" . VmConfig::$vmlang . " AS cd " .
+		" ON cd.virtuemart_category_id = cref.virtuemart_category_id " .
+		" WHERE c.published = 1 AND cref.virtuemart_product_id = " . $id . " ";
+		$db->setQuery($q);
+		$category = $db->loadObject();
+		return $category;
 	}
 }

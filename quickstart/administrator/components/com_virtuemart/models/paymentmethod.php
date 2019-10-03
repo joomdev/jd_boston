@@ -13,13 +13,11 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: paymentmethod.php 9559 2017-05-29 16:15:32Z Milbo $
+* @version $Id: paymentmethod.php 10152 2019-09-19 14:40:28Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-
-if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 class VirtueMartModelPaymentmethod extends VmModel{
 
@@ -60,8 +58,7 @@ class VirtueMartModelPaymentmethod extends VmModel{
 			$this->_cache[$this->_id] = $this->getTable('paymentmethods');
 			$this->_cache[$this->_id]->load((int)$this->_id);
 
-			if(empty($this->_cache->virtuemart_vendor_id)){
-				//if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
+			if(empty($this->_cache[$this->_id]->virtuemart_vendor_id)){
 				$this->_cache[$this->_id]->virtuemart_vendor_id = vmAccess::getVendorId('paymentmethod.edit');
 			}
 
@@ -77,9 +74,6 @@ class VirtueMartModelPaymentmethod extends VmModel{
 
 			//We still need this, because the table is already loaded, but the keys are set later
 			if($this->_cache[$this->_id]->getCryptedFields()){
-				if(!class_exists('vmCrypt')){
-					require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
-				}
 
 				if(isset($this->_cache[$this->_id]->modified_on)){
 					$date = JFactory::getDate($this->_cache[$this->_id]->modified_on);
@@ -95,10 +89,7 @@ class VirtueMartModelPaymentmethod extends VmModel{
 				}
 			}
 
-			$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_paymentmethod_shoppergroups WHERE `virtuemart_paymentmethod_id` = "'.$this->_id.'"';
-			$this->_db->setQuery($q);
-			$this->_cache[$this->_id]->virtuemart_shoppergroup_ids = $this->_db->loadColumn();
-			if(empty($this->_cache[$this->_id]->virtuemart_shoppergroup_ids)) $this->_cache[$this->_id]->virtuemart_shoppergroup_ids = 0;
+			$this->_cache[$this->_id]->virtuemart_shoppergroup_ids = $this->getPaymentShopperGrps($this->_id);
 
 		}
 
@@ -135,20 +126,27 @@ class VirtueMartModelPaymentmethod extends VmModel{
 
 		if(isset($datas)){
 
-			if(!class_exists('shopfunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 			foreach ($datas as &$data){
 				/* Add the paymentmethod shoppergroups */
-				$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_paymentmethod_shoppergroups WHERE `virtuemart_paymentmethod_id` = "'.$data->virtuemart_paymentmethod_id.'"';
-				$db = JFactory::getDBO();
-				$db->setQuery($q);
-				$data->virtuemart_shoppergroup_ids = $db->loadColumn();
-
+				$data->virtuemart_shoppergroup_ids = $this->getPaymentShopperGrps($data->virtuemart_paymentmethod_id);
 			}
 
 		}
 		return $datas;
 	}
 
+	public function getPaymentShopperGrps($id){
+
+		static $cache = array();
+		if(!isset($cache[$id])){
+			$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_paymentmethod_shoppergroups WHERE `virtuemart_paymentmethod_id` = "'.(int)$id.'"';
+			$db = JFactory::getDBO();
+			$db->setQuery($q);
+			$cache[$id] = $db->loadColumn();
+			if(empty($cache[$id])) $cache[$id] = array();
+		}
+		return $cache[$id];
+	}
 
 	/**
 	 * Bind the post data to the paymentmethod tables and save it
@@ -177,8 +175,7 @@ class VirtueMartModelPaymentmethod extends VmModel{
 		}
 
 	  	if(empty($data['virtuemart_vendor_id'])){
-	  	   	if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
-	   		$data['virtuemart_vendor_id'] = VirtueMartModelVendor::getLoggedVendor();
+	   		$data['virtuemart_vendor_id'] = vmAccess::isSuperVendor();
 	  	}
 
 		$tCon = array('min_amount','max_amount','cost_per_transaction','cost_min_transaction','cost_percent_total');
@@ -213,11 +210,11 @@ class VirtueMartModelPaymentmethod extends VmModel{
 		$xrefTable = $this->getTable('paymentmethod_shoppergroups');
 		$xrefTable->bindChecknStore($data);
 
-		if (!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
-			JPluginHelper::importPlugin('vmpayment');
-			//Add a hook here for other payment methods, checking the data of the choosed plugin
-			$dispatcher = JDispatcher::getInstance();
-			$retValues = $dispatcher->trigger('plgVmOnStoreInstallPaymentPluginTable', array(  $data['payment_jplugin_id']));
+
+		JPluginHelper::importPlugin('vmpayment');
+		//Add a hook here for other payment methods, checking the data of the choosed plugin
+		$dispatcher = JDispatcher::getInstance();
+		$retValues = $dispatcher->trigger('plgVmOnStoreInstallPaymentPluginTable', array(  $data['payment_jplugin_id']));
 
 		return $table->virtuemart_paymentmethod_id;
 	}
@@ -262,7 +259,7 @@ class VirtueMartModelPaymentmethod extends VmModel{
 		$payment->virtuemart_paymentmethod_id = 0;
 		$payment->payment_name = $payment->payment_name.' Copy';
 		if (!$clone = $this->store($payment)) {
-			JError::raiseError(500, 'createClone '. $payment->getError() );
+			vmError('createClone '. $payment->getError(),'createClone '. $payment->getError() );
 		}
 		return $clone;
 	}

@@ -69,9 +69,9 @@ class N2SSSlideComponentCol extends N2SSSlideComponent {
             $this->addLocalStyle('normal', 'border', $this->getBorderCSS($borderWidth, $borderStyle, $borderColor));
         }
 
-        $borderWidthHover = $this->data->get('borderwidth');
-        $borderStyleHover = $this->data->get('borderstyle');
-        $borderColorHover = $this->data->get('bordercolor');
+        $borderWidthHover = $this->data->get('borderwidth-hover');
+        $borderStyleHover = $this->data->get('borderstyle-hover');
+        $borderColorHover = $this->data->get('bordercolor-hover');
         $isHoverDifferent = false;
         if (!empty($borderWidthHover) || $borderWidthHover != $borderWidth) {
             $isHoverDifferent = true;
@@ -170,19 +170,27 @@ class N2SSSlideComponentCol extends N2SSSlideComponent {
 
         N2Loader::import('libraries.link.link');
 
-        list($link, $target) = array_pad((array)N2Parse::parse($this->data->get('link', '#|*|')), 2, '');
+        $linkV1 = $this->data->get('link', '');
+        if (!empty($linkV1)) {
+            list($link, $target) = array_pad((array)N2Parse::parse($linkV1), 2, '');
+            $this->data->un_set('link');
+            $this->data->set('href', $link);
+            $this->data->set('href-target', $target);
+        }
+
+        $link = $this->data->get('href');
 
         if (($link != '#' && !empty($link))) {
+            $target = $this->data->get('href-target');
 
             $link                          = N2LinkParser::parse($this->owner->fill($link), $this->attributes);
             $this->attributes['data-href'] = $link;
 
-            if (!isset($this->attributes['onclick'])) {
-                if (empty($target) || $target == '_self') {
-                    $this->attributes['onclick'] = 'window.location=this.getAttribute("data-href");';
-                } else {
-                    $this->attributes['onclick'] = 'var w=window.open();w.opener=null;w.location=this.getAttribute("data-href");';
+            if (!isset($this->attributes['onclick']) && !isset($this->attributes['n2-lightbox'])) {
+                if (!empty($target) && $target != '_self') {
+                    $this->attributes['data-target'] = $target;
                 }
+                $this->attributes['onclick'] = "n2ss.openUrl(event);";
             }
             $this->attributes['style'] .= 'cursor:pointer;';
 
@@ -214,29 +222,38 @@ class N2SSSlideComponentCol extends N2SSSlideComponent {
 
     protected function admin() {
 
+        $linkV1 = $this->data->get('link', '');
+        if (!empty($linkV1)) {
+            list($link, $target) = array_pad((array)N2Parse::parse($linkV1), 2, '');
+            $this->data->un_set('link');
+            $this->data->set('href', $link);
+            $this->data->set('href-target', $target);
+        }
+
+        $this->createProperty('href', '');
+        $this->createProperty('href-target', '_self');
+
         $this->createProperty('colwidth');
-        $this->createProperty('link', '#|*|_self');
 
         $this->createProperty('verticalalign', 'flex-start');
 
         $this->createProperty('bgimage', '');
-        $this->createProperty('bgimagex', '50');
-        $this->createProperty('bgimagey', '50');
-        $this->createProperty('bgimageparallax', '0');
+        $this->createProperty('bgimagex', 50);
+        $this->createProperty('bgimagey', 50);
         $this->createColorProperty('bgcolor', '00000000');
         $this->createProperty('bgcolorgradient', 'off');
         $this->createColorProperty('bgcolorgradientend', '00000000');
-        $this->createColorProperty('bgcolor-hover', '00000000');
-        $this->createProperty('bgcolorgradient-hover', 'off');
-        $this->createColorProperty('bgcolorgradientend-hover', '00000000');
+        $this->createColorProperty('bgcolor-hover');
+        $this->createProperty('bgcolorgradient-hover');
+        $this->createColorProperty('bgcolorgradientend-hover');
 
         $this->createProperty('borderradius', '0');
         $this->createProperty('borderradius-hover');
 
         $this->createProperty('boxshadow', '0|*|0|*|0|*|0|*|00000080');
         $this->createProperty('boxshadow-hover');
-
-        $this->createProperty('borderwidth', '1');
+        
+        $this->createProperty('borderwidth', '1|*|1|*|1|*|1');
         $this->createProperty('borderstyle', 'none');
         $this->createProperty('bordercolor', 'FFFFFFFF');
         $this->createProperty('borderwidth-hover');

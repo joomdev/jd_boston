@@ -331,6 +331,54 @@ span.addtocart-button input.addtocart-button-disabled {
   text-align: center;
 }
 
+.vm-btn, .vm-btn:link, .vm-btn:active, .vm-btn:visited {
+    display: inline-block;
+    width: 192px;
+    padding: 4px 8px;
+    font-size: 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    line-height: 1.5;
+    text-align: center;
+    background-color: #eee;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.vm-btn:hover {
+    background-color: #0077B3;
+    color: #fff;
+    border: 1px solid #ccc;
+}
+
+.vm-btn.vm-btn-primary {
+    background-color: #0077B3;
+    color: #fff;
+}
+
+.vm-btn.vm-btn-primary:hover {
+    background-color: #fff;
+    color: #0077B3;
+}
+
+.vm-btn.vm-btn-secondary {
+    background-color: #eee;
+    color: #333;
+}
+
+.vm-btn.vm-btn-secondary:hover {
+    background-color: #ccc;
+    color: #111;
+}
+
+.vm-btn.vm-btn-sm {
+    padding: 2px 4px;
+}
+
+.vm-btn.vm-btn-lg {
+    padding: 7px 12px;
+}
+
 .category-view h4{
   margin: 0;
   padding: 0;
@@ -977,6 +1025,12 @@ span.addtocart-button input.addtocart-button:hover, span.addtocart-button input.
 }
 
 .control-buttons #reg_text {
+  float: left;
+  margin: 0 20px 0 0;
+  text-align: left;
+}
+
+.control-buttons .reg_text {
   float: left;
   margin: 0 20px 0 0;
   text-align: left;

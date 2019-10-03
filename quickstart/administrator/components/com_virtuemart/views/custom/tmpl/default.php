@@ -1,4 +1,5 @@
 <?php
+defined ('_JEXEC') or die();
 /**
 *
 * Description
@@ -59,11 +60,11 @@ $customs = $this->customs->items;
 		<th><?php echo vmText::_('COM_VIRTUEMART_CUSTOM_ADMIN_ONLY'); ?></th>
 		<th><?php echo vmText::_('COM_VIRTUEMART_CUSTOM_IS_HIDDEN'); ?></th>
 		<?php if(!empty($this->custom_parent_id)){
-			echo '<th style="min-width:80px;width:8%;align:center;" >'.$this->sort('ordering');
+			echo '<th style="min-width:80px;width:8%;text-align:center;" >'.$this->sort('ordering');
 			echo JHtml::_('grid.order',  $customs ).'</th>';
 		}
 		?>
-		<th style="max-width:80px;align:center;" ><?php echo vmText::_('COM_VIRTUEMART_PUBLISHED'); ?></th>
+		<th style="max-width:80px;text-align:center;" ><?php echo vmText::_('COM_VIRTUEMART_PUBLISHED'); ?></th>
 		  <th min-width="8px"><?php echo $this->sort('virtuemart_custom_id', 'COM_VIRTUEMART_ID')  ?></th>
 	</tr>
 	</thead>
@@ -90,7 +91,7 @@ $customs = $this->customs->items;
 				?>
 				<td><?php
 
-                            $lang = JFactory::getLanguage();
+                            $lang = vmLanguage::getLanguage();
                             $text = $lang->hasKey($custom->group_title) ? vmText::_($custom->group_title) : $custom->group_title;
 
                             echo JHtml::_('link', JRoute::_($link,FALSE),$text, array('title' => vmText::_('COM_VIRTUEMART_FILTER_BY').' '.htmlentities($text))); ?></td>
@@ -126,7 +127,7 @@ $customs = $this->customs->items;
 					?>
 
 
-				<td style="align:center;" ><?php echo $published; ?></td>
+				<td style="text-align:center;" ><?php echo $published; ?></td>
 				<td><?php echo $custom->virtuemart_custom_id; ?></td>
 			</tr>
 		<?php

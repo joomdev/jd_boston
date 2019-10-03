@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension version="2.5" type="plugin" group="vmpayment" method="upgrade">
+    <name>VM Payment - eway</name>
+    <creationDate>September 24 2019</creationDate>
+    <author>The VirtueMart Development Team</author>
+    <authorUrl>https://virtuemart.net</authorUrl>
+    <copyright>Copyright (C) 2018 - 2019 Virtuemart Team. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <!--version>3.6.2</version-->
+    <version>3.6.2</version>
+    <description><![CDATA[<a href="https://www.eway.com.au/" target="_blank">eway</a> ]]>
+    </description>
+
+    <files>
+        <filename plugin="eway">eway.php</filename>
+        <folder>language</folder>
+        <folder>assets</folder>
+        <folder>fields</folder>
+        <folder>helpers</folder>
+        <folder>language</folder>
+        <folder>library</folder>
+        <folder>tmpl</folder>
+    </files>
+
+
+    <vmconfig>
+        <fields name="params">
+            <fieldset name="fields" addfieldpath="/administrator/components/com_virtuemart/fields"/>
+
+
+            <fieldset name="eway" addfieldpath="/plugins/vmpayment/eway/fields">
+                <field name="checkConditionsCore" value="1" default="1" type="hidden"/>
+                <field type="note"
+                       label="VMPAYMENT_EWAY_SSL_REQUIRED"
+                       heading="h4"
+                       class="warning"
+                />
+                <field type="geteway" level="level1"/>
+                <!-- EWAY_ACCOUNT_PARAMS -->
+                <field type="note"
+                       label="VMPAYMENT_EWAY_AUTHENTICATION_PARAMS"
+                       heading="h4"
+                />
+                <field name="sandbox" type="list" default="1" label="VMPAYMENT_EWAY_SANDBOX"
+                       description="VMPAYMENT_EWAY_SANDBOX_DESC">
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
+                <field type="note"
+                       label="VMPAYMENT_EWAY_SETUP_SANDBOX"
+                       heading="h5"
+                       class="showOnSandbox"
+                />
+
+
+                <field type="text" name="APIKey"
+                       size="120"
+                       label="VMPAYMENT_EWAY_APIKEY"
+                       default=""
+                       required="true"
+                       description="VMPAYMENT_EWAY_APIKEY_DESC"/>
+
+                <field type="password" name="APIPassword"
+                       size="50"
+                       label="VMPAYMENT_EWAY_APIPASSWORD"
+                       default=""
+                       required="true"
+                       description="VMPAYMENT_EWAY_APIPASSWORD_DESC"/>
+
+                <field type="note"
+                       label="VMPAYMENT_EWAY_PARAMS"
+                       heading="h4"
+                />
+
+                <field type="list" name="TransactionType" default="1" label="VMPAYMENT_EWAY_TRANSACTION_TYPE"
+                       description="VMPAYMENT_EWAY_TRANSACTION_TYPE_DESC">
+                    <option value="Purchase">VMPAYMENT_EWAY_TRANSACTION_TYPE_PURCHASE</option>
+                    <!--option value="Recurring">VMPAYMENT_EWAY_TRANSACTION_TYPE_RECURRING</option-->
+                </field>
+
+                <field type="list" name="Pre_Auth" default="Capture" label="VMPAYMENT_EWAY_PAYMENT_ACTION"
+                       description="VMPAYMENT_EWAY_PAYMENT_ACTION_DESC">
+                    <option value="Authorisation">VMPAYMENT_EWAY_PAYMENT_ACTION_PREAUTH</option>
+                    <option value="Capture">VMPAYMENT_EWAY_PAYMENT_ACTION_CAPTURE</option>
+                </field>
+                <field type="note"
+                       label="VMPAYMENT_EWAY_PAYMENT_ACTION_PREAUTH_NOTE"
+                       heading="h5"
+                       class="showOnPre_Auth"
+                />
+
+
+                <field type="list" name="payment_type" default="1" label="VMPAYMENT_EWAY_PAYMENT_TYPE"
+                       description="VMPAYMENT_EWAY_PAYMENT_TYPE_DESC">
+                    <option value="Credit Card">VMPAYMENT_EWAY_PAYMENT_TYPE_CREDIT_CARD</option>
+                    <option value="PayPal">VMPAYMENT_EWAY_PAYMENT_TYPE_PAYPAL</option>
+                    <option value="MasterPass">VMPAYMENT_EWAY_PAYMENT_TYPE_MASTERPASS</option>
+                    <option value="VisaCheckout">VMPAYMENT_EWAY_PAYMENT_TYPE_VISA_CHECKOUT</option>
+                </field>
+                <field type="note"
+                       label="VMPAYMENT_EWAY_PAYMENT_TYPE_PAYPAL_NOTE"
+                       heading="h5"
+                       class="showOnPayPal"
+                />
+                <field type="note"
+                       label="VMPAYMENT_EWAY_PAYMENT_TYPE_MASTERPASS_NOTE"
+                       heading="h5"
+                       class="showOnMasterpass"
+                />
+                <field type="note"
+                       label="VMPAYMENT_EWAY_PAYMENT_TYPE_VISACHECKOUT_NOTE"
+                       heading="h5"
+                       class="showOnVisaCheckout"
+                />
+
+                <!-- BY DEFAULT EWAY currency= vendor currency -->
+                <field name="payment_currency" type="vmacceptedcurrency" default="" label="VMPAYMENT_EWAY_CURRENCY"
+                       description="VMPAYMENT_EWAY_CURRENCY_DESC"/>
+
+                <!-- VMPAYMENT_EWAY_TOKEN_PAYMENT_PARAMS -->
+                <field type="note"
+                       label="VMPAYMENT_EWAY_SAVE_CARD_PARAMS"
+                       heading="h4"
+                       class="showOnCreditCard"
+                />
+                <field type="list" name="save_card_enabled"
+                       default="0"
+                       label="VMPAYMENT_EWAY_SAVE_CARD_ENABLED"
+                       description="VMPAYMENT_EWAY_SAVE_CARD_ENABLED_DESC"
+                       class="showOnCreditCard showOnCapture"
+                >
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
+                <field type="note"
+                       label="VMPAYMENT_EWAY_SAVE_CARD_ENABLED_NOTE"
+                       class="showOnSaveCard"
+                />
+
+                <field type="note"
+                       name="sandbox_order_status_params"
+                       label="VMPAYMENT_EWAY_VIRTUEMART_PARAMS"
+                       heading="h4"
+                />
+
+
+                <field name="status_success"
+                       type="vmorderstate"
+                       scope="com_virtuemart"
+                       default="C"
+                       label="VMPAYMENT_EWAY_STATUS_SUCCESS"
+                       description="VMPAYMENT_EWAY_STATUS_SUCCESS_DESC"
+                       class="showOnCapture"
+                />
+
+                <field name="status_authorisation"
+                       type="vmorderstate"
+                       scope="com_virtuemart"
+                       default="U"
+                       label="VMPAYMENT_EWAY_STATUS_AUTHORISATION"
+                       description="VMPAYMENT_EWAY_STATUS_AUTHORISATION_DESC"
+                       class="showOnPre_Auth"
+                />
+                <field type="list"
+                       name="status_capture_enabled"
+                       default="1"
+                       label="VMPAYMENT_EWAY_CAPTURE_ENABLED"
+                       description="VMPAYMENT_EWAY_CAPTURE_ENABLED_DESC"
+                       class="showOnPre_Auth"
+                >
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
+                <field name="status_capture"
+                       type="vmorderstate"
+                       scope="com_virtuemart"
+                       default="S"
+                       label="VMPAYMENT_EWAY_STATUS_CAPTURE"
+                       description="VMPAYMENT_EWAY_STATUS_CAPTURE_DESC"
+                       class="showOnCaptureEnabledPre_Auth"
+                />
+
+                <field type="list"
+                       name="status_canceled_enabled"
+                       default="1"
+                       label="VMPAYMENT_EWAY_CANCELED_ENABLED"
+                       description="VMPAYMENT_EWAY_canceled_ENABLED_DESC"
+                       class="showOnPre_Auth"
+                >
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
+                <field name="status_canceled"
+                       type="vmorderstate"
+                       scope="com_virtuemart"
+                       default="X"
+                       label="VMPAYMENT_EWAY_STATUS_CANCEL_AUTHORISATION"
+                       description="VMPAYMENT_EWAY_STATUS_CANCEL_AUTHORISATION_DESC"
+                       class="showOnCanceledEnablePre_Auth"
+                />
+
+                <field type="list"
+                       name="status_refund_enabled"
+                       default="1"
+                       label="VMPAYMENT_EWAY_REFUND_ENABLED"
+                       description="VMPAYMENT_EWAY_REFUND_ENABLED_DESC">
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
+                <field name="status_refund"
+                       type="vmorderstate"
+                       scope="com_virtuemart"
+                       default="R"
+                       label="VMPAYMENT_EWAY_STATUS_REFUND"
+                       description="VMPAYMENT_EWAY_STATUS_REFUND_DESC"
+                       class="showOnRefundEnabled"
+                />
+                <field type="note"
+                       label="VMPAYMENT_EWAY_STATUS_REFUND_NOTE"
+                       heading="h5"
+                       class="showOnRefundEnabled"
+                />
+
+
+                <field type="note"
+                       label="VMPAYMENT_EWAY_RESTRICTIONS_PARAMS"
+                       heading="h4"/>
+                <!--field name="countries"
+                       type="vmcountries"
+                       scope="com_virtuemart"
+                       default=""
+                       label="VMPAYMENT_EWAY_COUNTRIES"
+                       description="VMPAYMENT_EWAY_COUNTRIES_DESC"/>
+                <field name="min_amount"
+                       type="text"
+                       label="VMPAYMENT_EWAY_MIN_AMOUNT"
+                       description="VMPAYMENT_EWAY_MIN_AMOUNT_DESC"/>
+                <field name="max_amount"
+                       type="text"
+                       label="VMPAYMENT_EWAY_MAX_AMOUNT"
+                       description="VMPAYMENT_EWAY_MAX_AMOUNT_DESC"/-->
+                <field name="cost_per_transaction"
+                       type="text"
+                       label="VMPAYMENT_EWAY_COST_PER_TRANSACTION"
+                       description="VMPAYMENT_EWAY_COST_PER_TRANSACTION_DESC"/>
+                <field name="cost_percent_total"
+                       type="text"
+                       label="VMPAYMENT_EWAY_COST_PERCENT_TOTAL"
+                       description="VMPAYMENT_EWAY_COST_PERCENT_TOTAL_DESC"/>
+                <field name="tax_id"
+                       type="vmtaxes"
+                       scope="com_virtuemart" label="VMPAYMENT_EWAY_TAX"
+                       description="VMPAYMENT_EWAY_TAX_DESC"/>
+
+                <field type="note"
+                       label="VMPAYMENT_EWAY_TEMPLATE_PARAMS"
+                       heading="h4"/>
+                <field name="payment_logos"
+                       type="vmfiles"
+                       label="VMPAYMENT_EWAY_LOGOS"
+                       description="VMPAYMENT_EWAY_LOGOS_DESC"
+                       directory="/images/stories/virtuemart/payment"
+                       hide_none="0"
+                       hide_default="1"
+                />
+
+                <field type="note" label="VMPAYMENT_EWAY_DEBUG_PARAMS" heading="h4"/>
+                <field name="debug" type="radio" default="0" label="VMPAYMENT_EWAY_DEBUG"
+                       description="VMPAYMENT_EWAY_DEBUG_DESC">
+                    <option value="0">COM_VIRTUEMART_NO</option>
+                    <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
+            </fieldset>
+        </fields>
+    </vmconfig>
+    <updateservers>
+        <!-- Note: No spaces or linebreaks allowed between the server tags -->
+        <server type="extension" name="VirtueMart plg_vmpayment_eway Update Site">
+            <![CDATA[http://virtuemart.net/releases/vm3/plg_vmpayment_eway_update.xml]]></server>
+    </updateservers>
+</extension>

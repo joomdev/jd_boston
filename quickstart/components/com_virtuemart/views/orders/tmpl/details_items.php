@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: details_items.php 9439 2017-01-29 21:00:25Z Milbo $
+* @version $Id: details_items.php 10033 2019-03-26 13:31:15Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -53,7 +53,6 @@ foreach($this->orderdetails['items'] as $item) {
 		<td style="text-align: left;" colspan="2" >
 			<div><a href="<?php echo $_link; ?>"><?php echo $item->order_item_name; ?></a></div>
 			<?php
-				if(!class_exists('VirtueMartModelCustomfields'))require(VMPATH_ADMIN.DS.'models'.DS.'customfields.php');
 				$product_attribute = VirtueMartModelCustomfields::CustomsFieldOrderDisplay($item,'FE');
 				echo $product_attribute;
 			?>
@@ -181,4 +180,108 @@ foreach($this->orderdetails['calc_rules'] as $rule){
 		<td style="text-align: right;"><strong><?php echo $this->currency->priceDisplay($this->orderdetails['details']['BT']->order_total, $this->user_currency_id); ?></strong></td>
 	</tr>
 
+        <tr style="border-top-style:double">
+            <td align="left" colspan="3" style="padding-right: 5px;"><strong><?php echo vmText::_('COM_VM_ORDER_BALANCE') ?></strong></td>
+
+        <?php
+		$this->orderbt = $this->orderdetails['details']['BT'];
+        $tp = '';
+        $detail=false;
+        if (empty($this->orderbt->paid) ) {
+            $t = vmText::_('COM_VM_ORDER_UNPAID');
+        } else if($this->orderbt->paid == $this->orderbt->toPay){
+            $t =  vmText::_('COM_VM_ORDER_PAID');
+        } else if($this->orderbt->paid < $this->orderbt->toPay){
+            $t =  vmText::sprintf('COM_VM_ORDER_PARTIAL_PAID',$this->orderbt->paid);
+            $detail=true;
+        } else {
+            $t =  vmText::sprintf('COM_VM_ORDER_CREDIT_BALANCE',$this->orderbt->paid);
+            $detail=true;
+        }
+        $trOpen = true;
+        $colspan = '5';
+        if(empty($this->toRefund) and !$detail){
+            echo '<td align="left" colspan="3" style="padding-right: 5px;">'.$t.'</td>';
+            //echo '<td><input class="orderEdit" type="text" size="8" name="item_id[paid]" value="'.$this->orderbt->paid.'"/></td>';
+            echo '</tr>';
+            $trOpen = false;
+        }
+
+        if(!empty($this->toRefund)){
+            echo '<td colspan="5">'.vmText::_('COM_VM_ORDER_PRODUCTS_TO_REFUND').'</td>';
+            if($trOpen) {
+                echo '</tr>';
+                $trOpen = false;
+            }
+            foreach ($this->toRefund as $index => $item) {
+
+                $tmpl = "refund-tmpl-" . $index;
+
+                echo '<tr id="'.$tmpl.'" class="order-item">';
+                echo '<td colspan="3"></td>';
+                echo '<td colspan="2">'.$item->order_item_name.'</td>';
+                echo '<td colspan="1">'.$item->order_item_sku.'</td>';
+                echo '<td style="text-align: right;" colspan="1">'.$this->currency->priceDisplay($item->product_tax).'</td>';
+                echo '<td colspan="1"></td>';
+                echo '<td style="text-align: right;" colspan="1">'.$this->currency->priceDisplay($item->product_subtotal_with_tax).'</td>';
+                echo '</tr>';
+                $this->orderbt->order_total -= $item->product_subtotal_with_tax;
+                $colspan = '5';
+            }
+        } else {
+            $colspan = '2';
+        }
+
+        if(!empty($this->toRefund) or $detail){
+
+            if($this->orderbt->paid < $this->orderbt->toPay){
+
+                if (empty($this->orderbt->paid)){
+                    $t =  vmText::_('COM_VM_ORDER_UNPAID');
+                } else {
+                    $t =  vmText::_('COM_VM_ORDER_PARTIAL_PAID');
+                }
+                $l = vmText::_('COM_VM_ORDER_OUTSTANDING_AMOUNT');
+
+            } else {
+                $t =  vmText::_('COM_VM_ORDER_PAID');
+                $l = vmText::_('COM_VM_ORDER_BALANCE');
+            }
+
+            $tp .= '';
+            if($this->orderbt->toPay!=$this->orderbt->order_total){
+                if(!$trOpen){
+                    $tp .= '<tr>';
+                    $trOpen= true;
+                }
+                $tp .= '<td colspan="'.$colspan.'"></td>';
+                $tp .= '<td style="text-align: right;" colspan="3" style="padding-right: 5px;">'.vmText::_('COM_VM_ORDER_NEW_TOTAL').'</td>';
+                $tp .= '<td style="text-align: right;">'.$this->currency->priceDisplay($this->orderbt->toPay).'</td>';
+
+                if($trOpen) {
+                    $tp .= '</tr>';
+                    $trOpen = false;
+                }
+            }
+
+            if(!$trOpen){
+                $tp .= '<tr>';
+                $trOpen= true;
+            }
+            $tp .= '<td colspan="'.$colspan.'"></td>';
+            $tp .= '<td style="text-align: right;" colspan="3" style="padding-right: 5px;">'.$t.'</td>';
+            $tp .= '<td style="text-align: right;" >'.$this->currency->priceDisplay($this->orderbt->paid).'</td>';
+            $tp .= '</tr>';
+
+            $tp .= '<tr>';
+            $tp .= '<td colspan="5"></td>';
+            $tp .= '<td style="text-align: right;" colspan="3" style="padding-right: 5px;">'.$l.'</td>';
+            $tp .= '<td style="text-align: right;" >'.$this->currency->priceDisplay(abs($this->orderbt->order_total - $this->orderbt->paid) ).'</td>';
+            echo $tp;
+        }
+        if($trOpen) {
+            echo '</tr>';
+            $trOpen = false;
+        }
+        ?>
 </table>

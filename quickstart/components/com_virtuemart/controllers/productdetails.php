@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: productdetails.php 9413 2017-01-04 17:20:58Z Milbo $
+ * @version $Id: productdetails.php 10020 2019-02-28 21:37:19Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -71,9 +71,6 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		}
 
 		$view = $this->getView ('askquestion', 'html');
-		if (!class_exists ('shopFunctionsF')) {
-			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
-		}
 
 		$vars = array();
 		$min = VmConfig::get ('asks_minimum_comment_length', 50) + 1;
@@ -146,8 +143,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		$VendorEmail = $vendorModel->getVendorEmail ($vars['product']->virtuemart_vendor_id);
 
 		JPluginHelper::importPlugin ('system');
-		JPluginHelper::importPlugin ('vmextended');
-		JPluginHelper::importPlugin ('userfield');
+		VmConfig::importVMPlugins('userfield');
 		$dispatcher = JDispatcher::getInstance ();
 		$dispatcher->trigger ('plgVmOnAskQuestion', array(&$VendorEmail, &$vars, &$view));
 
@@ -251,9 +247,6 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 			if ($return !== FALSE) {
 				$msg = vmText::sprintf ('COM_VIRTUEMART_STRING_SAVED', vmText::_ ('COM_VIRTUEMART_REVIEW'));
 
-				if (!class_exists ('ShopFunctionsF')) {
-					require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
-				}
 				$data = vRequest::getPost();
 				shopFunctionsF::sendRatingEmailToVendor($data);
 			}
@@ -300,9 +293,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 			jexit ();
 		}
 		$priceFormated = array();
-		if (!class_exists ('CurrencyDisplay')) {
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
-		}
+
 		$currency = CurrencyDisplay::getInstance ();
 
 		foreach (CurrencyDisplay::$priceNames as $name) {

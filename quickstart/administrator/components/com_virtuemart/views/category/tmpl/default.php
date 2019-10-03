@@ -13,17 +13,13 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 9592 2017-06-28 18:04:13Z Milbo $
+* @version $Id: default.php 9955 2018-10-01 13:06:24Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if (!class_exists ('shopFunctionsF'))
-	require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
-
 AdminUIHelper::startAdminArea($this);
-
 ?>
 
 <form action="index.php?option=com_virtuemart&view=category" method="post" name="adminForm" id="adminForm">
@@ -85,11 +81,11 @@ AdminUIHelper::startAdminArea($this);
 			<th align="left" width="65%">
 				<?php echo $this->sort('category_description', 'COM_VIRTUEMART_DESCRIPTION') ; ?>
 			</th>
-			<th style="min-width:80px;width:8%;align:center;">
+			<th style="min-width:80px;width:8%;text-align:center;">
 				<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_S'); ?>
 			</th>
 
-			<th style="min-width:80px;width:8%;align:center;">
+			<th style="min-width:80px;width:8%;text-align:center;">
 				<?php echo $this->sort( 'c.ordering' , 'COM_VIRTUEMART_ORDERING') ?>
 				<?php echo JHtml::_('grid.order', $this->categories, 'filesave.png', 'saveOrder' ); ?>
 			</th>
@@ -160,7 +156,7 @@ AdminUIHelper::startAdminArea($this);
 					<?php
 					/*$descr = htmlspecialchars_decode($cat->category_description);
 					echo shopFunctionsF::limitStringByWord(JFilterOutput::cleanText($descr),200);*/
-					echo shopFunctionsF::limitStringByWord($cat->category_description,200); ?>
+					echo shopFunctionsF::limitStringByWord(strip_tags($cat->category_description),200); ?>
 				</td>
 				<td>
 					<?php echo  $this->categories[$i]->productcount;//ShopFunctions::countProductsByCategory($row->virtuemart_category_id);?>

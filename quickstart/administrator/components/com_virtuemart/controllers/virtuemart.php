@@ -18,8 +18,6 @@ defined('_JEXEC') or die('Restricted access');
 * @version $Id$
 */
 
-if (!class_exists( 'VmController' )) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
-
 /**
  * VirtueMart default administrator controller
  *
@@ -71,33 +69,36 @@ class VirtuemartControllerVirtuemart extends VmController {
 
 		if(!empty($host) AND !empty($ackey)) {
 
-			$link = '//extensions.virtuemart.net/index.php?option=com_virtuemart&view=plugin&name=istraxx_download_byhost&ackey='.base64_encode( $ackey ).'&host='.$host.'&vmlang='.VmConfig::$vmlangTag.'&sku=VMMS&vmver='.vmVersion::$RELEASE;
+			$link = 'https://extensions.virtuemart.net/index.php?option=com_virtuemart&view=plugin&name=istraxx_download_byhost&ackey='.base64_encode( $ackey ).'&host='.$host.'&vmlang='.VmConfig::$vmlangTag.'&sku=VMMS&vmver='.vmVersion::$RELEASE;
 
-			$opts = array(
-				'https'=>array(
-				'method'=>"GET"
-				/*'header'=>"Accept-language: en\r\n" .
-				"Cookie: foo=bar\r\n"*/
-				)
-			);
-			$context = stream_context_create($opts);
+			try {
+				$resObj = JHttpFactory::getHttp(null, array('curl', 'stream'))->get($link);
+				$request = $resObj->body;
+			}
+			catch (RuntimeException $e) {
+				$d = new stdClass();
+				$d->res = 'No connection';
+				$d->html = '<div style="color:red;font-size: 30px;line-height: 32px;">Your SERVER does not support allow_url_fopen, nor cUrl! Registration process stopped. Please enable on your server either allow_url_fopen or cUrl. </div>';
+				$request = json_encode($d);
 
-			$request = file_get_contents('https:'.$link, false, $context);
+			}
 
 			if(!empty($request)) {
-				if(preg_match('@(error|access denied)@i', $request)) {
-					//return false;
-				} else {
-					$data = json_decode($request);
+				/*if(preg_match('@(error|access denied)@i', $request)) {
+					return false;
+				} else {*/
+					$datat = json_decode($request);
 
-					if(empty($data->res) or empty($data->html)){
+					if(empty($datat->res) or empty($datat->html)){
+					VmConfig::$echoDebug = 1;
 						vmdebug('Data is empty',$data);
-						$data = new stdClass();
+						//$data = new stdClass();
 						$data->msg = 'Error getting validation file';
 					} else {
+						$data = $datat;
 						$data = $this->nag($data);
 					}
-				}
+				//}
 			}
 		}
 		echo vmJsApi::safe_json_encode($data);
@@ -110,16 +111,14 @@ class VirtuemartControllerVirtuemart extends VmController {
 
 			if(!empty($data->html)){
 
-				if(!class_exists('vmCrypt'))
-					require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
-				$safePath = vmCrypt::getEncryptSafepath();
+				$safePath = shopfunctions::getSafePathFor(1,'regcache');
 				$safePath .= DS.'vmm.ini';
 				$date = JFactory::getDate();
 				$today = $date->toUnix();
 
 				$content = ';<?php die(); */
 					[keys]
-					key = "'.VmConfig::get('member_access_number').'"
+					key = "'.VmConfig::get('member_access_number','').'"
 					unixtime = "'.$today.'"
 					res = "'.vRequest::filter($data->res,FILTER_SANITIZE_STRING,FILTER_FLAG_STRIP_LOW).'"
 					html = "'.htmlspecialchars($data->html).'"

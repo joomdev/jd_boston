@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: product_edit_price.php 9413 2017-01-04 17:20:58Z Milbo $
+ * @version $Id: product_edit_price.php 9821 2018-04-16 18:04:39Z Milbo $
  * http://www.seomoves.org/blog/web-design-development/dynotable-a-jquery-plugin-by-bob-tantlinger-2683/
  */
 

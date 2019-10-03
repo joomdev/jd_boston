@@ -16,11 +16,8 @@ defined('_JEXEC') or die('Restricted access');
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: calc.php 9413 2017-01-04 17:20:58Z Milbo $
+* @version $Id: calc.php 10000 2018-12-14 08:25:51Z Milbo $
 */
-
-
-if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 class VirtueMartModelCalc extends VmModel {
 
@@ -111,7 +108,6 @@ class VirtueMartModelCalc extends VmModel {
 
 		$datas = $this->exeSortSearchListQuery(0,'*',' FROM `#__virtuemart_calcs`',$whereString,'',$this->_getOrdering());
 
-		if(!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 		foreach ($datas as &$data){
 
 			$data->currencyName = ShopFunctions::getCurrencyByID($data->calc_currency);
@@ -184,7 +180,6 @@ class VirtueMartModelCalc extends VmModel {
 		$xrefTable = $this->getTable('calc_manufacturers');
     	$xrefTable->bindChecknStore($data);
 
-		if (!class_exists('vmCalculationPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmcalculationplugin.php');
 		JPluginHelper::importPlugin('vmcalculation');
 		$dispatcher = JDispatcher::getInstance();
 		//$error = $dispatcher->trigger('plgVmStorePluginInternalDataCalc',array(&$data));
@@ -288,7 +283,7 @@ class VirtueMartModelCalc extends VmModel {
 	}
 
 	static function getTaxes() {
-		return self::getRule(array('TAX','VatTax','TaxBill'));
+		return self::getRule(array('Tax','VatTax','TaxBill'));
 	}
 
 	static function getDiscounts(){

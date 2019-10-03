@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 9413 2017-01-04 17:20:58Z Milbo $
+* @version $Id: default.php 10000 2018-12-14 08:25:51Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -93,7 +93,7 @@ AdminUIHelper::startAdminArea($this);
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">
-					<a href="<?php echo $editlink; ?>"><?php echo $row->calc_name; ?></a>
+					<a href="<?php echo $editlink; ?>"><?php echo vmText::_($row->calc_name); ?></a>
 				</td>
 				<?php  if($this->showVendors){ ?>
 				<td align="left">

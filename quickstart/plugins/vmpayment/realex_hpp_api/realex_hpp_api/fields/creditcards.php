@@ -6,10 +6,10 @@ defined('_JEXEC') or die('Restricted access');
  * Realex payment plugin
  *
  * @author Valerie Isaksen
- * @version $Id: creditcards.php 8464 2014-10-16 13:05:55Z alatak $
+ * @version $Id: creditcards.php 10130 2019-09-11 08:36:03Z Milbo $
  * @package VirtueMart
  * @subpackage payment
- * Copyright (C) 2004 - 2017 Virtuemart Team. All rights reserved.
+ * Copyright (C) 2004 - 2015 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -26,7 +26,7 @@ if (!class_exists('ShopFunctions')) {
 	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 }
 if (!class_exists('vmPSPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+	require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 }
 
 if (!class_exists('RealexHelperRealex')) {
