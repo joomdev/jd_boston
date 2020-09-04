@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: view.html.php 10152 2019-09-19 14:40:28Z Milbo $
+* @version $Id: view.html.php 10275 2020-03-03 17:58:29Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -115,25 +115,8 @@ class VirtuemartViewShipmentmethod extends VmViewAdmin {
 
 		parent::display($tpl);
 	}
-	function getParams($raw) {
 
-		if (!empty($raw)) {
-			$params = explode('|', substr($raw, 0,-1));
-			foreach($params as $param){
-				$item = explode('=',$param);
-				if(!empty($item[1])){
-					$pair[$item[0]] = str_replace('"','', $item[1]);
-				} else {
-					$pair[$item[0]] ='';
-				}
-
-			}
-		}
-		return $pair;
-	}
-
-	function renderInstalledShipmentPlugins($selected)
-	{
+	function renderInstalledShipmentPlugins($selected) {
 		$db = JFactory::getDBO();
 
 		$table = '#__extensions';

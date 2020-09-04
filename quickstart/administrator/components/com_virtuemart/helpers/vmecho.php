@@ -280,40 +280,50 @@ function vmRamPeak($notice,$value=NULL){
 }
 
 function vmStartTimer($n='cur'){
-	VmConfig::$_starttime[$n] = microtime(TRUE);
+	VmConfig::$_starttime[$n]['t'] = microtime(TRUE);
 }
 
 function vmSetStartTime($n='cur', $t = 0){
 	if($t === 0){
-		VmConfig::$_starttime[$n] = microtime(TRUE);
+		VmConfig::$_starttime[$n]['t'] = microtime(TRUE);
 	} else {
-		VmConfig::$_starttime[$n] = $t;
+		VmConfig::$_starttime[$n]['t'] = $t;
 	}
 }
 
-function vmTime($descr,$name='current'){
-	static $t = 0.0;
+function vmTime( $descr, $name='cur', $reset = true, $output = true){
+	static $dt = 0.0;
 	if (empty($descr)) {
 		$descr = $name;
 	}
-	$starttime = VmConfig::$_starttime ;
-	if(empty($starttime[$name])){
+	//$starttime = VmConfig::$_starttime ;
+	if(empty(VmConfig::$_starttime[$name]['t'])){
 		vmdebug('vmTime: '.$descr.' starting '.microtime(TRUE));
-		VmConfig::$_starttime[$name] = microtime(TRUE);
+		VmConfig::$_starttime[$name] = array();
+		VmConfig::$_starttime[$name]['t'] = microtime(TRUE);
 	}
 	else {
-		$t = (microtime (TRUE) - $starttime[$name]);
+		$t = microtime (TRUE);
+		$dt = ( $t - VmConfig::$_starttime[$name]['t'] );
+		if(!isset(VmConfig::$_starttime[$name]['Z'])){
+			VmConfig::$_starttime[$name]['Z'] = $dt;
+		} else {
+			VmConfig::$_starttime[$name]['Z'] += $dt;
+		}
 
-		if ($name == 'current') {
-			vmdebug ('vmTime: ' . $descr . ' time consumed ' . $t);
-			VmConfig::$_starttime[$name] = microtime (TRUE);
+		if(!$reset) $dt = VmConfig::$_starttime[$name]['Z'];
+
+		if ($name == 'cur') {
+			if($output) vmdebug ('vmTime: ' . $descr . ' time consumed ' . $dt);
+			VmConfig::$_starttime[$name]['t'] = microtime (TRUE);
 		}
 		else {
-			$tmp = 'vmTime: ' . $descr . ': ' . $t;
-			vmdebug ($tmp);
+			$tmp = 'vmTime: ' . $descr . ': ' . $dt;
+			if($output) vmdebug ($tmp);
+			if($reset) VmConfig::$_starttime[$name]['t'] = $t;
 		}
 	}
-	return $t;
+	return $dt;
 }
 
 /**

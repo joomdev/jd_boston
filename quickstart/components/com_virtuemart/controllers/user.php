@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: user.php 10080 2019-07-04 05:55:12Z Milbo $
+ * @version $Id: user.php 10194 2019-11-04 20:15:34Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -113,11 +113,14 @@ class VirtueMartControllerUser extends JControllerLegacy
 
 		$cart = VirtueMartCart::getCart();
 
-		$layout = vRequest::getCmd('layout','edit');
+		if($cart->_fromCart or $cart->getInCheckOut()){
+			$msg = $this->saveData($cart);
+		} else {
+			$msg = $this->saveData(false);
+		}
 
 		if($cart->_fromCart or $cart->getInCheckOut()){
 
-			$msg = $this->saveData($cart);
 			$task = '';
 			//vmdebug('saveUser _fromCart',(int)$cart->_fromCart,(int)$msg);
 			if(!$msg){
@@ -130,15 +133,15 @@ class VirtueMartControllerUser extends JControllerLegacy
 				$this->setRedirect(JRoute::_('index.php?option=com_virtuemart&view=cart'.$task, FALSE) );
 			}
 		} else {
-			$msg = $this->saveData(false);
+			$layout = vRequest::getCmd('layout','edit');
 			$this->setRedirect( JRoute::_('index.php?option=com_virtuemart&view=user&layout='.$layout, FALSE) );
 		}
 
 	}
 
 	function saveAddressST(){
-
-		$msg = $this->saveData(false);
+		$cart = VirtueMartCart::getCart();
+		$msg = $this->saveData($cart);
 		$layout = 'edit';// vRequest::getCmd('layout','edit');
 		$this->setRedirect( JRoute::_('index.php?option=com_virtuemart&view=user&layout='.$layout, FALSE) );
 
@@ -169,8 +172,8 @@ class VirtueMartControllerUser extends JControllerLegacy
 			$data['address_type'] = vRequest::getCmd('addrtype','BT');
 		}
 
-		if($cartObj){
-			if($cartObj->_fromCart or $cartObj->getInCheckOut()){
+		//if($cartObj){
+			//if($cartObj->_fromCart or $cartObj->getInCheckOut()){
 
 				$cart = VirtueMartCart::getCart();
 				$prefix= '';
@@ -179,8 +182,8 @@ class VirtueMartControllerUser extends JControllerLegacy
 					$cart->STsameAsBT = 0;
 				}
 				$cart->saveAddressInCart($data, $data['address_type'],true,$prefix);
-			}
-		}
+			//}
+		//}
 
 		if(isset($data['vendor_accepted_currencies'])){
 			// Store multiple selectlist entries as a ; separated string
@@ -226,14 +229,14 @@ class VirtueMartControllerUser extends JControllerLegacy
 					$userModel->setId(0);
 					$superUser = vmAccess::isSuperVendor();
 					if($superUser>1){
-						$data['vendorId'] = $superUser;
+						$data['virtuemart_vendor_user_id'] = $superUser;
 					}
 					$switch = true;
 				}
 
 				$cart = VirtueMartCart::getCart();
 				if(!empty($cart->vendorId) and $cart->vendorId!=1){
-					$data['vendorId'] = $cart->vendorId;
+					$data['virtuemart_vendor_user_id'] = $cart->vendorId;
 				}
 
 				if(!$cartObj and !isset($data['virtuemart_shoppergroup_id']) and vmAccess::manager('user.edit')){

@@ -22,7 +22,7 @@
 #dbpsdescsize
 #dbnamesize
 #updelcols  //controlls if columns are deleted
-#vmDefLang				//Virtuemart Shop Language
+#vmDefLang=en-GB				//Virtuemart Shop Language
 #vm_lfbs                //eg vm_lfbs=it-IT~de-DE; maps the fallback of the it-IT language to de-DE
 #product.published=1    //controlls if new products are automatically published
 #seo_full=1             //with 0 no categories are added to the URL of products
@@ -38,6 +38,7 @@
 #invoiceInUserLang
 #invoiceNameInShopLang=1
 #transliterateslugs
+#UseCachegetChildCategoryList
 
 #order_item_ordering=order_item_sku
 #order_item_ordering_dir
@@ -87,7 +88,7 @@ reviews_maximum_comment_length=2000
 product_navigation=1
 display_stock=1
 vmtemplate=0
-categorytemplate=0
+category_template=0
 showcategory=1
 categorylayout=0
 categories_per_row=3

@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: default_shopfront.php 9995 2018-11-28 13:59:08Z StefanSTS $
+ * @version $Id: default_shopfront.php 10312 2020-05-04 13:14:45Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -91,13 +91,13 @@ defined('_JEXEC') or die('Restricted access');?>
 <td>
 	<fieldset class="checkboxes">
 		<legend>
-			<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_CFG_POOS_ENABLE_EXPLAIN'); ?>">
+			<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_CFG_POOS_ENABLE_EXPLAIN'); ?>">
 				<?php echo vmText::_('COM_VIRTUEMART_CFG_POOS_ENABLE'); ?>
 			</span>
 		</legend>
 		<div>
 			<?php echo VmHTML::checkbox('lstockmail', VmConfig::get('lstockmail')); ?>
-			<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_CFG_LOWSTOCK_NOTIFY_TIP'); ?>">
+			<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_CFG_LOWSTOCK_NOTIFY_TIP'); ?>">
 				<label for="lstockmail">
 					<?php echo vmText::_('COM_VIRTUEMART_CFG_LOWSTOCK_NOTIFY'); ?>
 				</label>
@@ -105,7 +105,7 @@ defined('_JEXEC') or die('Restricted access');?>
 		</div>
 		<div>
 			<?php echo VmHTML::checkbox('stockhandle_products', VmConfig::get('stockhandle_products')); ?>
-			<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_CFG_POOS_DISCONTINUED_PRODUCTS_TIP'); ?>">
+			<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_CFG_POOS_DISCONTINUED_PRODUCTS_TIP'); ?>">
 				<label for="stockhandle_products">
 					<?php echo vmText::_('COM_VIRTUEMART_CFG_POOS_DISCONTINUED_PRODUCTS'); ?>
 				</label>
@@ -122,7 +122,7 @@ defined('_JEXEC') or die('Restricted access');?>
 		echo VmHTML::radioList('stockhandle', VmConfig::get('stockhandle', 'none'), $options);
 		?>
 		<div style="font-weight:bold;">
-					<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_AVAILABILITY_EXPLAIN'); ?>">
+					<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_AVAILABILITY_EXPLAIN'); ?>">
 						<?php echo vmText::_('COM_VIRTUEMART_AVAILABILITY'); ?>
 					</span>
 		</div>
@@ -147,6 +147,7 @@ defined('_JEXEC') or die('Restricted access');?>
 		<table class="admintable">
 			<?php
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_REVIEWS_AUTOPUBLISH','reviews_autopublish',VmConfig::get('reviews_autopublish',0));
+			echo VmHTML::row('checkbox','COM_VM_REVIEWS_LANGUAGESELECT','reviews_languagefilter',VmConfig::get('reviews_languagefilter',0));
 			echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_REVIEW_MINIMUM_COMMENT_LENGTH','reviews_minimum_comment_length',VmConfig::get('reviews_minimum_comment_length',0));
 			echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_REVIEW_MAXIMUM_COMMENT_LENGTH','reviews_maximum_comment_length',VmConfig::get('reviews_maximum_comment_length',0));
 			echo VmHTML::row('input','COM_VM_ADMIN_CFG_NUM_RATINGS','vm_num_ratings_show',VmConfig::get('vm_num_ratings_show',3));

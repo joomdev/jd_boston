@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: default.php 10102 2019-08-20 06:50:21Z Milbo $
+ * @version $Id: default.php 10197 2019-11-18 10:27:38Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -33,6 +33,12 @@ AdminUIHelper::startAdminArea($this);
 				<button class="btn btn-small" onclick="this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?></button>
 				<button class="btn btn-small" onclick="document.adminForm.search.value='';this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_RESET'); ?></button>
 			</td>
+			<?php if(!empty($this->vendors)){ ?>
+			<td>
+				<?php echo $this->vendors ?>
+            </td>
+			<?php } ?>
+
 		</tr>
 		</table>
 	</div>

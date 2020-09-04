@@ -22,6 +22,7 @@ jQuery(document).ready(function($){
 			//$(this).autocomplete( 'option' , 'source' , '". JURI::root(false) ."administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&type=relatedcategories&row='+nextCustom )
 		},
 		minLength:1,
+		delay: 400,
 		html: true
 	});
 	$('.js-pages').click(function (e) {
@@ -127,7 +128,7 @@ jQuery(document).ready(function($){
 
 		container.delegate(".edit-24-grey", "click", function () {
 			var data = $(this).parent().find("input").val();
-			$.getJSON("index.php?option=com_virtuemart&view=media&task=viewJson&format=json&virtuemart_media_id=" + data,
+			$.getJSON("index.php?option=com_virtuemart&view=media&format=json&virtuemart_media_id=" + data,
 				function (datas, textStatus) {
 					if (datas.msg == "OK") {
 						$("#vm_display_image").attr("src", datas.file_root + datas.file_url);
@@ -193,7 +194,7 @@ jQuery(document).ready(function($){
 				//var cache = this.cache ;
 				var start = this.page;
 				if (typeof display.cache[start] == "undefined") {
-					$.getJSON("index.php?option=com_virtuemart&view=media&task=viewJson&format=json&mediatype=" + mediatype + "&start=" + start,
+					$.getJSON(Virtuemart.medialink + "&start=" + start,
 						function (data) {
 							if (data.imageList != "ERROR") {
 								display.cache[start] = data.imageList;

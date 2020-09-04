@@ -1,12 +1,4 @@
 <?php
-/**
- * @package	AcyMailing for Joomla
- * @version	6.3.1
- * @author	acyba.com
- * @copyright	(C) 2009-2019 ACYBA S.A.R.L. All rights reserved.
- * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 defined('_JEXEC') or die('Restricted access');
 ?><?php
 
@@ -21,14 +13,14 @@ class JFormFieldLists extends JFormField
         }
 
         $listClass = acym_get('class.list');
-        $lists = $listClass->getAll();
+        $lists = $listClass->getAllWIthoutManagement();
         foreach ($lists as $i => $oneList) {
             if ($oneList->active == 0) {
                 unset($lists[$i]);
             }
         }
 
-        if (ACYM_CMS == 'joomla' && $this->value == 'All') {
+        if (ACYM_CMS == 'joomla' && $this->value == 'All' && !empty($this->form)) {
             $formId = $this->form->getData()->get('id');
             if (!empty($formId)) {
                 $this->value = '';

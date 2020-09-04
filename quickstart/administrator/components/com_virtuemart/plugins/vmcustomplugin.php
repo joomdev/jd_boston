@@ -88,7 +88,7 @@ abstract class vmCustomPlugin extends vmPlugin {
 			$custom_params = json_decode ($field->customfield_params, TRUE);
 			foreach ($custom_params as $k => $v) {
 				if (!empty($v)) {
-					$field->$k = $v;
+					$field->{$k} = $v;
 				}
 			}
 		}
@@ -112,8 +112,8 @@ abstract class vmCustomPlugin extends vmPlugin {
 		//Why do we have this, when bindParameterable could already doing it
 		//And why we do it here, when we do it later again?
 		foreach ($this->_varsToPushParam as $k => $v) {
-			if (!isset($this->params->$k)) {
-				$this->params->$k = $field->$k;
+			if (!isset($this->params->{$k})) {
+				$this->params->{$k} = $field->{$k};
 			}
 			// vmdebug('fields org '.$this->_name,$this->params);
 		}
@@ -128,8 +128,8 @@ abstract class vmCustomPlugin extends vmPlugin {
 		//$field->custom_params = $custom_params;
 		//vmdebug('$this->_varsToPushParam '.$this->_name,$this->_varsToPushParam );
 		foreach ($this->_varsToPushParam as $k => $v) {
-			if (!isset($this->params->$k) and isset($field->$k)) {
-				$this->params->$k = $field->$k;
+			if (!isset($this->params->{$k}) and isset($field->{$k})) {
+				$this->params->{$k} = $field->{$k};
 			}
 		}
 
@@ -153,10 +153,10 @@ abstract class vmCustomPlugin extends vmPlugin {
 				if (!is_string ($v)) {
 					continue;
 				} // Only get real Table variable
-				if (isset($field->$k) && $v === 0) {
+				if (isset($field->{$k}) && $v === 0) {
 					continue;
 				}
-				$field->$k = $v;
+				$field->{$k} = $v;
 			}
 		}
 
@@ -176,13 +176,13 @@ abstract class vmCustomPlugin extends vmPlugin {
 		$datas = $this->getPluginInternalData ($id);
 		if ($datas) {
 			foreach ($this->_varsToPushParam as $k => $v) {
-				if (!isset($datas->$k)) {
+				if (!isset($datas->{$k})) {
 					continue;
 				}
-				if (isset($this->params->$k) && $datas->$k == 0) {
+				if (isset($this->params->{$k}) && $datas->{$k} == 0) {
 					continue;
 				}
-				$this->params->$k = $datas->$k;
+				$this->params->{$k} = $datas->{$k};
 			}
 		}
 	}

@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: details_order.php 9931 2018-09-18 15:57:50Z Milbo $
+ * @version $Id: details_order.php 10181 2019-10-21 07:11:38Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -29,7 +29,7 @@ defined('_JEXEC') or die('Restricted access');
     </tr>
     <tr>
         <td class=""><?php echo vmText::_('COM_VIRTUEMART_ORDER_PRINT_PO_DATE') ?></td>
-        <td align="left"><?php echo vmJsApi::date($this->orderdetails['details']['BT']->created_on, 'LC4', true); ?></td>
+        <td align="left"><?php echo vmJsApi::date($this->orderdetails['details']['BT']->order_created, 'LC4', true); ?></td>
     </tr>
     <tr>
         <td class=""><?php echo vmText::_('COM_VIRTUEMART_ORDER_PRINT_PO_STATUS') ?></td>
@@ -37,7 +37,7 @@ defined('_JEXEC') or die('Restricted access');
     </tr>
     <tr>
         <td class=""><?php echo vmText::_('COM_VIRTUEMART_LAST_UPDATED') ?></td>
-        <td align="left"><?php echo vmJsApi::date($this->orderdetails['details']['BT']->modified_on, 'LC4', true); ?></td>
+        <td align="left"><?php echo vmJsApi::date($this->orderdetails['details']['BT']->order_modified, 'LC4', true); ?></td>
     </tr>
     <tr>
         <td class=""><?php echo vmText::_('COM_VIRTUEMART_ORDER_PRINT_SHIPMENT_LBL') ?></td>

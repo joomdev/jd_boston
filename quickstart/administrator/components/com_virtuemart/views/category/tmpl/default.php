@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 9955 2018-10-01 13:06:24Z Milbo $
+* @version $Id: default.php 10297 2020-04-07 22:19:33Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -139,7 +139,7 @@ AdminUIHelper::startAdminArea($this);
 			}
 			$repeat = $cat->level;
 
-			if($repeat > 1){
+			if($repeat > 0){
 				$categoryLevel = str_repeat(".&nbsp;&nbsp;&nbsp;", $repeat - 1);
 				$categoryLevel .= "<sup>|_</sup>&nbsp;";
 			}
@@ -163,22 +163,20 @@ AdminUIHelper::startAdminArea($this);
 					&nbsp;<a href="<?php echo $showProductsLink; ?>">[ <?php echo vmText::_('COM_VIRTUEMART_SHOW');?> ]</a>
 				</td>
 				<td align="center" class="vm-order">
-					<span><?php 
 
-					$cond2 = false;
-					if(isset($this->categories[$i + 1]) and $cat->category_parent_id == @$this->categories[$i + 1]->category_parent_id){
-						$cond2 = true;
+					<?php if($this->showDrag){ ?>
+						<span class="vmicon vmicon-16-move"></span>
+					<?php }
+
+					if($cat->showOrderUp){
+						echo '<span>'.$this->catpagination->vmOrderUpIcon( $i, $cat->ordering, 'orderUp', vmText::_('COM_VIRTUEMART_MOVE_UP')).'</span>';
 					}
 
-					$cond2= ($cat->category_parent_id == 0 || $cat->category_parent_id == @$this->categories[$i + 1]->category_parent_id);
-					if($cat->level==0){
-						$childCount = count($this->categories);
-					} else {
-						$childCount = $cat->siblingCount;
+					if($cat->showOrderDown){
+						echo '<span>'.JHtml::_( 'jgrid.orderDown', $i, 'orderDown', '', 'COM_VIRTUEMART_MOVE_DOWN', true, 'cb' ).'</span>';
 					}
 
-					echo $this->catpagination->vmOrderUpIcon( $i, $cat->ordering, 'orderUp', vmText::_('COM_VIRTUEMART_MOVE_UP')); ?></span>
-					<span><?php echo $this->catpagination->vmOrderDownIcon( $i, $cat->ordering, $childCount , $cond2, 'orderDown', vmText::_('COM_VIRTUEMART_MOVE_DOWN')); ?></span>
+					?>
 					<input class="ordering" type="text" name="order[<?php echo $i?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $cat->ordering; ?>" style="text-align: center" />
 				</td>
 				<td align="center">

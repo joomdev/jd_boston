@@ -315,7 +315,7 @@ abstract class vmPlugin extends JPlugin {
 
 				$q = 'SELECT vm.* FROM `' . $this->_configTable . '` AS vm, #__extensions AS j 
 					WHERE vm.' . $this->_psType . '_jplugin_id = j.extension_id ';
-				if (JFactory::getApplication()->isSite() ) {
+				if (VmConfig::isSite() ) {
 					$q .= 'AND vm.published = 1 ';
 				}
 				$db->setQuery ($q);
@@ -565,10 +565,10 @@ abstract class vmPlugin extends JPlugin {
 		if(!empty($this->_psType)){
 			$element = $this->_psType.'_element';
 			$jplugin_id = $this->_psType.'_jplugin_id';
-			if(empty($data->$element)) $data->$element = 0;
-			if(empty($data->$jplugin_id)) $data->$jplugin_id = 0;
+			if(empty($data->{$element})) $data->{$element} = 0;
+			if(empty($data->{$jplugin_id})) $data->{$jplugin_id} = 0;
 
-			if(!$this->selectedThis($psType,$data->$element)){
+			if(!$this->selectedThis($psType,$data->{$element})){
 				return FALSE;
 			}
 
@@ -678,7 +678,7 @@ abstract class vmPlugin extends JPlugin {
 		$db = JFactory::getDBO ();
 		$table = new VmTableData($tableName, $tableId, $db);
 		foreach ($tableFields as $field) {
-			$table->$field = 0;
+			$table->{$field} = 0;
 		}
 
 		if ($primaryKey !== 0) {

@@ -5,7 +5,7 @@ if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not 
 
 /**
  *
- * @version $Id: currencydisplay.php 10007 2019-01-16 09:59:34Z Milbo $
+ * @version $Id: currencydisplay.php 10217 2019-12-04 11:45:47Z Milbo $
  * @package VirtueMart
  * @subpackage classes
  *
@@ -107,7 +107,7 @@ class CurrencyDisplay {
 
 			if(empty($currencyId)){
 				$app = JFactory::getApplication();
-				if($app->isSite()){
+				if(VmConfig::isSite()){
 					self::$_instance[$h]->_currency_id = $app->getUserStateFromRequest( "virtuemart_currency_id", 'virtuemart_currency_id',vRequest::getInt('virtuemart_currency_id', 0));
 				}
 				if(empty(self::$_instance[$h]->_currency_id)){
@@ -191,7 +191,7 @@ class CurrencyDisplay {
 			if($sprgrp->custom_price_display){
 				if($sprgrp->show_prices){
 					foreach(self::$priceNames as $name){
-						$show = (int)$sprgrp->$name;
+						$show = (int)$sprgrp->{$name};
 						$text = (int)$sprgrp->{$name.'Text'};
 						$round = (int)$sprgrp->{$name.'Rounding'};
 						if($round==-1){

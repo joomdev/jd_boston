@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: product.php 10036 2019-04-01 10:28:12Z Milbo $
+ * @version $Id: product.php 10305 2020-04-29 08:28:18Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -55,7 +55,7 @@ class VirtuemartControllerProduct extends VmController {
 
 		if($data===0)$data = vRequest::getRequest();
 
-		$this->getStrByAcl(array('product_name','product_desc','product_s_desc','customtitle'),$data);
+		$this->getStrByAcl(array('product_name','product_desc','product_s_desc','customtitle', 'customfield_params'),$data);
 
 		if(isset($data['field'])){
 			$data['field'] = vRequest::getHtml('field');
@@ -131,7 +131,6 @@ class VirtuemartControllerProduct extends VmController {
 
 
 				if($target=='parent'){
-					vmdebug('toParent');
 					$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$cid;
 				} else {
 					$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$id;
@@ -286,6 +285,36 @@ class VirtuemartControllerProduct extends VmController {
 		$app->redirect('index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$l, $msg, $msgtype);
 	}
 
+	/**
+	 * Clone a product
+	 *
+	 * @author Max Milbers
+	 */
+	public function CloneProductWithChildren () {
+		$app = Jfactory::getApplication();
+
+		$model = VmModel::getModel('product');
+		$msgtype = '';
+
+		$cids = vRequest::getInt($this->_cidName, vRequest::getInt('virtuemart_product_id'));
+		if(is_array($cids)){
+			$cids = array_unique($cids);
+		} else {
+			$cids = (array)$cids;
+		}
+		$msg = '';
+		foreach($cids as $cid){
+			$cid = (int) $cid;
+			if ($cid and $l=$model->createCloneWithChildren($cid)) {
+				$msg .= vmText::_('COM_VIRTUEMART_PRODUCT_CLONED_SUCCESSFULLY');
+			} else {
+				$msg .= vmText::_('COM_VIRTUEMART_PRODUCT_NOT_CLONED_SUCCESSFULLY');
+				$msgtype = 'error';
+			}
+		}
+
+		$app->redirect('index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$l, $msg, $msgtype);
+	}
 
 	/**
 	 * Get a list of related products, categories

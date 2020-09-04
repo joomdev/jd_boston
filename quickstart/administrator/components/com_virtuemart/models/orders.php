@@ -16,7 +16,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: orders.php 10159 2019-09-24 15:31:58Z Milbo $
+ * @version $Id: orders.php 10330 2020-06-16 14:25:09Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -226,7 +226,7 @@ class VirtueMartModelOrders extends VmModel {
 		$order = array();
 
 		// Get the order details
-		$q = "SELECT  o.*, o.created_on as order_created, u.*, s.order_status_name
+		$q = "SELECT  o.*, o.created_on as order_created, o.modified_on as order_modified, u.*, s.order_status_name
 			FROM #__virtuemart_orders o
 			LEFT JOIN #__virtuemart_orderstates s
 			ON s.order_status_code = o.order_status
@@ -296,8 +296,8 @@ class VirtueMartModelOrders extends VmModel {
 				$pvar = get_object_vars($product);
 
 				foreach ( $pvar as $k => $v) {
-					if (!isset($item->$k) and strpos ($k, '_') !== 0 and property_exists($product, $k)) {
-						$item->$k = $v;
+					if (!isset($item->{$k}) and strpos ($k, '_') !== 0 and property_exists($product, $k)) {
+						$item->{$k} = $v;
 					}
 				}
 			}
@@ -403,7 +403,9 @@ class VirtueMartModelOrders extends VmModel {
 			$searchFields[] = 'u.address_1';
 			$searchFields[] = 'u.city';
 			$searchFields[] = 'u.zip';
-//quorvia addedd  ST data searches
+//quorvia added  ST data searches and virtuemart_order_id and order total
+			$searchFields[] = 'o.virtuemart_order_id';
+			$searchFields[] = 'round(o.order_total,2)';
 			$searchFields[] = 'st.last_name';
 			$searchFields[] = 'st.company';
 			$searchFields[] = 'st.city';
@@ -628,7 +630,7 @@ class VirtueMartModelOrders extends VmModel {
 			$table->emptyCache();
 			$table->load($virtuemart_order_item_id);
 
-			//JPluginHelper::importPlugin('vmcustom');
+			//VmConfig::importVMPlugins('vmcustom');
 			$dispatcher = JDispatcher::getInstance();
 			$results = $dispatcher->trigger('plgVmOnUpdateSingleItem', array(&$table, &$orderdata));
 
@@ -659,7 +661,7 @@ class VirtueMartModelOrders extends VmModel {
 
 		foreach($orderdata as $key=>$val){
 			if($key=='virtuemart_vendor_id') continue;	//Todo add multvendor handling
-			if(isset($table->$key)) $orderdata->$key = $table->$key;
+			if(isset($table->{$key})) $orderdata->{$key} = $table->{$key};
 		}
 		return $table;
 	}
@@ -667,20 +669,29 @@ class VirtueMartModelOrders extends VmModel {
 	function calculateRow($data, $taxCalcValue, $rounding, $daTax = true, $withTax = true, $overrideDiscount = false){
 
 		$quantity = $data['product_quantity'];
-		if(empty($data['product_subtotal_discount'])){
-			$data['product_subtotal_discount'] = 0.0;
-		} else {
-			$itemDiscount = $data['product_subtotal_discount'];
-			if($itemDiscount<0.0){
-				$itemDiscount = $itemDiscount * (-1);
-			}
-			$itemDiscount = $itemDiscount/$quantity;
-		}
 
 		$taxValue = $taxCalcValue;
 		if(!$withTax){
 			$data['product_tax'] = 0.0;
 			$taxValue = 0.0;
+		}
+
+		if(empty($data['product_subtotal_discount'])){
+			$data['product_subtotal_discount'] = 0.0;
+		} else {
+			$itemDiscount = $data['product_subtotal_discount'];
+
+			if($itemDiscount<0.0){
+				$itemDiscount = $itemDiscount * (-1);
+			}
+
+			if($daTax and VirtueMartModelOrders::isNotEmptyDec($data,'product_basePriceWithTax') and VirtueMartModelOrders::isNotEmptyDec($data,'product_final_price')){
+				$itemDiscount = $data['product_basePriceWithTax'] - $data['product_final_price'];
+			} else if(!$daTax and VirtueMartModelOrders::isEmptyDec($data,'product_subtotal_discount') and VirtueMartModelOrders::isNotEmptyDec($data,'product_final_price') and VirtueMartModelOrders::isNotEmptyDec($data,'product_item_price')){
+				$itemDiscount = round($data['product_item_price'] - $data['product_final_price'] + $data['product_final_price'] * $taxValue/(100 + $taxValue), $rounding);
+			} else {
+				$itemDiscount = $itemDiscount/$quantity;
+			}
 		}
 
 		$roundIntern = 5;
@@ -742,6 +753,13 @@ class VirtueMartModelOrders extends VmModel {
 		if($data['product_subtotal_discount']<0.0){
 			$itemDiscount = $itemDiscount * (-1);
 		}
+		//if($overrideDiscount){
+			if($daTax and VirtueMartModelOrders::isNotEmptyDec($data,'product_basePriceWithTax') and VirtueMartModelOrders::isNotEmptyDec($data,'product_final_price')){
+				$itemDiscount = $data['product_basePriceWithTax'] - $data['product_final_price'];
+			} else if(!$daTax and VirtueMartModelOrders::isEmptyDec($data,'product_subtotal_discount') and VirtueMartModelOrders::isNotEmptyDec($data,'product_final_price')){
+				$itemDiscount = round($data['product_item_price'] - $data['product_final_price'] + $data['product_final_price'] * $taxValue/(100 + $taxValue), $rounding);
+			}
+		//}
 		$data['product_subtotal_discount'] = $quantity * $itemDiscount;
 //vmdebug('my prices',$data);
 		return $data;
@@ -949,15 +967,17 @@ class VirtueMartModelOrders extends VmModel {
 					`order_billDiscountAmount`=`order_discountAmount`+'.$calc_rules_discount_amount.',
 					`order_salesPrice`=(SELECT sum(product_final_price*product_quantity) FROM #__virtuemart_order_items where `virtuemart_order_id`='.$ordid.'),
 					`order_tax`=(SELECT sum( product_tax*product_quantity) FROM #__virtuemart_order_items where `virtuemart_order_id`='.$ordid.'),
-					`order_subtotal`=(SELECT sum(ROUND(product_item_price, '. $rounding .')*product_quantity) FROM #__virtuemart_order_items where `virtuemart_order_id`='.$ordid.'),';
+					`order_subtotal`=(SELECT sum(ROUND(product_item_price, '. $rounding .')*product_quantity) /*+ product_subtotal_discount*/ FROM #__virtuemart_order_items where `virtuemart_order_id`='.$ordid.'), ';
 
 				if($calculate_billTaxAmount) {
 					$sql .= '`order_billTaxAmount`= /*`order_shipment_tax`+`order_payment_tax`+*/ '.$calc_rules_tax_amount.' + '.$calc_rules_vattax_amount;
 				} else {
-					$sql .= '`order_billTaxAmount`="'.vRequest::getString('order_billTaxAmount').'"';
+					$sql .= '`order_billTaxAmount`="'.vRequest::getFloat('order_billTaxAmount').'"';
 				}
+
+				$sql .= ' ,`coupon_discount`="'.vRequest::getFloat('coupon_discount').'"';
 				//$sql .= ',`order_total`=(SELECT sum(product_final_price*product_quantity) FROM #__virtuemart_order_items where `virtuemart_order_id`='.$ordid.')+`order_shipment`+`order_shipment_tax`+`order_payment`+`order_payment_tax`+'.$calc_rules_amount.',';
-				$sql .= ',`order_total`= ROUND(((SELECT sum(product_final_price*product_quantity) FROM #__virtuemart_order_items where `virtuemart_order_id`='.$ordid.') + `order_shipment` +`order_payment` + `order_shipment_tax`+`order_payment_tax` - '.$calc_rules_discount_amount.'),'. $rounding .')';
+				$sql .= ', `order_total`= ROUND(((SELECT sum(product_final_price*product_quantity) FROM #__virtuemart_order_items where `virtuemart_order_id`='.$ordid.') + `order_shipment` +`order_payment` + `order_shipment_tax`+`order_payment_tax` - '.$calc_rules_discount_amount.' + coupon_discount),'. $rounding .')';
 
 				$sql .= ', `modified_on` = "'.$today.'"';
 				$sql .= ' WHERE  `virtuemart_order_id`='.$ordid;
@@ -1104,8 +1124,8 @@ class VirtueMartModelOrders extends VmModel {
 
 		//if ($data->store()) {
 
-		$task= vRequest::getCmd('task',0);
-		$view= vRequest::getCmd('view',0);
+		$task = vRequest::getCmd('task',0);
+		$view = vRequest::getCmd('view',0);
 
 		//The item_id of the request is already given as inputOrder by the calling function (controller). inputOrder could be manipulated by the
 		//controller and so we must not use the request data here.
@@ -1267,7 +1287,7 @@ class VirtueMartModelOrders extends VmModel {
 					//$ocrTable->bindChecknStore($rule);
 				}
 				//$allTaxes[] = $rule;
-				$data->$keyN = vRequest::getString($keyN,0.0);
+				$data->{$keyN} = vRequest::getString($keyN,0.0);
 
 				//There is a VAT available
 /*				if( (/*count($summarizedRules['taxBill'])==1 or * VmConfig::get('radicalShipPaymentVat',true)) and isset($summarizedRules['taxBill'][$idWithMax])){
@@ -1294,7 +1314,7 @@ class VirtueMartModelOrders extends VmModel {
 					$data->$keyNTax = $rule->calc_amount;
 					//vmdebug('Use radicalShipPaymentVat with $idWithMax '.$idWithMax,$summarizedRules['taxBill'][$idWithMax]->subTotal,$data->$keyNTax, $rule);
 				} else { */
-					$data->$keyNTax = 0.0;
+					$data->{$keyNTax} = 0.0;
 					$t1 = 0.0;
 					if(VmConfig::get('radicalShipPaymentVat',true)){
 						$r = $summarizedRules['taxBill'][$idWithMax];
@@ -1304,7 +1324,7 @@ class VirtueMartModelOrders extends VmModel {
 						$rule->calc_amount = round(floatval($rule->calc_amount), 5);
 						$data->$keyNTax = $rule->calc_amount;*/
 						$t1 = 0.0;
-						$data->$keyNTax = $r->calc_value * 0.01  * $data->$keyN;
+						$data->{$keyNTax} = $r->calc_value * 0.01  * $data->{$keyN};
 					} else {
 						foreach($summarizedRules['taxBill'] as $in=>$vatrule){
 
@@ -1315,14 +1335,14 @@ class VirtueMartModelOrders extends VmModel {
 							}
 
 							//vmdebug('ShipPay Rules store '.$vatrule->calc_value * 0.01.' * '. $vatrule->subTotal.'/'.$data->order_salesPrice.' = '.$t1);
-							$data->$keyNTax += $t1 * $data->$keyN;
+							$data->{$keyNTax} += $t1 * $data->{$keyN};
 							//$summarizedRules['taxBill'][$in]->calc_amount += $data->$keyNTax ;
 
 						}
 					}
 
-					if($data->$keyNTax != $rule->calc_amount){
-						$rule->calc_amount = $data->$keyNTax;
+					if($data->{$keyNTax} != $rule->calc_amount){
+						$rule->calc_amount = $data->{$keyNTax};
 						$rule->calc_value = $t1 * 100.0;
 						//vmdebug('ShipPay Rules set',$rule);
 
@@ -1443,7 +1463,7 @@ class VirtueMartModelOrders extends VmModel {
 		$this->notifyCustomer( $data->virtuemart_order_id , $inputOrder );
 // 			}
 
-		//JPluginHelper::importPlugin('vmcoupon');
+		//VmConfig::importVMPlugins('vmcoupon');
 		$dispatcher = JDispatcher::getInstance();
 		$returnValues = $dispatcher->trigger('plgVmCouponUpdateOrderStatus', array($data, $old_order_status));
 		if(!empty($returnValues)){
@@ -1658,7 +1678,7 @@ class VirtueMartModelOrders extends VmModel {
 			$continue = array('created_on'=>1, 'created_by'=>1, 'modified_on'=>1, 'modified_by'=>1, 'locked_on'=>1, 'locked_by'=>1);
 			foreach($_cart->BT as $k=>$v){
 				if(isset($continue[$k])) continue;
-				$_orderData->$k = $v;
+				$_orderData->{$k} = $v;
 			}
 		}
 		$_orderData->STsameAsBT = $_cart->STsameAsBT;
@@ -1707,8 +1727,12 @@ class VirtueMartModelOrders extends VmModel {
 
 	function deleteOldPendingOrder($cart){
 
-		$reUseTimeSql = VmConfig::get('reuseorders','PT30M');vmdebug('deleteOldPendingOrder '.$reUseTimeSql);
-		if(empty($reUseTimeSql)) return false;
+		$reUseTimeSql = VmConfig::get('reuseorders','PT2M');vmdebug('deleteOldPendingOrder '.$reUseTimeSql);
+		if(empty($reUseTimeSql)){
+			return false;
+		} else if($reUseTimeSql == 1){
+			$reUseTimeSql = 'PT2M';
+		}
 
 		$db = JFactory::getDbo();
 		$q = 'SELECT * FROM `#__virtuemart_orders` WHERE `order_status` = "P" ';
@@ -1838,9 +1862,10 @@ class VirtueMartModelOrders extends VmModel {
 		vmdebug( 'handleStockAfterStatusChangedPerProduct '.$oldState.' '.$newState.' '. $quantity, $tableOrderItems->product_quantity);
 		if($newState == $oldState and $quantity == $tableOrderItems->product_quantity) return;
 		// $StatutWhiteList = array('P','C','X','R','S','N');
-		$db = JFactory::getDBO();
+		/*$db = JFactory::getDBO();
 		$db->setQuery('SELECT * FROM `#__virtuemart_orderstates` ');
-		$StatutWhiteList = $db->loadAssocList('order_status_code');
+		$StatutWhiteList = $db->loadAssocList('order_status_code');*/
+		$StatutWhiteList = VirtueMartModelOrderstatus::getOrderStatusNames();
 		// new product is statut N
 		$StatutWhiteList['N'] = Array ( 'order_status_id' => 0 , 'order_status_code' => 'N' , 'order_stock_handle' => 'A');
 		if(!array_key_exists($oldState,$StatutWhiteList) or !array_key_exists($newState,$StatutWhiteList)) {
@@ -2372,13 +2397,17 @@ class VirtueMartModelOrders extends VmModel {
 			$shopperEmail = array();
 			$shopperEmailFields = VmConfig::get('email_sf_s',array('email'));
 			foreach ($shopperEmailFields as $field) {
-				if (!empty($order['details']['BT']->$field)) $shopperEmail[] = $order['details']['BT']->$field;
+				if (!empty($order['details']['BT']->{$field})) $shopperEmail[] = $order['details']['BT']->{$field};
 			}
 			if (count($shopperEmail) < 1) $shopperEmail[] = $order['details']['BT']->email;
 
 			$view = shopFunctionsF::prepareViewForMail('invoice', $vars);
 			$res = shopFunctionsF::sendVmMail( $view, $shopperEmail, false );
 
+			//invoice_sent
+			/*$orderTable = $this->getTable('orders');
+			$orderTable->virtuemart_order_id = $virtuemart_order_id;
+			$orderTable->toggle( 'invoice_sent', 1);*/
 		}
 
 		if(is_object($res) or !$res){
@@ -2396,8 +2425,7 @@ class VirtueMartModelOrders extends VmModel {
 		}
 
 		//quicknDirty to prevent that an email is sent twice
-		$app = JFactory::getApplication();
-		if($app->isSite()){
+		if(VmConfig::isSite()){
 
 			$cart = VirtueMartCart::getCart();
 			$cart->customer_notified = true;
@@ -2619,9 +2647,9 @@ class VirtueMartModelOrders extends VmModel {
 			$db = JFactory::getDbo();
 			foreach($psTypes as $_psType){
 				$idM = 'virtuemart_'.$_psType.'method_id';
-				if(!empty($order['details']['BT']->$idM)){
+				if(!empty($order['details']['BT']->{$idM})){
 					$q = 'SELECT `'.$_psType.'_element` FROM `#__virtuemart_'.$_psType.'methods` ';
-					$q .= 'WHERE `virtuemart_'.$_psType.'method_id` = "'.(int)$order['details']['BT']->$idM.'" ';
+					$q .= 'WHERE `virtuemart_'.$_psType.'method_id` = "'.(int)$order['details']['BT']->{$idM}.'" ';
 					$db->setQuery($q);
 					$plg_name = $db->loadResult();
 					if(empty($plg_name)) continue;

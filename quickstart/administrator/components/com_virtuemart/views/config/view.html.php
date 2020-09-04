@@ -1,20 +1,20 @@
 <?php
 /**
-*
-* Description
-*
-* @package	VirtueMart
-* @subpackage Config
-* @author RickG
-* @link https://virtuemart.net
-* @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-* VirtueMart is free software. This version may have been modified pursuant
-* to the GNU General Public License, and as distributed it includes or
-* is derivative of works licensed under the GNU General Public License or
-* other free or open source software licenses.
-* @version $Id: view.html.php 10142 2019-09-13 10:17:11Z Milbo $
-*/
+ *
+ * Description
+ *
+ * @package	VirtueMart
+ * @subpackage Config
+ * @author RickG
+ * @link https://virtuemart.net
+ * @copyright Copyright (c) 2004 - 2019 VirtueMart Team. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * VirtueMart is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ * @version $Id: view.html.php 10239 2020-01-10 11:31:03Z Milbo $
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -79,7 +79,7 @@ class VirtuemartViewConfig extends VmViewAdmin {
 
 		$this->currConverterList = $model->getCurrencyConverterList();
 
-		$this->activeShopLanguage = $model->getActiveLanguages( VmConfig::get('vmDefLang'), 'vmDefLang', false, vmText::sprintf('COM_VIRTUEMART_ADMIN_CFG_POOS_GLOBAL', vmConfig::$jDefLangTag) );
+		$this->activeShopLanguage = $model->getActiveLanguages( VmConfig::get('vmDefLang'), 'vmDefLang', false, vmText::sprintf('COM_VIRTUEMART_ADMIN_CFG_POOS_GLOBAL', VmConfig::$jDefLangTag) );
 		$this->activeLanguages = $model->getActiveLanguages( VmConfig::get('active_languages') );
 
 		$this->orderByFieldsProduct = $model->getProductFilterFields('browse_orderby_fields');
@@ -184,15 +184,24 @@ WHERE published="1"';
 		if(!empty($revproxvar)) vmdebug('My server variable ',$_SERVER);
 	}
 
+	public static function getTip($label){
+		$lang = vmLanguage::getLanguage();
+		if($lang->hasKey($label.'_TIP')){
+			return $label.'_TIP';
+		} else if ($lang->hasKey($label.'_EXPLAIN')) {
+			return $label.'_EXPLAIN';
+		} else {
+			return '';
+		}
+	}
+
 	static $options = array();
 	static public function rowShopFrontSet($params, $label, $name, $name2, $name3 = 0, $default = 1){
 
-		$lang =vmLanguage::getLanguage();
-		if($lang->hasKey($label.'_TIP')){
-			$label = '<span class="hasTip" title="'.htmlentities(vmText::_($label.'_TIP')).'">'.vmText::_($label).'</span>' ;
-		} //Fallback
-		else if($lang->hasKey($label.'_EXPLAIN')){
-			$label = '<span class="hasTip" title="'.htmlentities(vmText::_($label.'_EXPLAIN')).'">'.vmText::_($label).'</span>' ;
+		//$lang =vmLanguage::getLanguage();
+		$tip = self::getTip($label);
+		if($tip){
+			$label = '<span class="hasTooltip" title="'.htmlentities(vmText::_($tip)).'">'.vmText::_($label).'</span>' ;
 		} else {
 			$label = vmText::_($label);
 		}
@@ -226,25 +235,35 @@ WHERE published="1"';
 		if(!isset($array[$name])) $array[$name] = 0;
 		if(!isset($array[$name . 'Text'])) $array[$name . 'Text'] = 0;
 		if(!isset($array[$name . 'Rounding'])) $array[$name . 'Rounding'] = -1;
+
+		$tip = self::getTip($langkey);
 		$html =
 		'<tr>
-				<td class="key">
-					<span class="editlinktip hasTip" title="' . vmText::_ ($langkey . '_EXPLAIN') . '">
-						<label>' . vmText::_ ($langkey) .
-		'</label>
-					</span>
-				</td>
+			<td class="key">';
+		if ($tip){
+			$html .= '
+				<span class="editlinktip hasTooltip" title="' . vmText::_ ($tip) . '">
+					<label>' . vmText::_ ($langkey) . '</label>
+				</span>';
+		} else {
+			$html .= '
+				<span class="editlinktip noTip">
+					<label>' . vmText::_ ($langkey) . '</label>
+				</span>';
+		}
+		$html .='
+			</td>
 
-				<td>' .
+			<td>' .
 		VmHTML::checkbox ($name, $array[$name]) . '
-				</td>
-				<td align="center">' .
+			</td>
+			<td align="center">' .
 		VmHTML::checkbox ($name . 'Text', $array[$name . 'Text']) . '
-				</td>
-				<td align="center">
-				<input type="text" value="' . $array[$name . 'Rounding'] . '" class="inputbox" size="4" name="' . $name . 'Rounding">
-				</td>
-			</tr>';
+			</td>
+			<td align="center">
+			<input type="text" value="' . $array[$name . 'Rounding'] . '" class="inputbox" size="4" name="' . $name . 'Rounding">
+			</td>
+		</tr>';
 		return $html;
 	}
 }

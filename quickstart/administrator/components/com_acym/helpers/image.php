@@ -1,29 +1,17 @@
 <?php
-/**
- * @package	AcyMailing for Joomla
- * @version	6.3.1
- * @author	acyba.com
- * @copyright	(C) 2009-2019 ACYBA S.A.R.L. All rights reserved.
- * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 defined('_JEXEC') or die('Restricted access');
 ?><?php
 
-class acymimageHelper
+class acymimageHelper extends acymObject
 {
     var $error;
     var $maxHeight;
     var $maxWidth;
     var $destination;
 
-    public function __construct()
-    {
-    }
-
     public function removePictures($text)
     {
-        $return = preg_replace('#< *img[^>]*>#Ui', '', $text);
+        $return = preg_replace('#< *img((?!content_main_image)[^>])*>#Ui', '', $text);
         $return = preg_replace('#< *div[^>]*class="jce_caption"[^>]*>[^<]*(< *div[^>]*>[^<]*<\/div>)*[^<]*<\/div>#Ui', '', $return);
 
         return $return;
@@ -121,6 +109,8 @@ class acymimageHelper
 
     public function generateThumbnail($picturePath)
     {
+        $paramsPos = strpos($picturePath, '?');
+        if ($paramsPos !== false) $picturePath = substr($picturePath, 0, $paramsPos);
 
         list($currentwidth, $currentheight) = getimagesize($picturePath);
         if (empty($currentwidth) || empty($currentheight)) {

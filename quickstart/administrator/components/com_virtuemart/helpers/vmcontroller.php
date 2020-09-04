@@ -10,7 +10,7 @@ defined ('_JEXEC') or die();
  * @package	VirtueMart
  * @subpackage Helpers
  * @author Max Milbers
- * @copyright Copyright (c) 2011 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2011 - 2019 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -80,8 +80,7 @@ class VmController extends JControllerLegacy{
 
 		$view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath));
 
-		$app = JFactory::getApplication();
-		if($app->isSite()){
+		if(VmConfig::isSiteByApp()){
 			$view->addTemplatePath(VMPATH_ADMIN.'/views/'.$viewName.'/tmpl');
 		}
 
@@ -109,7 +108,7 @@ class VmController extends JControllerLegacy{
 				foreach ($urlparams as $key => $value)
 				{
 					// Add your safe url parameters with variable type as value {@see JFilterInput::clean()}.
-					$registeredurlparams->$key = $value;
+					$registeredurlparams->{$key} = $value;
 				}
 
 				$app->set('registeredurlparams', $registeredurlparams);
@@ -182,7 +181,7 @@ class VmController extends JControllerLegacy{
 
 		$redir = $this->redirectPath;
 
-		if( JFactory::getApplication()->isSite()){
+		if( VmConfig::isSiteByApp()){
 			$redir .= '&tmpl=component';
 		}
 
@@ -341,7 +340,7 @@ class VmController extends JControllerLegacy{
 		if (!$model->saveorder($cid, $order)) {
 			$msg = 'error';
 		} else {
-			if(JFactory::getApplication()->isAdmin() and VmConfig::showDebug()){
+			if(!VmConfig::isSite() and VmConfig::showDebug()){
 				$msg = vmText::sprintf('COM_VIRTUEMART_NEW_ORDERING_SAVEDF',$this->mainLangKey);
 			} else {
 				$msg = vmText::sprintf('COM_VIRTUEMART_NEW_ORDERING_SAVED');

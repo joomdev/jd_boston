@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: orderstatus.php 10091 2019-07-08 09:30:22Z Milbo $
+ * @version $Id: orderstatus.php 10216 2019-12-03 20:03:55Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -72,7 +72,7 @@ class VirtueMartModelOrderstatus extends VmModel {
 	 * @param char $_code Order status code
 	 * @return string The name of the order status
 	 */
-	public function getOrderStatusNames ($published = true) {
+	static public function getOrderStatusNames ($published = true) {
 		static $orderStatusNames=0;
 		if(empty($orderStatusNames)){
 			if($published){
@@ -80,14 +80,13 @@ class VirtueMartModelOrderstatus extends VmModel {
 			} else {
 				$published = '';
 			}
-			$q = 'SELECT `order_status_name`,`order_status_code` FROM `#__virtuemart_orderstates` '.$published.'order by `ordering` ';
+			$q = 'SELECT `order_status_name`,`order_status_code`,`order_stock_handle` FROM `#__virtuemart_orderstates` '.$published.' order by `ordering` ';
 			$db = JFactory::getDBO();
 			$db->setQuery($q);
 			$orderStatusNames = $db->loadAssocList('order_status_code');
 		}
 
 		return $orderStatusNames;
-
 	}
 
 	function renderOSList($value,$name = 'order_status',$multiple=FALSE,$attrs='',$langkey='',$empty=true){
@@ -109,7 +108,7 @@ class VirtueMartModelOrderstatus extends VmModel {
 			$hashValue = $value;
 		}
 
-		$hash = md5($hashValue.$name.$attrs);
+		$hash = crc32($hashValue.$name.$attrs);
 		if (!isset($this->_renderStatusList[$hash])) {
 			$orderStates = $this->getOrderStatusNames();
 			if($empty){

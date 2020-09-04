@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 9851 2018-05-30 07:41:14Z Milbo $
+* @version $Id: default.php 10233 2019-12-11 14:48:13Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -83,7 +83,7 @@ vmLanguage::loadJLang('com_virtuemart_config');
 			$image = 'admin/checked_out.png';
 			$image = JHtml::_('image', $image, vmText::_('COM_VIRTUEMART_ORDER_STATUS_CODE_CORE'),'',true);
 			$checked = ($coreStatus) ?
-				'<span class="hasTip" title="'. vmText::_('COM_VIRTUEMART_ORDER_STATUS_CODE_CORE').'">'. $image .'</span>' :
+				'<span class="hasTooltip" title="'. vmText::_('COM_VIRTUEMART_ORDER_STATUS_CODE_CORE').'">'. $image .'</span>' :
 				JHtml::_('grid.id', $i, $row->virtuemart_orderstate_id);
 
 			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=orderstatus&task=edit&cid[]=' . $row->virtuemart_orderstate_id);

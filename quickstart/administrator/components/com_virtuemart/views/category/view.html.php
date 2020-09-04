@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 9831 2018-05-07 13:45:33Z Milbo $
+ * @version $Id: view.html.php 10297 2020-04-07 22:19:33Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -66,7 +66,9 @@ class VirtuemartViewCategory extends VmViewAdmin {
 				$category->virtuemart_vendor_id = vmAccess::getVendorId();
 			}*/
 
-			$parent = $model->getParentCategory( $category->virtuemart_category_id );
+			$parent = $model->getTable('categories');
+			$parent->load((int) $category->category_parent_id);
+			//$parent = $model->getParentCategory( $category->virtuemart_category_id );
 			$this->assignRef('parent', $parent);
 
 			$this->jTemplateList = ShopFunctions::renderTemplateList(vmText::_('COM_VIRTUEMART_ADMIN_CFG_JOOMLA_TEMPLATE_DEFAULT'));
@@ -119,12 +121,46 @@ class VirtuemartViewCategory extends VmViewAdmin {
 			vmJsApi::ajaxCategoryDropDown('top_category_id', $param, vmText::_('COM_VIRTUEMART_CATEGORY_FORM_TOP_LEVEL'));
 
 			$this->categories = $model->getCategoryTree($topCategory,0,false,$this->lists['search']);
+
+			$catsOrderUpDown = array();
+
 			foreach($this->categories as $i=>$c){
-				$this->categories[$i]->productcount = $model->countProducts($this->categories[$i]->virtuemart_category_id);
+				$this->categories[$i]->productcount = $model->countProducts($c->virtuemart_category_id);
+
+				if(empty($catsOrderUpDown[$c->category_parent_id])){
+					$catsOrderUpDown[$c->category_parent_id]['max'] = $c->ordering;
+					$catsOrderUpDown[$c->category_parent_id]['min'] = $c->ordering;
+				} else {
+					$catsOrderUpDown[$c->category_parent_id]['max'] = max($catsOrderUpDown[$c->category_parent_id]['max'],$c->ordering);
+					$catsOrderUpDown[$c->category_parent_id]['min'] = min($catsOrderUpDown[$c->category_parent_id]['min'],$c->ordering);
+				}
+
+			}
+
+			foreach($this->categories as $i=>$c){
+				if($c->ordering == $catsOrderUpDown[$c->category_parent_id]['max']){
+					$this->categories[$i]->showOrderDown = false;
+				} else {
+					$this->categories[$i]->showOrderDown = true;
+				}
+
+				if($c->ordering == $catsOrderUpDown[$c->category_parent_id]['min']){
+					$this->categories[$i]->showOrderUp = false;
+				} else {
+					$this->categories[$i]->showOrderUp = true;
+				}
 			}
 
 			$this->catpagination = $model->getPagination();
+
+			$this->showDrag = 0;
+			if(count($this->categories) <= $this->catpagination->limit and $model->_selectedOrderingDir=='ASC' and strpos($model->_selectedOrdering,'ordering')!==FALSE and count($catsOrderUpDown)==1){
+				$this->showDrag = 1;
+			}
+
+			//vmdebug('my categories',$this->categories);
 		}
+
 
 		parent::display($tpl);
 	}

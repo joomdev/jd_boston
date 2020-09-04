@@ -10,13 +10,13 @@
  * @author Oscar van Eijk
  * @author RolandD
  * @link https://virtuemart.net
- * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2020 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 10086 2019-07-04 09:29:19Z Milbo $
+ * @version $Id: view.html.php 10334 2020-06-16 16:31:10Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -505,46 +505,57 @@ class VirtueMartViewCart extends VmView {
 
 		$updF = '';
 		if( VmConfig::get('oncheckout_ajax',false)) {
-			$updF = 'Virtuemart.updForm();';
+			$updF = 'Virtuemart.updFormS(); return;';
 		}
 
-		$j='jQuery(document).ready(function(){
-    var form = jQuery("#checkoutFormSubmit");
-    jQuery(".output-shipto").find(":radio").change(function(){
-		form.attr("task","checkout");
-		'.$updF.'
-		form.submit();
-    });
-
-    jQuery(".required").change(function(){
-    	var count = 0;
+		$j='if (typeof Virtuemart === "undefined")
+	var Virtuemart = {};
+jQuery(function($) {
+	Virtuemart.autocheck = function (){
+		var count = 0;
     	var hit = 0;
-    	jQuery.each(jQuery(".required"), function (key, value){
+    	$.each($(".required"), function (key, value){
     		count++;
-    		if(jQuery(this).attr("checked")){
+    		if($(this).attr("checked")){
         		hit++;
        		}
     	});
-        if(count==hit){
-        	form.attr("task","checkout");
+    	var chkOutBtn = $("#checkoutFormSubmit");
 
-			'.$updF.'
+    	$(\'input[name="task"]\').val("updateCartNoMethods");
+    	var form = $("#checkoutForm");
+    	
+    	//console.log("Required count and hit",count, hit,form);
+    	if(count==hit){
+    		'.$updF.'
+			chkOutBtn.html("<span>'.vmText::_('COM_VIRTUEMART_ORDER_CONFIRM_MNU').'</span>");
+			chkOutBtn.attr("task","confirm");
 			form.submit();
-        } else {
-        	form.attr("task","checkout");
+		} else {
+        	chkOutBtn.attr("task","checkout");
+        	chkOutBtn.html("<span>'.vmText::_('COM_VIRTUEMART_CHECKOUT_TITLE').'</span>");
         }
-    });
-    
-    jQuery("#checkoutForm").change(function(){
-    	var task = form.attr("task");
-    	if(task=="checkout"){
-    		form.html("<span>'.vmText::_('COM_VIRTUEMART_CHECKOUT_TITLE').'</span>");
-    	} else {
-    		form.html("<span>'.vmText::_('COM_VIRTUEMART_ORDER_CONFIRM_MNU').'</span>");
-    	}
-		form.attr("name",task);
+	};
+});
 		
-    });
+		
+jQuery(document).ready(function( $ ){
+	var chkOutBtn = $("#checkoutFormSubmit");
+	var form = $("#checkoutForm");
+	
+	$("#checkoutForm").find(":radio, :checkbox").bind("change", Virtuemart.autocheck);
+	
+	$("input[type=radio][name=virtuemart_paymentmethod_id]").unbind("change", Virtuemart.autocheck);
+	$("input[type=radio][name=virtuemart_shipmentmethod_id]").unbind("change", Virtuemart.autocheck);
+	
+	$(".output-shipto").find("input").unbind("change", Virtuemart.autocheck);
+	$(".output-shipto").find(":radio").bind("change", function(){
+		chkOutBtn.attr("task","checkout");
+		
+		'.$updF.'
+		form.submit();
+	});
+		
 
 });';
 		vmJsApi::addJScript('autocheck',$j);

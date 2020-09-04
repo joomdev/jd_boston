@@ -1,12 +1,4 @@
 <?php
-/**
- * @package	AcyMailing for Joomla
- * @version	6.3.1
- * @author	acyba.com
- * @copyright	(C) 2009-2019 ACYBA S.A.R.L. All rights reserved.
- * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 defined('_JEXEC') or die('Restricted access');
 ?><?php
 
@@ -20,16 +12,13 @@ class plgAcymUser extends acymPlugin
 
         global $acymCmsUserVars;
         $this->cmsUserVars = $acymCmsUserVars;
+
+        $this->pluginDescription->name = acym_translation_sprintf('ACYM_CMS_USER', 'Joomla');
     }
 
     public function dynamicText()
     {
-        $onePlugin = new stdClass();
-        $onePlugin->name = acym_translation_sprintf('ACYM_CMS_USER', 'Joomla');
-        $onePlugin->plugin = __CLASS__;
-        $onePlugin->help = 'plugin-taguser';
-
-        return $onePlugin;
+        return $this->pluginDescription;
     }
 
     public function textPopup()
@@ -69,7 +58,7 @@ class plgAcymUser extends acymPlugin
         $typeinfo[] = acym_selectOption('sender', 'ACYM_SENDER_INFORMATION');
         if (!empty($isAutomation)) $typeinfo[] = acym_selectOption('current', 'ACYM_USER_TRIGGERING_AUTOMATION');
 
-        $text .= acym_radio($typeinfo, 'typeinfo', 'receiver', null, ['onclick' => 'changeUserTag(selectedTag)']);
+        $text .= acym_radio($typeinfo, 'typeinfo', 'receiver', ['onclick' => 'changeUserTag(selectedTag)']);
 
         $fields = [
             $this->cmsUserVars->username => 'ACYM_LOGIN_NAME',
@@ -79,7 +68,7 @@ class plgAcymUser extends acymPlugin
         ];
 
         foreach ($fields as $fieldname => $description) {
-            $text .= '<div class="grid-x medium-12 cell acym__listing__row acym__listing__row__popup text-left" id="'.$fieldname.'option" onclick="changeUserTag(\''.$fieldname.'\');" >
+            $text .= '<div class="grid-x medium-12 cell acym__row__no-listing acym__listing__row__popup text-left" id="'.$fieldname.'option" onclick="changeUserTag(\''.$fieldname.'\');" >
                         <div class="cell medium-6 small-12 acym__listing__title acym__listing__title__dynamics">'.$fieldname.'</div>
                         <div class="cell medium-6 small-12 acym__listing__title acym__listing__title__dynamics">'.acym_translation($description).'</div>
                      </div>';
@@ -101,7 +90,7 @@ class plgAcymUser extends acymPlugin
                         if ($oneCF->group_id != $oneGroup->id) {
                             continue;
                         }
-                        $text .= '<div class="grid-x medium-12 cell acym__listing__row acym__listing__row__popup text-left" id="'.$oneCF->id.'customoption" onclick="changeUserTag(\''.$oneCF->id.'custom\');" >
+                        $text .= '<div class="grid-x medium-12 cell acym__row__no-listing acym__listing__row__popup text-left" id="'.$oneCF->id.'customoption" onclick="changeUserTag(\''.$oneCF->id.'custom\');" >
                                     <div class="cell medium-6 small-12 acym__listing__title acym__listing__title__dynamics">'.$oneCF->title.'</div>
                                  </div>';
                     }
@@ -116,7 +105,7 @@ class plgAcymUser extends acymPlugin
 
     public function replaceUserInformation(&$email, &$user, $send = true)
     {
-        $extractedTags = $this->acympluginHelper->extractTags($email, 'usertag');
+        $extractedTags = $this->pluginHelper->extractTags($email, 'usertag');
         if (empty($extractedTags)) {
             return;
         }
@@ -156,7 +145,7 @@ class plgAcymUser extends acymPlugin
             }
 
             if (!empty($idused) && empty($this->sendervalues[$idused]) && empty($receivervalues[$idused])) {
-                $receivervalues[$idused] = acym_loadObject('SELECT * FROM '.$this->cmsUserVars->table.' WHERE '.$this->cmsUserVars->id.' = '.intval($idused).' LIMIT 1');
+                $receivervalues[$idused] = acym_loadObject('SELECT * FROM '.$this->cmsUserVars->table.' WHERE '.$this->cmsUserVars->id.' = '.intval($idused));
 
                 if ($save) {
                     $this->sendervalues[$idused] = $receivervalues[$idused];
@@ -257,10 +246,10 @@ class plgAcymUser extends acymPlugin
             }
 
             $tags[$i] = $replaceme;
-            $this->acympluginHelper->formatString($tags[$i], $mytag);
+            $this->pluginHelper->formatString($tags[$i], $mytag);
         }
 
-        $this->acympluginHelper->replaceTags($email, $tags);
+        $this->pluginHelper->replaceTags($email, $tags);
     }
 
     public function onAcymDeclareConditions(&$conditions)
@@ -473,7 +462,8 @@ class plgAcymUser extends acymPlugin
         }
 
         if (strpos($options['field'], 'cf_') !== false) {
-            $query->leftjoin['cmsuserfields'.$num] = '#__fields_values AS cmsuserfields'.$num.' ON cmsuserfields'.$num.'.item_id = user.cms_id AND cmsuserfields'.$num.'.field_id = '.intval($options['field']);
+            $cfId = substr($options['field'], 3);
+            $query->leftjoin['cmsuserfields'.$num] = '#__fields_values AS cmsuserfields'.$num.' ON cmsuserfields'.$num.'.item_id = user.cms_id AND cmsuserfields'.$num.'.field_id = '.intval($cfId);
             $query->where[] = $query->convertQuery('cmsuserfields'.$num, 'value', $options['operator'], $options['value'], '');
         } else {
             $type = '';
@@ -566,6 +556,12 @@ class plgAcymUser extends acymPlugin
         if (!empty($automation['acy_cmsfield'])) {
             $automation = acym_translation_sprintf('ACYM_FILTER_ACY_CMS_FIELD_SUMMARY', $automation['acy_cmsfield']['field'], $automation['acy_cmsfield']['operator'], $automation['acy_cmsfield']['value']);
         }
+    }
+
+    public function onAcymAfterUserConfirm(&$user)
+    {
+        $automationClass = acym_get('class.automation');
+        $automationClass->trigger('user_confirmation', ['userId' => $user->id]);
     }
 }
 

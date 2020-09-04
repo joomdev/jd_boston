@@ -21,8 +21,6 @@ defined ('_JEXEC') or die('Restricted access');
 static $ask_recommened_loaded = false;
 if($ask_recommened_loaded) return '';
 
-$product = $viewData['product'];
-
 if(VmConfig::get('usefancy',1)){
 	vmJsApi::addJScript( 'fancybox/jquery.fancybox-1.3.4.pack',false, false);
 	vmJsApi::css('jquery.fancybox-1.3.4');

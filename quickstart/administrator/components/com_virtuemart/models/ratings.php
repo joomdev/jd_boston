@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: ratings.php 10039 2019-04-01 12:00:06Z Milbo $
+* @version $Id: ratings.php 10312 2020-05-04 13:14:45Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -69,6 +69,7 @@ class VirtueMartModelRatings extends VmModel {
 		} else {
 			$myarray = array('created_on','product_name','virtuemart_rating_id');
 			$this->removevalidOrderingFieldName('pr.created_on');
+			$this->removevalidOrderingFieldName('pr.locked_on');
 			$this->removevalidOrderingFieldName('virtuemart_rating_review_id');
 			$this->removevalidOrderingFieldName('vote');
 			$this->_selectedOrdering = 'created_on';
@@ -118,20 +119,24 @@ class VirtueMartModelRatings extends VmModel {
      */
     public function getRatings() {
 
-     	$tables = ' FROM `#__virtuemart_ratings` AS `r` JOIN `#__virtuemart_products_'.VmConfig::$vmlang.'` AS `pr`
+     	$tables = ' FROM `#__virtuemart_ratings` AS `r` INNER JOIN `#__virtuemart_products_'.VmConfig::$vmlang.'` AS `pr`
      			ON r.`virtuemart_product_id` = pr.`virtuemart_product_id` ';
+     	$tables .= ' INNER JOIN `#__virtuemart_rating_reviews` AS `rw`
+     			ON r.`virtuemart_product_id` = rw.`virtuemart_product_id` ';
 
+     
 		$whereString = '';
 		if(VmConfig::get('multix','none')!='none'){
 			$tables .= ' LEFT JOIN  `#__virtuemart_products` as p ON r.`virtuemart_product_id` = p.`virtuemart_product_id`';
+
 			$virtuemart_vendor_id = vmAccess::getVendorId();
 			if(!empty($virtuemart_vendor_id)){
 				$whereString = ' WHERE virtuemart_vendor_id="'.$virtuemart_vendor_id.'"';
 			}
 		}
 
-     	$this->_data = $this->exeSortSearchListQuery(0,' r.*,pr.`product_name` ',$tables,$whereString,'',$this->_getOrdering());
-
+     	$this->_data = $this->exeSortSearchListQuery(0,' r.*,rw.review_language,rw.virtuemart_rating_review_id,pr.`product_name` ',$tables,$whereString,'',$this->_getOrdering());
+     	//vmdebug('test',$this->_data);
      	return $this->_data;
     }
 
@@ -186,8 +191,14 @@ class VirtueMartModelRatings extends VmModel {
 	    }
 		static $reviews = array();
 		$hash = VmConfig::$vmlang.$virtuemart_product_id.$this->_selectedOrderingDir.$this->_selectedOrdering;
-		if(!isset($reviews[$hash])){
 
+		if(!isset($reviews[$hash])){
+		    $app = JFactory::getApplication();
+		    $language_filter = VmConfig::get('reviews_languagefilter');
+
+            if (VmConfig::get('reviews_autopublish')) {
+                
+            }
 			$jKind = 'INNER';
 			if($virtuemart_vendor_id){
 				$jKind = 'LEFT';
@@ -204,10 +215,16 @@ class VirtueMartModelRatings extends VmModel {
 			(`pr`.`virtuemart_rating_vote_id` IS NOT NULL AND `rv`.`virtuemart_rating_vote_id`=`pr`.`virtuemart_rating_vote_id` ) XOR
 			(`pr`.`virtuemart_rating_vote_id` IS NULL AND (`rv`.`virtuemart_product_id`=`pr`.`virtuemart_product_id` and `rv`.`created_by`=`pr`.`created_by`) )';
 		$tables .= 'LEFT JOIN `#__users` AS `u`	ON `pr`.`created_by` = `u`.`id`';
-*/
+		*/
+			
+
 			$whereString = ' WHERE  `pr`.`virtuemart_product_id` = "'.$virtuemart_product_id.'" ';
 			if(!empty($virtuemart_vendor_id)){
 				$whereString .= ' AND `p`.virtuemart_vendor_id="'.$virtuemart_vendor_id.'"';
+			}
+			vmdebug('$app->isAdmin()',$app->isAdmin());
+			if($language_filter && !$app->isAdmin()) {
+			    $whereString .= ' AND `pr`.review_language="'.VmConfig::$vmlang.'"';
 			}
 			self::$_select = self::getSelect();
 			$reviews[$hash] = $this->exeSortSearchListQuery(0,self::$_select,$tables,$whereString,'',$this->_getOrdering(), '', $num_reviews);
@@ -385,8 +402,7 @@ class VirtueMartModelRatings extends VmModel {
 
 		if(empty($data)) $data = vRequest::getPost();
 
-		$app = JFactory::getApplication();
-		if( $app->isSite() ){
+		if(VmConfig::isSite() ){
 			$user = JFactory::getUser();
 			$data['created_by'] = $user->id;
 			$allowReview = $this->allowReview($virtuemart_product_id);
@@ -500,18 +516,18 @@ class VirtueMartModelRatings extends VmModel {
 
 		if($allowReview and !empty($data['comment'])){
 			//if(!empty($data['comment'])){
-			$data['comment'] = substr($data['comment'], 0, VmConfig::get('vm_reviews_maximum_comment_length', 2000)) ;
 
-			// no HTML TAGS but permit all alphabet
-			$value =	preg_replace('@<[\/\!]*?[^<>]*?>@si','',$data['comment']);//remove all html tags
-			$value =	(string)preg_replace('#on[a-z](.+?)\)#si','',$value);//replace start of script onclick() onload()...
-			$value = trim(str_replace('"', ' ', $value),"'") ;
-			$data['comment'] =	(string)preg_replace('#^\'#si','',$value);//replace ' at start
-			$data['comment'] = nl2br($data['comment']);  // keep returns
+			$data['comment'] = vRequest::filter($data['comment'],FILTER_SANITIZE_STRING, array());
+			$data['comment'] = ShopfunctionsF::vmSubstr($data['comment'], 0, VmConfig::get('reviews_maximum_comment_length', 2000)) ;
+			$data['comment'] = nl2br($data['comment']);
+
+
+
 			//set to defaut value not used (prevent hack)
 			$data['review_ok'] = 0;
 			$data['review_rating'] = 0;
 			$data['review_editable'] = 0;
+			$data['review_language'] = $data['review_language'];
 			// Check if ratings are auto-published (set to 0 prevent injected by user)
 			//
 

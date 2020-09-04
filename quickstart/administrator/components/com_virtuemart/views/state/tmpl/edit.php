@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: edit.php 9821 2018-04-16 18:04:39Z Milbo $
+* @version $Id: edit.php 10222 2019-12-09 16:24:54Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -31,7 +31,6 @@ AdminUIHelper::startAdminArea($this);
 	<table class="admintable">
 		<?php
 		echo VmHTML::row('input', 'COM_VIRTUEMART_STATE_NAME', 'state_name', $this->state->state_name,'class="required" size="50"');
-		echo VmHTML::row('booleanlist', 'COM_VIRTUEMART_PUBLISHED', 'published', $this->state->published);
 		echo VmHTML::row('booleanlist', 'COM_VIRTUEMART_PUBLISHED', 'published', $this->state->published);
 		echo VmHTML::row('genericlist', 'COM_VIRTUEMART_WORLDZONE', $this->worldZones, 'virtuemart_worldzone_id', '', 'virtuemart_worldzone_id', 'zone_name', $this->state->virtuemart_worldzone_id);
 		echo VmHTML::row('input', 'COM_VIRTUEMART_STATE_3_CODE', 'state_3_code', $this->state->state_3_code,'size="10"');

@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: shipmentmethod.php 10026 2019-03-13 10:33:11Z Milbo $
+ * @version $Id: shipmentmethod.php 10314 2020-05-04 13:24:56Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -50,6 +50,7 @@ class VirtueMartModelShipmentmethod extends VmModel {
 
 		$this->_selectedOrdering = 'i.ordering';
 		$this->setToggleName('shared');
+
 	}
 
 	/**
@@ -70,11 +71,18 @@ class VirtueMartModelShipmentmethod extends VmModel {
 				$this->_cache[$this->_id]->virtuemart_vendor_id = vmAccess::getVendorId('shipmentmethod.edit');;
 			}
 
+			$varsToPushParam = $this->_cache[$this->_id]->_varsToPushParam;
 			if ($this->_cache[$this->_id]->shipment_jplugin_id) {
 				JPluginHelper::importPlugin ('vmshipment');
 				$dispatcher = JDispatcher::getInstance ();
 				$blind = 0;
 				$retValue = $dispatcher->trigger ('plgVmDeclarePluginParamsShipmentVM3', array(&$this->_cache[$this->_id]));
+			}
+
+			if(empty($this->_cache[$this->_id]->_varsToPushParam)){
+				$this->_cache[$this->_id]->_varsToPushParam = $varsToPushParam;
+			} else {
+				$this->_cache[$this->_id]->_varsToPushParam = array_merge($this->_cache[$this->_id]->_varsToPushParam, $varsToPushParam);
 			}
 
 			if(!empty($this->_cache[$this->_id]->_varsToPushParam)){
@@ -92,8 +100,8 @@ class VirtueMartModelShipmentmethod extends VmModel {
 				}
 
 				foreach($this->_cache[$this->_id]->getCryptedFields() as $field){
-					if(isset($this->_cache[$this->_id]->$field)){
-						$this->_cache[$this->_id]->$field = vmCrypt::decrypt($this->_cache[$this->_id]->$field,$date);
+					if(isset($this->_cache[$this->_id]->{$field})){
+						$this->_cache[$this->_id]->{$field} = vmCrypt::decrypt($this->_cache[$this->_id]->{$field},$date);
 					}
 				}
 			}
@@ -129,11 +137,15 @@ class VirtueMartModelShipmentmethod extends VmModel {
 		$whereString = '';
 		if (count($where) > 0) $whereString = ' WHERE '.implode(' AND ', $where) ;
 
-		$datas =$this->exeSortSearchListQuery(0,$select,$joins,$whereString,' ',$this->_getOrdering() );
+		$datas = $this->exeSortSearchListQuery(0,$select,$joins,$whereString,' ',$this->_getOrdering() );
 
 		if(isset($datas)){
+			$table = $this->getTable('shipmentmethods');
 			foreach ($datas as &$data){
 				$data->virtuemart_shoppergroup_ids = $this->getShipmentShopperGrps($data->virtuemart_shipmentmethod_id);
+				if(!empty($table->_varsToPushParam)){
+					VmTable::bindParameterable($data,'shipment_params',$table->_varsToPushParam);
+				}
 			}
 		}
 		return $datas;
@@ -194,15 +206,17 @@ class VirtueMartModelShipmentmethod extends VmModel {
 
 		$table = $this->getTable('shipmentmethods');
 
+		$varsToPushParam = $table->_varsToPushParam;
+
+		VmConfig::importVMPlugins('vmshipment');
+		
 		if(isset($data['shipment_jplugin_id'])){
 
 			$q = 'UPDATE `#__extensions` SET `enabled`= 1 WHERE `extension_id` = "'.$data['shipment_jplugin_id'].'"';
 			$db->setQuery($q);
 			$db->execute();
-
-
-
-			JPluginHelper::importPlugin('vmshipment');
+			
+			
 			$dispatcher = JDispatcher::getInstance();
 			//bad trigger, we should just give it data, so that the plugins itself can check the data to be stored
 			//so this trigger is now deprecated and will be deleted in vm2.2
@@ -212,12 +226,17 @@ class VirtueMartModelShipmentmethod extends VmModel {
 
 		}
 
+		if(empty($table->_varsToPushParam)){
+			$table->_varsToPushParam = $varsToPushParam;
+		} else {
+			$table->_varsToPushParam = array_merge($table->_varsToPushParam, $varsToPushParam);
+		}
+
 		$table->bindChecknStore($data);
 
 		$xrefTable = $this->getTable('shipmentmethod_shoppergroups');
 		$xrefTable->bindChecknStore($data);
 
-		JPluginHelper::importPlugin('vmshipment');
 		//Add a hook here for other shipment methods, checking the data of the choosed plugin
 		$dispatcher = JDispatcher::getInstance();
 		$retValues = $dispatcher->trigger('plgVmOnStoreInstallShipmentPluginTable', array(  $data['shipment_jplugin_id']));

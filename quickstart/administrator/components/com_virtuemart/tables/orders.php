@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: orders.php 10051 2019-05-02 12:07:26Z Milbo $
+* @version $Id: orders.php 10214 2019-11-27 20:16:32Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -149,7 +149,7 @@ class TableOrders extends VmTableData {
 
 		$k = $this->_tbl_key;
 		if ($id===null) {
-			$id = $this->$k;
+			$id = $this->{$k};
 		}
 
 		$this->_db->setQuery('DELETE from `#__virtuemart_order_userinfos` WHERE `virtuemart_order_id` = ' . (int)$id);

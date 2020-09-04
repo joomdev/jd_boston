@@ -188,10 +188,11 @@ class VirtueMartModelInvoice extends VmModel {
 	}
 
 	function createStoreNewInvoiceNumberById($orderId, $orderDetails = false){
+
 		if(!$orderDetails) {
 			$order = $this->getOrder( $orderId );
 			$orderDetails = $order['details']['BT'];
-		} else if(empty($orderDetails['virtuemart_order_id'])){
+		} else if(empty($orderDetails['virtuemart_order_id']) or empty($orderDetails['virtuemart_vendor_id'])){
 			$order = $this->getOrder( $orderId );
 			if(!empty($order['details']['BT']) and is_object($order['details']['BT'])){
 				$orderDetails = array_merge($orderDetails,get_object_vars($order['details']['BT']));
@@ -199,8 +200,8 @@ class VirtueMartModelInvoice extends VmModel {
 				vmdebug('createStoreNewInvoiceNumberById could not merge array',$orderId,$order,$orderDetails);
 				vmTrace('Hmmm createStoreNewInvoiceNumberById');
 			}
-
 		}
+
 		$ret = $this->createStoreNewInvoiceNumber( $orderDetails );
 		if(!empty($ret[0])){
 			return $ret[0];
@@ -223,16 +224,13 @@ class VirtueMartModelInvoice extends VmModel {
 
 		if($orderDetails['invoice_locked']) return false;
 
-		JPluginHelper::importPlugin('vmextended');
-		JPluginHelper::importPlugin('vmshopper');
-		JPluginHelper::importPlugin('vmshipment');
-		JPluginHelper::importPlugin('vmpayment');
+		VmConfig::importVMPlugins('vmpayment');
 
 		$dispatcher = JDispatcher::getInstance();
 		// plugin returns invoice number, 0 if it does not want an invoice number to be created by Vm
 		$plg_datas = $dispatcher->trigger('plgVmOnUserInvoice',array($orderDetails,&$data));
 
-		if(!isset($data['invoice_number']) ) {
+		if(empty($data['invoice_number']) ) {
 			// check the default configuration
 			$orderstatusForInvoice = VmConfig::get('inv_os',array('C'));
 			if(!is_array($orderstatusForInvoice)) $orderstatusForInvoice = array($orderstatusForInvoice); //for backward compatibility 2.0.8e
@@ -245,11 +243,11 @@ class VirtueMartModelInvoice extends VmModel {
 				$db->setQuery($q);
 
 				$count = $db->loadResult()+1;
+				vmdebug('createStoreNewInvoiceNumber count and query ',$count,$q);
 
-				if(empty($data['invoice_number'])) {
-					$date = date("Y-m-d");
-					$data['invoice_number'] = str_replace('-', '', substr($date,2,8)).vmCrypt::getHumanToken(4).'0'.$count;
-				}
+				$date = date("Y-m-d");
+				$data['invoice_number'] = str_replace('-', '', substr($date,2,8)).vmCrypt::getHumanToken(4).'0'.$count;
+
 			} else {
 				return false;
 			}

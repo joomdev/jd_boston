@@ -2,7 +2,7 @@
 /**
  * @package   Astroid Framework
  * @author    JoomDev https://www.joomdev.com
- * @copyright Copyright (C) 2009 - 2019 JoomDev.
+ * @copyright Copyright (C) 2009 - 2020 JoomDev.
  * @license https://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 or Later
  * 	DO NOT MODIFY THIS FILE DIRECTLY AS IT WILL BE OVERWRITTEN IN THE NEXT UPDATE
  *  You can easily override all files under /frontend/ folder.
@@ -12,9 +12,12 @@
 defined('_JEXEC') or die;
 extract($displayData);
 
-$enable_footer = $template->params->get('footer', 0);
+$params = Astroid\Framework::getTemplate()->getParams();
+$document = Astroid\Framework::getDocument();
+
+$enable_footer = $params->get('footer', 0);
 if ($enable_footer) {
-   $footer_copyright = $template->params->get('footer_copyright');
+   $footer_copyright = $params->get('footer_copyright');
    // values to find & replace	
    $year = JFactory::getDate()->format('Y');
    $sitename = JFactory::getApplication()->get('sitename');
@@ -24,4 +27,3 @@ if ($enable_footer) {
    $html = '<div id="astroid-footer" class="astroid-footer">' . $footertext . ' Powered by <a href="https://astroidframework.com" target="_blank">Astroid</a>. Design by <a href="https://joomdev.com" target="_blank">JoomDev</a></div>';
    echo $html;
 }
-?> 

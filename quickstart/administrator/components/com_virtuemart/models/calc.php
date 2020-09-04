@@ -16,7 +16,7 @@ defined('_JEXEC') or die('Restricted access');
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: calc.php 10000 2018-12-14 08:25:51Z Milbo $
+* @version $Id: calc.php 10314 2020-05-04 13:24:56Z Milbo $
 */
 
 class VirtueMartModelCalc extends VmModel {
@@ -72,7 +72,7 @@ class VirtueMartModelCalc extends VmModel {
 			$xrefTable = $this->getTable('calc_manufacturers');
 			$this->_cache[$this->_id]->virtuemart_manufacturers = $xrefTable->load($this->_id);
 
-			JPluginHelper::importPlugin('vmcalculation');
+			VmConfig::importVMPlugins('vmcalculation');
 			$dispatcher = JDispatcher::getInstance();
 			$dispatcher->trigger('plgVmGetPluginInternalDataCalc',array(&$this->_cache[$this->_id]));
 
@@ -112,7 +112,7 @@ class VirtueMartModelCalc extends VmModel {
 
 			$data->currencyName = ShopFunctions::getCurrencyByID($data->calc_currency);
 
-			JPluginHelper::importPlugin('vmcalculation');
+			VmConfig::importVMPlugins('vmcalculation');
 			$dispatcher = JDispatcher::getInstance();
 			$error = $dispatcher->trigger('plgVmGetPluginInternalDataCalcList',array(&$data));
 		}
@@ -154,12 +154,18 @@ class VirtueMartModelCalc extends VmModel {
 
 		//Missing in calculation plugins,... plgVmGetTablePluginParams or declare
 		//if ($type == 'E') {
-		/*	JPluginHelper::importPlugin ('vmcalculation');
+		/*	VmConfig::importVMPlugins ('vmcalculation');
 			$dispatcher = JDispatcher::getInstance ();
 			//We call here vmplugin->getTablePluginParams which sets the xParam and the varsToPush of the Plugin
 			vmdebug('setParameterableByFieldType before trigger plgVmGetTablePluginParams ',$xParams,$varsToPush);
 			$retValue = $dispatcher->trigger ('plgVmDeclarePluginParams', array('custom',$custom_element, $custom_jplugin_id, &$xParams, &$varsToPush));
 		//}*/
+
+		$table->has_categories = empty($data['calc_categories'])? 0:1;
+		$table->has_shoppergroups = empty($data['virtuemart_shoppergroup_id'])? 0:1;
+		$table->has_manufacturers = empty($data['virtuemart_manufacturer_id'])? 0:1;
+		$table->has_countries = empty($data['virtuemart_country_id'])? 0:1;
+		$table->has_states = empty($data['virtuemart_state_id'])? 0:1;
 
 		if(!$table->bindChecknStore($data)){
 			return false;
@@ -180,7 +186,7 @@ class VirtueMartModelCalc extends VmModel {
 		$xrefTable = $this->getTable('calc_manufacturers');
     	$xrefTable->bindChecknStore($data);
 
-		JPluginHelper::importPlugin('vmcalculation');
+		VmConfig::importVMPlugins('vmcalculation');
 		$dispatcher = JDispatcher::getInstance();
 		//$error = $dispatcher->trigger('plgVmStorePluginInternalDataCalc',array(&$data));
 		$error = $dispatcher->trigger('plgVmOnStoreInstallPluginTable',array('calculation',$data,$table));
@@ -273,7 +279,7 @@ class VirtueMartModelCalc extends VmModel {
 				$ok = false;
 			}
 
-			JPluginHelper::importPlugin('vmcalculation');
+			VmConfig::importVMPlugins('vmcalculation');
 			$dispatcher = JDispatcher::getInstance();
 			$returnValues = $dispatcher->trigger('plgVmDeleteCalculationRow', array( $id));
 

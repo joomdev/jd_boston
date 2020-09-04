@@ -1,16 +1,8 @@
 <?php
-/**
- * @package	AcyMailing for Joomla
- * @version	6.3.1
- * @author	acyba.com
- * @copyright	(C) 2009-2019 ACYBA S.A.R.L. All rights reserved.
- * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 defined('_JEXEC') or die('Restricted access');
 ?><?php
 
-class acymencodingHelper
+class acymencodingHelper extends acymObject
 {
     public function change($data, $inputCharset, $outputCharset)
     {
@@ -18,29 +10,29 @@ class acymencodingHelper
         $outputCharset = strtoupper(trim($outputCharset));
 
         $supportedEncodings = [
-            "BIG5",
-            "ISO-8859-1",
-            "ISO-8859-2",
-            "ISO-8859-3",
-            "ISO-8859-4",
-            "ISO-8859-5",
-            "ISO-8859-6",
-            "ISO-8859-7",
-            "ISO-8859-8",
-            "ISO-8859-9",
-            "ISO-8859-10",
-            "ISO-8859-13",
-            "ISO-8859-14",
-            "ISO-8859-15",
-            "ISO-2022-JP",
-            "US-ASCII",
-            "UTF-7",
-            "UTF-8",
-            "UTF-16",
-            "WINDOWS-1251",
-            "WINDOWS-1252",
-            "ARMSCII-8",
-            "ISO-8859-16",
+            'BIG5',
+            'ISO-8859-1',
+            'ISO-8859-2',
+            'ISO-8859-3',
+            'ISO-8859-4',
+            'ISO-8859-5',
+            'ISO-8859-6',
+            'ISO-8859-7',
+            'ISO-8859-8',
+            'ISO-8859-9',
+            'ISO-8859-10',
+            'ISO-8859-13',
+            'ISO-8859-14',
+            'ISO-8859-15',
+            'ISO-2022-JP',
+            'US-ASCII',
+            'UTF-7',
+            'UTF-8',
+            'UTF-16',
+            'WINDOWS-1251',
+            'WINDOWS-1252',
+            'ARMSCII-8',
+            'ISO-8859-16',
         ];
         if (!in_array($inputCharset, $supportedEncodings)) {
             acym_enqueueMessage(acym_translation_sprintf('ACYM_ENCODING_NOT_SUPPORTED_X', $inputCharset), 'error');
@@ -58,7 +50,7 @@ class acymencodingHelper
 
         if (function_exists('iconv')) {
             set_error_handler('acym_error_handler_encoding');
-            $encodedData = iconv($inputCharset, $outputCharset."//IGNORE", $data);
+            $encodedData = iconv($inputCharset, $outputCharset.'//IGNORE', $data);
             restore_error_handler();
             if (!empty($encodedData) && !acym_error_handler_encoding('result')) {
                 return $encodedData;
@@ -106,24 +98,38 @@ class acymencodingHelper
         return '';
     }
 
-    public function encodingField($name, $selected, $attribs = 'style="max-width:200px;"')
+    public function encodingField($name, $selected, $attribs = null)
     {
-        $encodings = [
-            'binary' => 'Binary',
-            'quoted' => 'Quoted-printable',
-            '7bit' => '7 Bit',
-            '8bit' => '8 Bit',
-            'base64' => 'Base 64',
-        ];
-        $attribs .= 'style="max-width:200px;"';
-        echo acym_select($encodings, $name, $selected, $attribs, '', '', 'config_encoding');
+        if ($attribs === null) {
+            $attribs = [
+                'class' => 'acym__select',
+                'acym-data-infinite' => '',
+            ];
+        }
+        $attribs['style'] = empty($attribs['style']) ? 'max-width:200px;' : 'max-width:200px;'.$attribs['style'];
+
+        echo acym_select(
+            [
+                'binary' => 'Binary',
+                'quoted' => 'Quoted-printable',
+                '7bit' => '7 Bit',
+                '8bit' => '8 Bit',
+                'base64' => 'Base 64',
+            ],
+            $name,
+            $selected,
+            $attribs,
+            '',
+            '',
+            'config_encoding'
+        );
     }
 
     public function charsetField($name, $selected, $attribs = null)
     {
         $charsetType = acym_get('type.charset');
 
-        echo acym_select($charsetType->charsets, $name, $selected, $attribs, '', '');
+        return acym_select($charsetType->charsets, $name, $selected, $attribs, '', '');
     }
 }
 

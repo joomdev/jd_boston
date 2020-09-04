@@ -118,7 +118,7 @@ class GenericTableUpdater extends VmModel{
 // 					$fields['vendor_legal_info'] = 'varchar('.VmConfig::get('dblegalsize',1100).') '.$linedefault;
 
 					$fields['vendor_store_desc'] = 'text '.$linedefaulttext;
-					$fields['vendor_terms_of_service'] = 'text '.$linedefaulttext;
+					$fields['vendor_terms_of_service'] = 'mediumtext '.$linedefaulttext;
 					$fields['vendor_legal_info'] = 'text '.$linedefaulttext;
 
 					$fields['vendor_letter_css'] = 'text '.$linedefaulttext;
@@ -147,7 +147,7 @@ class GenericTableUpdater extends VmModel{
 				}
 			} else {
 				vmdebug('dblayoutstrict false');
-				$fields['vendor_terms_of_service'] = 'text '.$linedefaulttext;
+				$fields['vendor_terms_of_service'] = 'mediumtext '.$linedefaulttext;
 				$key = array_search('vendor_terms_of_service', $translatableFields);
 				unset($translatableFields[$key]);
 
@@ -296,6 +296,8 @@ class GenericTableUpdater extends VmModel{
 			}
 		}
 		fclose($data);
+		/*stAn, clear memory immidiately*/
+		$data = null; 
 		return $tables;
 	}
 
@@ -393,11 +395,16 @@ class GenericTableUpdater extends VmModel{
 		$q .= ") ENGINE=MyISAM  DEFAULT CHARSET=utf8 ".$comment." AUTO_INCREMENT=1 ;";
 
 		$this->_db->setQuery($q);
+		try {
 		if(!$this->_db->execute()){
 			vmError('createTable ERROR :'.$this->_db->getErrorMsg() );
 		} else {
 			vmInfo('created table '.$tablename);
 		}
+		}
+		catch(Exception $e) {
+				vmInfo('FAILED: createTable ERROR :'.$this->_db->getErrorMsg() );
+			}
 // 		$this->_app->enqueueMessage($q);
 	}
 
@@ -432,21 +439,60 @@ class GenericTableUpdater extends VmModel{
 
 		$query = "SHOW INDEXES  FROM `".$tablename."` ";	//SHOW {INDEX | INDEXES | KEYS}
 		$this->_db->setQuery($query);
-		$eKeys = $this->_db->loadObjectList();
+		$eKeysData = $this->_db->loadObjectList();
 
+  	    $eKeys = array(); 
+		foreach($eKeysData as $index) {
+			$indexName = $index->Key_name; 
+			if (!isset($eKeys[$indexName])) {
+				$eKeys[$indexName] = $index; 
+				$eKeys[$indexName]->columns = array(); 
+				$eKeys[$indexName]->columns[$index->Column_name] = $index->Column_name; 
+			}
+			else {
+				$eKeys[$indexName]->columns[$index->Column_name] = $index->Column_name; 
+			}
+		}
+		
+		
+		
 		$tkeys=array();
 		$keyT = $keys;
 
 		//Lets check if something changed
-		foreach($keyT as $name =>$value) {
+		foreach($keyT as $keyIndex =>$value) {
+			$matches = array(); 
 			$k = new stdClass();
+			$k->line = $value; 
 			if($p = strpos( $value, 'PRIMARY' ) !== false) {
 				if(strpos( $value, '`' ) !== false) {
+					/* stAn - not reliable
 					$spl = explode('`', $value);
 					$k->Key_name =  'PRIMARY';
 					$k->Column_name = $spl[1];
 					$k->Non_unique=0;
 					$tkeys[$k->Key_name] = $k;
+					*/
+					
+					$cols = preg_match_all('/`(.*?)`/', $value, $matches);
+					
+					if (isset($matches[1]) && (count($matches[1]) >= 1)) {
+						$key_name = $matches[1][0];
+					
+						$matches[1] = array_unique ($matches[1]); //if possible to name primary with something else
+						$cols = implode('|', $matches[1]);
+						$k->Primary = 1;
+						$k->Key_name = 'PRIMARY';
+						$k->Column_name = $cols;
+						$k->keyIndex = $keyIndex;
+					
+						foreach ($matches[1] as $col) {
+							$k->columns[$col] = $col; 
+						}
+					
+						$tkeys['PRIMARY'] = $k;
+					}
+					
 					continue;
 				}
 			}
@@ -458,7 +504,10 @@ class GenericTableUpdater extends VmModel{
 				$k->Non_unique=1;
 			}
 
+					
+					
 			if(strpos( $value, '`' ) !== false) {
+				/* stAn old code up to vm3.6.11 - not reliable for multi columns:
 				$spl = explode('`', $value);
 
 				//We dont prevent drop and add of double keys
@@ -467,19 +516,50 @@ class GenericTableUpdater extends VmModel{
 					$k->Key_name = $spl[1];
 					$k->Column_name = $spl[3];
 					$tkeys[$k->Column_name] = $k;
+					
+					
 				}
-				/*$tkeys[$k->Column_name] = $k;
-				if(isset($spl[5])) {
-					$k2 = clone($k);
-
-					$k2->Column_name = $spl[5];
-					$tkeys[$k2->Column_name] = $k2;
-				}*/
+				*/
+				$cols = preg_match_all('/`(.*?)`/', $value, $matches);
+				if (isset($matches[1]) && (count($matches[1]) > 1)) {
+					$key_name = $matches[1][0]; 
+					unset($matches[1][0]); 
+					$cols = implode('|', $matches[1]); 
+					$k->Key_name = $key_name;
+					$k->Column_name = $cols;
+					$k->keyIndex = $keyIndex;
+					foreach ($matches[1] as $col) {
+						$k->columns[$col] = $col; 
+					}
+					$tkeys[$key_name] = $k;
+				}
+				
 			}
 		}
+		
+		$primaryFound = false;
 
 		foreach($eKeys as $i => $eKey) {
-
+			if (isset($tkeys[$i])) {
+				/*stAn - check if array values are exactly same regardless of order */
+				$diff = array_diff($eKey->columns, $tkeys[$i]->columns); 
+				$diff2 = array_diff($tkeys[$i]->columns, $eKey->columns);
+				if ((empty($diff)) && (empty($diff2))) {
+					if ($i === 'PRIMARY') {
+						$primaryFound = true; 
+					}
+					$keyIndex = $tkeys[$i]->keyIndex;
+					unset($keys[$keyIndex]); 
+					unset($eKeys[$i]);
+					continue; 
+				}
+				else {
+				
+				//stAn - vmdebug can come here to display which indexes are going to be updated from $tkey[$i]->line 
+				
+				}
+			}
+			/*
 			if($eKey->Key_name == 'PRIMARY'){
 				$t = $tkeys['PRIMARY'];
 				if($eKey->Column_name==$t->Column_name and $eKey->Non_unique==$t->Non_unique){
@@ -501,11 +581,15 @@ class GenericTableUpdater extends VmModel{
 				}
 
 			}
+			*/
 		}
 
 		$ok=true;
 
-		$primaryFound = false;
+
+			
+
+		
 		foreach($eKeys as $i => $eKey) {
 
 			if(strpos( $eKey->Key_name, 'PRIMARY' ) !== false) {
@@ -517,19 +601,47 @@ class GenericTableUpdater extends VmModel{
 			$query = "SHOW INDEXES  FROM `".$tablename."` ";
 			$this->_db->setQuery($query);
 			$eKeyNamesNOW = $this->_db->loadColumn(2);
-
+			
 			if(!in_array($eKey->Key_name,$eKeyNamesNOW)) continue;
-
+			
+			if ((!empty($tkeys[$eKey->Key_name])) || (!empty($keys[$eKey->Key_name]))) {
+				$is_core_field = true; 
+			}
+			else {
+				$is_core_field = false; 
+			}
+			
+			/* stAn: if the field is named same as within new schema, it is considered to be a core field, if a core field is changed it is dropped and recreated 
+			if the field is not core field, it will not get dropped with hidden config:
+			
+			ignore either specific custom index or ignore drop index per all non core fields
+			usage in virtuemart.cfg
+		    ignore.index.virtuemart_product_customfields.customfield_value=1
+			OR per any custom index:
+			ignore.index=1
+			*/
+			$config_key = 'ignore.index.'.substr($tablename, strlen($this->_prefix)).'.'.$eKey->Key_name; 
+			$ignoreChange = VmConfig::get($config_key, 0); 
+			if (((!$is_core_field) && (VmConfig::get('ignore.index', 0))) || ($ignoreChange)) {
+				vmInfo('IGNORE: alterTable DROP INDEX '.$tablename.'.'.$eKey->Key_name); 
+				continue; 
+			}
+			
 			$query = 'ALTER TABLE `'.$tablename.'` DROP INDEX `'.$eKey->Key_name.'` ';
 
 			$this->_db->setQuery($query);
-
-			$ok =$this->_db->execute();
+			try {
+				$ok = $this->_db->execute();
+			}
+			catch(Exception $e) {
+				$ok = false; 
+			}
 			if(!$ok){
-				$this->_app->enqueueMessage('alterTable DROP INDEX '.$tablename.'.'.$eKey->Key_name.' :'.$this->_db->getErrorMsg() );
+				$this->_app->enqueueMessage('FAILED: alterTable DROP INDEX '.$tablename.'.'.$eKey->Key_name.' :'.$this->_db->getErrorMsg() );
 			} else {
 				//$dropped++;
 				//vmdebug('alterKey: Dropped KEY `'.$eKey->Key_name.'` in table `'.$tablename.'`');
+				$this->_app->enqueueMessage('alterTable DROP INDEX '.$tablename.'.'.$eKey->Key_name );
 			}
 		}
 
@@ -546,11 +658,16 @@ class GenericTableUpdater extends VmModel{
 
 			if(!empty($query)){
 				$this->_db->setQuery($query);
+				try {
 				if(!$this->_db->execute()){
 					$this->_app = JFactory::getApplication();
 					$this->_app->enqueueMessage('alterKey '.$action.' INDEX '.$name.': '.$this->_db->getErrorMsg() );
 				} else {
  					//vmdebug('alterKey: a:'.$action.' KEY `'.$name.'` in table `'.$tablename.'` '.$this->_db->getQuery());
+				}
+				}
+				catch(Exception $e) {
+					$this->_app->enqueueMessage('FAILED: alterKey '.$action.' INDEX '.$name.': '.$this->_db->getErrorMsg() );
 				}
 			}
 		}
@@ -652,11 +769,26 @@ class GenericTableUpdater extends VmModel{
 						//This function drops the key only if existing
 						$this->dropPrimaryKey($tablename);
 					}
-
+					/*stAn - ignore custom colums from config
+					ignore.change.virtuemart_product_customfields.customfield_value=1
+					*/
+					$config_key = 'ignore.change.'.substr($tablename, strlen($this->_prefix)).'.'.$fieldname; 
+					$ignoreChange = VmConfig::get($config_key, 0); 
+					
+					if (!empty($ignoreChange)) {
+						$notice = 'IGNORE: alterColumns '.$tablename.' from '.$oldColumn.' to '.$fieldname.' '.$alterCommand;
+						vmInfo($notice);
+						$query = ''; 
+						continue; 
+					}
+					else {
+						
 					$query = 'ALTER TABLE `'.$tablename.'` CHANGE COLUMN `'.$fieldname.'` `'.$fieldname.'` '.$alterCommand.' '.$after.$pr;
 					$action = 'CHANGE';
 					$altered++;
-					vmdebug('alterColumns '.$tablename.' from to,',$fieldname,$oldColumn,$alterCommand);
+					$lastdebug = 'alterColumns '.$tablename.' from '.$oldColumn.' to '.$fieldname.' '.$alterCommand;
+					vmInfo($lastdebug);
+					}
 				}
 			}
 			else {
@@ -668,16 +800,26 @@ class GenericTableUpdater extends VmModel{
 				$query = 'ALTER TABLE `'.$tablename.'` ADD `'.$fieldname.'` '.$alterCommand.' '.$after.$pr;
 				$action = 'ADD';
 				$added++;
- 				vmdebug('alterColumns ADD '.$query);
+				
+				$lastdebug = 'alterColumns ADD '.$query;
+				vmdebug($lastdebug);
+ 				
 			}
 
 			if (!empty($query)) {
 				$this->_db->setQuery($query);
 				$msg = 'alterTable '.$action.' '.$tablename.'.'.$fieldname;
+				try 
+				{
 				if(!$this->_db->execute() ){
 					vmError( $msg, $msg.$query );
 				} else {
 					vmInfo( $msg );
+				}
+				}
+				catch(Exception $e) {
+					//stAn, there is no need to fail the script due to alter
+					vmInfo( 'FAILED: '.$lastDebug.' '.$query );
 				}
 			}
 			$after = ' AFTER `'.$fieldname.'` ';
@@ -699,8 +841,14 @@ class GenericTableUpdater extends VmModel{
 			if(!empty($engine) and strtoupper( $exEngine ) != strtoupper( $engine )) {
 				$q = 'ALTER TABLE '.$tablename.' ENGINE='.$engine;
 				$this->_db->setQuery( $q );
-				$this->_db->execute();
-				vmdebug( 'Changed engine '.$exEngine.' of table '.$tablename.' to '.$engine, $exEngine );
+				try {
+					$this->_db->execute();
+					vmdebug( 'Changed engine '.$exEngine.' of table '.$tablename.' to '.$engine, $exEngine );
+				}
+				catch(Exception $e) {
+					vminfo( 'FAILED: Changed engine '.$exEngine.' of table '.$tablename.' to '.$engine, $exEngine );
+				}
+				
 			}
 		}
 
@@ -739,18 +887,27 @@ class GenericTableUpdater extends VmModel{
 				$old = trim(str_replace('AUTO_INCREMENT', '',$old));
 				$q = 'ALTER TABLE `'.$tablename.'` CHANGE COLUMN `'.$column->Field.'` `'.$column->Field.'` '.$old;
 				$this->_db->setQuery($q);
+				try {
 				if(!$this->_db->execute() ){
 					vmError( 'Could not alter auto_increment column dropping primary '.$q );
+				}
+				}
+				catch(Exception $e) {
+					vmInfo( 'FAILED: Could not alter auto_increment column dropping primary '.$q );
 				}
 			}
 
 			$q = 'ALTER TABLE `'.$tablename.'`	DROP PRIMARY KEY;';
 			$this->_db->setQuery($q);
-
+			try {
 			if(!$this->_db->execute() ){
 				vmError( 'Could not drop Primary for CHANGE '.$q );
 			} else {
 				vmdebug('dropPrimaryKey '.$tablename);
+			}
+			}
+			catch(Exception $e) {
+				vmInfo( 'FAILED: Could not drop Primary for CHANGE '.$q );
 			}
 		}
 		return true;
@@ -780,8 +937,13 @@ class GenericTableUpdater extends VmModel{
 					$dropped++;
 
 					$this->_db->setQuery($query);
+					try {
 					if(!$this->_db->execute()){
 						vmError('alterTable '.$action.' '.$tablename.'.'.$fieldname.' :'.$this->_db->getErrorMsg() );
+					}
+					}
+					catch(Exception $e) {
+						vmInfo('FAILED: alterTable '.$action.' '.$tablename.'.'.$fieldname.' :'.$this->_db->getErrorMsg() );
 					}
 				}
 			}

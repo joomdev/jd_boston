@@ -41,9 +41,9 @@ VirtuemartViewConfig::$options = $options;
 		echo '</table>';
 		echo '<table class="admintable">';
 		echo '<tr><th style="min-width:160px;width:70%;"></th>
-<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_SHOW_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_SHOW').'</span></th>
-<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_PER_ROW_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_PER_ROW').'</span></th>
-<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_OMIT_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_OMIT').'</span></th>
+<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTooltip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_SHOW_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_SHOW').'</span></th>
+<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTooltip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_PER_ROW_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_PER_ROW').'</span></th>
+<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTooltip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_OMIT_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_OMIT').'</span></th>
 </tr>';
 		echo VirtuemartViewConfig::rowShopFrontSet($params, 'COM_VIRTUEMART_ADMIN_CFG_SHOW_CATEGORY', 'showcategory', 'categories_per_row', 0, 3);
 		echo VirtuemartViewConfig::rowShopFrontSet($params, 'COM_VIRTUEMART_ADMIN_CFG_SHOW_PRODUCTS', 'showproducts', 'products_per_row', 'omitLoaded', 3);
@@ -52,9 +52,9 @@ VirtuemartViewConfig::$options = $options;
 
 		echo '<table class="admintable">';
 		echo '<tr><th style="min-width:160px;width:70%;"></th>
-<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_SHOW_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_SHOW').'</span></th>
-<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_ROWS_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_ROWS').'</span></th>
-<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_OMIT_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_OMIT').'</span></th>
+<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTooltip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_SHOW_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_SHOW').'</span></th>
+<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTooltip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_ROWS_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_ROWS').'</span></th>
+<th style="min-width:40px;width:8%;text-align: center;"><span class="hasTooltip" title="'.htmlentities(vmText::_('COM_VM_ADMIN_CFG_OMIT_TIP')).'">'.vmText::_('COM_VM_ADMIN_CFG_OMIT').'</span></th>
 </tr>';
 		echo VirtuemartViewConfig::rowShopFrontSet($params, 'COM_VIRTUEMART_ADMIN_CFG_SHOW_FEATURED', 'featured', 'featured_rows', 'omitLoaded_featured');
 		echo VirtuemartViewConfig::rowShopFrontSet($params, 'COM_VIRTUEMART_ADMIN_CFG_SHOW_DISCONTINUED', 'discontinued', 'discontinued_rows', 'omitLoaded_discontinued');

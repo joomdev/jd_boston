@@ -41,7 +41,7 @@ abstract class vmCalculationPlugin extends vmPlugin {
 
 			unset($attribsCalc['virtuemart_calc_id']);
 			foreach($attribsCalc as $k=>$v){
-				$calcData->$k = $v;
+				$calcData->{$k} = $v;
 			}
 		}
 

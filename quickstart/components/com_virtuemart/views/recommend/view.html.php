@@ -176,7 +176,7 @@ class virtuemartViewrecommend extends VmView {
 		$this->vendor->vendor_name =$user->name;
 
 		foreach( $vars as $key => $val ) {
-			$this->$key = $val;
+			$this->{$key} = $val;
 		}
 
 		$this->subject = vmText::sprintf('COM_VIRTUEMART_RECOMMEND_PRODUCT',$this->name, $this->product->product_name);

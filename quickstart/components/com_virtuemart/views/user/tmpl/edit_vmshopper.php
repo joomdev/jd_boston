@@ -13,33 +13,42 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: edit_vmshopper.php 9821 2018-04-16 18:04:39Z Milbo $
+ * @version $Id: edit_vmshopper.php 10163 2019-10-09 07:09:10Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
+if($this->userDetails->user_is_vendor or $this->allowRegisterVendor or !empty($this->userDetails->virtuemart_user_id)) {
 ?>
 
 <fieldset>
-	<span class="userfields_info">
+	<legend class="userfields_info">
 		<?php echo vmText::_('COM_VIRTUEMART_SHOPPER_FORM_LBL') ?>
-	</span>
+	</legend>
 	<table class="adminForm user-details">
 <?php	if(Vmconfig::get('multix','none')!=='none'){ ?>
-
+		<?php if($this->userDetails->user_is_vendor or $this->allowRegisterVendor) { ?>
 		<tr>
 			<td class="key">
 				<label for="virtuemart_vendor_id">
 					<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_FORM_VENDOR') ?>:
 				</label>
 			</td>
+		<?php if ($this->userDetails->user_is_vendor) { ?>
 			<td>
 				<?php echo $this->lists['vendors']; ?>
 			</td>
+		<?php } else if($this->allowRegisterVendor){ ?>
+			<td>
+				<?php echo VmHtml::checkbox ('user_is_vendor', $this->userDetails->user_is_vendor, 1, 0, '', 'user_is_vendor'); ?>
+			</td>
+		<?php } ?>
 		</tr>
+	<?php } ?>
 <?php } ?>
 
+		<?php if(!empty($this->userDetails->virtuemart_user_id)) { ?>
 		<tr>
 			<td class="key">
 				<label for="customer_number">
@@ -56,7 +65,8 @@ defined('_JEXEC') or die('Restricted access');
 			} ?>
 			</td>
 		</tr>
-		 <?php if($this->lists['shoppergroups']) { ?>
+		<?php } ?>
+		 <?php if($this->lists['shoppergroups'] and !empty($this->userDetails->virtuemart_user_id)) { ?>
 		<tr>
 			<td class="key">
 				<label for="virtuemart_shoppergroup_id">
@@ -70,3 +80,4 @@ defined('_JEXEC') or die('Restricted access');
 		<?php } ?>
 	</table>
 </fieldset>
+<?php } ?>

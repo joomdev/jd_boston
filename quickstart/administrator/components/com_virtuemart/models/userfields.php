@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: userfields.php 10157 2019-09-24 08:32:57Z Milbo $
+ * @version $Id: userfields.php 10333 2020-06-16 16:24:03Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -551,7 +551,7 @@ class VirtueMartModelUserfields extends VmModel {
 		} else {
 			$sec = $_sec;
 		}
-		$cache_hash = md5($sec.json_encode($_switches).json_encode($_skip).$this->_selectedOrdering.$this->_selectedOrderingDir);
+		$cache_hash = crc32($sec.json_encode($_switches).json_encode($_skip).$this->_selectedOrdering.$this->_selectedOrderingDir);
 		if (isset(self::$_cache_ordered[$cache_hash])) return self::$_cache_ordered[$cache_hash];
 
 		$_q = 'SELECT * FROM `#__virtuemart_userfields` WHERE 1 = 1 ';
@@ -821,6 +821,9 @@ class VirtueMartModelUserfields extends VmModel {
 
 				if($defaults and $_fld->name!='virtuemart_country_id' and $_fld->name!='virtuemart_state_id') continue;
 
+				$placeholder = '';
+				if( !empty($_fld->placeholder) ) $placeholder = 'placeholder="'.vmText::_($_fld->placeholder).'"';
+
 				//Set the default on the data
 				/*if(isset($_userData) and empty($_userData[$_fld->name]) and isset($_fld->default) and $_fld->default!='' ){
 					$_userData[$_fld->name] = $_fld->default;
@@ -841,6 +844,7 @@ class VirtueMartModelUserfields extends VmModel {
 					// 					break;
 					case 'virtuemart_country_id':
 
+						VmLanguage::loadJLang('com_virtuemart_countries');
 						$attrib = array();
 						if ($_fld->size) {
 							$attrib = array('style'=>"width: ".$_fld->size."px");
@@ -927,7 +931,7 @@ class VirtueMartModelUserfields extends VmModel {
 					case 'password2':
 						$req = $_fld->required ? 'required' : '';
 						$class = 'class="validate-password '.$req.' inputbox"';
-						$_return['fields'][$_fld->name]['formcode'] = '<input type="password" id="' . $_prefix.$_fld->name . '_field" name="' . $_prefix.$_fld->name .'" '.($_fld->required ? ' class="required"' : ''). ' size="30" '.$class.' />'."\n";
+						$_return['fields'][$_fld->name]['formcode'] = '<input type="password" id="' . $_prefix.$_fld->name . '_field" name="' . $_prefix.$_fld->name .'" '.($_fld->required ? ' class="required"' : ''). ' size="30" '.$class.' '.$placeholder.' />'."\n";
 					break;
 						break;
 
@@ -971,7 +975,8 @@ class VirtueMartModelUserfields extends VmModel {
 							$maxmin = '';
 							break;
 						case 'emailaddress':
-							if( JFactory::getApplication()->isSite()) {
+
+							if( VmConfig::isSite()) {
 								if(empty($_return['fields'][$_fld->name]['value']) && $_fld->required) {
 									$_return['fields'][$_fld->name]['value'] = JFactory::getUser()->email;
 								}
@@ -981,7 +986,7 @@ class VirtueMartModelUserfields extends VmModel {
 								. '" value="' . $_return['fields'][$_fld->name]['value'] .'" '
 								. ($_fld->required ? ' class="required validate-email"' : '')
 								. ($_fld->maxlength ? ' maxlength="' . $_fld->maxlength . '"' : '')
-								. $readonly . '  /> ';
+								. $readonly . '  '.$placeholder.' /> ';
 								break;
 							}
 
@@ -993,14 +998,14 @@ class VirtueMartModelUserfields extends VmModel {
 							. '" value="' . $_return['fields'][$_fld->name]['value'] .'" '
 							. ($_fld->required ? ' class="required"' : '')
 							. ($_fld->maxlength ? ' maxlength="' . $_fld->maxlength . '"' : '')
-							. $readonly . ' /> ';
+							. $readonly . ' '.$placeholder.' /> ';
 							break;
 						case 'textarea':
 							$_return['fields'][$_fld->name]['formcode'] = '<textarea id="'
 							. $_prefix.$_fld->name . '_field" name="' . $_prefix.$_fld->name . '" cols="' . $_fld->cols
 							. '" rows="'.$_fld->rows . '" class="inputbox'.($_fld->required ? ' required': '' ).'" '
 							. ($_fld->maxlength ? ' maxlength="' . $_fld->maxlength . '"' : '')
-							. $readonly.'>'
+							. $readonly.' '.$placeholder.' >'
 							. $_return['fields'][$_fld->name]['value'] .'</textarea>';
 							break;
 						case 'editorta':
@@ -1015,7 +1020,7 @@ class VirtueMartModelUserfields extends VmModel {
 							$_return['fields'][$_fld->name]['formcode'] = '<input type="checkbox" name="'
 							. $_prefix.$_fld->name . '" id="' . $_prefix.$_fld->name . '_field" value="1" '
 							. ($_return['fields'][$_fld->name]['value'] ? 'checked="checked"' : '')
-							. ($_fld->required ? ' class="required"' : '').'/>';
+							. ($_fld->required ? ' class="required"' : '').' />';
 							 if($_return['fields'][$_fld->name]['value']) {
 								 $_return['fields'][$_fld->name]['value'] = vmText::_($_prefix.$_fld->title);
 							 }

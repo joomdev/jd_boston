@@ -15,7 +15,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 10100 2019-08-20 06:30:34Z Milbo $
+ * @version $Id: view.html.php 10273 2020-03-02 15:46:41Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -52,8 +52,8 @@ class VirtuemartViewUser extends VmView {
 
 		vmLanguage::loadJLang('com_virtuemart_shoppers',TRUE);
 
-		$mainframe = JFactory::getApplication();
-		$pathway = $mainframe->getPathway();
+		$this->app = JFactory::getApplication();
+		$pathway = $this->app->getPathway();
 		$layoutName = $this->getLayout();
 		if ($layoutName == 'login') {
 			parent::display($tpl);
@@ -98,20 +98,20 @@ class VirtuemartViewUser extends VmView {
 
 		$this->cart = VirtueMartCart::getCart();
 		$task = vRequest::getCmd('task', '');
+		if($task=='addST'){
+			$this->address_type='ST';
+		}
 
-
-
-		if (($this->cart->_fromCart or $this->cart->getInCheckOut()) && empty($virtuemart_userinfo_id)) {
+		$this->allowRegisterVendor = false;
+		if (($this->cart->_fromCart or $this->cart->getInCheckOut()) or ($new and empty($virtuemart_userinfo_id))) {
 
 			//New Address is filled here with the data of the cart (we are in the cart)
 			$fieldtype = $this->address_type . 'address';
 			$this->cart->setupAddressFieldsForCart(true);
-			$userFields = $this->cart->$fieldtype;
+			$userFields = $this->cart->{$fieldtype};
 
 		} else {
-			if($task=='addST'){
-				$this->address_type='ST';
-			}
+
 			if(!$new and empty($virtuemart_userinfo_id)){
 				$virtuemart_userinfo_id = $this->_model->getBTuserinfo_id();
 				vmdebug('Try to get $virtuemart_userinfo_id by type BT', $virtuemart_userinfo_id);
@@ -169,7 +169,7 @@ class VirtuemartViewUser extends VmView {
 			$this->setLayout($layoutName);
 		}
 
-		if (!$this->userDetails->JUser->get('id')) {
+		if (!$this->userDetails->virtuemart_user_id) {
 			$corefield_title = vmText::_('COM_VIRTUEMART_USER_CART_INFO_CREATE_ACCOUNT');
 		} else {
 			$corefield_title = vmText::_('COM_VIRTUEMART_YOUR_ACCOUNT_DETAILS');
@@ -180,7 +180,7 @@ class VirtuemartViewUser extends VmView {
 			//$pathway->addItem(vmText::_('COM_VIRTUEMART_YOUR_ACCOUNT_DETAILS'), JRoute::_('index.php?option=com_virtuemart&view=user&&layout=edit'));
 		}
 		$pathway_text = vmText::_('COM_VIRTUEMART_YOUR_ACCOUNT_DETAILS');
-		if (!$this->userDetails->JUser->get('id')) {
+		if (!$this->userDetails->virtuemart_user_id) {
 			if ($this->cart->_fromCart or $this->cart->getInCheckOut()) {
 				if ($this->address_type == 'BT') {
 					$vmfield_title = vmText::_('COM_VIRTUEMART_USER_FORM_EDIT_BILLTO_LBL');
@@ -213,13 +213,23 @@ class VirtuemartViewUser extends VmView {
 
 		$this->add_product_link="";
 		$this->manage_link="";
-		if(ShopFunctionsF::isFEmanager('manage'/*,'category','product','inventory','ratings','custom','calc','manufacturer','orders','report','user'*/) ){
-			$mlnk = JURI::root() . 'index.php?option=com_virtuemart&tmpl=component&manage=1' ;
-			$this->manage_link = $this->linkIcon($mlnk, 'JACTION_MANAGE', 'new', false, false, true, true);
+		if (empty(VmConfig::get('bootstrap', ''))) {
+			$vmbtn = "vm-btn";
+			$vmbtnpri ="vm-btn-primary";
+			$vmbtnsec = "vm-btn-secondary";
+		} else {
+			$vmbtn = "btn";
+			$vmbtnpri = "btn-primary";
+			$vmbtnsec = "btn-secondary";
 		}
-		if(ShopFunctionsF::isFEmanager('product.edit')){
+
+		if(ShopFunctionsF::isFEmanager() ){
+			$mlnk = JURI::root() . 'index.php?option=com_virtuemart&tmpl=component&manage=1' ;
+			$this->manage_link = $this->linkIcon($mlnk, 'JACTION_MANAGE', 'new', false, false, true, true, 'class="'.$vmbtn.' '.$vmbtnpri.'"');
+		}
+		if(ShopFunctionsF::isFEmanager(array('product.add','product.edit'))){
 			$aplnk = JURI::root() . 'index.php?option=com_virtuemart&tmpl=component&view=product&view=product&task=edit&virtuemart_product_id=0&manage=1' ;
-			$this->add_product_link = $this->linkIcon($aplnk, 'COM_VIRTUEMART_PRODUCT_ADD_PRODUCT', 'new', false, false, true, true);
+			$this->add_product_link = $this->linkIcon($aplnk, 'COM_VIRTUEMART_PRODUCT_ADD_PRODUCT', 'new', false, false, true, true, 'class="'.$vmbtn.' '.$vmbtnpri.'"');
 		}
 
 		$document = JFactory::getDocument();
@@ -230,7 +240,7 @@ class VirtuemartViewUser extends VmView {
 		$this->assignRef('corefield_title', $corefield_title);
 		$this->assignRef('vmfield_title', $vmfield_title);
 
-		shopFunctionsF::setVmTemplate($this, 0, 0, $layoutName);
+		VmTemplate::setVmTemplate($this, 0, 0, $layoutName);
 
 		$this->captcha = shopFunctionsF::renderCaptcha();
 
@@ -278,10 +288,19 @@ class VirtuemartViewUser extends VmView {
 
 			$this->_lists['shoppergroups'] = ShopFunctions::renderShopperGroupList($shoppergrps);
 		} else {
-			foreach($_shoppergroup as $group){
-				$this->_lists['shoppergroups'] .= vmText::_($group['shopper_group_name']).', ';
+			$showUserShopperGrp = true;
+			$this->getMenuParams();
+			if(!empty($this->params)){
+				$showUserShopperGrp = $this->params->get('showUserShopperGrp',1);
 			}
-			$this->_lists['shoppergroups'] = substr($this->_lists['shoppergroups'],0,-2);
+
+			if($showUserShopperGrp){
+				foreach($_shoppergroup as $group){
+					$this->_lists['shoppergroups'] .= vmText::_($group['shopper_group_name']).', ';
+				}
+				$this->_lists['shoppergroups'] = substr($this->_lists['shoppergroups'],0,-2);
+			}
+
 		}
 
 		if (!empty($this->userDetails->virtuemart_vendor_id)) {
@@ -348,11 +367,27 @@ class VirtuemartViewUser extends VmView {
 
 			$this->vendor = $vendorModel->getVendor();
 			$vendorModel->addImages($this->vendor);
-
+		} else {
+			$this->getMenuParams();
+			$this->allowRegisterVendor = 0;
+			if(!empty($this->params)){
+				$this->allowRegisterVendor = $this->params->get('allowRegisterVendor',0);
+			}
 		}
     }
 
-
+    function getMenuParams(){
+    	static $m = false;
+    	if(!$m){
+			$m	= $this->app->getMenu();
+			if($m){
+				$am = $m->getActive();
+				if($am) {
+					$this->params = $am->getParams();
+				}
+			}
+    	}
+    }
 
     /**
      * renderMailLayout

@@ -109,7 +109,7 @@ class Img2Thumb	{
 
 		if(function_exists('imagecreatefromstring')){
 
-			if(strpos($filename,'//')===0){
+			if( substr( $filename, 0, 2) == "//" ) {
 				try {
 					$resObj = JHttpFactory::getHttp(null, array('curl', 'stream'))->get($filename);
 					//vmdebug('Object per URL',$resObj);
@@ -136,7 +136,7 @@ class Img2Thumb	{
 					$this->fileout = $fileout;
 
 					$orig_size = 0;
-					if(strpos($filename,'//')===0){
+					if( substr( $filename, 0, 2) == "//" ) {
 						if (!empty($fileout))
 						{
 							$this-> NewImgSave($gd,$fileout,$type);

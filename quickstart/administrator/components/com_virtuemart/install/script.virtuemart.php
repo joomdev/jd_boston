@@ -307,6 +307,10 @@ class com_virtuemartInstallerScript {
 			'customer_note' => '`oc_note` text NOT NULL DEFAULT "" COMMENT \'old customer notes\'',
 		));
 
+		$this->alterTable('#__virtuemart_vendor_users',array(
+		'virtuemart_vendor_id' => '`virtuemart_vendor_user_id` int(1) UNSIGNED NOT NULL DEFAULT \'0\'',
+		));
+
 		JLoader::register('GenericTableUpdater', $this->path .'/administrator/components/com_virtuemart/helpers/tableupdater.php');
 		$updater = new GenericTableUpdater();
 
@@ -364,6 +368,8 @@ class com_virtuemartInstallerScript {
 		$this->deleteOverridenJoomlaFields();
 		$this->updateOldConfigEntries();
 
+		VirtueMartModelCategory::updateCategories();
+
 		if(JFolder::exists($this->path .'/administrator/templates/vmadmin') and $this->path .'/administrator/templates/vmadmin'!=VMPATH_ROOT .'/administrator/templates/vmadmin'){
 			$this->recurse_copy($this->path .'/administrator/templates/vmadmin',VMPATH_ROOT .'/administrator/templates/vmadmin');
 		}
@@ -382,7 +388,6 @@ class com_virtuemartInstallerScript {
 		$m = VmModel::getModel('config');
 		$m->setVmLanguages();
 	}
-
 
 	private function updateOldConfigEntries(){
 
@@ -1032,7 +1037,9 @@ class com_virtuemartInstallerScript {
 				$query = 'ALTER TABLE `'.$tablename.'` '.$command.' COLUMN `'.$fieldname.'` '.$alterCommand;
 
 				$this->_db->setQuery($query);
-				if(!$this->_db->execute()){
+				try {
+					$this->_db->execute();
+				} catch (Exception $e) {
 					$app = JFactory::getApplication();
 					$app->enqueueMessage('Error: Install alterTable '.$this->_db->getErrorMsg() );
 					$ok = false;
@@ -1243,7 +1250,7 @@ class com_virtuemartInstallerScript {
 		JLoader::register('GenericTableUpdater', $vmpath_admin.'/helpers/tableupdater.php');
 		JLoader::register('VmController', $vmpath_admin.'/helpers/vmcontroller.php');
 		JLoader::register('vmCrypt', $vmpath_admin.'/helpers/vmcrypt.php');
-		JLoader::register('vmFilter', $vmpath_admin.'/helpers/vmfilter.php');
+		//JLoader::register('vmFilter', $vmpath_admin.'/helpers/vmfilter.php');
 		JLoader::register('vmJsApi', $vmpath_admin.'/helpers/vmjsapi.php');
 		JLoader::register('vmLanguage', $vmpath_admin.'/helpers/vmlanguage.php');
 		JLoader::register('VmModel', $vmpath_admin.'/helpers/vmmodel.php');

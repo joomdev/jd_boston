@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: userfields.php 10036 2019-04-01 10:28:12Z Milbo $
+* @version $Id: userfields.php 10250 2020-02-13 08:37:20Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -37,15 +37,6 @@ class VirtuemartControllerUserfields extends VmController {
 	function __construct(){
 		parent::__construct('virtuemart_userfield_id');
 
-	}
-
-	function viewJson() {
-
-		// Create the view object.
-		$view = $this->getView('userfields', 'json');
-
-		// Now display the view.
-		$view->display(null);
 	}
 
 	function save($data = 0) {

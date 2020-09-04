@@ -43,7 +43,7 @@ $i = 0;
 						<?php if ($link) { ?>
 						<a href="<?php echo $link ?>" class="btn btn-small">
 							<?php } else { ?>
-							<span class="hasTip" title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_ADD_CHILD_TIP'); ?>">
+							<span class="hasTooltip" title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_ADD_CHILD_TIP'); ?>">
 							<?php } ?>
 							<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_ADD_CHILD');?>
 							<?php if ($link) { ?>
@@ -136,7 +136,7 @@ $i = 0;
 									$attrib = $custom->customfield_value;
 
 									if(property_exists($child,$attrib)){
-										$childAttrib = $child->$attrib;
+										$childAttrib = $child->{$attrib};
 									} else {
 										vmdebug('unset? use Fallback product_name instead $attrib '.$attrib,$child);
 										$childAttrib = '';//$child->product_name;

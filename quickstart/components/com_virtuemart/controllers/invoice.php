@@ -178,7 +178,7 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 		$template = VmTemplate::loadVmTemplateStyle();
 		$templateName = VmTemplate::setTemplate($template);
 
-		if(!empty($templateName)){
+		if(!empty($templateName) and VmConfig::get('useLayoutOverrides',1)){
 			$TemplateOverrideFolder = VMPATH_ROOT .'/templates/'.$templateName.'/html/com_virtuemart/invoice';
 			if(file_exists($TemplateOverrideFolder)){
 				$view->addTemplatePath( $TemplateOverrideFolder);

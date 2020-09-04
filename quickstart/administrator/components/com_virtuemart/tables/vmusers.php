@@ -46,13 +46,13 @@ class TableVmusers extends VmTableData {
 
 		$tbl_key = $this->_tbl_key;
 
-		$q = 'SELECT `virtuemart_vendor_id`,`user_is_vendor`,`virtuemart_user_id` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key . '`="' . $this->$tbl_key . '" ';
-		$md5 = md5($q);
-		if (!isset(self::$_cache[$md5])) {
+		$q = 'SELECT `virtuemart_vendor_id`,`user_is_vendor`,`virtuemart_user_id` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key . '`="' . $this->{$tbl_key} . '" ';
+		$h = $this->_tbl.$this->_tbl_key.$this->{$tbl_key};
+		if (!isset(self::$_cache[$h])) {
 			$this->_db->setQuery($q);
 			$vmuser = $this->_db->loadAssoc();
-			self::$_cache[$md5] = $vmuser;
-		} else $vmuser = self::$_cache[$md5];
+			self::$_cache[$h] = $vmuser;
+		} else $vmuser = self::$_cache[$h];
 
 		//vmdebug('Table '.$this->_tbl.' check loaded old entry',$loggedVendorId,$vmuser);
 
@@ -102,13 +102,13 @@ class TableVmusers extends VmTableData {
 
 		if(!empty($this->virtuemart_vendor_id)){
 			$q = 'SELECT `virtuemart_vendor_id`,`user_is_vendor`,`virtuemart_user_id` FROM `' . $this->_tbl . '` WHERE `virtuemart_vendor_id`="' . $this->virtuemart_vendor_id . '" ';
-			$md5 = md5($q);
-			if (!isset(self::$_cache[$md5])) {
+			$h = ($this->_tbl.'virtuemart_vendor_id'.$this->virtuemart_vendor_id);
+			if (!isset(self::$_cache[$h])) {
 				$this->_db->setQuery( $q );
 				$vmVends = $this->_db->loadAssocList();
 				$c = count( $vmVends);
 				if($vmVends and $c>0 ) {
-					self::$_cache[$md5] = $vmVends[0];vmdebug('my $vmVends',$q,$vmVends,$c);
+					self::$_cache[$h] = $vmVends[0];vmdebug('my $vmVends',$q,$vmVends,$c);
 					if($c>1) {
 						vmError( 'There is a serious problem with your store, there are entries with the same virtuemart_vendor_id '.$this->virtuemart_vendor_id.' enable the vmdebug or check your virtuemart log files and fix it immediatly. Use the setStoreOwner function in Tools and Migration', 'There is a problem with the store, please contact the shop owner' );
 						$t = VmConfig::$logDebug;
@@ -129,7 +129,7 @@ class TableVmusers extends VmTableData {
 						}
 					}
 				} else {
-					self::$_cache[$md5] = false;
+					self::$_cache[$h] = false;
 				}
 			}
 		}

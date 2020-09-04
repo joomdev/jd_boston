@@ -35,11 +35,13 @@ class VmImage extends VmMediaHandler {
 				$file_url = $this->file_url;
 				$file_alt = $this->file_title;
 			} else {
-				//$rel_path = str_replace('/',DS,$this->file_url_folder);
+
 				$fullSizeFilenamePath = vRequest::filterPath(VMPATH_ROOT.'/'.$this->file_url_folder.$this->file_name.'.'.$this->file_extension);
 				if (!file_exists($fullSizeFilenamePath)) {
-					$file_url = $this->theme_url.'assets/images/vmgeneral/'.VmConfig::get('no_image_found');
-					$file_alt = vmText::_('COM_VIRTUEMART_NO_IMAGE_FOUND').' '.$this->file_description;
+
+					$this->setNoImageSet();
+					$file_url = $this->file_url;
+					$file_alt = $this->file_meta;
 				} else {
 					$file_url = $this->file_url;
 					$file_alt = $this->file_meta;
@@ -70,8 +72,6 @@ class VmImage extends VmMediaHandler {
 			return false;
 		}
 		$file_url_thumb = $this->file_url_folder_thumb.$this->file_name_thumb.'.'.$this->file_extension;
-
-
 		return $file_url_thumb;
 	}
 
@@ -120,8 +120,10 @@ class VmImage extends VmMediaHandler {
 		}
 
 		if(empty($this->file_name)){
+
 			vmError('Couldnt create thumb, no name given. Activate vmdebug to understand which database entry is creating this error');
 			vmdebug('createThumb, no name given',$this);
+
 			return false;
 		}
 
@@ -146,9 +148,8 @@ class VmImage extends VmMediaHandler {
 		$root = '';
 		$this->file_name_thumb = $this->createThumbName($width,$height);
 
-
 		$exists = false;
-		if(strpos($this->file_url,'//')===0){
+		if( substr( $this->file_url, 0, 2) == "//" ) {
 			$fullSizeFilenamePath = $this->file_url;
 			$exists = true;
 			//$resizedFilenamePath = vRequest::filterPath(VMPATH_ROOT.'/'.$this->file_url_folder_thumb.$this->file_name_thumb);

@@ -51,11 +51,13 @@ $params = VmConfig::loadConfig();
     </fieldset>
 
     <fieldset>
-        <legend class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS_JS_SETTINGS_TIP'); ?>">
+        <legend class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS_JS_SETTINGS_TIP'); ?>">
 			<?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS_JS_SETTINGS'); ?>
         </legend>
         <table class="admintable">
 			<?php
+			echo VmHTML::row('checkbox','COM_VM_CFG_USE_LAZYLOAD','lazyLoad', VmConfig::get('lazyLoad',1));
+			echo VmHTML::row('checkbox','COM_VM_USE_LAYOUT_OVERR','useLayoutOverrides', VmConfig::get('useLayoutOverrides',1));
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_CFG_FANCY','usefancy', VmConfig::get('usefancy',1));
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_CSS','css', VmConfig::get('css',1));
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JQUERY_FW','jquery_framework', VmConfig::get('jquery_framework',1));
@@ -64,6 +66,7 @@ $params = VmConfig::loadConfig();
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JSITE','jsite', VmConfig::get('jsite',1));
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JCHOSEN','jchosen', VmConfig::get('jchosen',1));
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_JDYNUPDATE','jdynupdate', VmConfig::get('jdynupdate',1));
+			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_FRONT_AJAX_CATEGORY','ajax_category', VmConfig::get('ajax_category',0));
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_ENABLE_GOOGLE_JQUERY','google_jquery', VmConfig::get('google_jquery',0));
 			//echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_JS_CSS_MINIFIED','minified', VmConfig::get('minified',1));
 			?>

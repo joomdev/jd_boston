@@ -57,7 +57,7 @@ if(!vmAccess::manager('user.editshop')){
 											<td colspan=2 align="center">
 												<div>
 													<span class="key">
-														<label class="hasTip" for="vendor_letter_margin_top" id="vendor_letter_margin_top-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_TOP'); ?></label>:
+														<label class="hasTooltip" for="vendor_letter_margin_top" id="vendor_letter_margin_top-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_TOP'); ?></label>:
 													</span><br/>
 													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_top; ?>" id="vendor_letter_margin_top" name="vendor_letter_margin_top">mm</span>
 												</div>
@@ -65,7 +65,7 @@ if(!vmAccess::manager('user.editshop')){
 											<td colspan=2 align="center">
 												<div>
 													<span class="key">
-														<label class="hasTip" for="vendor_letter_margin_header" id="vendor_letter_margin_header-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_HEADER'); ?></label>:
+														<label class="hasTooltip" for="vendor_letter_margin_header" id="vendor_letter_margin_header-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_HEADER'); ?></label>:
 													</span> <br/>
 													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_header; ?>" id="vendor_letter_margin_header" name="vendor_letter_margin_header">mm</span>
 												</div>
@@ -74,14 +74,14 @@ if(!vmAccess::manager('user.editshop')){
 										<tr>
 											<td align="center">
 												<div>
-													<span class="key"><label class="hasTip" for="vendor_letter_margin_left" id="vendor_letter_margin_left-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_LEFT'); ?></label>:</span> <br/>
+													<span class="key"><label class="hasTooltip" for="vendor_letter_margin_left" id="vendor_letter_margin_left-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_LEFT'); ?></label>:</span> <br/>
 													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_left; ?>" id="vendor_letter_margin_left" name="vendor_letter_margin_left">mm</span>
 												</div>
 											</td>
 											<td align="center" colspan=2><img alt="" src="components/com_virtuemart/assets/images/margins-page.png"></td>
 											<td align="center" style="height: 50%">
 												<div>
-													<span class="key"><label class="hasTip" for="vendor_letter_margin_right" id="vendor_letter_margin_right-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_RIGHT'); ?></label>:</span> <br/>
+													<span class="key"><label class="hasTooltip" for="vendor_letter_margin_right" id="vendor_letter_margin_right-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_RIGHT'); ?></label>:</span> <br/>
 													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_right; ?>" id="vendor_letter_margin_right" name="vendor_letter_margin_right">mm</span>
 												</div>
 											</td>
@@ -89,13 +89,13 @@ if(!vmAccess::manager('user.editshop')){
 										<tr>
 											<td align="center" colspan=2>
 												<div>
-													<span class="editlinktip"><label class="hasTip" for="vendor_letter_margin_bottom" id="vendor_letter_margin_bottom-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_BOTTOM'); ?></label>:</span> <br/>
+													<span class="editlinktip"><label class="hasTooltip" for="vendor_letter_margin_bottom" id="vendor_letter_margin_bottom-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_BOTTOM'); ?></label>:</span> <br/>
 													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_bottom; ?>" id="vendor_letter_margin_bottom" name="vendor_letter_margin_bottom">mm</span>
 												</div>
 											</td>
 											<td align="center" colspan=2>
 												<div>
-													<span class="editlinktip"><label class="hasTip" for="vendor_letter_margin_footer" id="vendor_letter_margin_footer-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_FOOTER'); ?></label>:</span> <br/>
+													<span class="editlinktip"><label class="hasTooltip" for="vendor_letter_margin_footer" id="vendor_letter_margin_footer-lbl"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_MARGIN_FOOTER'); ?></label>:</span> <br/>
 													<span style="whitespace:nowrap"><input type="text" size="3" class="text_area" value="<?php echo $this->vendor->vendor_letter_margin_footer; ?>" id="vendor_letter_margin_footer" name="vendor_letter_margin_footer">mm</span>
 												</div>
 											</td>
@@ -121,7 +121,7 @@ if(!vmAccess::manager('user.editshop')){
 					</legend>
 					<table class="admintable">
 						<tr>
-							<td class="key"><span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_FONT_TIP'); ?>">
+							<td class="key"><span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_FONT_TIP'); ?>">
 								<label for="vendor_letter_font"><?php echo vmText::_('COM_VIRTUEMART_VENDOR_LETTER_FONT') ?></label> </span>
 							</td>
 							<td>

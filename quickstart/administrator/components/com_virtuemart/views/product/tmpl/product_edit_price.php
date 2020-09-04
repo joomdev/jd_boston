@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: product_edit_price.php 9821 2018-04-16 18:04:39Z Milbo $
+ * @version $Id: product_edit_price.php 10233 2019-12-11 14:48:13Z Milbo $
  * http://www.seomoves.org/blog/web-design-development/dynotable-a-jquery-plugin-by-bob-tantlinger-2683/
  */
 
@@ -31,7 +31,7 @@ $rowColor = 0;
         <td width="120px">
             <div style="text-align: right; font-weight: bold;">
 								<span
-                                        class="hasTip"
+                                        class="hasTooltip"
                                         title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_FORM_PRICE_COST_TIP'); ?>">
 									<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_FORM_PRICE_COST') ?>
 								</span>
@@ -56,7 +56,7 @@ $rowColor = 0;
 		<td style="background: #d5d5d5;padding:0;width:1px;"></td>
 
         <td colspan="2">
- 			<span class="hasTip" style="font-weight: bold;"
+ 			<span class="hasTooltip" style="font-weight: bold;"
                title="<?php echo vmText::_ ('COM_VIRTUEMART_SHOPPER_FORM_GROUP_PRICE_TIP'); ?>">
 						<?php echo vmText::_('COM_VIRTUEMART_SHOPPER_FORM_GROUP') ?></span>
 			<?php echo $this->lists['shoppergroups'];  ?>
@@ -67,7 +67,7 @@ $rowColor = 0;
         <td>
             <div style="text-align: right; font-weight: bold;">
 								<span
-                                        class="hasTip"
+                                        class="hasTooltip"
                                         title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_FORM_PRICE_BASE_TIP'); ?>">
 									<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_FORM_PRICE_BASE') ?>
 								</span>
@@ -89,7 +89,7 @@ $rowColor = 0;
 			<?php echo $this->lists['taxrates']; ?><br/>
         </td>
         <td>
-	                        <span class="hasTip" title="<?php echo vmText::_ ('COM_VIRTUEMART_RULES_EFFECTING_TIP') ?>">
+	                        <span class="hasTooltip" title="<?php echo vmText::_ ('COM_VIRTUEMART_RULES_EFFECTING_TIP') ?>">
 							<?php echo vmText::_ ('COM_VIRTUEMART_TAX_EFFECTING') . '<br />' . $this->taxRules ?>
 		                    </span>
         </td>
@@ -106,7 +106,7 @@ $rowColor = 0;
         <td>
             <div style="text-align: right; font-weight: bold;">
 				<span
-                        class="hasTip"
+                        class="hasTooltip"
                         title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_FORM_PRICE_FINAL_TIP'); ?>">
 					<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_FORM_PRICE_FINAL') ?>
 				</span>
@@ -127,7 +127,7 @@ $rowColor = 0;
 			<?php echo $this->lists['discounts']; ?> <br/>
         </td>
         <td>
-	                    <span class="hasTip" title="<?php echo vmText::_ ('COM_VIRTUEMART_RULES_EFFECTING_TIP') ?>">
+	                    <span class="hasTooltip" title="<?php echo vmText::_ ('COM_VIRTUEMART_RULES_EFFECTING_TIP') ?>">
 						<?php if (!empty($this->DBTaxRules)) {
 		                    echo vmText::_ ('COM_VIRTUEMART_RULES_EFFECTING') . '</span><br />' . $this->DBTaxRules . '<br />';
 
@@ -154,7 +154,7 @@ $rowColor = 0;
         <td width="60px">
             <div style="text-align: right; font-weight: bold;">
 				<span
-                        class="hasTip"
+                        class="hasTooltip"
                         title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_DISCOUNT_OVERRIDE_TIP'); ?>">
 					<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_DISCOUNT_OVERRIDE') ?>
 				</span>
@@ -175,7 +175,7 @@ $rowColor = 0;
 			?>
 			<strong>
 			<span
-				class="hasTip"
+				class="hasTooltip"
 				title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_FORM_CALCULATE_PRICE_FINAL_TIP'); ?>">
 			<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_FORM_CALCULATE_PRICE_FINAL'); ?>
 			</span>

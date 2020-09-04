@@ -398,7 +398,7 @@ class VirtueMartModelCustom extends VmModel {
 			$data['custom_value'] = $data['transform'];
 		}
 		$data['transform'] = '';
-		vmdebug(' my data to store',$data);
+		//vmdebug(' my data to store',$data);
 		if(empty($data['virtuemart_shoppergroup_id'])){
 			$data['virtuemart_shoppergroup_id'] = '';
 		} else {

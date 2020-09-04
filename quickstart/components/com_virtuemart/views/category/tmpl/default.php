@@ -15,7 +15,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: default.php 9988 2018-11-19 08:48:01Z Milbo $
+ * @version $Id: default.php 10307 2020-04-29 08:31:27Z Milbo $
  */
 
 defined ('_JEXEC') or die('Restricted access');
@@ -192,6 +192,9 @@ if(!empty($this->orderByList)) { ?>
 if(VmConfig::get ('ajax_category', false)){
 	$j = "Virtuemart.container = jQuery('.category-view');
 	Virtuemart.containerSelector = '.category-view';";
+
+	/*$j = "Virtuemart.container = jQuery('.main');
+	Virtuemart.containerSelector = '.main';";*/
 
 	vmJsApi::addJScript('ajax_category',$j);
 	vmJsApi::jDynUpdate();

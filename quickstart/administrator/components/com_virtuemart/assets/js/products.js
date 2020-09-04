@@ -59,6 +59,7 @@ Virtuemart.customfields = jQuery(function($) {
 			$(this).autocomplete( 'option' , 'source' , Virtuemart.jsonLink+'&type=relatedproducts&row='+Virtuemart.nextCustom )
 		},
 		minLength:1,
+		delay: 400,
 		html: true
 	});
 	$('input#relatedcategoriesSearch').autocomplete({
@@ -71,6 +72,7 @@ Virtuemart.customfields = jQuery(function($) {
 			$(this).autocomplete( 'option' , 'source' , Virtuemart.jsonLink+'&type=relatedcategories&row='+Virtuemart.nextCustom )
 		},
 		minLength:1,
+		delay: 400,
 		html: true
 	});
 

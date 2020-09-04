@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: edit.php 10110 2019-08-27 15:37:31Z Milbo $
+* @version $Id: edit.php 10258 2020-02-17 20:25:48Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -116,22 +116,22 @@ AdminUIHelper::imitateTabs('start','COM_VIRTUEMART_USERFIELD_DETAILS');
 				?> class="required <?php echo $readonly ?> " />
 			</td>
 		</tr>
-		<tr>
-			<td width="110" class="key">
-				<label for="title">
-					<?php echo vmText::_('COM_VIRTUEMART_FIELDMANAGER_TITLE') ?>
-				</label>
-			</td>
-			<td>
-				<?php
-				$lang = vmLanguage::getLanguage();
-				$text = $lang->hasKey($this->userField->title) ? vmText::_($this->userField->title) : $this->userField->title;
-				?>
-				<input class="required" type="text" name="title" id="title" size="50" value="<?php echo $this->userField->title; ?>" />(<?php echo $text ?>)
-			</td>
-		</tr>
-		<?php echo VmHTML::row('editor','COM_VIRTUEMART_USERFIELDS_DESCRIPTION','description', $this->userField->description,'100%','300', array('image','pagebreak', 'readmore') ); ?>
-		<?php echo VmHTML::row('input','COM_VIRTUEMART_DEFAULT','default',$this->userField->default,'class="inputbox"','',5); ?>
+
+        <?php
+            $lang = vmLanguage::getLanguage();
+            $text = $lang->hasKey($this->userField->title) ? vmText::_($this->userField->title) : $this->userField->title;
+            echo VmHTML::row('input','COM_VIRTUEMART_FIELDMANAGER_TITLE','title',$this->userField->title,'class="inputbox"','', 50, '255', '('.$text.')');
+        ?>
+
+		<?php echo VmHTML::row('editor','COM_VIRTUEMART_USERFIELDS_DESCRIPTION','description', $this->userField->description,'100%','50', array('image','pagebreak', 'readmore') ); ?>
+		<?php echo VmHTML::row('input','COM_VIRTUEMART_DEFAULT','default',$this->userField->default,'class="inputbox"','',50); ?>
+
+        <?php if ($this->userField->type=='password' or $this->userField->type=='emailaddress' or $this->userField->type=='webaddress' or $this->userField->type=='text' or $this->userField->type=='textarea'){
+        $lang = vmLanguage::getLanguage();
+        $text = $lang->hasKey($this->userField->placeholder) ? vmText::_($this->userField->placeholder) : $this->userField->placeholder;
+ echo VmHTML::row('input','COM_VIRTUEMART_FIELDMANAGER_PLACEHOLDER','placeholder',$this->userField->placeholder,'class="inputbox"','', 50, '255', '('.$text.')');
+        }?>
+
 		<?php echo $this->lists['required']; ?>
 		<?php echo $this->lists['cart']; ?>
 		<?php echo $this->lists['account']; ?>
@@ -228,7 +228,7 @@ function toggleType( sType ) {
 		default:
 			//pluginistraxx_euvatchecker
 <?php if(!$this->userField->virtuemart_userfield_id) : ?>
-			jQuery('#fieldPluginBody').load( 'index.php?option=com_virtuemart&view=userfields&task=viewJson&format=json&field='+sType , function() { jQuery(this).find("[title]").vm2admin('tips',tip_image) });
+			jQuery('#fieldPluginBody').load( 'index.php?option=com_virtuemart&view=userfields&format=json&field='+sType , function() { jQuery(this).find("[title]").vm2admin('tips',tip_image) });
 <?php endif; ?>
 			if (sType.substring(0,6) == "plugin") jQuery('#divPlugin').slideDown();
 		break;

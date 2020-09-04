@@ -154,7 +154,7 @@ class JFormFieldVmRules extends JFormFieldRules {
 			foreach ($actions as $action) {
 				$html[] = '<tr>';
 				$html[] = '<td headers="actions-th' . $group->value . '">';
-				$html[] = '<label class="hasTip" for="' . $this->id . '_' . $action->name . '_' . $group->value . '" title="'
+				$html[] = '<label class="hasTooltip" for="' . $this->id . '_' . $action->name . '_' . $group->value . '" title="'
 					. htmlspecialchars(vmText::_($action->title) . '::' . vmText::_($action->description), ENT_COMPAT, 'UTF-8') . '">';
 				$html[] = vmText::_($action->title);
 				$html[] = '</label>';
@@ -361,7 +361,7 @@ class JFormFieldVmRules extends JFormFieldRules {
 			foreach ($actions as $action) {
 				$html[] = '<tr>';
 				$html[] = '<td headers="actions-th' . $group->value . '">';
-				$html[] = '<label class="hasTip" for="' . $this->id . '_' . $action->name . '_' . $group->value . '" title="'
+				$html[] = '<label class="hasTooltip" for="' . $this->id . '_' . $action->name . '_' . $group->value . '" title="'
 					. htmlspecialchars(vmText::_($action->title) . '::' . vmText::_($action->description), ENT_COMPAT, 'UTF-8') . '">';
 				$html[] = vmText::_($action->title);
 				$html[] = '</label>';

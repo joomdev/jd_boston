@@ -27,8 +27,9 @@ class TableProduct_customfields extends VmTable {
 	/** @var int group key */
 	var $virtuemart_custom_id		= 0;
 
-	var $override = null;
-	var $disabler = null;
+	var $override = 0;
+	var $disabler = 0;
+	var $noninheritable = 0;
     /** @var string custom value */
 	var $customfield_value	= null;
     /** @var string price  */

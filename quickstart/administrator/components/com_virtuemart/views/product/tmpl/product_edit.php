@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: product_edit.php 9821 2018-04-16 18:04:39Z Milbo $
+* @version $Id: product_edit.php 10239 2020-01-10 11:31:03Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -61,7 +61,7 @@ vmJsApi::addJScript( '/administrator/components/com_virtuemart/assets/js/product
 
 $app = JFactory::getApplication();
 $l = 'index.php?option=com_virtuemart&view=product&task=getData&format=json&virtuemart_product_id='.$this->product->virtuemart_product_id;
-if($app->isAdmin()){
+if(!VmConfig::isSiteByApp()){
 	$jsonLink = JURI::root(false).'administrator/'.$l;
 } else {
 	$jsonLink = JRoute::_($l);
@@ -84,5 +84,3 @@ $j = 'if (typeof Virtuemart === "undefined")
 	';
 vmJsApi::addJScript('onReadyProduct',$j);
 
-
-//$document->addScriptDeclaration( 'jQuery(window).load(function(){ jQuery.ajaxSetup({ cache: false }); })'); ?>

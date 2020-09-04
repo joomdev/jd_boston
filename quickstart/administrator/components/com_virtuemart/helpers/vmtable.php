@@ -61,7 +61,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 	protected $_hashName = '';
 	protected $_omittedHashFields = array();
 	public $_cryptedFields = false;
-	protected $_langTag = null;
+	public $_langTag = null;
 	public $_ltmp = false;
 	public $_loadedWithLangFallback = 0;
 	public $_loaded = false;
@@ -299,7 +299,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		$this->setObligatoryKeys('_pkey', $error);
 		$this->_pkey = $key;
 		$this->_pkeyForm = empty($keyForm) ? $key : $keyForm;
-		$this->$key = 0;
+		$this->{$key} = 0;
 	}
 
 	public function getPKey(){
@@ -362,7 +362,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		$this->_orderingKey = $key;
 		$this->_orderable = 1;
 		$this->_autoOrdering = $auto;
-		$this->$key = 0;
+		$this->{$key} = 0;
 	}
 
 	function setHashable($key){
@@ -377,7 +377,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 		$this->_slugAutoName = $slugAutoName;
 		$this->_slugName = $key;
-		$this->$key = '';
+		$this->{$key} = '';
 		$this->setUniqueName($key);
 
 	}
@@ -423,6 +423,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 
 	public function emptyCache(){
+		$this->_loaded = false;
 		self::$_cache = array();
 	}
 
@@ -437,10 +438,10 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 		if($this->_toConvertDec){
 			foreach($this->_toConvertDec as $f){
-				if(!empty($this->$f)){
-					$this->$f = floatval(str_replace(array(',',' '),array('.',''),$this->$f));
-				} else if(isset($this->$f)){
-					$this->$f = 0.0;
+				if(!empty($this->{$f})){
+					$this->{$f} = floatval(str_replace(array(',',' '),array('.',''),$this->{$f}));
+				} else if(isset($this->{$f})){
+					$this->{$f} = 0.0;
 				}
 			}
 		}
@@ -467,7 +468,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		}
 
 		foreach ($this->_varsToPushParam as $k => $v) {
-			if (!isset($this->$k)) $this->$k = $v[0];
+			if (!isset($this->{$k})) $this->{$k} = $v[0];
 		}
 		//vmdebug('setParameterable called '.$this->_xParams,$this->_varsToPushParam);
 	}
@@ -516,7 +517,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			{
 				if (isset($src[$k]))
 				{
-					$this->$k = $src[$k];
+					$this->{$k} = $src[$k];
 				}
 			}
 		}
@@ -534,10 +535,10 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 	 */
 	static function bindParameterableToSubField(&$obj,$varsToPush,$field ='params'){
 		foreach($varsToPush as $name=>$values){
-			if(isset($obj->$name)){
-				$obj->$field->$name = $obj->$name;
+			if(isset($obj->{$name})){
+				$obj->{$field}->{$name} = $obj->{$name};
 			} else {
-				$obj->$field->$name = $values[0];
+				$obj->{$field}->{$name} = $values[0];
 			}
 		}
 	}
@@ -564,9 +565,9 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		//vmdebug('$obj->_xParams '.$xParams.' $varsToPushParam ',$obj->$xParams,$varsToPushParam);
 		if(is_object($obj)){
 
-			if (!empty($obj->$xParams)) {
+			if (!empty($obj->{$xParams})) {
 
-				$params = explode('|', $obj->$xParams);
+				$params = explode('|', $obj->{$xParams});
 				foreach ($params as $item) {
 
 					$item = explode('=', $item);
@@ -577,7 +578,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 						$item = implode('=', $item);
 						$item = json_decode($item);
 						if ($item != null){
-								$obj->$key = $item;
+								$obj->{$key} = $item;
 
 
 						} else {
@@ -592,16 +593,16 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			} else {
 
 				if(!property_exists($obj,$xParams)){
-					//vmError('There are bindParameterables, but $obj->$xParams is empty, this is a programmers error '.$xParams);
-					vmdebug('There are bindParameterables, but $obj->$xParams is not isset, this is a programmers error ',$xParams , $obj);
-					vmTrace('$obj->$xParams is not isset');
+					//vmError('There are bindParameterables, but $obj->{$xParams} is empty, this is a programmers error '.$xParams);
+					vmdebug('There are bindParameterables, but $obj->{$xParams} is not isset, this is a programmers error ',$xParams , $obj);
+					vmTrace('$obj->{$xParams} is not isset');
 				}
 
 			}
 
 			foreach ($varsToPushParam as $key => $v) {
-				if (!isset($obj->$key)) {
-					$obj->$key = $v[0];
+				if (!isset($obj->{$key})) {
+					$obj->{$key} = $v[0];
 					//vmdebug('Set standard '.$key. ' = '.$v[0]);
 				}
 			}
@@ -628,7 +629,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			} else {
 
 				if($obj[$xParams]==null){
-					//vmError('There are bindParameterables, but $obj->$xParams is empty, this is a programmers error '.$xParams);
+					//vmError('There are bindParameterables, but $obj->{$xParams} is empty, this is a programmers error '.$xParams);
 					vmdebug('There are bindParameterables, but $obj[$xParams] is empty, this is a programmers error ',$xParams , $obj);
 					vmTrace('$obj[$xParams] is empty');
 				}
@@ -744,7 +745,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			foreach ($tmp as $k => $v){
 				// Do not process internal variables
 				if (strpos ($k, '_') !== 0 and property_exists($this, $k)){
-					$return->$k = $v;
+					$return->{$k} = $v;
 				}
 			}
 		}
@@ -773,7 +774,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 				if ($fromArray && isset($from[$k])) {
 					return true;
-				} else if ($fromObject && isset($from->$k)) {
+				} else if ($fromObject && isset($from->{$k})) {
 					return true;
 				}
 			}
@@ -830,7 +831,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		// If an ordering filter is set, attempt reorder the rows in the table based on the filter and value.
 		if ($orderingFilter)
 		{
-			$filterValue = $this->$orderingFilter;
+			$filterValue = $this->{$orderingFilter};
 			$this->reorder($orderingFilter ? $this->_db->quoteName($orderingFilter) . ' = ' . $this->_db->Quote($filterValue) : '');
 		}
 
@@ -863,7 +864,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			$admin = vmAccess::manager('core');
 
 			if($admin){
-				if (empty($this->$pkey) and empty($this->created_on)) {
+				if (empty($this->{$pkey}) and empty($this->created_on)) {
 					$this->created_on = $today;
 				} else if (empty($this->created_on)) {
 					//If nothing is there, dont update it
@@ -875,7 +876,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 					}
 				//END ADD
 
-				if (empty($this->$pkey) and empty($this->created_by)) {
+				if (empty($this->{$pkey}) and empty($this->created_by)) {
 					$this->created_by = $user->id;
 				} else if (empty($this->created_by)) {
 					//If nothing is there, dont update it
@@ -884,7 +885,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 			} else {
 
-				if (empty($this->$pkey)) {
+				if (empty($this->{$pkey})) {
 					$this->created_on = $today;
 					$this->created_by = $user->id;
 				} else {
@@ -934,7 +935,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			// Only process fields not in the ignore array.
 			if (!in_array($k, $ignore)) {
 				if (isset($src[$k])) {
-					$obj->$k = $src[$k];
+					$obj->{$k} = $src[$k];
 				}
 			}
 		}
@@ -957,17 +958,17 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		}
 
 		if ($oid !== null) {
-			$this->$k = $oid;
+			$this->{$k} = $oid;
 		} else {
-			$oid = $this->$k;
+			$oid = $this->{$k};
 		}
 
 		if (empty($oid)) {
 			if (!empty($this->_xParams)) {
 				if(!empty($this->_varsToPushParam)){
 					foreach ($this->_varsToPushParam as $key => $v) {
-						if (!isset($this->$key)) {
-							$this->$key = $v[0];
+						if (!isset($this->{$key})) {
+							$this->{$key} = $v[0];
 						}
 					}
 				} else {
@@ -985,7 +986,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			$langTable = $this->_tbl . '_' . $this->_langTag;
 
 			$select = 'SELECT `' . $mainTable . '`.* ,`' . $langTable . '`.* ';
-			$from = ' FROM `' . $mainTable . '` INNER JOIN `' . $langTable . '` using (`' . $this->_tbl_key . '`)';
+			$from = ' FROM `' . $mainTable . '` INNER JOIN `' . $langTable . '` ON `' . $mainTable . '`.`' . $this->_tbl_key . '` = `' . $langTable . '`.`' . $this->_tbl_key . '` ';
 		} else {
 			$mainTable = $this->_tbl;
 			$select = 'SELECT `' . $mainTable . '`.* ';
@@ -1018,8 +1019,17 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		//the cast to int here destroyed the query for keys like virtuemart_userinfo_id, so no cast on $oid
 		// $query = $select.$from.' WHERE '. $mainTable .'.`'.$this->_tbl_key.'` = "'.$oid.'"';
 		if ($andWhere === 0) $andWhere = '';
-		$query = $select . $from . ' WHERE `' . $mainTable . '`.`' . $k . '` = "' . $oid . '" ' . $andWhere;
 
+
+		if($this->_translatable and in_array($k,$this->_translatableFields)){
+			$whereTable = $langTable;
+		} else {
+			$whereTable = $mainTable;
+		}
+
+		$query = $select . $from . ' WHERE `' . $whereTable . '`.`' . $k . '` = "' . $oid . '" ' . $andWhere;
+	//	VmConfig::$echoDebug = 1;
+//vmdebug('Muh',$query); die;
 		//We dont need the $hashVarsToPush in the has, because the parameteres are later bind to it.
 		$this->_lhash = $this->getHash($oid. $select . $k . $mainTable . $andWhere /*. $hashVarsToPush*/);
 
@@ -1041,8 +1051,13 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		$db = $this->getDBO();
 		$db->setQuery($query);
 
+		if($this->_translatable and empty($this->_langTag)) {
+			vmTrace('vmTable the lang tag is empty!');
+			return $this;
+		}
 		$result = $db->loadAssoc();
-		//vmdebug('vmtable load $query',$query,$result);
+
+		//if(!empty($this->slug))vmdebug('vmtable load $query',$this->_langTag,$query,$result->slug);
 		if ($result) {
 			$this->_loaded = true;
 			$this->bind($result);
@@ -1063,58 +1078,67 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 								$temp = explode(' as ',$sel);
 								$key = trim($temp[1]);
 								//vmdebug('my $result ',$result[$key]);
-								if (isset($result[$key])) $this->$key = $result[$key]; else $this->$key = false;
+								if (isset($result[$key])) $this->{$key} = $result[$key]; else $this->{$key} = false;
 
 							} else {
-								if (isset($result[$sel])) $this->$sel = $result[$sel];
+								if (isset($result[$sel])) $this->{$sel} = $result[$sel];
 							}
 						}
 					} else {
 
-						if (isset($result[$tableId])) $this->$tableId = $result[$tableId];
+						if (isset($result[$tableId])) $this->{$tableId} = $result[$tableId];
 					}
 				}
 			}
 		} else {
 
 			if($this->_translatable and VmConfig::$langCount>1 and $this->_langTag!=VmConfig::$jDefLang ){
-//vmdebug('Load fallback ',$this->_ltmp,$this->_langTag,VmConfig::$jDefLang,VmConfig::$defaultLang);
+				//if(empty($this->_ltmp)) vmdebug('Load fallback '.$this->_pkey,$this->{$this->_pkey},$this->_langTag);
+				//if($this->_ltmp) vmdebug('Execute fallback '.$this->_pkey,$this->{$this->_pkey},$this->_langTag,$this->_ltmp);
 				//$usedLangTag = $this->_langTag;
+				$first = true;
+				if(!$this->_ltmp){
+					$this->_ltmp = $this->_langTag;
+				} else {
+					$first = false;
+				}
 				if(VmConfig::$defaultLang!=VmConfig::$jDefLang){
 					if($this->_langTag != VmConfig::$defaultLang ){
-						$this->_ltmp = $this->_langTag;
+
 						$this->_langTag = VmConfig::$defaultLang;
+						$this->_loadedWithLangFallback = VmConfig::$defaultLangTag;
 					} else {
 						$this->_langTag = VmConfig::$jDefLang;
+						$this->_loadedWithLangFallback = VmConfig::$jDefLangTag;
 					}
+
 				} else {
-					$this->_ltmp = $this->_langTag;
+					//$this->_ltmp = $this->_langTag;
 					$this->_langTag = VmConfig::$defaultLang;
+					$this->_loadedWithLangFallback = VmConfig::$jDefLangTag;
 				}
 
+				//vmdebug('No result for table '.$this->_ltmp.' testing Fallback '.$this->_langTag.' '.$this->_pkey.' = '.$oid.'  '.$this->_slugAutoName);
 
-				//vmdebug('No result for '.$usedLangTag.' '.$this->_pkey.' '.$this->_slugAutoName.', lets check for Fallback lang '.$this->_langTag);
-				
-
-				//vmSetStartTime('lfallback');
-				$this->_loadedWithLangFallback = VmConfig::$defaultLangTag;
+				vmSetStartTime('lfallback');
+				$lhash = $this->_lhash;
 				$this->load($oid, $overWriteLoadName, $andWhere, $tableJoins, $joinKey) ;
 				//vmTime('Time to load language fallback '.$this->_langTag, 'lfallback');
+				self::$_cache['l'][$lhash] = $this->loadFieldValues(false);
+
+				//if(!empty($this->slug))vmdebug('Set $this->_langTag '.$this->_langTag.' back to Ltmp '.$this->_ltmp,$this->slug);
+				if($this->_ltmp and $first){
+					$this->_langTag = $this->_ltmp;
+					$this->_ltmp = false;
+				}
+
 				return $this;
 			} else {
 				$this->_loaded = false;
 			}
 		}
 
-		if($this->_ltmp){
-			//vmdebug('Set Ltmp '.$this->_ltmp.' back to false');
-			$this->_langTag = $this->_ltmp;
-			self::$_cache['l'][$this->_lhash] = $this->loadFieldValues(false);
-		}
-		else {
-			self::$_cache['l'][$this->_lhash] = $this->loadFieldValues(false);
-		}
-
+		self::$_cache['l'][$this->_lhash] = $this->loadFieldValues(false);
 
 		if($this->_cryptedFields){
 			$this->decryptFields();
@@ -1123,14 +1147,13 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		$this->convertDec();
 
 		//if($this->_translatable) vmTime('loaded '.$this->_langTag.' '.$mainTable.' '.$oid ,'vmtableload');
-		$this->_ltmp = false;
 
 		return $this;
 	}
 
 
 	function getHash($value) {
-		$hashFunction = Vmconfig::get('hashFunction', 'md5');
+		$hashFunction = VmConfig::get('hashFunction', 'crc32');
 		return call_user_func_array($hashFunction, array(&$value));
 	}
 
@@ -1160,9 +1183,9 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		}
 
 		foreach($this->_cryptedFields as $field){
-			if(isset($this->$field)){
-				$this->$field = vmCrypt::decrypt($this->$field, $date);
-				//vmdebug($this->_tbl.' Field '.$field.' encrypted = '.$this->$field);
+			if(isset($this->{$field})){
+				$this->{$field} = vmCrypt::decrypt($this->{$field}, $date);
+				//vmdebug($this->_tbl.' Field '.$field.' encrypted = '.$this->{$field});
 			}
 		}
 	}
@@ -1182,8 +1205,8 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 		if($this->_cryptedFields){
 			foreach($this->_cryptedFields as $field){
-				if(isset($this->$field)){
-					$this->$field = vmCrypt::encrypt($this->$field);
+				if(isset($this->{$field})){
+					$this->{$field} = vmCrypt::encrypt($this->{$field});
 				}
 			}
 		}
@@ -1200,29 +1223,29 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		}
 
 		$tblKey = $this->_tbl_key;
-		if(!empty($this->$tblKey)){
+		if(!empty($this->{$tblKey})){
 			$_qry = 'SELECT `'.$tblKey.'` '
 				. 'FROM `'.$this->_tbl.'` '
-				. 'WHERE `'.$tblKey.'` = "' . $this->$tblKey.'" ';
+				. 'WHERE `'.$tblKey.'` = "' . $this->{$tblKey}.'" ';
 			$this->_db->setQuery($_qry);
-			$this->$tblKey = $this->_db->loadResult();
+			$this->{$tblKey} = $this->_db->loadResult();
 		}
 
 		if(!empty($this->_hashName)){
 			$this->hashEntry();
 		}
 
-		if(!empty($this->$tblKey)){
+		if(!empty($this->{$tblKey})){
 			$ok = $this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
 		} else {
-			$p = $this->$tblKey;
+			$p = $this->{$tblKey};
 			$ok = $this->_db->insertObject($this->_tbl, $this, $this->_tbl_key);
 			if($ok and !empty($this->_hashName)){
 				$oldH= $this->{$this->_hashName};
-				if($p!=$this->$tblKey and !in_array($tblKey,$this->_omittedHashFields)){
+				if($p!=$this->{$tblKey} and !in_array($tblKey,$this->_omittedHashFields)){
 					$this->hashEntry();
 					$ok = $this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
-					vmdebug('VmTable Updated entry with correct hash ',$this->_tbl_key,$p,$this->$tblKey,$oldH,$this->{$this->_hashName});
+					vmdebug('VmTable Updated entry with correct hash ',$this->_tbl_key,$p,$this->{$tblKey},$oldH,$this->{$this->_hashName});
 				}
 			}
 		}
@@ -1230,7 +1253,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		//reset Params
 		if(isset($this->_tmpParams) and is_array($this->_tmpParams)){
 			foreach($this->_tmpParams as $k => $v){
-				$this->$k = $v;
+				$this->{$k} = $v;
 			}
 		}
 		$this->_tmpParams = false;
@@ -1299,7 +1322,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_db->quoteName($this->_tbl));
 			$query->set('asset_id = ' . (int) $this->asset_id);
-			$query->where($this->_db->quoteName($tblKey) . ' = ' . (int) $this->$tblKey);
+			$query->where($this->_db->quoteName($tblKey) . ' = ' . (int) $this->{$tblKey});
 			$this->_db->setQuery($query);
 
 			if (!$this->_db->execute())
@@ -1318,19 +1341,19 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 		if (!empty($this->_xParams) and !empty($this->_varsToPushParam)) {
 			$paramFieldName = $this->_xParams;
-			$this->$paramFieldName = '';
+			$this->{$paramFieldName} = '';
 			$this->_tmpParams = array();
 			foreach ($this->_varsToPushParam as $key => $v) {
 
-				if (isset($this->$key)) {
-					$this->$paramFieldName .= $key . '=' . vmJsApi::safe_json_encode($this->$key) . '|';
-					$this->_tmpParams[$key] = $this->$key;
+				if (isset($this->{$key})) {
+					$this->{$paramFieldName} .= $key . '=' . vmJsApi::safe_json_encode($this->{$key}) . '|';
+					$this->_tmpParams[$key] = $this->{$key};
 				} else {
-					$this->$paramFieldName .= $key . '=' . vmJsApi::safe_json_encode($v[0]) . '|';
+					$this->{$paramFieldName} .= $key . '=' . vmJsApi::safe_json_encode($v[0]) . '|';
 					$this->_tmpParams[$key] = $v[0];
 				}
 
-				unset($this->$key);
+				unset($this->{$key});
 			}
 		}
 		return true;
@@ -1344,28 +1367,28 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		while ($i < 40) {
 
 			$tbl_key = $this->_tbl_key;
-			$q = 'SELECT `' . $name . '` FROM `' . $tbl_name . '` WHERE `' . $name . '` =  "' . $this->$name . '" ';
-			if(!empty($this->$tbl_key)){
-				$q .= '  AND `' . $this->_tbl_key . '`!=' . $this->$tbl_key.' ';
+			$q = 'SELECT `' . $name . '` FROM `' . $tbl_name . '` WHERE `' . $name . '` =  "' . $this->{$name} . '" ';
+			if(!empty($this->{$tbl_key})){
+				$q .= '  AND `' . $this->_tbl_key . '`!=' . $this->{$tbl_key}.' ';
 			}
 			$this->_db->setQuery($q);
 			$existingSlugName = $this->_db->loadResult();
 
 			if (!empty($existingSlugName)) {
 
-				if($posNbr = strrpos($this->$name,'-')){
-					$existingNbr = substr($this->$name,$posNbr+1);
+				if($posNbr = strrpos($this->{$name},'-')){
+					$existingNbr = substr($this->{$name},$posNbr+1);
 
 					if(is_numeric($existingNbr)){
 						$existingNbr++;
-						$this->$name = substr($this->$name,0,$posNbr+1) . $existingNbr;
+						$this->{$name} = substr($this->{$name},0,$posNbr+1) . $existingNbr;
 					} else{
-						$this->$name = $this->$name . '-1';
+						$this->{$name} = $this->{$name} . '-1';
 					}
 				} else {
-					$this->$name = $this->$name . '-1';
+					$this->{$name} = $this->{$name} . '-1';
 				}
-				vmdebug('checkCreateUnique '.$name.' = '.$existingSlugName.' changed to '.$this->$name.' '.$q);
+				vmdebug('checkCreateUnique '.$name.' = '.$existingSlugName.' changed to '.$this->{$name}.' '.$q);
 			} else {
 				return true;
 			}
@@ -1394,7 +1417,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			//$user = JFactory::getUser();
 			//$loggedVendorId = vmAccess::isSuperVendor($user->id);
 			$loggedVendorId = vmAccess::isSuperVendor();
-			vmdebug('Table '.$this->_tbl.' check '.$loggedVendorId);
+			//vmdebug('Table '.$this->_tbl.' check $loggedVendorId '.$loggedVendorId);
 			$user_is_vendor = 0;
 			$tbl_key = $this->_tbl_key;
 			$className = get_class($this);
@@ -1402,7 +1425,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			$admin = vmAccess::manager('managevendors');
 			//Todo removed Quickn Dirty, use check in derived class
 			if (strpos($this->_tbl,'virtuemart_vendors')===FALSE) {
-				$q = 'SELECT `virtuemart_vendor_id` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key . '`="' . $this->$tbl_key . '" ';
+				$q = 'SELECT `virtuemart_vendor_id` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key . '`="' . $this->{$tbl_key} . '" ';
 				if (!isset(self::$_cache[md5($q)])) {
 					$this->_db->setQuery($q);
 					self::$_cache[md5($q)] = $virtuemart_vendor_id = $this->_db->loadResult();
@@ -1417,6 +1440,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 				//This is the case when a vendor buys products of vendor1
 				if (strpos($this->_tbl,'virtuemart_order_items')===FALSE and strpos($this->_tbl,'virtuemart_carts')===FALSE) {
 					vmdebug('Blocked storing, logged vendor ' . $loggedVendorId . ' but data belongs to ' . $virtuemart_vendor_id,$this->_tbl);
+					VmError('Blocked storing of the object, you are not the owner');
 					return false;
 				} else {
 					$this->virtuemart_vendor_id = $virtuemart_vendor_id;
@@ -1502,48 +1526,48 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 				$checkTable = $this->_tbl;
 			}
 
-			if (empty($this->$slugName)) {
+			if (empty($this->{$slugName})) {
 				// 				vmdebug('table check use _slugAutoName '.$slugAutoName.' '.$slugName);
-				if (!empty($this->$slugAutoName)) {
-					$this->$slugName = $this->$slugAutoName;
+				if (!empty($this->{$slugAutoName})) {
+					$this->{$slugName} = $this->{$slugAutoName};
 				} else {
 					$pkey = $this->_pkey;
-					vmError('VmTable ' . $checkTable . ' Check not passed. Neither slug nor obligatory value at ' . $slugAutoName . ' for auto slug creation is given '.$this->$pkey);
+					vmError('VmTable ' . $checkTable . ' Check not passed. Neither slug nor obligatory value at ' . $slugAutoName . ' for auto slug creation is given '.$this->{$pkey});
 					return false;
 				}
 
 			}
 
-			//if (JVM_VERSION === 1) $this->$slugName = JFilterOutput::stringURLSafe($this->$slugName);
-			//else $this->$slugName = JApplication::stringURLSafe($this->$slugName);
+			//if (JVM_VERSION === 1) $this->{$slugName} = JFilterOutput::stringURLSafe($this->{$slugName});
+			//else $this->{$slugName} = JApplication::stringURLSafe($this->{$slugName});
 			//pro+#'!"§$%&/()=?duct-w-| ||cu|st|omfield-|str<ing>
-			//vmdebug('my slugName '.$slugName,$this->$slugName);
+			//vmdebug('my slugName '.$slugName,$this->{$slugName});
 
-			$this->$slugName = str_replace('-', ' ', $this->$slugName);
-			$this->$slugName = html_entity_decode($this->$slugName,ENT_QUOTES);
+			$this->{$slugName} = str_replace('-', ' ', $this->{$slugName});
+			$this->{$slugName} = html_entity_decode($this->{$slugName},ENT_QUOTES);
 			//$config =& JFactory::getConfig();
 			//$transliterate = $config->get('unicodeslugs');
 			$unicodeslugs = VmConfig::get('transliterateSlugs',false);
 			if($unicodeslugs){
 				$lang = vmLanguage::getLanguage();
-				$this->$slugName = $lang->transliterate($this->$slugName);
+				$this->{$slugName} = $lang->transliterate($this->{$slugName});
 			}
 
 			// Trim white spaces at beginning and end of alias and make lowercase
-			$this->$slugName = trim(JString::strtolower($this->$slugName));
-			$this->$slugName = str_replace(array('`','´',"'"),'',$this->$slugName);
+			$this->{$slugName} = trim(JString::strtolower($this->{$slugName}));
+			$this->{$slugName} = str_replace(array('`','´',"'"),'',$this->{$slugName});
 
-			$this->$slugName = vRequest::filterUword($this->$slugName,'-,_,|','-');
-			while(strpos($this->$slugName,'--')){
-				$this->$slugName = str_replace('--','-',$this->$slugName);
+			$this->{$slugName} = vRequest::filterUword($this->{$slugName},'-,_,|','-');
+			while(strpos($this->{$slugName},'--')){
+				$this->{$slugName} = str_replace('--','-',$this->{$slugName});
 			}
 			// Trim dashes at beginning and end of alias
-			$this->$slugName = trim($this->$slugName, '-');
+			$this->{$slugName} = trim($this->{$slugName}, '-');
 
-			if($unicodeslugs)$this->$slugName = rawurlencode($this->$slugName);
+			if($unicodeslugs)$this->{$slugName} = rawurlencode($this->{$slugName});
 
 			$valid = $this->checkCreateUnique($checkTable, $slugName);
-			//vmdebug('my Final slugName '.$slugName,$this->$slugName);
+			//vmdebug('my Final slugName '.$slugName,$this->{$slugName});
 			if (!$valid) {
 				return false;
 			}
@@ -1551,7 +1575,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		}
 
 		foreach ($this->_obkeys as $obkeys => $error) {
-			if (empty($this->$obkeys)) {
+			if (empty($this->{$obkeys})) {
 				$error = get_class($this) . ' ' .vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_OBLIGATORY_KEY', 'COM_VIRTUEMART_' . strtoupper($obkeys) );
 				vmError($error);
 				return false;
@@ -1562,7 +1586,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			if (empty($this->_db)) $this->_db = JFactory::getDBO();
 			foreach ($this->_unique_name as $obkeys => $error) {
 
-				if (empty($this->$obkeys)) {
+				if (empty($this->{$obkeys})) {
 					$error = vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_NOT_UNIQUE_NAME', 'COM_VIRTUEMART_' . strtoupper($obkeys));
 					vmError('Non unique ' . $this->_unique_name . ' ' . $error);
 					return false;
@@ -1617,13 +1641,13 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			if (is_object($data)) {
 
 				foreach ($this->_translatableFields as $name) {
-					$langTable->$name = $this->$name;
-					if (isset($data->$name)) {
+					$langTable->{$name} = $this->{$name};
+					if (isset($data->{$name})) {
 						//We directly store language stuff "escaped" escape
 						//$langData[$name] = htmlspecialchars(html_entity_decode($data->$name, ENT_QUOTES, "UTF-8"), ENT_QUOTES, "UTF-8");
-						$langData[$name] = $db->escape(html_entity_decode($data->$name, ENT_QUOTES, "UTF-8") );
+						$langData[$name] = $db->escape(html_entity_decode($data->{$name}, ENT_QUOTES, "UTF-8") );
 					}
-					unset($dataTable->$name);
+					unset($dataTable->{$name});
 
 					if (!empty($this->_unique_name[$name])) {
 						$langUniqueKeys[$name] = 1;
@@ -1641,12 +1665,12 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 			} else {
 				foreach ($this->_translatableFields as $name) {
-					$langTable->$name = $this->$name;
+					$langTable->{$name} = $this->{$name};
 					if (isset($data[$name])) {
 						//$langData[$name] = htmlspecialchars(html_entity_decode($data[$name], ENT_QUOTES, "UTF-8"), ENT_QUOTES, "UTF-8");
 						$langData[$name] = $db->escape(html_entity_decode($data[$name], ENT_QUOTES, "UTF-8") );
 					}
-					unset($dataTable->$name);
+					unset($dataTable->{$name});
 
 					if (!empty($this->_unique_name[$name])) {
 						$langUniqueKeys[$name] = 1;
@@ -1697,13 +1721,13 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			if ($ok) {
 
 				if(!$langOnly){
-					$dataTable->bindChecknStoreNoLang($data, $preload);
+					$ok = $dataTable->bindChecknStoreNoLang($data, $preload);
 					$this->bind($dataTable);
-					$langTable->$tblKey = !empty($this->$tblKey) ? $this->$tblKey : 0;
-					//vmdebug('bindChecknStoreNoLang my $tblKey '.$tblKey.' '.$langTable->$tblKey);
+					$langTable->{$tblKey} = !empty($this->{$tblKey}) ? $this->{$tblKey} : 0;
+					//vmdebug('bindChecknStoreNoLang my $tblKey '.$tblKey.' '.$langTable->{$tblKey});
 					if ($ok and $preload) {
-						if (!empty($langTable->$tblKey)) {
-							$id = $langTable->$tblKey;
+						if (!empty($langTable->{$tblKey})) {
+							$id = $langTable->{$tblKey};
 							if (!$langTable->load($id)) {
 								$ok = false;
 								vmdebug('Preloading of language table failed, no id given, cannot store ' . $this->_tbl);
@@ -1730,7 +1754,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 					if (!$langTable->store()) {
 						$ok = false;
 						// $msg .= ' store';
-						vmdebug('Problem in store with langtable ' . get_class($langTable) . ' with ' . $tblKey . ' = ' . $this->$tblKey . ' ' . $langTable->_db->getErrorMsg());
+						vmdebug('Problem in store with langtable ' . get_class($langTable) . ' with ' . $tblKey . ' = ' . $this->{$tblKey} . ' ' . $langTable->_db->getErrorMsg());
 					} else {
 						$this->bind($langTable);
 
@@ -1761,8 +1785,8 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 		if ($preload) {
 			if (is_object($data)) {
-				if (!empty($data->$tblKey)) {
-					$this->load($data->$tblKey);
+				if (!empty($data->{$tblKey})) {
+					$this->load($data->{$tblKey});
 				}
 			} else {
 				if (!empty($data[$tblKey])) {
@@ -1772,7 +1796,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 			if ($this->_translatable) {
 				foreach ($this->_translatableFields as $name) {
-					unset($this->$name);
+					unset($this->{$name});
 				}
 			}
 			//vmdebug('bindChecknStoreNoLang language unloaded, why?');
@@ -1804,7 +1828,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		}
 
 		if ($ok) {
-			if (!$this->store($this->_updateNulls)) {
+			if (!$this->store($this->_updateNulls) and $this->_db->getErrorMsg()) {
 				$ok = false;
 				$msg .= ' store';
 				vmdebug('Problem in store ' . get_class($this) . ' ' . $this->_db->getErrorMsg());
@@ -1814,9 +1838,9 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 
 		if (is_object($data)) {
-			$data->$tblKey = !empty($this->$tblKey) ? $this->$tblKey : 0;
+			$data->{$tblKey} = !empty($this->{$tblKey}) ? $this->{$tblKey} : 0;
 		} else {
-			$data[$tblKey] = !empty($this->$tblKey) ? $this->$tblKey : 0;
+			$data[$tblKey] = !empty($this->{$tblKey}) ? $this->{$tblKey} : 0;
 		}
 
 		// 		vmdebug('bindChecknStore '.get_class($this).' '.$this->_db->getErrorMsg());
@@ -1833,12 +1857,13 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 	 */
 	function fixOrdering($where = '') {
 
-		$where = $where ? ' WHERE ' . $where : '';
+		$where = !empty($where) ? ' WHERE ' . $where : '';
 		// fast check for duplicities
-		$q = 'SELECT `' . $this->_tbl_key . '` FROM `' . $this->_tbl . '` GROUP BY `' . $this->_orderingKey . '` HAVING COUNT(*) >= 2 ' . $where . ' LIMIT 1';
+		$q = 'SELECT `' . $this->_tbl_key . '` FROM `' . $this->_tbl . '` ' . $where . '  GROUP BY `' . $this->_orderingKey . '` HAVING COUNT(*) >= 2  LIMIT 1';
 		$this->_db->setQuery($q);
 		$res = $this->_db->loadAssocList();
-		if (empty($res)) return true;
+		//vmdebug('fixOrdering my query get duplicates',$q,$res);
+		//if (empty($res)) return true;
 
 		$q = ' SELECT `' . $this->_tbl_key . '` FROM `' . $this->_tbl . '` ' . $where . ' ORDER BY `' . $this->_orderingKey . '` ASC';
 		$this->_db->setQuery($q, 0, 999999);
@@ -1847,7 +1872,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		if (!empty($e)) {
 			vmError(get_class($this) . $e);
 		}
-		echo $q . "<br />\n";
+
 		// no data in the table
 		if (empty($res)) return true;
 		// we will set ordering to 5,10,15,20,25 so there is enough space in between for manual editing
@@ -1872,130 +1897,86 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 	 * @param $dirn
 	 * @param $where
 	 */
-	function move($dirn, $where = '', $orderingkey = 0) {
+	function move($dirn, $whereIn = '', $orderingkey = 0, $cid = 0) {
 
-		// for some reason this function is not used from categories
-		$this->fixOrdering();
+		if($cid === 0){
+			$cid = vRequest::getInt($this->_pkeyForm,vRequest::getInt($this->_pkey,false));
+			if(empty($cid) and !empty($this->{$this->_pkey})){
+				$cid = $this->{$this->_pkey};
+			}
+		}
 
-		$k = $this->_tbl_key;
-		// problem here was that $this->$k returned (0)
-
-		$cid = vRequest::getInt($this->_pkeyForm,vRequest::getInt($this->_pkey,false));
 
 		if (!empty($cid) && (is_array($cid))) {
 			$cid = reset($cid);
-		} else {
-				vmError(get_class($this) . ' is missing cid information !');
-				return false;
-		}		// stAn: if somebody knows how to get current `ordering` of selected cid (i.e. virtuemart_userinfo_id or virtuemart_category_id from defined vars, you can review the code below)
-		$q = "SELECT `" . $this->_orderingKey . '` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key . "` = '" . (int)$cid . "' limit 0,1";
+		} else if(empty($cid)){
+			vmError(get_class($this) . ' is missing cid information !');
+			return false;
+		}
 
-		if (!isset(self::$_cache[md5($q)])) {
+		if (empty($orderingkey))
+			$orderingkey = $this->_orderingKey;
+
+		//if not loaded already, load the ordering of the current item
+		if(!$this->_loaded){
+			$q = "SELECT `" . $orderingkey . '` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key . "` = '" . (int)$cid . "' limit 0,1";
 			$this->_db->setQuery($q);
-			$c_order = $this->_db->loadResult(); // current ordering value of cid
-		} else {
-			$c_order = self::$_cache[md5($q)];
+			$this->{$orderingkey} = $this->_db->loadResult();
+			$e = $this->_db->getErrorMsg();
+			if (!empty($e)) {
+				vmError(get_class($this) . $e);
+			}
+
 		}
 
-		$this->$orderingkey = $c_order;
-
-		$e = $this->_db->getErrorMsg();
-		if (!empty($e)) {
-			vmError(get_class($this) . $e);
-		}
-		// stAn addition:
-		$where .= ' `' . $this->_tbl_key . '` <> ' . (int)$cid . ' ';
-		// explanation:
-		// select one above or under which is not cid and update/set it's ordering of the original cid
-		// could be done with one complex query... but this is more straitforward and the speed is not that much needed in this one
-
-		if (!empty($orderingkey))
-			$this->_orderingKey = $orderingkey;
+		$excl = ' `' . $this->_tbl_key . '` != ' . (int)$cid . ' ';
+		$where = ($whereIn ? $whereIn.' AND ' . $excl : $excl);
 
 		if (!in_array($this->_orderingKey, array_keys($this->getProperties()))) {
 			vmError(get_class($this) . ' does not support ordering');
 			return false;
 		}
 
-		$k = $this->_tbl_key; // virtuemart_userfield_id column name
-
-		$orderingKey = $this->_orderingKey; // ordering column name
-
+		//Lets load the ordering of the next row, so that we can directly use the value of the next row for the ordering value of the current row
 		$sql = 'SELECT `' . $this->_tbl_key . '`, `' . $this->_orderingKey . '` FROM ' . $this->_tbl;
 
 		if ($dirn < 0) {
-			$sql .= ' WHERE `' . $this->_orderingKey . '` <= ' . (int)$c_order;
-			$sql .= ($where ? ' AND ' . $where : '');
-			$sql .= ' ORDER BY `' . $this->_orderingKey . '` DESC';
+			$sign = ' < ';		//<=
+			$orderDir = 'DESC';
 		} else if ($dirn > 0) {
-			$sql .= ' WHERE `' . $this->_orderingKey . '` >= ' . (int)$c_order;
-			$sql .= ($where ? ' AND ' . $where : '');
-			$sql .= ' ORDER BY `' . $this->_orderingKey . '`';
+			$sign = ' > ';		//>=
+			$orderDir = '';
 		} else {
-			$sql .= ' WHERE `' . $this->_orderingKey . '` = ' . (int)$c_order;
-			$sql .= ($where ? ' AND ' . $where : '');
-			$sql .= ' ORDER BY `' . $this->_orderingKey . '`';
+			$sign = ' = ';
+			$orderDir = '';
 		}
 
+		$sql .= ' WHERE `' . $orderingkey . '` '.$sign.' ' . (int)$this->{$orderingkey};
+		$sql .= ($where ? ' AND ' . $where : '');
+		$sql .= ' ORDER BY `' . $orderingkey . '` '.$orderDir;
 
-		if (!isset(self::$_cache[md5($sql)])) {
-			$this->_db->setQuery($sql, 0, 1);
+		$this->_db->setQuery($sql, 0, 1);
 
+		$nextRow = $this->_db->loadObject();
 
-			$row = null;
-			$row = $this->_db->loadObject();
-		} else $row = self::$_cache[md5($sql)];
+		if (isset($nextRow)) {
+			//We use directly the direction input to calculate the new ordering value $nextRow->{$orderingkey} + $dirn
+			$query = 'UPDATE '.$this->_tbl
+			.' SET `'.$this->_orderingKey.'` = '.(int)($nextRow->{$orderingkey} + $dirn)
+			.' WHERE '.$this->_tbl_key.' = "'.(int)$cid.'" LIMIT 1;';
 
-
-		if (isset($row)) {
-
-			// ok, we have a problem here - previous or next item has the same ordering as the current one
-			// we need to fix the ordering be reordering it all
-			if ((int)$row->$orderingKey == $c_order) {
-				// if we fix this while loading the ordering, it will slow down FE
-			}
-
-			// update the next or previous to have the same ordering as the selected
-			$query = 'UPDATE ' . $this->_tbl
-				. ' SET `' . $this->_orderingKey . '` = ' . (int)$c_order
-				. ' WHERE ' . $this->_tbl_key . ' = ' . (int)$row->$k . ' LIMIT 1';
-
-			$this->_db->setQuery($query);
-			echo "\n" . $query . '<br />';
-
-			if (!$this->_db->execute()) {
-				$err = $this->_db->getErrorMsg();
-				vmError( get_class($this) . ':: move isset row $row->$k' . $err);
-			}
-
-			// update the currently selected to have the same ordering as the next or previous
-			$query = 'UPDATE ' . $this->_tbl
-				. ' SET `' . $this->_orderingKey . '` = ' . (int)$row->$orderingKey
-				. ' WHERE ' . $this->_tbl_key . ' = "' . (int)$cid . '" LIMIT 1';
-			$this->_db->setQuery($query);
-			//echo $query.'<br />'; die();
-			if (!$this->_db->execute()) {
-				$err = $this->_db->getErrorMsg();
-				vmError( get_class($this) . ':: move isset row $row->$k' . $err);
-			}
-
-			// stAn, what for is this?
-			$this->ordering = $row->$orderingKey;
-
-
+			$this->_db->setQuery( $query );
+			vmdebug('Update with query ',$query);
 		} else {
-			// stAn: why should we update the same line with the same information when no next or previous found (?)
-
-			$query = 'UPDATE ' . $this->_tbl
-				. ' SET `' . $this->_orderingKey . '` = ' . (int)$this->$orderingKey
-				. ' WHERE ' . $this->_tbl_key . ' = "' . $this->_db->escape($this->$k) . '" LIMIT 1';
-			$this->_db->setQuery($query);
-
-			if (!$this->_db->execute()) {
-				$err = $this->_db->getErrorMsg();
-				vmError( get_class($this) . ':: move update $this->$k' . $err);
-			}
+			//Should not happen, if there is no next row, then the command to order down/up was accidently given (for example the gui provided accidently an order up icon
 		}
+
+		if (!$this->_db->execute()) {
+			$err = $this->_db->getErrorMsg();
+			vmError( get_class($this) . ':: move isset row $row->{$k}' . $err);
+		}
+
+		$this->fixOrdering($whereIn);
 		return true;
 	}
 
@@ -2070,12 +2051,12 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		$orderingKey = $this->_orderingKey;
 		// compact the ordering numbers
 		for ($i = 0, $n = count($orders); $i < $n; $i++) {
-			if ($orders[$i]->$orderingKey >= 0) {
-				if ($orders[$i]->$orderingKey != $i + 1) {
-					$orders[$i]->$orderingKey = $i + 1;
+			if ($orders[$i]->{$orderingKey} >= 0) {
+				if ($orders[$i]->{$orderingKey} != $i + 1) {
+					$orders[$i]->{$orderingKey} = $i + 1;
 					$query = 'UPDATE ' . $this->_tbl
-						. ' SET `' . $this->_orderingKey . '` = "' . $this->_db->escape($orders[$i]->$orderingKey) . '"
-					 WHERE ' . $k . ' = "' . $this->_db->escape($orders[$i]->$k) . '"';
+						. ' SET `' . $this->_orderingKey . '` = "' . $this->_db->escape($orders[$i]->{$orderingKey}) . '"
+					 WHERE ' . $k . ' = "' . $this->_db->escape($orders[$i]->{$k}) . '"';
 					$this->_db->setQuery($query);
 					$this->_db->execute();
 				}
@@ -2101,7 +2082,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 		$k = $this->_tbl_key;
 		if ($oid !== null) {
-			$this->$k = $oid;
+			$this->{$k} = $oid;
 		}
 
 		$config = JFactory::getConfig();
@@ -2112,7 +2093,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 
 		$query = 'UPDATE ' . $this->_db->quoteName($this->_tbl) .
 			' SET locked_by = ' . (int)$who . ', locked_on = "' . $this->_db->escape($time) . '"
-			 WHERE ' . $this->_tbl_key . ' = "' . $this->_db->escape($this->$k) . '"';
+			 WHERE ' . $this->_tbl_key . ' = "' . $this->_db->escape($this->{$k}) . '"';
 		$this->_db->setQuery($query);
 
 		$this->locked_by = $who;
@@ -2141,16 +2122,16 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		$k = $this->_tbl_key;
 
 		if ($oid !== null) {
-			$this->$k = $oid;
+			$this->{$k} = $oid;
 		}
 
-		if ($this->$k == NULL) {
+		if ($this->{$k} == NULL) {
 			return false;
 		}
 
 		$query = 'UPDATE ' . $this->_db->quoteName($this->_tbl) .
 			' SET locked_by = 0, locked_on = "' . $this->_db->escape($this->_db->getNullDate()) . '"
-				 WHERE ' . $this->_tbl_key . ' = "' . $this->_db->escape($this->$k) . '"';
+				 WHERE ' . $this->_tbl_key . ' = "' . $this->_db->escape($this->{$k}) . '"';
 		$this->_db->setQuery($query);
 
 		$this->locked_by = 0;
@@ -2200,12 +2181,18 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 	function toggle($field, $val = NULL) {
 
 		if ($val === NULL) {
-			$this->$field = !$this->$field;
+			$this->{$field} = !$this->{$field};
 		} else {
-			$this->$field = $val;
+			$this->{$field} = $val;
 		}
 		$k = $this->_tbl_key;
-		$q = 'UPDATE `' . $this->_tbl . '` SET `' . $field . '` = "' . $this->$field . '" WHERE `' . $k . '` = "' . $this->$k . '" ';
+		if(empty($this->{$k})){
+
+			vmdebug('Cannot toggle '.get_class($this).' '.$this->_tbl_key.' empty ',$this->{$this->_pkey});
+			$k = $this->_pkey;
+			return false;
+		}
+		$q = 'UPDATE `' . $this->_tbl . '` SET `' . $field . '` = "' . $this->{$field} . '" WHERE `' . $k . '` = "' . $this->{$k} . '" ';
 		$this->_db->setQuery($q);
 		if (!$res = $this->_db->execute()) {
 			vmError('There was an error toggling ' . $field, $this->_db->getErrorMsg());
@@ -2227,7 +2214,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 		$k = $this->_tbl_key;
 
 		if ($oid) {
-			$this->$k = intval($oid);
+			$this->{$k} = intval($oid);
 		}
 
 		$mainTableError = $this->checkAndDelete($this->_tbl, $where);
@@ -2278,7 +2265,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 			$whereKey = $this->_pkey;
 		}
 
-		$query = 'SELECT `' . $this->_tbl_key . '` FROM `' . $table . '` WHERE `' . $whereKey . '` = "' . $this->$k . '" '.$andWhere;
+		$query = 'SELECT `' . $this->_tbl_key . '` FROM `' . $table . '` WHERE `' . $whereKey . '` = "' . $this->{$k} . '" '.$andWhere;
 		$this->_db->setQuery($query);
 		// 		vmdebug('checkAndDelete',$query);
 		$list = $this->_db->loadColumn();
@@ -2429,7 +2416,7 @@ class VmTable extends vObject implements JObservableInterface, JTableInterface {
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
-		return $this->_tbl . '.' . (int) $this->$k;
+		return $this->_tbl . '.' . (int) $this->{$k};
 	}
 
 	/**

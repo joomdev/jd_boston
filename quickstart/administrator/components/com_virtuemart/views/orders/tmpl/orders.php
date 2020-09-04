@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: orders.php 10025 2019-03-13 10:08:09Z Milbo $
+ * @version $Id: orders.php 10306 2020-04-29 08:30:31Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die('Restricted access');
@@ -97,11 +97,12 @@ $styleDateCol = 'style="width:5%;min-width:110px"';
 				</td>
 				<td>
 					<?php
+					$orderName = html_entity_decode($order->order_name);
 					if ($order->virtuemart_user_id) {
-						$userlink = JROUTE::_ ('index.php?option=com_virtuemart&view=user&task=edit&virtuemart_user_id[]=' . $order->virtuemart_user_id, FALSE);
-						echo JHtml::_ ('link', JRoute::_ ($userlink, FALSE), $order->order_name, array('title' => vmText::_ ('COM_VIRTUEMART_ORDER_EDIT_USER') . ' ' .  $order->order_name));
+						$userlink = JRoute::_ ('index.php?option=com_virtuemart&view=user&task=edit&virtuemart_user_id[]=' . $order->virtuemart_user_id, FALSE);
+						echo JHtml::_ ('link', $userlink, $orderName, array('title' => vmText::_ ('COM_VIRTUEMART_ORDER_EDIT_USER') . ' ' .  $orderName) );
 					} else {
-						echo $order->order_name;
+						echo $orderName;
 					}
 					echo '<br>';
 					echo $order->order_email;
@@ -111,7 +112,14 @@ $styleDateCol = 'style="width:5%;min-width:110px"';
 				<!-- Payment method -->
 				<td><?php echo $order->payment_method; ?></td>
 				<!-- Shipment method -->
-				<td><?php echo $order->shipment_method; ?></td>
+<!--				quorvia-->
+				<?php $shipmentcolorStyle = '';
+				if (!empty($this->shipmentColors[$order->virtuemart_shipmentmethod_id])) {
+					$shipmentcolorStyle = "background-color:" . $this->shipmentColors[$order->virtuemart_shipmentmethod_id];
+				}
+				?>
+				<td style="<?php echo $shipmentcolorStyle ?>">
+				<?php echo $order->shipment_method; ?></td>
 				<!-- Print view -->
 				<?php
 					$this->createPrintLinks($order,$print_link,$deliverynote_link,$invoice_link);

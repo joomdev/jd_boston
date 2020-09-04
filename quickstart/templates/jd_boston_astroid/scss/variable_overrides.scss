@@ -1,0 +1,26 @@
+/* Override Bootstrap and Astroid Variables Here */
+$primary:				#02aed6 !default;
+$secondary:				#333333 !default;
+
+// Custom Button
+$btn-border-radius:     0  !default;
+$btn-padding-y:         10px !default;
+$btn-padding-x:         20px !default;
+
+
+$btn-border-radius-sm:	0 !default;
+
+$btn-border-radius-lg:	0 !default;
+$btn-padding-y-lg:		10px !default;
+$btn-padding-x-lg:		40px !default;
+
+
+$secondary-font-familiy: "Nunito" !default;
+$topbar-height: 54px;
+$topbar-border-color: #dddddd;
+$topbar-color: #656972;
+$topbar-font-size: 1rem;
+
+//Astroid Social icons
+$socialicons-color: $topbar-color;
+$socialicons-font-size: $topbar-font-size;

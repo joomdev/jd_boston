@@ -1,12 +1,4 @@
 <?php
-/**
- * @package	AcyMailing for Joomla
- * @version	6.3.1
- * @author	acyba.com
- * @copyright	(C) 2009-2019 ACYBA S.A.R.L. All rights reserved.
- * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 defined('_JEXEC') or die('Restricted access');
 ?><?php
 
@@ -19,7 +11,7 @@ class EntitySelectController extends acymController
         parent::__construct();
         $this->entitySelectHelper = acym_get('helper.entitySelect');
         $this->loadScripts = [
-            'all' => ['vue-applications'],
+            'all' => ['vue-applications' => ['entity_select']],
         ];
     }
 
@@ -42,14 +34,31 @@ class EntitySelectController extends acymController
             return ['error' => acym_translation('ACYM_MISSING_PARAMETERS')];
         }
 
-        $entityParams = ['offset' => $offset, 'elementsPerPage' => $perCalls];
+        $entityParams = [
+            'offset' => $offset,
+            'elementsPerPage' => $perCalls,
+            'entitySelect' => true,
+        ];
         if (!empty($join)) $entityParams['join'] = $join;
         if (!empty($columnsToDisplay)) $entityParams['columns'] = $columnsToDisplay;
+
+        if (!acym_isAdmin()) $entityParams['creator_id'] = acym_currentUserId();
 
         $entityClass = acym_get('class.'.$entity);
         $availableEntity = $entityClass->getMatchingElements($entityParams);
 
+        $this->formatEntites($availableEntity, $entity);
+
         return ['data' => empty($availableEntity) ? 'end' : $availableEntity];
+    }
+
+    private function formatEntites(&$availableEntity, $entity)
+    {
+        if ($entity == 'list') {
+            foreach ($availableEntity['elements'] as $key => $element) {
+                $availableEntity['elements'][$key]->color = '<i style="color: '.$element->color.'" class="acym_subscription acymicon-circle">';
+            }
+        }
     }
 
     public function loadEntitySelect()

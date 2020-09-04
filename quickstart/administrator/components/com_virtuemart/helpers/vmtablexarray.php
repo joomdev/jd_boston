@@ -30,7 +30,8 @@ class VmTableXarray extends VmTable {
 	protected $_orderable = false;
     protected $_skey = '';
     protected $_skeyForm = '';
-	protected $_pvalue = '';
+	protected $_pvalue = 0;
+	protected $_svalue = 0;
 
 //    function setOrderable($key='ordering', $auto=true){
 //    	$this->_orderingKey = $key;
@@ -41,7 +42,7 @@ class VmTableXarray extends VmTable {
 
 	function setSecondaryKey($key,$keyForm=0){
 		$this->_skey 		= $key;
-		$this->$key			= array();
+		$this->{$key}			= array();
 		$this->_skeyForm	= empty($keyForm)? $key:$keyForm;
 
     }
@@ -55,7 +56,7 @@ class VmTableXarray extends VmTable {
 	* swap the ordering of a record in the Xref tables
 	* @param  $direction , 1/-1 The increment to reorder by
 	*/
-	function move($direction, $where='', $orderingkey=0) {
+/*	function move($direction, $where='', $orderingkey=0) {
 
     	if(empty($this->_skey) ) {
     		vmError( 'No secondary keys defined in VmTableXarray '.$this->_tbl );
@@ -91,7 +92,8 @@ class VmTableXarray extends VmTable {
 				vmError( get_class( $this ).':: move '. $err, get_class( $this ).':: move error' );
 			}
 		}
-	}
+	}*/
+
     /**
      * Records in this table are arrays. Therefore we need to overload the load() function.
      * TODO, this function is giving back the array, not the table, it is not working like the other table, so we should change that
@@ -106,9 +108,6 @@ class VmTableXarray extends VmTable {
     		return false;
     	}
 
-		$pkey = $this->_pkey;
-		$this->$pkey = $oid;
-
     	if(empty($db)) $db = JFactory::getDBO();
 
 		if($this->_orderable){
@@ -116,10 +115,15 @@ class VmTableXarray extends VmTable {
 		} else {
 			$orderby = '';
 		}
-		$hash = md5((int)$oid. $this->_skey . $this->_tbl . $this->_pkey . $orderby);
+
+		$pkey = $this->_pkey;
+		$skey = $this->_skey;
+		$this->{$pkey} = $oid;
+
+		$hash = crc32((int)$oid. $skey . $this->_tbl . $pkey . $orderby);
 
 		if (!isset (self::$_cache['ar'][$hash])) {
-			$q = 'SELECT `'.$this->_skey.'` FROM `'.$this->_tbl.'` WHERE `'.$this->_pkey.'` = "'.(int)$oid.'" '.$orderby;
+			$q = 'SELECT `'.$skey.'` FROM `'.$this->_tbl.'` WHERE `'.$pkey.'` = "'.(int)$oid.'" '.$orderby;
 			$db->setQuery($q);
 			$result = $db->loadColumn();
 			if(!$result){
@@ -132,8 +136,7 @@ class VmTableXarray extends VmTable {
 			}
 		}
 
-		$skey = $this->_skey;
-		$this->$skey = self::$_cache['ar'][$hash];
+		$this->{$skey} = self::$_cache['ar'][$hash];
 
 		return self::$_cache['ar'][$hash];
 
@@ -158,13 +161,14 @@ class VmTableXarray extends VmTable {
 		if($this->_orderable){
 			$orderingKey = $this->_orderingKey;
 			if(!empty($data[$orderingKey])){
-				$this->$orderingKey = $data[$this->_orderingKey];
+				$this->{$orderingKey} = $data[$this->_orderingKey];
 			}
 		}
 
 		return true;
 
 	}
+
 
     /**
      *
@@ -179,10 +183,13 @@ class VmTableXarray extends VmTable {
 
         $pkey = $this->_pkey;
         $skey = $this->_skey;
+        $pvalue = $this->_pvalue;
+		$svalue = $this->_svalue;
+
         $tblkey = $this->_tbl_key;
 
         // We select all database rows based on our _pkey
-        $q  = 'SELECT * FROM `'.$this->_tbl.'` WHERE `'.$this->_pkey.'` = "'. $this->_pvalue.'" ';
+        $q  = 'SELECT * FROM `'.$this->_tbl.'` WHERE `'.$pkey.'` = "'. $pvalue.'" ';
         $db->setQuery($q);
         $objList = $db->loadObjectList();
 
@@ -190,15 +197,15 @@ class VmTableXarray extends VmTable {
         $oldArray = null;
         if($objList) {
             foreach($objList as $obj){
-                $oldArray[] = array($pkey=>$obj->$pkey, $skey=>$obj->$skey);
+                $oldArray[] = array($pkey=>$obj->{$pkey}, $skey=>$obj->{$skey});
             }
         }
 
         // We make another database object list with the values that we want to insert into the database
         $newArray = array();
-		if(!empty($this->_svalue)){
-	            if(!is_array($this->_svalue)) $this->_svalue = array($this->_svalue);
-	            foreach($this->_svalue as $value) $newArray[] = array($pkey=>$this->_pvalue, $skey=>$value);
+		if(!empty($svalue)){
+	            if(!is_array($svalue)) $svalue = array($svalue);
+	            foreach($svalue as $value) $newArray[] = array($pkey=>$pvalue, $skey=>$value);
 		}
 
         // Inserts and Updates
@@ -211,12 +218,12 @@ class VmTableXarray extends VmTable {
 
                 // We start creating the row we will insert or update
                 $obj = new stdClass;
-                $obj->$pkey = $newValue[$pkey];
-                $obj->$skey = $newValue[$skey];
+                $obj->{$pkey} = $newValue[$pkey];
+                $obj->{$skey} = $newValue[$skey];
 
                 if($this->_autoOrdering){
                     $oKey = $this->_orderingKey;
-                    $obj->$oKey = $myOrdering++;
+                    $obj->{$oKey} = $myOrdering++;
                 }
 
                 // If the new row does not exist in the old rows, we will insert it
@@ -225,14 +232,14 @@ class VmTableXarray extends VmTable {
                 }
                 else {
                     // If the new row exists in the old rows, we will update it
-                    $obj->$tblkey = $objList[$result]->$tblkey;
+                    $obj->{$tblkey} = $objList[$result]->{$tblkey};
                     $returnCode = $db->updateObject($this->_tbl, $obj, $tblkey);
                 }
             }
         }
         else {
             // There are zero new rows, so the user asked for all the rows to be deleted
-            $q  = 'DELETE FROM `'.$this->_tbl.'` WHERE `' . $pkey.'` = "'. $this->_pvalue .'" ';
+            $q  = 'DELETE FROM `'.$this->_tbl.'` WHERE `' . $pkey.'` = "'. $pvalue .'" ';
             $db->setQuery($q);
 
             if(!$db->execute()){
@@ -250,7 +257,7 @@ class VmTableXarray extends VmTable {
                 // If no new row exists in the old rows, we will delete the old rows
                 if( $result === false ) {
                     // If the old row does not exist in the new rows, we will delete it
-                    $q  = 'DELETE FROM `'.$this->_tbl.'` WHERE `' . $tblkey.'` = "'. $objList[$i]->$tblkey .'" ';
+                    $q  = 'DELETE FROM `'.$this->_tbl.'` WHERE `' . $tblkey.'` = "'. $objList[$i]->{$tblkey} .'" ';
                     $db->setQuery($q);
                     if(!$db->execute()){
                         $returnCode = false;
@@ -260,7 +267,7 @@ class VmTableXarray extends VmTable {
              }
         }
 
- 	return $returnCode;
+ 	return $this->_svalue;
 
     }
 

@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: products.php 9831 2018-05-07 13:45:33Z Milbo $
+* @version $Id: products.php 10231 2019-12-11 13:19:35Z Milbo $
 */
 
 defined('_JEXEC') or die('Restricted access');
@@ -91,8 +91,16 @@ class TableProducts extends VmTable {
 	var $metaauthor	= '';
 	/** @var string Name of the details page to use for showing product details in the front end */
 	var $layout = '';
-       /** @var int published or unpublished */
+	/** @var int published or unpublished */
 	var $published = 1;
+	/** following vars store if there is content in the xref tables */
+	var $has_categories = null;
+	var $has_manufacturers = null;
+	var $has_medias = null;
+	var $has_prices = null;
+	var $has_shoppergroups = null;
+	/*var $has_children = null;*/
+
 	/** @var int product_canon_category_id used to force a canonical category useful for items in more than one category */
 	var $product_canon_category_id = null;
 
@@ -113,7 +121,7 @@ class TableProducts extends VmTable {
 				    				'min_order_level'=>array(null,'float'),
 				    				'max_order_level'=>array(null,'float'),
 				    				'step_order_level'=>array(null,'float'),
-									//'product_packaging'=>array(null,'float'),
+									'shared_stock'=>array(0,'int'),
 									'product_box'=>array(null,'float')
 									);
 

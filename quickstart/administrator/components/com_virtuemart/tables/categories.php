@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: categories.php 9881 2018-06-20 09:03:58Z Milbo $
+* @version $Id: categories.php 10297 2020-04-07 22:19:33Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -31,6 +31,8 @@ class TableCategories extends VmTable {
 
 	/** @var int Primary key */
 	var $virtuemart_category_id	= null;
+
+	var $category_parent_id = null;
 	/** @var integer Product id */
 	var $virtuemart_vendor_id		= 0;
 	/** @var string Category name */
@@ -70,6 +72,9 @@ class TableCategories extends VmTable {
         /** @var integer Category publish or not */
 	var $published			= 0;
 
+	var $has_children = null;
+	var $has_medias = null;
+
 	/**
 	 * Class contructor
 	 *
@@ -93,8 +98,9 @@ class TableCategories extends VmTable {
 					'showproducts' => array('','int'),
 					'omitLoaded' => array('','int'),
 					'showsearch' => array('','int'),
-					'productsublayout' => array('','int'),
-				/*	'products_per_row' => array('','int'),*/
+					'productsublayout' => array('','char'),
+					/*'categorylayout' => array('','char'),
+					'productlayout' => array('','char'),*/
 					'featured' => array('','int'),
 					'featured_rows' => array('','int'),
 					'omitLoaded_featured' => array('','int'),
@@ -114,6 +120,7 @@ class TableCategories extends VmTable {
 		$this->setParameterable('cat_params',$varsToPushParam);
 		$this->setSlug('category_name');
 		$this->setTableShortCut('c');
+		$this->setOrderable();
 	}
 
 	public function check(){
@@ -130,6 +137,25 @@ class TableCategories extends VmTable {
 		return parent::check();
 	}
 
+	public function move( $dirn, $where = 0, $orderingKey=0, $cid = 0 ){
+
+		$res = parent::move($dirn, 'category_parent_id = "'.(int)$this->category_parent_id.'"', $orderingKey);
+		$this->synchroniseTableOrdering($this->category_parent_id);
+	}
+
+	public function synchroniseTableOrdering($category_parent_id){
+
+		$orderingKey = 'ordering';
+		$q = 'SELECT virtuemart_category_id,'.$orderingKey.' FROM #__virtuemart_categories WHERE category_parent_id = "'.(int)$category_parent_id.'" ';
+		$this->_db->setQuery($q);
+		$res = $this->_db->loadAssocList('virtuemart_category_id',$orderingKey);
+		foreach($res as $id=>$ordering){
+			$q = 'UPDATE #__virtuemart_category_categories SET '.$orderingKey.'="'.$ordering.'" WHERE category_child_id = "'.$id.'" ';
+			$this->_db->setQuery($q);
+			$this->_db->execute();
+		}
+	}
+
 	/**
 	 * Overwrite method
 	 *
@@ -138,7 +164,7 @@ class TableCategories extends VmTable {
 	 * @param $parent_id category parent id
 	 * @param $where sql WHERE clausule
 	 */
-	public function move( $dirn, $parent_id = 0, $where='' )
+/*	public function move( $dirn, $parent_id = 0, $where='' )
 	{
 		if (!in_array( 'ordering',  array_keys($this->getProperties())))
 		{
@@ -148,42 +174,57 @@ class TableCategories extends VmTable {
 
 		$k = $this->_tbl_key;
 
-		$sql = "SELECT c.".$this->_tbl_key.", c.ordering FROM ".$this->_tbl." c
-				LEFT JOIN #__virtuemart_category_categories cx
-				ON c.virtuemart_category_id = cx.category_child_id";
+		if(VmConfig::get('optimisedCatSql', false)){
+			$prefix = 'c';
+		} else {
+			$prefix = 'cx';
+		}
 
-		$condition = 'cx.category_parent_id = '. $this->_db->Quote($parent_id);
-		$where = ($where ? ' AND '.$condition : $condition);
+		$sql = 'SELECT '.$this->_tablePreFix.$this->_tbl_key.', '.$this->_tablePreFix.$this->_orderingKey.' FROM '.$this->_tbl.' as c ';
+
+
+		if(!VmConfig::get('optimisedCatSql', false)){
+
+			$sql .= ' LEFT JOIN #__virtuemart_category_categories as cx
+				ON c.virtuemart_category_id = cx.category_child_id';
+		}
+
+		$condition = $prefix.'.category_parent_id = '. $this->_db->Quote($parent_id);
+
+		$where .= !empty($where) ? ' AND '.$condition : $condition;
 
 		if ($dirn < 0)
 		{
-			$sql .= ' WHERE c.ordering < '.(int) $this->ordering;
-			$sql .= ($where ? ' AND '.$where : '');
-			$sql .= ' ORDER BY c.ordering DESC';
+			$sign = ' < ';
+			$orderDir = 'DESC';
 		}
 		else if ($dirn > 0)
 		{
-			$sql .= ' WHERE c.ordering > '.(int) $this->ordering;
-			$sql .= ($where ? ' AND '. $where : '');
-			$sql .= ' ORDER BY c.ordering';
+			$sign = ' > ';
+			$orderDir = '';
 		}
 		else
 		{
-			$sql .= ' WHERE c.ordering = '.(int) $this->ordering;
-			$sql .= ($where ? ' AND '.$where : '');
-			$sql .= ' ORDER BY c.ordering';
+			$sign = ' = ';
+			$orderDir = '';
 		}
 
+		$sql .= 'WHERE '.$prefix.'.'.$this->_orderingKey.$sign.(int) $this->ordering;
+		$sql .= !empty($where) ? ' AND '.$where : '';
+		$sql .= ' ORDER BY '.$prefix.'.'.$this->_orderingKey.' '.$orderDir;
 		$this->_db->setQuery( $sql, 0, 1 );
 
 
 		$row = null;
 		$row = $this->_db->loadObject();
+
+		//vmdebug('VmTable Category move my sql and row',$sql,$row);
+
 		if (isset($row))
 		{
 			$query = 'UPDATE '. $this->_tbl
 			. ' SET ordering = '. (int) $row->ordering
-			. ' WHERE '. $this->_tbl_key .' = '. $this->_db->Quote($this->$k)
+			. ' WHERE '. $this->_tbl_key .' = '. $this->_db->Quote($this->{$k})
 			;
 			$this->_db->setQuery( $query );
 
@@ -195,14 +236,14 @@ class TableCategories extends VmTable {
 
 			$query = 'UPDATE '.$this->_tbl
 			. ' SET ordering = '.(int) $this->ordering
-			. ' WHERE '.$this->_tbl_key.' = '.$this->_db->Quote($row->$k)
+			. ' WHERE '.$this->_tbl_key.' = '.$this->_db->Quote($row->{$k})
 			;
 			$this->_db->setQuery( $query );
 
 			if (!$this->_db->execute())
 			{
 				$err = $this->_db->getErrorMsg();
-				vmError( 'TableCategories move isset row this->k '.$err, 'TableCategories move isset row $row->$k ' );
+				vmError( 'TableCategories move isset row this->k '.$err, 'TableCategories move isset row $row->{$k} ' );
 			}
 
 			$this->ordering = $row->ordering;
@@ -211,7 +252,7 @@ class TableCategories extends VmTable {
 		{
 			$query = 'UPDATE '. $this->_tbl
 			. ' SET ordering = '.(int) $this->ordering
-			. ' WHERE '. $this->_tbl_key .' = '. $this->_db->Quote($this->$k)
+			. ' WHERE '. $this->_tbl_key .' = '. $this->_db->Quote($this->{$k})
 			;
 			$this->_db->setQuery( $query );
 
@@ -223,6 +264,7 @@ class TableCategories extends VmTable {
 		}
 		return true;
 	}
+*/
 
 	/**
 	 * Overwrite method
@@ -267,7 +309,7 @@ class TableCategories extends VmTable {
 					$orders[$i]->ordering = $i+1;
 					$query = 'UPDATE '.$this->_tbl
 					. ' SET ordering = '. (int) $orders[$i]->ordering
-					. ' WHERE '. $k .' = '. $this->_db->Quote($orders[$i]->$k)
+					. ' WHERE '. $k .' = '. $this->_db->Quote($orders[$i]->{$k})
 					;
 					$this->_db->setQuery( $query);
 					$this->_db->execute();

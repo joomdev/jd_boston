@@ -142,13 +142,13 @@ echo $this->loadTemplate('images');
 		$productDisplayTypes = array('productDisplayShipments', 'productDisplayPayments');
 		foreach ($productDisplayTypes as $productDisplayType) {
 
-			if(empty($this->$productDisplayType)){
+			if(empty($this->{$productDisplayType})){
 				continue;
-			} else if (!is_array($this->$productDisplayType)) {
-				$this->$productDisplayType = array($this->$productDisplayType);
+			} else if (!is_array($this->{$productDisplayType})) {
+				$this->{$productDisplayType} = array($this->{$productDisplayType});
 			}
 
-			foreach ($this->$productDisplayType as $productDisplay) {
+			foreach ($this->{$productDisplayType} as $productDisplay) {
 
 				if(empty($productDisplay)){
 					continue;
@@ -198,7 +198,7 @@ echo '<form method="post" class="product js-recalculate" action="'.JRoute::_('in
 					<noscript><input type="hidden" name="task" value="add" /></noscript>
 					<?php if(!empty($childProductIds)){ ?>
 						<span class="addtocart-button">
-						<?php echo shopFunctionsF::getAddToCartButton(TRUE); ?>
+						<?php echo self::renderVmSubLayout('addtocartbtn',array('orderable'=>$this->product->orderable)); ?>
 						</span>
 					<?php } ?>
 				</form>

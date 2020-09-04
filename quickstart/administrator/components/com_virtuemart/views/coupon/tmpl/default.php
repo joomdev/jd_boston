@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 10058 2019-05-17 13:42:16Z Milbo $
+* @version $Id: default.php 10319 2020-05-07 10:30:14Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -41,6 +41,7 @@ AdminUIHelper::startAdminArea($this);
 			</table>
 		</div>
 		<div id="resultscounter" ><?php echo $this->pagination->getResultsCounter();?></div>
+		<div id="coupon_usage_cont" ><a style="background-color: #2f6f2f;color: #fff;text-decoration: none;padding: 6px 8px;display: inline-block;margin: 10px;" href="index.php?option=com_virtuemart&view=coupon&cid[]=6&layout=couponsdata">Coupon Usage / Analytics</a></div>
 	</div>
     <div id="editcell">
 	    <table class="adminlist table table-striped" cellspacing="0" cellpadding="0">

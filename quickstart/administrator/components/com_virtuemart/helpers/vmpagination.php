@@ -129,7 +129,7 @@ class VmPagination extends vObject {
 		$selected = $this->limit;
 
 		// Build the select list
-		if($app->isAdmin()) {
+		if(!VmConfig::isSite()) {
 
 			if(empty($sequence)) {
 				$sequence = VmConfig::get( 'pagseq', 0 );
@@ -648,8 +648,8 @@ class VmPagination extends vObject {
 	 */
 	protected function _item_active(&$item)
 	{
-		$app = JFactory::getApplication();
-		if ($app->isAdmin())
+
+		if (!VmConfig::isSite())
 		{
 			if ($item->base > 0)
 			{
@@ -686,8 +686,7 @@ class VmPagination extends vObject {
 	 */
 	protected function _item_inactive(&$item)
 	{
-		$app = JFactory::getApplication();
-		if ($app->isAdmin())
+		if (!VmConfig::isSite())
 		{
 			return "<span>" . $item->text . "</span>";
 		}

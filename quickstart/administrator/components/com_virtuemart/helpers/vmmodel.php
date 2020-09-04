@@ -481,6 +481,7 @@ class VmModel extends vObject{
 	 * Gets an array of objects from the results of database query.
 	 *
 	 * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
+	 * @copyright	Copyright (C) 2019 The VirtueMart Team
 	 * @license     GNU General Public License version 2 or later; see LICENSE
 	 *
 	 * @param   string   $query       The query.
@@ -491,12 +492,18 @@ class VmModel extends vObject{
 	 *
 	 * @since   11.1
 	 */
-	protected function _getList($query, $limitstart = 0, $limit = 0)
-	{
-		$this->_db->setQuery($query, $limitstart, $limit);
-		$result = $this->_db->loadObjectList();
+	protected function _getList($query, $limitstart = 0, $limit = 0) {
 
-		return $result;
+		static $c = array();
+		$h = crc32($query);
+		if(isset($c[$h])){
+			return $c[$h];
+		} else {
+			$this->_db->setQuery($query, $limitstart, $limit);
+			$c[$h] = $this->_db->loadObjectList();
+			return $c[$h];
+		}
+
 	}
 
 	/**
@@ -740,7 +747,7 @@ class VmModel extends vObject{
 
 			$limit = (int)$app->getUserStateFromRequest('com_virtuemart.'.$view.'.limit', 'limit');
 			if(empty($limit)){
-				if($app->isSite()){
+				if(VmConfig::isSite()){
 					$limit = VmConfig::get ('llimit_init_FE',24);
 				} else {
 					$limit = VmConfig::get ('llimit_init_BE',30);
@@ -873,20 +880,7 @@ class VmModel extends vObject{
 				$count = 0;
 			}
 			$this->_total = $count;
-			if($limitStart>=$count){
-				if(empty($limit)){
-					$limit = 1.0;
-				}
-				$limitStart = floor($count/$limit);
-				$db->setQuery($q,$limitStart,$limit);
-				if($object == 2){
-					$this->ids = $db->loadColumn();
-				} else if($object == 1 ){
-					$this->ids = $db->loadAssocList();
-				} else {
-					$this->ids = $db->loadObjectList();
-				}
-			}
+
 		} else {
 			$this->_withCount = true;
 		}
@@ -907,16 +901,12 @@ class VmModel extends vObject{
 
 	static public function joinLangTables($tablename, $prefix, $on, $method = 0){
 
-		static $isSite = null;
-
 		$useFb = vmLanguage::getUseLangFallback();
 		$useFb2 = vmLanguage::getUseLangFallbackSecondary();
-		$isSite = vmConfig::isSite();
-
 
 		if($method===0){
 			$method = 'LEFT JOIN';
-			if($isSite and VmConfig::get('prodOnlyWLang',false)){
+			if(VmConfig::isSite() and VmConfig::get('prodOnlyWLang',false)){
 				$method = 'INNER JOIN';
 			}
 		} else {
@@ -1048,7 +1038,7 @@ class VmModel extends vObject{
 
 		if($table->bindChecknStore($data)){
 			$_idName = $this->_idName;
-			$this->_id = $table->$_idName;
+			$this->_id = $table->{$_idName};
 			$this->_cache[$this->_id] = $table;
 			return $this->_id;
 		} else {
@@ -1158,7 +1148,7 @@ class VmModel extends vObject{
 		{
 			$table->load( (int) $cid[$i] );
 			// track categories
-			if ($filter) $groupings[] = $table->$filter;
+			if ($filter) $groupings[] = $table->{$filter};
 
 			if ($table->ordering != $order[$i])
 			{

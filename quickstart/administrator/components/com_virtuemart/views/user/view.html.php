@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 10102 2019-08-20 06:50:21Z Milbo $
+ * @version $Id: view.html.php 10203 2019-11-18 11:06:13Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -36,8 +36,9 @@ class VirtuemartViewUser extends VmViewAdmin {
 		vmLanguage::loadJLang('com_virtuemart_shoppers',TRUE);
 
 		$task = vRequest::getCmd('task', 'edit');
+		$isSuperOrVendor = vmAccess::isSuperVendor();
 		if($task == 'editshop'){
-			$isSuperOrVendor = vmAccess::isSuperVendor();
+
 			if(empty($isSuperOrVendor)){
 				JFactory::getApplication()->redirect( 'index.php?option=com_virtuemart', vmText::_('JERROR_ALERTNOAUTHOR'), 'error');
 			} else {
@@ -97,6 +98,18 @@ class VirtuemartViewUser extends VmViewAdmin {
 			$this->lists['vendors'] = '';
 			if($this->showVendors()){
 				$this->lists['vendors'] = ShopFunctions::renderVendorList($userDetails->virtuemart_vendor_id, 'virtuemart_vendor_id', false);
+			}
+
+			$isSuper = vmAccess::isSuperVendor($userDetails->JUser->get('id'),'none');
+
+			if(VmConfig::get('multixcart',0)=='byvendor' and $isSuper==0){
+
+				$vUser = $model->getTable('vendor_users');
+				$vUser->load($userDetails->JUser->get('id'));
+				$userDetails->virtuemart_vendor_user_id = $vUser->virtuemart_vendor_user_id;
+
+
+				$this->lists['vendor'] = ShopFunctions::renderVendorList($userDetails->virtuemart_vendor_user_id, 'virtuemart_vendor_user_id', false, true);
 			}
 
 			$model->setId($userDetails->JUser->get('id'));
@@ -166,7 +179,6 @@ class VirtuemartViewUser extends VmViewAdmin {
 			if (!empty($userDetails->user_is_vendor)) {
 
 
-
 				$vendorM = VmModel::getModel('vendor');
 				//if(empty($userDetails->vendor->vendor_currency)){
 					$vendorCurrency = $vendorM->getVendorCurrency(1);
@@ -232,9 +244,12 @@ class VirtuemartViewUser extends VmViewAdmin {
 			'0' => array('searchTable' => 'juser', 'searchTable_name' => vmText::_('COM_VIRTUEMART_ONLY_JUSER')),
 			'1' => array('searchTable' => 'all', 'searchTable_name' => vmText::_('JALL'))
 			);
-
+			$this->vendors = '';
 			if($this->showVendors()){
 				$searchOptionTables[] = array('searchTable' => 'vendors', 'searchTable_name' => vmText::_('COM_VM_ONLY_VENDORS'));
+				$searchOptionTables[] = array('searchTable' => 'shoppers', 'searchTable_name' => vmText::_('COM_VM_ONLY_SHOPPERS'));
+				$vendorId = vRequest::getInt('virtuemart_vendor_id', vmAccess::isSuperVendor());
+				$this->vendors = Shopfunctions::renderVendorList($vendorId, 'virtuemart_vendor_id', true);
 			}
 			$this->searchOptions = JHtml::_('Select.genericlist', $searchOptionTables, 'searchTable', '', 'searchTable', 'searchTable_name', $model->searchTable );
 		}

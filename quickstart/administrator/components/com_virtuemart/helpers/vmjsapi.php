@@ -34,13 +34,7 @@ class vmJsApi{
 
 	}
 
-	private static function isAdmin(){
 
-		if(!isset(self::$_be)){
-			self::$_be = JFactory::getApplication()->isAdmin();
-		}
-		return self::$_be;
-	}
 
 	public static function safe_json_encode($value){
 		if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
@@ -130,10 +124,10 @@ class vmJsApi{
 				$cdata = true;
 				vmdebug('found CDATA '.$name);
 			} else {
-				if(strpos($file,'/')===0) {
+				if( substr( $file, 0, 1) == "/" ) {
 					$urlType = 1;
 				}
-				if(strpos($file,'//')===0 or strpos($file,'http://')===0 or strpos($file,'https://')===0){
+				if( substr( $file, 0, 2) == "//" or substr( $file, 0, 7) == "http://" or substr( $file, 0, 8) == "https://"){
 					$urlType = 2;
 				}
 			}
@@ -180,7 +174,9 @@ class vmJsApi{
 					if($jsToAdd['async']){
 						$attribs['async'] = 'async';
 					}
-					$document->addScript( $file .$ver,"text/javascript",$options,$attribs );
+
+					$attribs['mime'] = "text/javascript";
+					$document->addScript( $file .$ver, $options, $attribs );
 				}
 
 			} else {
@@ -303,7 +299,7 @@ class vmJsApi{
 			}
 
 		}
-		elseif (strpos($path, '//') === FALSE)
+		elseif ( substr( $path, 0, 2) != "//" )
 		{
 			if ($absolute_path) {
 				$path = VMPATH_BASE .'/'.$path;
@@ -321,41 +317,19 @@ class vmJsApi{
 	 */
 	static function jQuery($isSite=-1) {
 
-		if(JVM_VERSION<3){
-			//Very important convention with other 3rd pary developers, must be kept. DOES NOT WORK IN J3
-			if (JFactory::getApplication ()->get ('jquery')) {
-				return FALSE;
-			}
-		}
 
-		if($isSite===-1) $isSite = !self::isAdmin();
+		if($isSite===-1) $isSite = VmConfig::isSiteByApp();	//Maybe VmConfig::isSite()
 
 		if(VmConfig::get('jquery_framework',true)) JHtml::_('jquery.framework');
 
 		if (!VmConfig::get ('jquery', true) and $isSite) {
 			vmdebug('Common jQuery is disabled');
 			return FALSE;
-		} else if(JVM_VERSION>2) {
-			//JHtml::_('jquery.framework');
-		}
-
-		if(JVM_VERSION<3){
-			if(VmConfig::get('google_jquery',true)){
-				self::addJScript('jquery.min','//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js',false,false, false, '1.11.3');
-				self::addJScript( 'jquery-migrate.min',false,false,false,false,'');
-			} else {
-				self::addJScript( 'jquery.min',false,false,false,false,'1.11.0');
-				self::addJScript( 'jquery-migrate.min',false,false,false,false,'');
-			}
 		}
 
 		self::jQueryUi();
 
 		self::addJScript( 'jquery.noconflict',false,false,true,false,'');
-		//Very important convention with other 3rd pary developers, must be kept DOES NOT WORK IN J3
-		if(JVM_VERSION<3){
-			JFactory::getApplication()->set('jquery',TRUE);
-		}
 
 		self::vmVariables();
 
@@ -407,7 +381,7 @@ class vmJsApi{
 	// Virtuemart product and price script
 	static function jPrice() {
 
-		if(!VmConfig::get( 'jprice', TRUE ) and !self::isAdmin()) {
+		if(!VmConfig::get( 'jprice', TRUE ) or !VmConfig::isSite()) {
 			return FALSE;
 		}
 		static $jPrice = false;
@@ -439,10 +413,9 @@ class vmJsApi{
 	}
 
 	static function jSite() {
-		if (!VmConfig::get ('jsite', TRUE) and !self::isAdmin()) {
-			return FALSE;
+		if(VmConfig::get ('jsite', TRUE) or !VmConfig::isSite()){
+			self::addJScript('vmsite',false,false);
 		}
-		self::addJScript('vmsite',false,false);
 	}
 
 	static function jDynUpdate() {
@@ -532,21 +505,20 @@ jQuery(document).ready(function($) {
 		static $chosenDropDowns = false;
 
 		if(!$chosenDropDowns){
-			$be = self::isAdmin();
-			if(VmConfig::get ('jchosen', 0) or $be){
+
+			if(VmConfig::get ('jchosen', 0) or !VmConfig::isSite()){
 				vmJsApi::addJScript('chosen.jquery.min',false,false);
-				if(!$be and !vRequest::getInt('manage',false)) {
+				//vmdebug('chosenDropDowns jchosen or not isSite');
+				if(VmConfig::isSite()) {
 					vmJsApi::addJScript('vmprices');
+					$selector = 'jQuery("select.vm-chzn-select")';;
+				} else {
+					$selector = 'jQuery("select:not(.vm-chzn-add)")';
 				}
 				vmJsApi::css('chosen');
 
 				$selectText = 'COM_VIRTUEMART_DRDOWN_AVA2ALL';
 				$vm2string = "editImage: 'edit image',select_all_text: '".vmText::_('COM_VIRTUEMART_DRDOWN_SELALL')."',select_some_options_text: '".vmText::_($selectText)."'" ;
-				if($be or vRequest::getInt('manage',false)){
-					$selector = 'jQuery("select:not(.vm-chzn-add)")';
-				} else {
-					$selector = 'jQuery("select.vm-chzn-select")';
-				}
 
 				$script =
 				'if (typeof Virtuemart === "undefined")
@@ -712,14 +684,23 @@ Virtuemart.requiredMsg = '" .addslashes (vmText::_ ('COM_VIRTUEMART_MISSING_REQU
 				// If exist exit
 				vmJsApi::css ( $cssFile ) ;
 			} else {
-				$cssFile = 'vm-' . $direction .'-common';
-				vmJsApi::css ( $cssFile ) ;
+//			quorvia allow a combined by hidden cfg and dont load ratings/reviews css if none are used
+				$combined = VmConfig::get( 'VMcombinedCssFE', 0 );
+				if($combined) {
+					$cssFile = 'vm-'.$direction.'-combined-min';
+					vmJsApi::css( $cssFile );
+				} else {
+					$cssFile = 'vm-' . $direction .'-common';
+					vmJsApi::css ( $cssFile ) ;
 
-				$cssFile = 'vm-' . $direction .'-site';
-				vmJsApi::css ( $cssFile ) ;
-
-				$cssFile = 'vm-' . $direction .'-reviews';
-				vmJsApi::css ( $cssFile ) ;
+					$cssFile = 'vm-' . $direction .'-site';
+					vmJsApi::css ( $cssFile ) ;
+					
+					if(VmConfig::get( 'showReviewFor', 'none' ) != 'none' and VmConfig::get( 'showRatingFor', 'none' ) !='none') {
+						$cssFile = 'vm-'.$direction.'-reviews';
+						vmJsApi::css( $cssFile );
+					}
+				}
 			}
 			$cssSite = TRUE;
 		}
@@ -742,7 +723,7 @@ Virtuemart.requiredMsg = '" .addslashes (vmText::_ ('COM_VIRTUEMART_MISSING_REQU
 
 		if (empty($id)) {
 			$id = str_replace(array('[]','[',']','.'),'_',$name);
-			$id = trim(str_replace('__','.',$id),'.');
+			$id = trim(str_replace('__','_',$id),'.');
 		}
 
 		static $jDate;
@@ -853,6 +834,7 @@ Virtuemart.requiredMsg = '" .addslashes (vmText::_ ('COM_VIRTUEMART_MISSING_REQU
 		vmJsApi::addJScript('vmkeepalive',false, true, false);
 	}
 
+
 	static function ajaxCategoryDropDown($id, $param, $emptyOpt){
 
 		vmJsApi::addJScript('ajax_catree');
@@ -860,7 +842,7 @@ Virtuemart.requiredMsg = '" .addslashes (vmText::_ ('COM_VIRTUEMART_MISSING_REQU
 	jQuery(document).ready(function($) {
 		Virtuemart.emptyCatOpt = '".$emptyOpt."';
 		Virtuemart.param = '".$param."';
-		Virtuemart.isAdmin = '".self::isAdmin()."';
+		Virtuemart.isAdmin = '".!VmConfig::isSiteByApp()."';
 		Virtuemart.loadCategoryTree('".$id."');
 	});
 });

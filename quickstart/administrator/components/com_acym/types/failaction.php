@@ -1,16 +1,8 @@
 <?php
-/**
- * @package	AcyMailing for Joomla
- * @version	6.3.1
- * @author	acyba.com
- * @copyright	(C) 2009-2019 ACYBA S.A.R.L. All rights reserved.
- * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 defined('_JEXEC') or die('Restricted access');
 ?><?php
 
-class failactionType extends acymClass
+class failactionType extends acymObject
 {
     public function __construct()
     {
@@ -24,7 +16,6 @@ class failactionType extends acymClass
         $this->values[] = acym_selectOption('block', 'ACYM_BLOCK_USER');
         $this->values[] = acym_selectOption('delete', 'ACYM_DELETE_USER');
 
-        $this->config = acym_config();
         $listClass = acym_get('class.list');
         $lists = $listClass->getAll('name');
         $this->lists = [];

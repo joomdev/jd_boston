@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: product_edit_information.php 9953 2018-10-01 12:04:43Z Milbo $
+ * @version $Id: product_edit_information.php 10241 2020-01-10 12:12:30Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -52,7 +52,7 @@ $i=0;
 				<label><?php echo VmHTML::checkbox('product_discontinued', $this->product->product_discontinued); echo vmText::_('COM_VIRTUEMART_PRODUCT_FORM_DISCONTINUED') ?></label>
 			</td>
 			<td>
-				<span class="hastip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_FORM_ALIAS_TIP');?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_FORM_ALIAS') ?></span>
+				<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_FORM_ALIAS_TIP');?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_FORM_ALIAS') ?></span>
 			</td>
 			<td height="18" >
 				<input type="text" class="inputbox"  name="slug" id="slug" value="<?php echo $this->product->slug; ?>" size="32" maxlength="255" />
@@ -63,19 +63,19 @@ $i=0;
 		<?php $i = 1 - $i; ?>
 		<tr class="row<?php echo $i?>">
 			<td>
-				<span  class="hastip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_SKU_TIP') ?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_SKU') ?></span>
+				<span  class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_SKU_TIP') ?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_SKU') ?></span>
 			</td>
 			<td>
 				<input type="text" class="inputbox" name="product_sku" id="product_sku" value="<?php echo $this->product->product_sku; ?>" size="32" maxlength="255" />
 			</td>
 			<td width="130px">
-				<span class="hastip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_GTIN_TIP') ?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_GTIN') ?></span>
+				<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_GTIN_TIP') ?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_GTIN') ?></span>
 			</td>
 			<td>
 				<input type="text" class="inputbox" name="product_gtin" id="product_gtin" value="<?php echo $this->product->product_gtin; ?>" size="32" maxlength="64" />
 			</td>
 			<td>
-				<span class="hastip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_MPN_TIP') ?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_MPN') ?></span>
+				<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_MPN_TIP') ?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_MPN') ?></span>
 			</td>
 			<td>
 				<input type="text" class="inputbox" name="product_mpn" id="product_mpn" value="<?php echo $this->product->product_mpn; ?>" size="32" maxlength="64" />
@@ -124,7 +124,7 @@ $i=0;
 				?><input type="hidden" value="<?php echo $this->product->ordering ?>" name="ordering"> <?php
 			} ?>
 			<td>
-				<span class="hasTip" title="<?php echo vmText::_ ('COM_VIRTUEMART_SHOPPER_FORM_GROUP_PRODUCT_TIP'); ?>">
+				<span class="hasTooltip" title="<?php echo vmText::_ ('COM_VIRTUEMART_SHOPPER_FORM_GROUP_PRODUCT_TIP'); ?>">
 				<?php echo vmText::_('COM_VIRTUEMART_SHOPPER_FORM_GROUP') ?></span>
 			</td>
 			<td>
@@ -143,14 +143,14 @@ $i=0;
 		</tr>
         <tr>
             <td>
-            	<span class="hasTip" title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_FORM_CANONICAL_CATEGORY_TIP'); ?>">
+            	<span class="hasTooltip" title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_FORM_CANONICAL_CATEGORY_TIP'); ?>">
                     <?php echo vmText::_('COM_VIRTUEMART_PRODUCT_FORM_CANONICAL_CATEGORY') ?></span>
 			    <?php
 			    $this->categoryTree = ShopFunctions::categoryListTree($this->product->product_canon_category_id);
 			    ?>
             </td>
             <td>
-                <select class="inputbox" id="product_canon_category_id" name="product_canon_category_id"  value="<?php echo $this->product->product_canon_category_id ?>"  size="10">
+                <select class="vm-drop" id="product_canon_category_id" name="product_canon_category_id"  value="<?php echo $this->product->product_canon_category_id ?>"  size="10">
                     <option value="">No override</option>
 				    <?php echo $this->categoryTree; ?>
                 </select>
@@ -294,7 +294,7 @@ echo '<div class="button2-left '.$add_child_button.' btn-wrapper">
 		if ($link) {
 			echo  '<a href="'. $link .'" class="btn btn-small">';
 			} else {
-			echo  '<span class="hasTip" title="'.vmText::_ ('COM_VIRTUEMART_PRODUCT_ADD_CHILD_TIP').'">';
+			echo  '<span class="hasTooltip" title="'.vmText::_ ('COM_VIRTUEMART_PRODUCT_ADD_CHILD_TIP').'">';
 				}
 echo  vmText::_('COM_VIRTUEMART_PRODUCT_ADD_CHILD');
 if ($link) {
@@ -305,7 +305,7 @@ if ($link) {
 ?>
 	</div>
 </div>
-<span class="hastip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_PARENTID_TIP') ?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_PARENTID') ?></span>
+<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_PARENTID_TIP') ?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_PARENTID') ?></span>
 <input type="text" class="inputbox" name="product_parent_id" id="product_parent_id" value="<?php echo $this->product->product_parent_id; ?>" size="16" maxlength="64" />
 
 <div class="clear"></div>

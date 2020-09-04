@@ -71,11 +71,11 @@ if($exe){
 		$app->redirect('index.php?option=com_virtuemart');
 	}
 	$controller = new $_class();
-
+	$t = vRequest::getCmd('task', $_controller);
 // Perform the Request task
-	$controller->execute(vRequest::getCmd('task', $_controller));
+	$controller->execute($t);
 
-	vmTime('"'.$_class.'" Finished task '.$_controller,'vmStart');
+	vmTime('"'.$_class.'" Finished task '.$t,'vmStart');
 	vmRam('End');
 	vmRamPeak('Peak');
 	$controller->redirect();

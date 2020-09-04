@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: user.php 10091 2019-07-08 09:30:22Z Milbo $
+* @version $Id: user.php 10305 2020-04-29 08:28:18Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -104,7 +104,7 @@ class VirtuemartControllerUser extends VmController {
 
 			if($data===0) $data = vRequest::getRequest();
 
-			$this->getStrByAcl(array('vendor_store_name','vendor_store_desc','vendor_terms_of_service','vendor_legal_info', 'vendor_letter_css', 'vendor_letter_header_html', 'vendor_letter_footer_html'),$data);
+			$this->getStrByAcl(array('vendor_store_name','vendor_store_desc','vendor_terms_of_service','vendor_legal_info', 'vendor_letter_css', 'vendor_letter_header_html', 'vendor_letter_footer_html', 'vendor_mail_free1','vendor_mail_free2'),$data);
 
 			$ids = vRequest::getInt('virtuemart_user_id');
 

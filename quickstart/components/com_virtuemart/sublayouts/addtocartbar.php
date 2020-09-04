@@ -74,14 +74,23 @@ else {
 }
 
 
-if (!VmConfig::get('use_as_catalog', 0)  ) { ?>
+if (!VmConfig::get('use_as_catalog', 0)  ) {
+	if (empty(VmConfig::get('bootstrap', ''))) {
+		$vmbtn = "vm-btn";
+		$vmbtnpri ="vm-btn-primary";
+		$vmbtnsec = "vm-btn-secondary";
+	} else {
+		$vmbtn = "btn";
+		$vmbtnpri = "btn-primary";
+		$vmbtnsec = "btn-secondary";
+	}
 
-    <div class="addtocart-bar">
+?>  <div class="addtocart-bar">
 	<?php
 	// Display the quantity box
 	$stockhandle = VmConfig::get('stockhandle_products', false) && $product->product_stockhandle ? $product->product_stockhandle : VmConfig::get('stockhandle','none');
-	if (($stockhandle == 'disableit' or $stockhandle == 'disableadd') and ($product->product_in_stock - $product->product_ordered) < $minOrderLevel) { ?>
-        <a href="<?php echo JRoute::_ ('index.php?option=com_virtuemart&view=productdetails&layout=notify&virtuemart_product_id=' . $product->virtuemart_product_id); ?>" class="notify"><?php echo vmText::_ ('COM_VIRTUEMART_CART_NOTIFY') ?></a><?php
+	if ($product->show_notify) { ?>
+        <a class="notify <?php echo $vmbtn.' '.$vmbtnsec ?>" href="<?php echo JRoute::_ ('index.php?option=com_virtuemart&view=productdetails&layout=notify&virtuemart_product_id=' . $product->virtuemart_product_id); ?>" ><?php echo vmText::_ ('COM_VIRTUEMART_CART_NOTIFY') ?></a><?php
 	} else {
 		$tmpPrice = (float) $product->prices['costPrice'];
 		if (!( VmConfig::get('askprice', true) and empty($tmpPrice) ) ) {
@@ -96,10 +105,10 @@ if (!VmConfig::get('use_as_catalog', 0)  ) { ?>
                        value="<?php echo $init; ?>" data-init="<?php echo $init; ?>" data-step="<?php echo $step; ?>" <?php echo $maxOrder; ?> />
 			</span>
 			<?php if ($product->orderable) { ?>
-                <span class="quantity-controls js-recalculate">
-				<input type="button" class="quantity-controls quantity-plus"/>
-				<input type="button" class="quantity-controls quantity-minus"/>
-			</span>
+				<span class="quantity-controls js-recalculate">
+					<input type="button" class="quantity-controls quantity-plus"/>
+					<input type="button" class="quantity-controls quantity-minus"/>
+				</span>
 			<?php }
 
 			if(!empty($addtoCartButton)){

@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: updatesmigration.php 9882 2018-06-20 12:25:32Z Milbo $
+ * @version $Id: updatesmigration.php 10270 2020-02-19 14:25:44Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -104,6 +104,14 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		$msg = $model->setStoreOwner($storeOwnerId);
 
 		$this->setRedirect($this->redirectPath, $msg);
+	}
+
+	function reset_Has_x_Fields(){
+
+		$model = $this->getModel('updatesMigration');
+		$model->reset_Has_x_Fields();
+
+		$this->setRedirect($this->redirectPath, 'COM_VM_HASX_FIELDS_RESET');
 	}
 
 	/**

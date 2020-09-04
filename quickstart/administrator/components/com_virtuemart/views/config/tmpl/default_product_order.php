@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 				<table class="admintable">
 					<tr>
 						<td class="key">
-								<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_BROWSE_ORDERBY_DEFAULT_FIELD_LBL_TIP'); ?>">
+								<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_BROWSE_ORDERBY_DEFAULT_FIELD_LBL_TIP'); ?>">
 									<?php echo vmText::_('COM_VIRTUEMART_BROWSE_ORDERBY_DEFAULT_FIELD_LBL'); ?>
 								</span>
 						</td>
@@ -37,7 +37,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 					</tr>
 					<tr>
 						<td class="key">
-							<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_BROWSE_CAT_ORDERBY_DEFAULT_FIELD_LBL_TIP'); ?>">
+							<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_BROWSE_CAT_ORDERBY_DEFAULT_FIELD_LBL_TIP'); ?>">
 								<?php echo vmText::_('COM_VIRTUEMART_BROWSE_CAT_ORDERBY_DEFAULT_FIELD_LBL'); ?>
 							</span>
 						</td>
@@ -53,7 +53,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 					</tr>
 					<tr>
 						<td class="key">
-							<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_BROWSE_ORDERBY_FIELDS_LBL_TIP'); ?>">
+							<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_BROWSE_ORDERBY_FIELDS_LBL_TIP'); ?>">
 									<?php echo vmText::_('COM_VIRTUEMART_BROWSE_ORDERBY_FIELDS_LBL'); ?>
 								</span>
 						</td>
@@ -65,7 +65,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 					</tr>
 					<tr>
 						<td class="key">
-								<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_BROWSE_SEARCH_FIELDS_LBL_TIP'); ?>">
+								<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_BROWSE_SEARCH_FIELDS_LBL_TIP'); ?>">
 									<?php echo vmText::_('COM_VIRTUEMART_BROWSE_SEARCH_FIELDS_LBL'); ?>
 								</span>
 						</td>

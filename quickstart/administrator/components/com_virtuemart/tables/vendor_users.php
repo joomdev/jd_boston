@@ -26,8 +26,8 @@ class TableVendor_users extends VmTableXarray {
 	function __construct(&$db){
 		parent::__construct('#__virtuemart_vendor_users', 'id', $db);
 
-		$this->setPrimaryKey('virtuemart_vendor_id');
-		$this->setSecondaryKey('virtuemart_user_id');
+		$this->setPrimaryKey('virtuemart_user_id');
+		$this->setSecondaryKey('virtuemart_vendor_user_id');
 	}
 
 }

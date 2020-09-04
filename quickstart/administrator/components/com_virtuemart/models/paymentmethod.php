@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: paymentmethod.php 10152 2019-09-19 14:40:28Z Milbo $
+* @version $Id: paymentmethod.php 10314 2020-05-04 13:24:56Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -63,7 +63,7 @@ class VirtueMartModelPaymentmethod extends VmModel{
 			}
 
 			if($this->_cache[$this->_id]->payment_jplugin_id){
-				JPluginHelper::importPlugin('vmpayment');
+				VmConfig::importVMPlugins('vmpayment');
 				$dispatcher = JDispatcher::getInstance();
 				$retValue = $dispatcher->trigger ('plgVmDeclarePluginParamsPaymentVM3', array(&$this->_cache[$this->_id]));
 			}
@@ -83,8 +83,8 @@ class VirtueMartModelPaymentmethod extends VmModel{
 				}
 
 				foreach($this->_cache[$this->_id]->getCryptedFields() as $field){
-					if(isset($this->_cache[$this->_id]->$field)){
-						$this->_cache[$this->_id]->$field = vmCrypt::decrypt($this->_cache[$this->_id]->$field,$date);
+					if(isset($this->_cache[$this->_id]->{$field})){
+						$this->_cache[$this->_id]->{$field} = vmCrypt::decrypt($this->_cache[$this->_id]->{$field},$date);
 					}
 				}
 			}
@@ -187,6 +187,7 @@ class VirtueMartModelPaymentmethod extends VmModel{
 
 		$table = $this->getTable('paymentmethods');
 
+		VmConfig::importVMPlugins('vmpayment');
 		if(isset($data['payment_jplugin_id'])){
 
 			$q = 'SELECT `element` FROM `#__extensions` WHERE `extension_id` = "'.$data['payment_jplugin_id'].'"';
@@ -198,7 +199,6 @@ class VirtueMartModelPaymentmethod extends VmModel{
 			$db->setQuery($q);
 			$db->execute();
 
-			JPluginHelper::importPlugin('vmpayment');
 			$dispatcher = JDispatcher::getInstance();
 			$retValue = $dispatcher->trigger('plgVmSetOnTablePluginParamsPayment',array( $data['payment_element'],$data['payment_jplugin_id'],&$table));
 			$retValue = $dispatcher->trigger('plgVmSetOnTablePluginPayment',array( &$data,&$table));
@@ -211,7 +211,6 @@ class VirtueMartModelPaymentmethod extends VmModel{
 		$xrefTable->bindChecknStore($data);
 
 
-		JPluginHelper::importPlugin('vmpayment');
 		//Add a hook here for other payment methods, checking the data of the choosed plugin
 		$dispatcher = JDispatcher::getInstance();
 		$retValues = $dispatcher->trigger('plgVmOnStoreInstallPaymentPluginTable', array(  $data['payment_jplugin_id']));

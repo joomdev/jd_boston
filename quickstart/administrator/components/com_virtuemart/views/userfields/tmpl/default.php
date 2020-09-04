@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 9821 2018-04-16 18:04:39Z Milbo $
+* @version $Id: default.php 10233 2019-12-11 14:48:13Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -90,12 +90,12 @@ AdminUIHelper::startAdminArea($this);
 			$image = JHtml::_('image', $image, vmText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD'),null,true);
 			//$checked = '<div style="position: relative;">'.JHtml::_('grid.id', $i, null,$row->virtuemart_userfield_id);
 			$checked = JHtml::_('grid.id', $i ,$row->virtuemart_userfield_id,null,'virtuemart_userfield_id');
-			if ($coreField) $checked.='<span class="hasTip" style="position: absolute; margin-left:-3px;" title="'. vmText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD').'">'. $image .'</span>';
+			if ($coreField) $checked.='<span class="hasTooltip" style="position: absolute; margin-left:-3px;" title="'. vmText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD').'">'. $image .'</span>';
 			$checked .= '</div>';
 			$checked_out = $coreField ? 'style="position: relative;"' : '';
 			// There is no reason not to allow moving of the core fields. We only need to disable deletion of them
 			// ($coreField) ?
-			// 	'<span class="hasTip" title="'. vmText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD').'">'. $image .'</span>' :
+			// 	'<span class="hasTooltip" title="'. vmText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD').'">'. $image .'</span>' :
 				
 			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=userfields&task=edit&virtuemart_userfield_id=' . $row->virtuemart_userfield_id);
 			$required = $this->toggle($row->required, $i, 'toggle.required','tick.png','publish_x.png',$coreField );

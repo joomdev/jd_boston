@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: userfields.php 9831 2018-05-07 13:45:33Z Milbo $
+* @version $Id: userfields.php 10214 2019-11-27 20:16:32Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -132,7 +132,7 @@ class TableUserfields extends VmTable {
 			$whereKey = $this->_pkey;
 		}
 		
-		$query = 'SELECT `'.$this->_tbl_key.'` FROM `'.$table.'` WHERE '.$whereKey.' = "' .$this->$k . '"';
+		$query = 'SELECT `'.$this->_tbl_key.'` FROM `'.$table.'` WHERE '.$whereKey.' = "' .$this->{$k} . '"';
 		
 		// stAn - it should be better to add this directly to the controller of the shopper fields
 		// only additionally, controllers are not considered as safe.

@@ -9,13 +9,14 @@
  * @author Max Milbers
  * @author	RickG
  * @link https://virtuemart.net
- * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2019 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: user.php 10158 2019-09-24 08:36:26Z Milbo $
+ * @version $Id: user.php 10276 2020-03-03 18:02:51Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -23,6 +24,8 @@ defined('_JEXEC') or die('Restricted access');
 
 // Hardcoded groupID of the Super Admin
 define ('__SUPER_ADMIN_GID', 25);
+
+use Joomla\CMS\Router\Route;
 
 /**
  * Model class for shop users
@@ -171,10 +174,9 @@ class VirtueMartModelUser extends VmModel {
 
 		if(empty($this->_data->shopper_groups)) $this->_data->shopper_groups = array();
 
-		$site = JFactory::getApplication ()->isSite ();
-		if ($site) {
+		if (VmConfig::isSite()) {
 			$shoppergroupmodel = VmModel::getModel('ShopperGroup');
-			$shoppergroupmodel->appendShopperGroups($this->_data->shopper_groups,$this->_data->JUser,$site);
+			$shoppergroupmodel->appendShopperGroups($this->_data->shopper_groups,$this->_data->JUser,1);
 		}
 
 		if(!empty($this->_id)) {
@@ -239,6 +241,293 @@ class VirtueMartModelUser extends VmModel {
 		return null;
 	}
 
+	/**
+	 * Method to save the form data.
+	 *
+	 * @copyright   Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved. And the VirtueMart team
+	 *
+	 * @license     GNU General Public License version 2 or later; see LICENSE.txt
+	 * @param   array  $temp  The form data.
+	 *
+	 * @return  mixed  The user id on success, false on failure.
+	 *
+	 * @since   1.6
+	 */
+	public function register($user, $new) {
+
+		$params = JComponentHelper::getParams('com_users');
+
+		$useractivation = $params->get('useractivation');
+		$sendpassword = $params->get('sendpassword', 1);
+
+		VmLanguage::loadJLang('com_users',1);
+		// Load the users plugin group.
+		JPluginHelper::importPlugin('user');
+
+		// Store the data.
+		if (!$user->save())
+		{
+			vmError(JText::sprintf('COM_USERS_REGISTRATION_SAVE_FAILED', $user->getError()));
+			return false;
+		} else if( !$new ){
+			return true;
+		}
+
+		$config = JFactory::getConfig();
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		// Compile the notification mail values.
+		$data = $user->getProperties();
+		$data['fromname'] = $config->get('fromname');
+		$data['mailfrom'] = $config->get('mailfrom');
+		$data['sitename'] = $config->get('sitename');
+		$data['siteurl'] = JUri::root();
+
+		// Handle account activation/confirmation emails.
+		if ($useractivation == 2)
+		{
+			// Set the link to confirm the user email.
+			$linkMode = $config->get('force_ssl', 0) == 2 ? Route::TLS_FORCE : Route::TLS_IGNORE;
+
+			$data['activate'] = JRoute::link(
+			'site',
+			'index.php?option=com_users&task=registration.activate&token=' . $data['activation'],
+			false,
+			$linkMode,
+			true
+			);
+
+			$emailSubject = JText::sprintf(
+			'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+			$data['name'],
+			$data['sitename']
+			);
+
+			if ($sendpassword)
+			{
+				$emailBody = JText::sprintf(
+				'COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY',
+				$data['name'],
+				$data['sitename'],
+				$data['activate'],
+				$data['siteurl'],
+				$data['username'],
+				$data['password_clear']
+				);
+			}
+			else
+			{
+				$emailBody = JText::sprintf(
+				'COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY_NOPW',
+				$data['name'],
+				$data['sitename'],
+				$data['activate'],
+				$data['siteurl'],
+				$data['username']
+				);
+			}
+		}
+		elseif ($useractivation == 1)
+		{
+			// Set the link to activate the user account.
+			$linkMode = $config->get('force_ssl', 0) == 2 ? Route::TLS_FORCE : Route::TLS_IGNORE;
+
+			$data['activate'] = JRoute::link(
+			'site',
+			'index.php?option=com_users&task=registration.activate&token=' . $data['activation'],
+			false,
+			$linkMode,
+			true
+			);
+
+			$emailSubject = JText::sprintf(
+			'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+			$data['name'],
+			$data['sitename']
+			);
+
+			if ($sendpassword)
+			{
+				$emailBody = JText::sprintf(
+				'COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY',
+				$data['name'],
+				$data['sitename'],
+				$data['activate'],
+				$data['siteurl'],
+				$data['username'],
+				$data['password_clear']
+				);
+			}
+			else
+			{
+				$emailBody = JText::sprintf(
+				'COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY_NOPW',
+				$data['name'],
+				$data['sitename'],
+				$data['activate'],
+				$data['siteurl'],
+				$data['username']
+				);
+			}
+		}
+		else
+		{
+
+			$pw = '';
+			if($sendpassword){
+				$pw = $data['password_clear'];
+			}
+
+			$this->sendRegistrationEmail($user,$pw, $useractivation);
+			return true;
+		}
+
+		$debug_email = VmConfig::get('debug_mail', false);
+
+		// Send the registration email.
+		if (VmConfig::showDebug() and $debug_email == 'debug_email') {
+			$msg = 'Registration Debug mail active, no mail sent. The mail to send subject ' . $emailSubject . ' to "' .   $data['email'] . '" from ' . $data['mailfrom'] . ' ' . $data['fromname'] . ' ' . vmText::$language->getTag() . '<br>' . $emailBody;
+			vmdebug($msg);
+			$return = true;
+		} else if(!empty($useractivation)){
+			$return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
+		}
+
+
+		// Send Notification mail to administrators
+		if (($params->get('useractivation') < 2) && ($params->get('mail_to_admin') == 1))
+		{
+			$emailSubject = JText::sprintf(
+			'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+			$data['name'],
+			$data['sitename']
+			);
+
+			$emailBodyAdmin = JText::sprintf(
+			'COM_USERS_EMAIL_REGISTERED_NOTIFICATION_TO_ADMIN_BODY',
+			$data['name'],
+			$data['username'],
+			$data['siteurl']
+			);
+
+			// Get all admin users
+			$query->clear()
+			->select($db->quoteName(array('name', 'email', 'sendEmail')))
+			->from($db->quoteName('#__users'))
+			->where($db->quoteName('sendEmail') . ' = 1')
+			->where($db->quoteName('block') . ' = 0');
+
+			$db->setQuery($query);
+
+			try
+			{
+				$rows = $db->loadObjectList();
+			}
+			catch (RuntimeException $e)
+			{
+				vmError(JText::sprintf('COM_USERS_DATABASE_ERROR', $e->getMessage()), 500);
+
+				return false;
+			}
+
+
+
+			// Send mail to all superadministrators id
+			foreach ($rows as $row)
+			{
+				if (VmConfig::showDebug() and $debug_email == 'debug_email') {
+					$msg = 'Registration Debug mail to admin active, no mail sent. The mail to send subject ' . $emailSubject . ' to "' .  $row->email . '" from ' . $data['mailfrom'] . ' ' . $data['fromname'] . ' ' . vmText::$language->getTag() . '<br>' . $emailBodyAdmin;
+					vmdebug($msg);
+					$return = true;
+				} else {
+					$return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $row->email, $emailSubject, $emailBodyAdmin);
+				}
+
+
+				// Check for an error.
+				if ($return !== true)
+				{
+					vmError(JText::_('COM_USERS_REGISTRATION_ACTIVATION_NOTIFY_SEND_MAIL_FAILED'));
+
+					return false;
+				}
+			}
+		}
+
+		// Check for an error.
+		if ($return !== true)
+		{
+			vmError(JText::_('COM_USERS_REGISTRATION_SEND_MAIL_FAILED'));
+
+			// Send a system message to administrators receiving system mails
+			$query->clear()
+			->select($db->quoteName('id'))
+			->from($db->quoteName('#__users'))
+			->where($db->quoteName('block') . ' = ' . (int) 0)
+			->where($db->quoteName('sendEmail') . ' = ' . (int) 1);
+			$db->setQuery($query);
+
+			try
+			{
+				$userids = $db->loadColumn();
+			}
+			catch (RuntimeException $e)
+			{
+				vmError(JText::sprintf('COM_USERS_DATABASE_ERROR', $e->getMessage()), 500);
+
+				return false;
+			}
+
+			if (count($userids) > 0)
+			{
+				$jdate = new JDate;
+
+				// Build the query to add the messages
+				foreach ($userids as $userid)
+				{
+					$values = array(
+					$db->quote($userid),
+					$db->quote($userid),
+					$db->quote($jdate->toSql()),
+					$db->quote(JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')),
+					$db->quote(JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username']))
+					);
+					$query->clear()
+					->insert($db->quoteName('#__messages'))
+					->columns($db->quoteName(array('user_id_from', 'user_id_to', 'date_time', 'subject', 'message')))
+					->values(implode(',', $values));
+					$db->setQuery($query);
+
+					try
+					{
+						$db->execute();
+					}
+					catch (RuntimeException $e)
+					{
+						vmError(JText::sprintf('COM_USERS_DATABASE_ERROR', $e->getMessage()), 500);
+
+						return false;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		if ($useractivation == 1)
+		{
+			return 'useractivate';
+		}
+		elseif ($useractivation == 2)
+		{
+			return 'adminactivate';
+		}
+		else
+		{
+			return $user->id;
+		}
+	}
 
 	/**
 	 * Bind the post data to the JUser object and the VM tables, then saves it
@@ -281,7 +570,7 @@ class VirtueMartModelUser extends VmModel {
 				$ven = $vM->getVendor($vendorId);
 				if($ven->max_customers>=0){
 					$this->setGetCount (true);
-					parent::exeSortSearchListQuery(2,'virtuemart_user_id',' FROM #__virtuemart_vendor_users as vu LEFT JOIN `#__users` as ju ON vu.virtuemart_user_id = ju.id',' WHERE ( `virtuemart_vendor_id` = "'.$vendorId.'" AND ju.`block` = 0) ');
+					parent::exeSortSearchListQuery(2,'virtuemart_user_id',' FROM #__virtuemart_vendor_users as vu LEFT JOIN `#__users` as ju ON vu.virtuemart_user_id = ju.id',' WHERE ( `virtuemart_vendor_user_id` = "'.$vendorId.'" AND ju.`block` = 0) ');
 					$this->setGetCount (false);
 					if($ven->max_customers<($this->_total+1)){
 						vmWarn('You are not allowed to register more than '.$ven->max_customers.' users');
@@ -340,23 +629,22 @@ class VirtueMartModelUser extends VmModel {
 		$usersConfig = JComponentHelper::getParams( 'com_users' );
 		$can_change_username = (int)$usersConfig->get('change_login_name', false);
 
+		$data['username'] = vRequest::filter($data['username'],FILTER_SANITIZE_STRING,FILTER_FLAG_STRIP_LOW);
+
 		$username = $user->get('username');
-
-
-		if(!empty($data['username'])){
-			$data['username'] = vRequest::filter($data['username'],FILTER_SANITIZE_STRING,FILTER_FLAG_STRIP_LOW);
-		}
-
 		if(!empty($username)){
-			if(!$can_change_username  and !vmAccess::manager('user.edit')){
-				if($data['username']!=$username){
-					vmWarn('You are not allowed to change your username');
+			if(!empty($data['username'])){
+				if(!$can_change_username  and !vmAccess::manager('user.edit')){
+					if($data['username']!=$username){
+						vmWarn('You are not allowed to change your username');
+					}
+					$data['username'] = $username;
 				}
-				$data['username'] = $username;
-			} else if(empty($data['username'])){
+			} else {
 				$data['username'] = $username;
 			}
 		}
+
 
 		if(empty ($data['password'])){
 			$data['password'] = vRequest::getCmd('password', '');
@@ -429,17 +717,13 @@ class VirtueMartModelUser extends VmModel {
 			$doUserActivation=false;
 			if ($useractivation == '1' or $useractivation == '2') {
 				$doUserActivation=true;
-			}
-
-			if ($doUserActivation ) {
-				jimport('joomla.user.helper');
 				$user->set('activation', vRequest::getHash( JUserHelper::genRandomPassword()) );
 				$user->set('block', '1');
 				if ($useractivation == '2') {
 					$user->set('guest', '1');
 				}
-				//$user->set('lastvisitDate', '0000-00-00 00:00:00');
 			}
+
 		}
 
 		$option = vRequest::getCmd( 'option');
@@ -459,7 +743,7 @@ class VirtueMartModelUser extends VmModel {
 		JPluginHelper::importPlugin('user');
 
 		// Save the JUser object
-		if (!$user->save()) {
+		if (!$this->register($user, $new)) {
 			$msg = vmText::sprintf('JLIB_APPLICATION_ERROR_SAVE_FAILED',$user->getError());
 			vmError($msg,$msg);
 			return false;
@@ -492,7 +776,7 @@ class VirtueMartModelUser extends VmModel {
 
 				//$doVendor = (boolean) $usersConfig->get('mail_to_admin', true);
 
-				$this->sendRegistrationEmail($user,$password, $useractivation);
+				//$this->sendRegistrationEmail($user,$password, $useractivation);
 				if ($useractivation == '1' ) {
 					vmInfo('COM_VIRTUEMART_REG_COMPLETE_ACTIVATE');
 				} else if ($useractivation == '2' ){
@@ -629,10 +913,6 @@ class VirtueMartModelUser extends VmModel {
 			$shoppergroupData = array('virtuemart_user_id'=>$this->_id,'virtuemart_shoppergroup_id'=>$data['virtuemart_shoppergroup_id']);
 
 			$res = $user_shoppergroups_table -> bindChecknStore($shoppergroupData);
-			if(!$res){
-				vmError('Set shoppergroup error');
-				$noError = false;
-			}
 
 		}
 
@@ -643,20 +923,27 @@ class VirtueMartModelUser extends VmModel {
 			}
 		}
 
-		if(!empty($data['vendorId']) and $data['vendorId']>1 and
-							( 	(empty($data['virtuemart_vendor_id'] and empty($data['user_is_vendor']))) or
-								(!empty($data['virtuemart_vendor_id']) and $data['virtuemart_vendor_id']!=$data['vendorId']) ) ){
-			//$vUserD = array('virtuemart_user_id' => $data['virtuemart_user_id'],'virtuemart_vendor_id' => $data['vendorId']);
+		if(!empty($data['virtuemart_vendor_user_id']) and (is_array($data['virtuemart_vendor_user_id']) or $data['virtuemart_vendor_user_id']>1) and
+							( 	(empty($data['virtuemart_vendor_id']) and empty($data['user_is_vendor'])) or
+								(!empty($data['virtuemart_vendor_id']) and $data['virtuemart_vendor_id']!=$data['virtuemart_vendor_user_id']) ) ){
+			//$vUserD = array('virtuemart_user_id' => $data['virtuemart_user_id'],'virtuemart_vendor_id' => $data['virtuemart_vendor_user_id']);
 			$vUser = $this->getTable('vendor_users');
-			$vUser->load((int)$data['vendorId']);
-			if(!$vUser->virtuemart_user_id){
-				$vUser->bind(array('virtuemart_vendor_id'=>(int)$data['vendorId'],'virtuemart_user_id'=>$data['virtuemart_user_id']));
-			} else if(!in_array((int)$data['virtuemart_user_id'],$vUser->virtuemart_user_id)){
-				$arr = array_merge($vUser->virtuemart_user_id,(array)$data['virtuemart_user_id']);
-				$vUser->bind(array('virtuemart_vendor_id'=>(int)$data['vendorId'],'virtuemart_user_id'=>$arr));
-			}
-			$vUser->store();
+			$vUser->load((int)$data['virtuemart_user_id']);
 
+			$toStore = array('virtuemart_user_id'=>$data['virtuemart_user_id']);
+			if(!$vUser->virtuemart_vendor_user_id){
+				$arr = (array) $data['virtuemart_vendor_user_id'];
+			} else {
+				if(!is_array($data['virtuemart_vendor_user_id'])){
+					$arr = array_unique(array_merge($vUser->virtuemart_vendor_user_id,(array)$data['virtuemart_vendor_user_id']));
+				} else {
+					$arr = $data['virtuemart_vendor_user_id'];
+				}
+
+			}
+			$toStore['virtuemart_vendor_user_id'] = $arr; vmdebug('vendor_users bind',$arr);
+			$vUser->bind($toStore);
+			$vUser->store();
 		}
 
 		return $noError;
@@ -731,10 +1018,10 @@ class VirtueMartModelUser extends VmModel {
 				}
 			} else {
 
-				if(!$manager){
-					$userId = $user->id;
-				} else {
+				if($manager and isset($data['virtuemart_user_id'])){
 					$userId = (int)$data['virtuemart_user_id'];
+				} else {
+					$userId = $user->id;
 				}
 				$q = 'SELECT `virtuemart_userinfo_id` FROM `#__virtuemart_userinfos`
 				WHERE `virtuemart_user_id` = '.$userId.'
@@ -817,8 +1104,8 @@ class VirtueMartModelUser extends VmModel {
 
 			$userinfo->bindChecknStore($userfielddata);
 
-			$app = JFactory::getApplication();
-			if($app->isSite()){
+
+			if(VmConfig::isSite()){
 
 				$cart = VirtuemartCart::getCart();
 				if($cart){
@@ -905,7 +1192,7 @@ class VirtueMartModelUser extends VmModel {
 				else if($data[$field->name] == $field->default){
 					$i++;
 				} else {
-					vmdebug('Not filled by default '.$field->name,$field->default,$data[$field->name]);
+					//vmdebug('Not filled by default '.$field->name,$field->default,$data[$field->name]);
 					$filledNotByDefault++;
 				}
 			}
@@ -962,7 +1249,7 @@ class VirtueMartModelUser extends VmModel {
 				unset($data[$fldName]);
 				if($userinfo!==0){
 					if(property_exists($userinfo,$fldName)){
-						$data[$fldName] = $userinfo->$fldName;
+						$data[$fldName] = $userinfo->{$fldName};
 					} else {
 						vmError('Your tables seem to be broken, you have fields in your form which have no corresponding field in the db');
 					}
@@ -1058,8 +1345,8 @@ class VirtueMartModelUser extends VmModel {
 				$cart = VirtueMartCart::getCart();
 				$adType = $type.'address';
 
-				if(empty($cart->$adType)){
-					$data = $cart->$type;
+				if(empty($cart->{$adType})){
+					$data = $cart->{$type};
 					if(empty($data)) $data = array();
 
 					if($JUser){
@@ -1182,48 +1469,60 @@ class VirtueMartModelUser extends VmModel {
 	 *
 	 * @return boolean True is the remove was successful, false otherwise.
 	 */
-	function remove($userIds) {
+	function remove($userIds, $deleteJUser = true) {
 
 		if(vmAccess::manager('user.delete')){
-
-			$userInfo = $this->getTable('userinfos');
-			$vm_shoppergroup_xref = $this->getTable('vmuser_shoppergroups');
-			$vmusers = $this->getTable('vmusers');
 			$_status = true;
-			foreach($userIds as $userId) {
+			$superVendor = vmAccess::isSuperVendor();
+			if(VmConfig::get('multixcart',0)=='byvendor' and $superVendor>1){
 
-				$_JUser = JUser::getInstance($userId);
+				$vm_vendor = $this->getTable('vendor_users');
+				foreach($userIds as $userId) {
+					if (!$vm_vendor->delete($userId)) {
+						vmError('remove user did not work for '.$userId);
+					}
+				}
+			} else {
+				$userInfo = $this->getTable('userinfos');
+				$vm_shoppergroup_xref = $this->getTable('vmuser_shoppergroups');
+				$vmusers = $this->getTable('vmusers');
 
-				if ($this->getSuperAdminCount() <= 1) {
-					// Prevent deletion of the only Super Admin
-					//$_u = JUser::getInstance($userId);
-					if ($_JUser->get('gid') == __SUPER_ADMIN_GID) {
-						vmError(vmText::_('COM_VIRTUEMART_USER_ERR_LASTSUPERADMIN'));
+				foreach($userIds as $userId) {
+
+					$_JUser = JUser::getInstance($userId);
+
+					if ($this->getSuperAdminCount() <= 1) {
+						// Prevent deletion of the only Super Admin
+						//$_u = JUser::getInstance($userId);
+						if ($_JUser->get('gid') == __SUPER_ADMIN_GID) {
+							vmError(vmText::_('COM_VIRTUEMART_USER_ERR_LASTSUPERADMIN'));
+							$_status = false;
+							continue;
+						}
+					}
+
+					if (!$userInfo->delete($userId)) {
+						return false;
+					}
+
+					if (!$vm_shoppergroup_xref->delete($userId)) {
+						$_status = false;
+						continue;
+					}
+
+					if (!$vmusers->delete($userId)) {
+						$_status = false;
+						continue;
+					}
+
+					if ($deleteJUser and !$_JUser->delete()) {
+						vmError($_JUser->getError());
 						$_status = false;
 						continue;
 					}
 				}
-
-				if (!$userInfo->delete($userId)) {
-					return false;
-				}
-
-				if (!$vm_shoppergroup_xref->delete($userId)) {
-					$_status = false;
-					continue;
-				}
-
-				if (!$vmusers->delete($userId)) {
-					$_status = false;
-					continue;
-				}
-
-				if (!$_JUser->delete()) {
-					vmError($_JUser->getError());
-					$_status = false;
-					continue;
-				}
 			}
+
 		}
 
 		return $_status;
@@ -1315,15 +1614,26 @@ class VirtueMartModelUser extends VmModel {
 			$joinedTables .= ' LEFT JOIN #__virtuemart_userinfos AS ui ON ui.virtuemart_user_id = vmu.virtuemart_user_id';
 		}
 
-		$superVendor = vmAccess::isSuperVendor();
+		if(vmAccess::manager('managevendors')){
+			$vendorId = vRequest::getInt('virtuemart_vendor_id', vmAccess::isSuperVendor());
+		} else {
+			$vendorId = vmAccess::isSuperVendor();
+		}
+		
 		$whereAnd = array();
-		if(VmConfig::get('multixcart',0)=='byvendor' and $superVendor>1){
-			$joinedTables .= ' LEFT JOIN #__virtuemart_vendor_users AS vu ON ju.id = vmu.virtuemart_user_id';
-			$whereAnd[] = ' vu.virtuemart_vendor_id = '.$superVendor.' ';
+		if(VmConfig::get('multixcart',0)!='none' and $vendorId>1){
+			$joinedTables .= ' LEFT JOIN #__virtuemart_vendor_users AS vu ON ju.id = vu.virtuemart_user_id';
+			$whereAnd[] = ' vu.virtuemart_vendor_user_id = '.$vendorId.' ';
 		}
 
-		if(VmConfig::get('multixcart',0)!='none' and vmAccess::manager('managevendors') and $this->searchTable=='vendors'){
-			$whereAnd[] = ' vmu.virtuemart_vendor_id > 1 or (vmu.user_is_vendor>0 and vmu.virtuemart_vendor_id != "1")  ';
+		if(VmConfig::get('multixcart',0)!='none' and vmAccess::manager('managevendors')){
+
+			if ($this->searchTable=='vendors') {
+				$whereAnd[] = ' vmu.virtuemart_vendor_id > 1 or (vmu.user_is_vendor>0 and vmu.virtuemart_vendor_id != "1")  ';
+			} else if ($this->searchTable=='shoppers') {
+				$whereAnd[] = ' vmu.user_is_vendor = 0  ';
+			}
+
 		}
 
 		$where = '';
@@ -1351,7 +1661,7 @@ class VirtueMartModelUser extends VmModel {
 			if(!empty($search)){
 				$search = ' WHERE (`name` LIKE "%'.$search.'%" OR `username` LIKE "%'.$search.'%" OR `customer_number` LIKE "%'.$search.'%")';
 			} else if($superVendor!=1) {
-				$search = ' WHERE vu.virtuemart_vendor_id = '.$superVendor.' ';
+				$search = ' WHERE vu.virtuemart_vendor_user_id = '.$superVendor.' ';
 			}
 
 			$q = 'SELECT ju.`id`,`name`,`username` FROM `#__users` as ju';

@@ -15,7 +15,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: list.php 10051 2019-05-02 12:07:26Z Milbo $
+* @version $Id: list.php 10202 2019-11-18 10:57:07Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -28,6 +28,7 @@ if(VmConfig::get ('ajax_order', TRUE)){
 
 ?>
 <div class="vm-wrap">
+    <div class="vm-orders-information"></div>
 	<div class="vm-orders-list">
 <h1><?php echo vmText::_('COM_VIRTUEMART_ORDERS_VIEW_DEFAULT_TITLE'); ?></h1>
 <?php
@@ -87,7 +88,7 @@ if (count($this->orderlist) == 0) {
 </div>
 <?php } ?>
 	</div>
-	<div class="vm-orders-information"></div>
+
 </div>
 <?php
 if(VmConfig::get ('ajax_order', TRUE)){

@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: media.php 9888 2018-06-21 07:22:10Z Milbo $
+* @version $Id: media.php 10250 2020-02-13 08:37:20Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -37,15 +37,6 @@ class VirtuemartControllerMedia extends VmController {
 		vmLanguage::loadJLang('com_virtuemart_media');
 		parent::__construct('virtuemart_media_id');
 
-	}
-
-
-	/**
-	 * for ajax call media
-	 */
-	function viewJson() {
-		$view = $this->getView('media', 'json');
-		$view->display(null);
 	}
 
 	function save($data = 0){

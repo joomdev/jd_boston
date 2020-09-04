@@ -53,7 +53,7 @@ class VirtueMartCustomFieldRenderer {
 			$customProductDataName = 'customProductData['.$product->virtuemart_product_id.']['.$customfield->virtuemart_custom_id.']';
 
 			//This is a kind of fallback, setting default of custom if there is no value of the productcustom
-			$customfield->customfield_value = empty($customfield->customfield_value) ? $customfield->custom_value : $customfield->customfield_value;
+			$customfield->customfield_value = (!isset($customfield->customfield_value) or $customfield->customfield_value==='') ? $customfield->custom_value : $customfield->customfield_value;
 
 			$type = $customfield->field_type;
 
@@ -77,14 +77,16 @@ class VirtueMartCustomFieldRenderer {
 					}
 					$stockhandle = VmConfig::get('stockhandle_products', false) && $product->product_stockhandle ? $product->product_stockhandle : VmConfig::get('stockhandle','none');
 
-					$q = 'SELECT `virtuemart_product_id` FROM #__virtuemart_products WHERE product_parent_id = "'.$customfield->virtuemart_product_id.'" and ( published = "1" ';
+
+					$extra = ' and ( published = "1" ';
 					if($stockhandle == 'disableit_children'){
-						$q .= ' AND (`product_in_stock` - `product_ordered`) > "0" ';
+						$extra .= ' AND (`product_in_stock` - `product_ordered`) > "0" ';
 					}
-					$q .= ');';
-					$db = JFactory::getDbo();
-					$db->setQuery($q);
-					$avail = $db->loadColumn();
+					$extra .= ')';
+
+
+					$productModel = VmModel::getModel ('product');
+					$avail = $productModel->getProductChildIds($customfield->virtuemart_product_id, $extra);
 					if(!in_array($customfield->virtuemart_product_id,$avail)){
 						array_unshift($avail,$customfield->virtuemart_product_id);
 					}
@@ -127,9 +129,11 @@ class VirtueMartCustomFieldRenderer {
 						$selectType = 'select.radiolist';
 						$class = '';
 						$dom = '';
+						//$idTagK = VmHtml::ensureUniqueId($idTag.'cvard'.$k);
 					} else {
 						vmJsApi::chosenDropDowns();
 						$dom = 'select';
+						//$idTagK = '[';	//Joomla workaround to get a list without id
 					}
 
 					$attribs = array('class'=>$class.' cvselection no-vm-bind','style'=>'min-width:70px;');
@@ -150,6 +154,8 @@ class VirtueMartCustomFieldRenderer {
 						$html .= '<div class="custom_field_C_container">';
 						$options = array();
 						$selected = false;
+						$idTagK = VmHtml::ensureUniqueId($idTag);
+
 						if(isset($dropdowns[$k])){
 							foreach($dropdowns[$k] as $i=> $elem){
 
@@ -172,6 +178,7 @@ class VirtueMartCustomFieldRenderer {
 								$o = new stdClass();
 								$o->value = $elem;
 								$o->text = $text;
+								$o->id = VmHtml::ensureUniqueId($idTagK.'-'.$i);
 								$options[] = $o;
 
 								if($productSelection and $productSelection[$k] == $elem){
@@ -184,7 +191,7 @@ class VirtueMartCustomFieldRenderer {
 						if(empty($selected)){
 							$product->orderable=false;
 						}
-						//$idTagK = $idTag.'cvard'.$k;
+
 						if($customfield->showlabels){
 							if( in_array($soption->voption,VirtueMartModelCustomfields::$dimensions) ){
 								$soption->slabel = vmText::_('COM_VIRTUEMART_'.strtoupper($soption->voption));
@@ -196,10 +203,12 @@ class VirtueMartCustomFieldRenderer {
 							}
 
 						}
-						$idTagK = '[';	//Joomla workaround to get a list without id
+
 						$attribs['data-cvsel'] = 'field' . $customfield->virtuemart_customfield_id ;
 						$fname = $fieldname.'['.$k.']';
-						$html .= JHtml::_ ($selectType, $options, $fname, $attribs , "value", "text", $selected,$idTagK);
+
+						//$html .= JHtml::_ ($selectType, $options, $fname, $attribs , "value", "text", $selected,$idTagK);
+						$html .= JHtml::_ ($selectType, $options, $fname, $attribs , "value", "text", $selected, $idTagK);
 						$html .= '</div>';
 					}
 
@@ -423,7 +432,6 @@ class VirtueMartCustomFieldRenderer {
 							$yearRange .= ':1';
 						}
 
-						vmdebug('Date my yearrange',$yearRange);
 						//$yearRange = '2018:2020';
 						$customfield->display =  '<span class="product_custom_date">' . vmJsApi::jDate ($date,$customProductDataName.'[' . $customfield->virtuemart_customfield_id . ']', NULL, TRUE, $yearRange) . '</span>'; //vmJsApi::jDate($field->custom_value, 'field['.$row.'][custom_value]','field_'.$row.'_customvalue').$priceInput;
 					}
@@ -582,11 +590,11 @@ class VirtueMartCustomFieldRenderer {
 					} else if($attr == 'product_weight') {
 						$dim = $product->product_weight_uom;
 					}
-					if(!isset($product->$attr)){
+					if(!isset($product->{$attr})){
 						logInfo('customfield.php: case P, property '.$attr.' does not exists. virtuemart_custom_id: '.$customfield->virtuemart_custom_id);
 						break;
 					}
-					$val = $product->$attr;
+					$val = $product->{$attr};
 					if($customfield->round!=0){
 						if(empty($customfield->digits)) $customfield->digits = 0;
 						$val = $currency->getFormattedNumber($val,$customfield->digits);
@@ -787,7 +795,7 @@ class VirtueMartCustomFieldRenderer {
 								$productDB = VmModel::getModel('product')->getProduct($product->virtuemart_product_id);
 								if($productDB){
 									$attr = $productCustom->customfield_value;
-									$product->$attr = $productDB->$attr;
+									$product->{$attr} = $productDB->{$attr};
 								}
 							}
 							$value = vmText::_( $product->{$productCustom->customfield_value} );

@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: coupons.php 10058 2019-05-17 13:42:16Z Milbo $
+* @version $Id: coupons.php 10290 2020-04-07 10:20:41Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -45,9 +45,17 @@ class TableCoupons extends VmTable {
 	var $coupon_expiry_date 	= '';
 	/** @var decimal Coupon valid value */
 	var $coupon_value_valid 	= 0;
+	/** @var decimal Coupon max value */
+	var $coupon_value_max 	= 0;
+	var $virtuemart_coupon_max_attempt_per_user = 0;
+	var $virtuemart_shoppergroup_ids 	= '';
+	var $virtuemart_shopper_ids 	= '';
+	var $virtuemart_product_ids 	= '';
+	var $virtuemart_category_ids 	= '';
 	/** @var decimal Coupon valid value */
 	var $coupon_used			= 0;
 	var $published				= 0;
+
 	/**
 	 * @author RickG, Max Milbers
 	 * @param JDataBase $db

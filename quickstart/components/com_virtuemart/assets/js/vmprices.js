@@ -123,7 +123,13 @@ Virtuemart.cartEffect = function(form) {
 					"autoCenter": true,
 					"closeBtn": false,
 					"closeClick": false,
-					"content": txt
+					"content": txt/*,
+					"autodimension"	: true,
+					"onComplete"	: function () {
+						setTimeout(function(){
+							jQuery.fancybox.close();
+							}, 500);
+					}*/
 				});
 			} else {
 				jQuery.facebox(txt, 'my-groovy-style');
@@ -146,8 +152,9 @@ Virtuemart.dataFB = (function(dom, name) {
 
 
 Virtuemart.incrQuantity = (function(event) {
-	var rParent = jQuery(this).closest('td');
-	rParent = !rParent.length ? jQuery(this).closest('form') : rParent;
+
+	var rParent = jQuery(this).closest("td, .addtocart-bar, form");
+
 	var quantity = rParent.find('input[name^="quantity["]');
 	var virtuemart_product_id = rParent.find('input[name="virtuemart_product_id[]"]').val();
 	var Ste = Virtuemart.dataFB(quantity, "step");
@@ -170,8 +177,8 @@ Virtuemart.incrQuantity = (function(event) {
 });
 
 Virtuemart.decrQuantity = (function(event) {
-	var rParent = jQuery(this).closest('td');
-	rParent = !rParent.length ? jQuery(this).closest('form') : rParent;
+
+	var rParent = jQuery(this).closest("td, .addtocart-bar, form");
 	var quantity = rParent.find('input[name^="quantity["]');
 	var virtuemart_product_id = rParent.find('input[name="virtuemart_product_id[]"]').val();
 	var Ste = Virtuemart.dataFB(quantity, "step");

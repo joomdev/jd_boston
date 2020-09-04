@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: updatesmigration.php 10101 2019-08-20 06:43:25Z Milbo $
+* @version $Id: updatesmigration.php 10285 2020-03-11 12:08:36Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -236,6 +236,7 @@ class VirtueMartModelUpdatesMigration extends VmModel {
 			if (!class_exists ('plgVmPaymentStandard')) require(VMPATH_ROOT .'/'. $url .'/standard.php');
 			$this->installPluginTable('plgVmPaymentStandard','#__virtuemart_payment_plg_standard','Payment Standard Table');
 		}
+		VirtueMartModelCategory::updateCategories();
 		vmInfo(vmText::_('COM_VIRTUEMART_SAMPLE_DATA_INSTALLED'));
 	}
 
@@ -728,6 +729,24 @@ class VirtueMartModelUpdatesMigration extends VmModel {
 
 	}
 
+	public function reset_Has_x_Fields(){
+
+		$db = JFactory::getDbo();
+
+		$q = 'UPDATE #__virtuemart_calcs SET `has_categories`=NULL,`has_shoppergroups`=NULL,`has_countries`=NULL,`has_manufacturers`=NULL, `has_states`=NULL';
+		$db->setQuery($q);
+		$db->execute();
+
+		$q = 'UPDATE #__virtuemart_categories SET `has_children`=NULL,`has_medias`=NULL, `category_parent_id`=NULL, `ordering`=NULL';
+		$db->setQuery($q);
+		$db->execute();
+
+		$q = 'UPDATE #__virtuemart_products SET `has_categories`=NULL,`has_shoppergroups`=NULL,`has_medias`=NULL,`has_manufacturers`=NULL, `has_prices`=NULL';
+		$db->setQuery($q);
+		$db->execute();
+
+		VirtueMartModelCategory::updateCategories();
+	}
 }
 
 //pure php no tag

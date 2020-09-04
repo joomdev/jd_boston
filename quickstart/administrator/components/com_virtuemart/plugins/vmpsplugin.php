@@ -43,6 +43,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	}
 
 	static public function addVarsToPushCore(&$varsToPush, $payment=1){
+
 		$varsToPush['categories'] = array('','char');
 		$varsToPush['blocking_categories'] = array('','char');
 		$varsToPush['countries'] = array('','char');
@@ -104,7 +105,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	public function onSelectCheck (VirtueMartCart $cart) {
 
 		$idName = $this->_idName;
-		if (!$this->selectedThisByMethodId ($cart->$idName)) {
+		if (!$this->selectedThisByMethodId ($cart->{$idName})) {
 			return NULL; // Another method was selected, do nothing
 		}
 		return TRUE; // this method was selected , and the data is valid by default
@@ -140,7 +141,7 @@ abstract class vmPSPlugin extends vmPlugin {
 
 		$ret = FALSE;
 		foreach ($this->methods as $method) {
-			if(!isset($htmlIn[$this->_psType][$method->$idN])) {
+			if(!isset($htmlIn[$this->_psType][$method->{$idN}])) {
 				if ($this->checkConditions ($cart, $method, $cart->cartPrices)) {
 
 					// the price must not be overwritten directly in the cart
@@ -148,9 +149,9 @@ abstract class vmPSPlugin extends vmPlugin {
 					$methodSalesPrice = $this->setCartPrices ($cart, $prices ,$method);
 
 					//This makes trouble, because $method->$mname is used in  renderPluginName to render the Name, so it must not be called twice!
-					$method->$mname = $this->renderPluginName ($method);
+					$method->{$mname} = $this->renderPluginName ($method);
 
-					$htmlIn[$this->_psType][$method->$idN] = $this->getPluginHtml ($method, $selected, $methodSalesPrice);
+					$htmlIn[$this->_psType][$method->{$idN}] = $this->getPluginHtml ($method, $selected, $methodSalesPrice);
 
 					$ret = TRUE;
 				}
@@ -178,10 +179,10 @@ abstract class vmPSPlugin extends vmPlugin {
 
 		$idName = $this->_idName;
 
-		if (!($method = $this->selectedThisByMethodId ($cart->$idName))) {
+		if (!($method = $this->selectedThisByMethodId ($cart->{$idName}))) {
 			return NULL; // Another method was selected, do nothing
 		}
-		if (!$method = $this->getVmPluginMethod ($cart->$idName) or empty($method->$idName)) {
+		if (!$method = $this->getVmPluginMethod ($cart->{$idName}) or empty($method->{$idName})) {
 			return NULL;
 		}
 
@@ -199,6 +200,11 @@ abstract class vmPSPlugin extends vmPlugin {
 		return TRUE;
 	}
 
+	function plgVmOnCheckAutomaticSelected (VirtueMartCart $cart, array $cart_prices, &$shipCounter, $type) {
+		if($type!=$this->_psType) return ;
+		return $this->onCheckAutomaticSelected ($cart, $cart_prices, $shipCounter);
+
+	}
 
 	/**
 	 * onCheckAutomaticSelected
@@ -264,7 +270,7 @@ abstract class vmPSPlugin extends vmPlugin {
 		}
 		$idName = $this->_psType . '_name';
 
-		return $pluginInfo->$idName;
+		return $pluginInfo->{$idName};
 	}
 
 
@@ -344,7 +350,7 @@ abstract class vmPSPlugin extends vmPlugin {
 		}
 
 		$plugin_name = $this->_psType . '_name';
-		return $order->$plugin_name;
+		return $order->{$plugin_name};
 	}
 
 	/**
@@ -579,10 +585,10 @@ abstract class vmPSPlugin extends vmPlugin {
 			}
 
 			foreach($this->_cryptedFields as $field){
-				if(isset($method->$field)){
-					$t = $method->$field;
-					$method->$field = vmCrypt::decrypt($method->$field, $date);
-					//vmdebug(' Field '.$field.' crypted '.$t.' decrypted = '.$method->$field);
+				if(isset($method->{$field})){
+					$t = $method->{$field};
+					$method->{$field} = vmCrypt::decrypt($method->{$field}, $date);
+					//vmdebug(' Field '.$field.' crypted '.$t.' decrypted = '.$method->{$field});
 				}
 			}
 			$this->_encrypted = false;
@@ -813,8 +819,8 @@ abstract class vmPSPlugin extends vmPlugin {
 		static $c = array();
 		$idN = 'virtuemart_'.$this->_psType.'method_id';
 
-		if(isset($c[$this->_psType][$plugin->$idN])){
-			return $c[$this->_psType][$plugin->$idN];
+		if(isset($c[$this->_psType][$plugin->{$idN}])){
+			return $c[$this->_psType][$plugin->{$idN}];
 		}
 
 		$return = '';
@@ -822,16 +828,16 @@ abstract class vmPSPlugin extends vmPlugin {
 		$plugin_desc = $this->_psType . '_desc';
 		$description = '';
 		$logosFieldName = $this->_psType . '_logos';
-		$logos = property_exists($plugin,$logosFieldName)? $plugin->$logosFieldName:array();
+		$logos = property_exists($plugin,$logosFieldName)? $plugin->{$logosFieldName}:array();
 		if (!empty($logos)) {
 			$return = $this->displayLogos ($logos) . ' ';
 		}
-		if (!empty($plugin->$plugin_desc)) {
-			$description = '<span class="' . $this->_type . '_description">' . $plugin->$plugin_desc . '</span>';
+		if (!empty($plugin->{$plugin_desc})) {
+			$description = '<span class="' . $this->_type . '_description">' . $plugin->{$plugin_desc} . '</span>';
 		}
-		$c[$this->_psType][$plugin->$idN] = $return . '<span class="' . $this->_type . '_name">' . $plugin->$plugin_name . '</span>' . $description;
+		$c[$this->_psType][$plugin->{$idN}] = $return . '<span class="' . $this->_type . '_name">' . $plugin->{$plugin_name} . '</span>' . $description;
 
-		return $c[$this->_psType][$plugin->$idN];
+		return $c[$this->_psType][$plugin->{$idN}];
 	}
 
 	protected function getPluginHtml ($plugin, $selectedPlugin, $pluginSalesPrice) {
@@ -906,7 +912,7 @@ abstract class vmPSPlugin extends vmPlugin {
 
 				$nbMethod = $nbMethod + $nb;
 				$idName = $this->_idName;
-				$method_id = $method->$idName;
+				$method_id = $method->{$idName};
 			} else {
 				unset($this->methods[$k]);
 			}
@@ -927,7 +933,7 @@ abstract class vmPSPlugin extends vmPlugin {
 
 				$nbMethod = $nbMethod + $nb;
 				$idName = $this->_idName;
-				$method_ids[] = $method->$idName;
+				$method_ids[] = $method->{$idName};
 			} else {
 				unset($this->methods[$k]);
 			}
@@ -972,17 +978,17 @@ abstract class vmPSPlugin extends vmPlugin {
 			if(!empty($method->categories)) $cat_cond = false;
 			//vmdebug('hmm, my $cat_cond',$method);
 			//if at least one product is  in a certain category, display this shipment
-			if(!is_array($method->categories)) $method->categories = array($method->categories);
-			if(!is_array($method->blocking_categories)) $method->blocking_categories = array($method->blocking_categories);
+			if(!empty($method->categories) and !is_array($method->categories)) $method->categories = array($method->categories);
+			if(!empty($method->blocking_categories) and !is_array($method->blocking_categories)) $method->blocking_categories = array($method->blocking_categories);
 
 			$msg = 'None of the products is in a category of the method '.$method->{$this->_psType.'_name'};
 			//Gather used cats
 			foreach($cart->products as $product){
-				if(array_intersect($product->categories,$method->categories)){
+				if(empty($method->categories) or array_intersect($product->categories,$method->categories)){
 					$cat_cond = true;
 					//break;
 				}
-				if(array_intersect($product->categories,$method->blocking_categories)){
+				if(!empty($method->blocking_categories) and array_intersect($product->categories,$method->blocking_categories)){
 					$cat_cond = false;
 					$msg = 'At least one of the products is in a category which blockes the method '.$method->{$this->_psType.'_name'};
 					break;
@@ -1177,10 +1183,10 @@ abstract class vmPSPlugin extends vmPlugin {
 
 				$calculator = calculationHelper::getInstance ();
 				foreach($this->_toConvert as $c){
-					if(!empty($method->$c)){
-						$method->$c = $calculator->_currencyDisplay->convertCurrencyTo($method->currency_id,$method->$c,true);
+					if(!empty($method->{$c})){
+						$method->{$c} = $calculator->_currencyDisplay->convertCurrencyTo($method->currency_id,$method->{$c},true);
 					} else {
-						$method->$c = 0.0;
+						$method->{$c} = 0.0;
 					}
 				}
 				$method->converted = 1;
@@ -1271,7 +1277,7 @@ abstract class vmPSPlugin extends vmPlugin {
 			}
 			// end code addition
 			$taxrules = array_merge($cart->cartData['VatTax'],$cart->cartData['taxRulesBill']);
-			//$taxrules = $cart->cartData['VatTax'];
+			//$taxrules = $cart->cartData['VatTax'];	//calculationh. around line 901, disabled
 			$cartdiscountBeforeTax = $calculator->roundInternal($calculator->cartRuleCalculation($cart->cartData['DBTaxRulesBill'], $cart->cartPrices['salesPrice']));
 
 			if(!empty($taxrules) ){
@@ -1620,7 +1626,7 @@ abstract class vmPSPlugin extends vmPlugin {
 		$name=$this->_idName;
 		$methodId=0;
 		if (isset ($this->_currentMethod) ) {
-			$methodId=$this->_currentMethod->$name;
+			$methodId=$this->_currentMethod->{$name};
 		}
 
 		return $this->_name. '.'.$methodId ;

@@ -1,22 +1,17 @@
 <?php
-/**
- * @package	AcyMailing for Joomla
- * @version	6.3.1
- * @author	acyba.com
- * @copyright	(C) 2009-2019 ACYBA S.A.R.L. All rights reserved.
- * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 defined('_JEXEC') or die('Restricted access');
 ?><?php
 
-class acymentitySelectHelper
+class acymentitySelectHelper extends acymObject
 {
     var $svg;
+    var $columnsHeaderNotToDisplay;
 
     public function __construct()
     {
-        $this->svg = acym_fileGetContent(ACYM_IMAGES.'loader.svg');
+        parent::__construct();
+        $this->svg = acym_getSvg(ACYM_IMAGES.'loader.svg');
+        $this->columnsHeaderNotToDisplay = ['color'];
     }
 
     private function _getListing($type, $allSelector, $entity, $columnsToDisplay = [])
@@ -33,32 +28,46 @@ class acymentitySelectHelper
                             </div>
                         </div>
                         <div v-infinite-scroll="loadMoreEntity'.ucfirst($type).'" :infinite-scroll-disabled="busy" class="acym__listing cell acym__entity_select__'.$type.'__listing acym__content">';
-        $display .= '<div class="cell text-center acym__entity_select__title margin-top-1" v-show="Object.keys(entitiesToDisplay_'.$type.').length == 0 && !loading">'.acym_translation_sprintf('ACYM_THERE_ARE_NO_DATA_X', strtolower(acym_translation('ACYM_'.strtoupper($type)))).'</div>
+        $emptyMessage = acym_translation($type === 'available' ? 'ACYM_NOTHING_TO_SHOW_HERE_RIGHT_PANEL' : 'ACYM_PLEASE_CLICK_ON_THE_LEFT_PANEL');
+        $display .= '<div class="cell text-center acym__entity_select__title margin-top-2" v-show="Object.keys(entitiesToDisplay_'.$type.').length == 0 && !loading">'.$emptyMessage.'</div>
                     <div class="cell acym_vcenter acym__listing__row grid-x acym__listing__row__header" v-if="Object.keys(entitiesToDisplay_'.$type.').length != 0">';
-        foreach ($columnsToDisplay as $column) {
-            $display .= '<div class="cell grid-x auto">'.acym_translation('ACYM_'.strtoupper($column)).'</div>';
+
+
+        if ($type !== 'available') $display .= '<div class="cell small-1"></div>';
+
+        foreach ($columnsToDisplay as $column => $class) {
+            $display .= '<div class="cell grid-x '.$class.'">'.(in_array($column, $this->columnsHeaderNotToDisplay) ? '' : acym_translation('ACYM_'.strtoupper($column))).'</div>';
         }
-        $display .= '<div class="cell small-1"></div>
-                    </div>
-                    <div v-for="(entity, index) in entitiesToDisplay_'.$type.'" class="cell acym_vcenter acym__listing__row grid-x acym__entity_select__'.$type.'__listing__row" >';
 
-        $display .= '<div v-for="column in columnsToDisplay" class="cell auto align-center acym__entity_select__columns">{{ entity[column] }}</div>';
+        if ($type === 'available') $display .= '<div class="cell small-1"></div>';
+        $display .= '</div>';
 
-        $display .= '<div class="cell small-1 vertical-align-middle text-center">
-                        <div class="plus-container acym__entity_select__available__listing__row__select" v-on:click="selectEntity(entity.id)">
+        $functionClick = $type === 'available' ? 'v-on:click="selectEntity(entity.id)"' : 'v-on:click="unselectEntity(entity.id)"';
+        $display .= '<div '.$functionClick.' v-for="(entity, index) in entitiesToDisplay_'.$type.'" class="cell acym_vcenter acym__listing__row grid-x acym__entity_select__'.$type.'__listing__row" >';
+
+        if ($type !== 'available') {
+            $display .= '<div class="cell small-1 vertical-align-middle text-center">
+                            <div class="plus-container acym__entity_select__selected__listing__row__unselect">
+                              <div class="top-plus plus-bar"></div>
+                              <div class="plus plus-bar"></div>
+                              <div class="bottom-plus plus-bar"></div>
+                            </div>
+                        </div>';
+        }
+
+        $display .= '<div v-for="(column, index) in columnsToDisplay" class="cell align-center acym__entity_select__columns" :class="getClass(column)" v-html="entity[column]"></div>';
+
+        if ($type === 'available') {
+            $display .= '<div class="cell small-1 vertical-align-middle text-center">
+                        <div class="plus-container acym__entity_select__available__listing__row__select">
                           <div class="top-plus plus-bar"></div>
                           <div class="plus plus-bar"></div>
                           <div class="bottom-plus plus-bar"></div>
                         </div>
-                        <div class="plus-container acym__entity_select__selected__listing__row__unselect" v-on:click="unselectEntity(entity.id)">
-                          <div class="top-plus plus-bar"></div>
-                          <div class="plus plus-bar"></div>
-                          <div class="bottom-plus plus-bar"></div>
-                        </div>
-        				<!--<i class="fa fa-plus-circle acym__entity_select__available__listing__row__select" v-on:click="selectEntity(entity.id)"></i>-->
-                        <!--<i class="fa fa-minus-circle acym__entity_select__selected__listing__row__unselect" v-on:click="unselectEntity(entity.id)"></i>-->
-        			</div>
-        		</div>
+        			</div>';
+        }
+
+        $display .= '</div>
                     <div class="cell grid-x align-center acym__entity_select__loading margin-top-1"  v-show="loading"><div class="cell text-center acym__entity_select__title">'.acym_translation('ACYM_WE_ARE_LOADING_YOUR_DATA').'</div><div class="cell grid-x shrink margin-top-1">'.$this->svg.'</div></div>';
         $display .= '</div>';
         $display .= '</div>
@@ -67,33 +76,47 @@ class acymentitySelectHelper
         return $display;
     }
 
-    public function entitySelect($entity, $entityParams = [], $columnsToDisplay = ['name'], $buttonSubmit = ['text' => '', 'action' => '', 'class' => ''], $displaySelected = true)
+    public function entitySelect($entity, $entityParams = [], $columnsToDisplay = ['name'], $buttonSubmit = ['text' => '', 'action' => '', 'class' => ''], $displaySelected = true, $additionalData = '')
     {
         $entityClass = acym_get('class.'.$entity);
         $entitySelectController = acym_get('controller.entitySelect');
 
         $columnJoin = '';
-        if (!empty($columnsToDisplay['join'])) $columnJoin = explode('.', $columnsToDisplay['join']);
+        $columnsToGet = $columnsToDisplay;
+        if (!empty($columnsToGet['join'])) {
+            $joinArray = [
+                'join' => $columnsToGet['join'],
+            ];
+            $columnJoin = explode('.', $columnsToGet['join']);
 
-        $data = $entitySelectController->loadEntityBack($entity, 0, 500, $entityParams['join'], $columnsToDisplay);
+            unset($columnsToGet['join']);
+            $columnsToGet = array_keys($columnsToGet);
+            $columnsToGet = array_merge($columnsToGet, $joinArray);
+        } else {
+            $columnsToGet = array_keys($columnsToGet);
+        }
+
+        $data = $entitySelectController->loadEntityBack($entity, 0, 500, $entityParams['join'], $columnsToGet);
 
         unset($columnsToDisplay['join']);
 
         if (empty($entityClass)) return false;
 
         if (empty($entityParams['elementsPerPage']) || $entityParams['elementsPerPage'] < 1) {
-            $entityParams['elementsPerPage'] = acym_getCMSConfig('list_limit', 20);
+            $paginationHelper = acym_get('helper.pagination');
+            $entityParams['elementsPerPage'] = $paginationHelper->getListLimit();
         }
 
         if (!empty($columnJoin)) $columnJoin = 'data-column-join="'.$columnJoin[1].'" data-table-join="'.$columnJoin[0].'"';
-
-        $display = '<div style="display: none;" id="acym__entity_select" class="acym__entity_select cell grid-x" data-display-selected="'.($displaySelected ? 'true' : 'false').'" data data-entity="'.acym_escape($entity).'" data-type="select" data-columns="'.implode(',', $columnsToDisplay).'" data-join="'.$entityParams['join'].'" '.$columnJoin.'>';
+        $display = '<div style="display: none;" id="acym__entity_select" class="acym__entity_select cell grid-x" data-display-selected="'.($displaySelected ? 'true' : 'false').'" data data-entity="'.acym_escape($entity).'" data-type="select" data-columns="'.implode(',', array_keys($columnsToDisplay)).'" data-columns-class="'.acym_escape(json_encode($columnsToDisplay)).'" data-join="'.$entityParams['join'].'" '.$columnJoin.'>';
 
         $display .= $this->_getListing('available', 'select', $entity, $columnsToDisplay);
 
-        $display .= '<div class="cell medium-shrink text-center grid-x acym_vcenter"><i class="fa fa-arrows-h cell"></i></div>';
+        $display .= '<div class="cell medium-shrink text-center grid-x acym_vcenter"><i class="acymicon-arrows-h cell"></i></div>';
 
         $display .= $this->_getListing('selected', 'unselect', $entity, $columnsToDisplay);
+
+        $display .= $additionalData;
 
         if (!empty($buttonSubmit['text'])) {
             $class = !empty($buttonSubmit['action']) ? 'acy_button_submit' : 'acym__entity_select__button__close';
@@ -110,6 +133,30 @@ class acymentitySelectHelper
         $display .= '</div>';
 
         return $display;
+    }
+
+    public function getColumnsForList($join = '', $small = false)
+    {
+        $columns = [
+            'color' => $small ? 'small-2' : 'small-1',
+            'name' => 'auto',
+            'id' => 'small-2',
+        ];
+        if (!empty($join)) $columns['join'] = $join;
+
+        return $columns;
+    }
+
+    public function getColumnsForUser($join = '')
+    {
+        $columns = [
+            'email' => 'auto',
+            'name' => 'auto',
+            'id' => 'small-1',
+        ];
+        if (!empty($join)) $columns['join'] = $join;
+
+        return $columns;
     }
 
 }

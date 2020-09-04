@@ -14,11 +14,16 @@ defined('_JEXEC') or die('Restricted access');
 
 class vmURI{
 
-	static function getCurrentUrlBy ($source = 'request',$route = false, $white = true, $ignore = false){
+	static function getCurrentUrlBy ($source = 'request',$route = false, $white = true, $ignore = false, $query = false){
 
 		$vars = array('id', 'option', 'view', 'controller', 'task', 'virtuemart_category_id', 'virtuemart_manufacturer_id', 'virtuemart_product_id', 'virtuemart_user_id', 'virtuemart_vendor_id', 'addrtype', 'virtuemart_user_info', 'virtuemart_currency_id', 'layout', 'format', 'limitstart', 'limit', 'language', 'keyword', 'search', 'virtuemart_order_id', 'order_number', 'order_pass', 'tmpl', 'usersearch', 'manage', 'orderby', 'dir', 'Itemid', 'customfields', 'lang', 'searchAllCats');	//TODO Maybe better to remove the 'lang', which keeps the SEF suffix
 
-		$url = '';
+		if($query){
+			$url = array();
+		} else {
+			$url = '';
+		}
+
 		if($white){
 			if(is_array($white) ){
 				$vars = array_merge($vars, $white);
@@ -28,14 +33,23 @@ class vmURI{
 			}
 
 			foreach ($vars as $k){
+				$k = vRequest::filterUrl($k);
 				$v = vRequest::getVar($k);
 				if(isset($v)){
 					if(is_array($v)){
 						foreach($v as $ka => $va){
-							$url .= $k.'['.urlencode(vRequest::filterUrl($ka)).']='.urlencode(vRequest::filterUrl($va)).'&';
+							if($query){
+								$url[$k][urlencode(vRequest::filterUrl($ka))] = urlencode(vRequest::filterUrl($va));
+							} else{
+								$url .= $k.'['.urlencode(vRequest::filterUrl($ka)).']='.urlencode(vRequest::filterUrl($va)).'&';
+							}
 						}
 					} else {
-						$url .= $k.'='.urlencode(vRequest::filterUrl($v)).'&';
+						if($query){
+							$url[$k] = urlencode(vRequest::filterUrl($v));
+						} else {
+							$url .= $k.'='.urlencode(vRequest::filterUrl($v)).'&';
+						}
 					}
 				}
 			}
@@ -53,21 +67,32 @@ class vmURI{
 				$k = vRequest::filterUrl($k);
 				if(is_array($v)){
 					foreach($v as $ka => $va){
-						$url .= $k.'['.urlencode(vRequest::filterUrl($ka)).']='.urlencode(vRequest::filterUrl($va)).'&';
+						if($query){
+							$url[$k][urlencode(vRequest::filterUrl($ka))] = urlencode(vRequest::filterUrl($va));
+						} else{
+							$url .= $k.'['.urlencode(vRequest::filterUrl($ka)).']='.urlencode(vRequest::filterUrl($va)).'&';
+						}
 					}
 				} else {
-					$url .= $k.'='.urlencode(vRequest::filterUrl($v)).'&';
+					if($query){
+						$url[$k] = urlencode(vRequest::filterUrl($v));
+					} else {
+						$url .= $k.'='.urlencode(vRequest::filterUrl($v)).'&';
+					}
 				}
 			}
 		}
 
-		$url = $urlold = rtrim($url,'&');
-		if(!empty($url)){
-			$url = 'index.php?'.$url;
-			if ($route){
-				$url = JRoute::_($url);
+		if(!$query){
+			$url = $urlold = rtrim($url,'&');
+			if(!empty($url)){
+				$url = 'index.php?'.$url;
+				if ($route){
+					$url = JRoute::_($url);
+				}
 			}
 		}
+
 		
 		return $url;
 	}
@@ -85,6 +110,18 @@ class vmURI{
 
 		if($JURIInstance===0)$JURIInstance = JUri::getInstance();
 		return vRequest::filterUrl($JURIInstance->toString($parts));
+	}
+
+	static function createUrlWithPrefix($url){
+
+		$admin = '';
+		if(!VmConfig::isSiteByApp()){
+			$admin = 'administrator/';
+		}
+
+		$rurl = JURI::root(false).$admin.$url;
+		vmdebug('createUrlWithPrefix',$rurl,$url);
+		return $rurl;
 	}
 
 	static function useSSL (){

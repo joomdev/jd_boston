@@ -56,7 +56,7 @@ class JFormFieldVmListTable extends JFormFieldList {
 		$ltext = $this->getAttribute('ltext','text');
 
 		foreach ($values as $v) {
-			$options[] = JHtml::_('select.option', $v->$lvalue, $v->$ltext);
+			$options[] = JHtml::_('select.option', $v->{$lvalue}, $v->{$ltext});
 		}
 
 		// Merge any additional options in the XML definition.

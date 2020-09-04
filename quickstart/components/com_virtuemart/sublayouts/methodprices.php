@@ -24,7 +24,7 @@ $currency = $viewData['currency'];
 $pluginName = $psType . '_name';
 $pluginmethod_id = 'virtuemart_'.$psType.'method_id';
 
-if ($selectedPlugin == $plugin->$pluginmethod_id) {
+if ($selectedPlugin == $plugin->{$pluginmethod_id}) {
 	$checked = 'checked="checked"';
 } else {
 	$checked = '';
@@ -50,5 +50,5 @@ $dynUpdate='';
 if( VmConfig::get('oncheckout_ajax',false)) {
 	$dynUpdate=' data-dynamic-update="1" ';
 }
-echo '<input type="radio"'.$dynUpdate.' name="' . $pluginmethod_id . '" id="' . $psType . '_id_' . $plugin->$pluginmethod_id . '"   value="' . $plugin->$pluginmethod_id . '" ' . $checked . ">\n"
-. '<label for="' . $psType . '_id_' . $plugin->$pluginmethod_id . '">' . '<span class="' . $plugin->folder . '">' . $plugin->$pluginName . $costDisplay . "</span></label>\n";
+echo '<input type="radio"'.$dynUpdate.' name="' . $pluginmethod_id . '" id="' . $psType . '_id_' . $plugin->{$pluginmethod_id} . '"   value="' . $plugin->{$pluginmethod_id} . '" ' . $checked . ">\n"
+. '<label for="' . $psType . '_id_' . $plugin->{$pluginmethod_id} . '">' . '<span class="' . $plugin->folder . '">' . $plugin->{$pluginName} . $costDisplay . "</span></label>\n";

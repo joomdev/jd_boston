@@ -1,17 +1,9 @@
 <?php
-/**
- * @package	AcyMailing for Joomla
- * @version	6.3.1
- * @author	acyba.com
- * @copyright	(C) 2009-2019 ACYBA S.A.R.L. All rights reserved.
- * @license	GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 defined('_JEXEC') or die('Restricted access');
 ?><?php
 
-if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-    echo '<p style="color:red">This version of AcyMailing requires at least PHP 5.3.0, it is time to upgrade the PHP version of your server!</p>';
+if (version_compare(PHP_VERSION, '5.4.0', '<')) {
+    echo '<p style="color:red">This version of AcyMailing requires at least PHP 5.4.0, it is time to upgrade the PHP version of your server!</p>';
     exit;
 }
 
@@ -37,13 +29,16 @@ function installAcym()
     $updateHelper->fromVersion = $installClass->fromVersion;
     $updateHelper->installList();
     $updateHelper->installNotifications();
-    $updateHelper->installTemplates();
+    if (!$installClass->update) {
+        $updateHelper->installTemplates(true);
+    }
     $updateHelper->installFields();
     $updateHelper->installLanguages();
     $updateHelper->installBackLanguages();
     $updateHelper->addUpdateSite();
     $updateHelper->installBounceRules();
     $updateHelper->installAdminNotif();
+    $updateHelper->installAddons();
 
     $newConfig = new stdClass();
     $newConfig->installcomplete = 1;
@@ -67,6 +62,7 @@ function uninstallAcym()
     <?php
 
     $tables = [
+        'plugin',
         'action',
         'condition',
         'history',

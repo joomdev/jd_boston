@@ -66,8 +66,7 @@ class vmAccess {
 	static public function isSuperVendor($uid = 0, $task=0){
 
 		if(self::$_site === null) {
-			$app = JFactory::getApplication();
-			self::$_site = $app->isSite();
+			self::$_site = VmConfig::isSiteByApp();
 		}
 
 		if(!isset(self::$_cu[$uid])){
@@ -91,7 +90,7 @@ class vmAccess {
 					vmdebug('isSuperVendor Active vendor '.$uid.' '.$virtuemart_vendor_id );
 				} else {
 					//$multix = Vmconfig::get('multix','none');
-					if( /*($multix == 'none' and*/ self::manager($task)/*) or ($multix != 'none' and (self::manager($task) or self::manager('managevendors')) )*/){
+					if( /*($multix == 'none' and*/ self::manager($task, $uid)/*) or ($multix != 'none' and (self::manager($task) or self::manager('managevendors')) )*/){
 						//vmTrace('isSuperVendor Fallback to Mainvendor '.$task);
 						self::$_virtuemart_vendor_id[$uid] = 1;
 					} else {
@@ -103,9 +102,9 @@ class vmAccess {
 				self::$_virtuemart_vendor_id[$user->id] = self::$_virtuemart_vendor_id[$uid];
 				//vmdebug('isSuperVendor Set '.$user->id.' to '.self::$_virtuemart_vendor_id[$uid]);
 			}
-			if(self::$_virtuemart_vendor_id[$uid] <= 0) vmdebug('isSuperVendor Not a vendor '.$uid,self::$_virtuemart_vendor_id[$uid]);
+			if(self::$_virtuemart_vendor_id[$uid] <= 0) vmdebug('isSuperVendor Not a vendor '.$uid.' '.self::$_virtuemart_vendor_id[$uid]);
 		}
-		vmdebug('isSuperVendor return for id '.$uid.$task.' vendor id '.self::$_virtuemart_vendor_id[$uid] );
+		//vmdebug('isSuperVendor return for id '.$uid.$task.' vendor id '.self::$_virtuemart_vendor_id[$uid] );
 		return self::$_virtuemart_vendor_id[$uid];
 	}
 
@@ -114,15 +113,7 @@ class vmAccess {
 
 
 		if(self::$_site === null) {
-			//$app = JFactory::getApplication();
-			if(vmDefines::$_appId=='site'){
-				self::$_site = true;
-			} else {
-				self::$_site = false;
-			}
-			//self::$_site = JFactory::$_appId;//$app->isSite();
-			//VmConfig::$echoDebug = 1;
-			//vmdebug('manager $app',$app);
+			self::$_site = VmConfig::isSiteByApp();
 		}
 
 		if(!isset(self::$_cu[$uid])){
@@ -174,8 +165,7 @@ class vmAccess {
 	public static function getVendorId($task=0, $uid = 0, $name = 'virtuemart_vendor_id'){
 
 		if(self::$_site === null) {
-			$app = JFactory::getApplication();
-			self::$_site = $app->isSite();
+			self::$_site = VmConfig::isSiteByApp();
 		}
 
 		if(self::$_site){
@@ -201,4 +191,22 @@ class vmAccess {
 			return self::isSuperVendor($uid);
 		}
 	}
+
+	static public function isFEmanager ($task = 0, $uid = 0) {
+
+		if(!isset(self::$_cu[$uid])){
+			self::$_cu[$uid] = self::getBgManager($uid);
+		}
+		$user = self::$_cu[$uid];
+		if($user->guest) return false;
+
+		if(empty($task)){
+			$task = array('manage');
+		} else if(!is_array($task)){
+			$task = array($task);
+			$task[] = 'manage';
+		}
+		return self::manager($task, 0 , true);
+	}
+
 }

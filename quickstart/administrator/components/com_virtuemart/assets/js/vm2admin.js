@@ -2,6 +2,12 @@
 if (typeof Virtuemart === "undefined")
     var Virtuemart = {};
 
+jQuery(document).ready(function() {
+    jQuery(".changeSendForm")
+        .off("change",Virtuemart.sendCurrForm)
+        .on("change",Virtuemart.sendCurrForm);
+});
+
 Virtuemart.showprices = jQuery(function($) {
     jQuery(document).ready(function( $ ) {
 

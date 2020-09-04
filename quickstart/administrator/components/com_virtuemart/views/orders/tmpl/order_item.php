@@ -34,7 +34,7 @@ $i=0;
 			<span class="vmicon vmicon-16-remove 4remove orderEdit"></span></a>
 		<?php } ?>
 		<?php //TODO: change vmicon-16-move and create vmicon-16-clone class ?>
-			<span class="icon-copy order-item-clone orderEdit hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_ORDER_ITEM_CLONE'). ' ' . $item->order_item_name ; ?>"></span>
+			<span class="icon-copy order-item-clone orderEdit hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_ORDER_ITEM_CLONE'). ' ' . $item->order_item_name ; ?>"></span>
 	<?php } ?>
 </td>
 <td>

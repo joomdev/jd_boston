@@ -7,4 +7,22 @@
 		<name>COM_VIRTUEMART_USER_VIEW_DEFAULT_TITLE</name>
 		<description><![CDATA[COM_VIRTUEMART_USER_VIEW_DEFAULT_DESC]]></description>
 	</state>
+	<fields name="params">
+		<fieldset name="TYPE" >
+			<field name="allowRegisterVendor" type="radio" default=""
+				   label="COM_VIRTUEMART_ALLOW_REGISTER_VENDOR"
+				   extension="com_virtuemart"
+				   description="COM_VIRTUEMART_ALLOW_REGISTER_VENDOR_DESC" >
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+			<field name="showUserShopperGrp" type="radio" default=""
+				   label="COM_VM_SHOW_USER_SHOPPERGRP"
+				   extension="com_virtuemart"
+				   description="COM_VM_SHOW_USER_SHOPPERGRP_DESC" >
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+		</fieldset>
+	</fields>
 </metadata>

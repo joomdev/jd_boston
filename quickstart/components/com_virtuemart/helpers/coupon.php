@@ -12,7 +12,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
- * @version $Id: coupon.php 10058 2019-05-17 13:42:16Z Milbo $
+ * @version $Id: coupon.php 10290 2020-04-07 10:20:41Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -95,12 +95,19 @@ abstract class CouponHelper
 	 * @author Oscar van Eijk
 	 * @return object Coupon details
 	 */
+		
 	static public function getCouponDetails($_code)
 	{
 		$_db = JFactory::getDBO();
 		$_q = 'SELECT `percent_or_total` '
 			. ', `coupon_type` '
 			. ', `coupon_value` '
+			. ', `coupon_value_max` '	//Malik
+			. ', `virtuemart_coupon_max_attempt_per_user` '
+			. ', `virtuemart_shoppergroup_ids` '
+			. ', `virtuemart_shopper_ids` '
+			. ', `virtuemart_product_ids` '
+			. ', `virtuemart_category_ids` '					   
 			. 'FROM `#__virtuemart_coupons` '
 			. 'WHERE `coupon_code` = "' . $_db->escape($_code) . '"';
 		$_db->setQuery($_q);
@@ -133,11 +140,14 @@ abstract class CouponHelper
 				return true;
 			}
 		}
-		$_db = JFactory::getDBO();
+		// Changes Modified Malik
+		// To not delete gift coupons when used.
+		/* $_db = JFactory::getDBO();
 		$_q = 'DELETE FROM `#__virtuemart_coupons` '
 			. 'WHERE `coupon_code` = "' . $_db->escape($_code) . '"';
-		$_db->setQuery($_q);
-		return ($_db->query() !== false);
+		$_db->setQuery($_q); */
+		
+		return true;
 	}
 	/**
 	 * Remove a coupon from the database

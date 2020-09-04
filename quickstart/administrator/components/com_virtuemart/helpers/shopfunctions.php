@@ -12,7 +12,7 @@ defined ('_JEXEC') or die('Direct Access to ' . basename (__FILE__) . ' is not a
  * @author Patrick Kohl
  * @copyright Copyright (c) 2004-2008 Soeren Eberhardt-Biermann, 2009 - 2018 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL 2, see COPYRIGHT.php
- * @version $Id: shopfunctions.php 10152 2019-09-19 14:40:28Z Milbo $
+ * @version $Id: shopfunctions.php 10335 2020-06-18 08:28:59Z Milbo $
  */
 class ShopFunctions {
 
@@ -68,8 +68,8 @@ class ShopFunctions {
 		foreach($idList as $id ){
 
 			$item = $table->load ((int)$id);
-			if($translate) $item->$name = vmText::_($item->$name);
-			$link = JHtml::_('link', JRoute::_('index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$cid.'[]='.$id,false), $item->$name);
+			if($translate) $item->{$name} = vmText::_($item->{$name});
+			$link = JHtml::_('link', JRoute::_('index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$cid.'[]='.$id,false), $item->{$name});
 			if($i<$quantity and $i<=count($idList)){
 				$list .= '<li>' . $link . '</li>';
 			} else if ($i==$quantity and $i<count($idList)){
@@ -133,14 +133,14 @@ class ShopFunctions {
 			foreach($idList as $id ){
 
 				$item = $table->load ((int)$id);
-				if($translate) $item->$name = vmText::_($item->$name);
-				$link = ', '.JHtml::_('link', JRoute::_('index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$cid.'[]='.$id,false), $item->$name);
+				if($translate) $item->{$name} = vmText::_($item->{$name});
+				$link = ', '.JHtml::_('link', JRoute::_('index.php?option=com_virtuemart&view='.$view.'&task=edit&'.$cid.'[]='.$id,false), $item->{$name});
 				if($i<$quantity and $i<=count($idList)){
 					$list .= $link;
 				} else if ($i==$quantity and $i<count($idList)){
 					$list .= ',...';
 				}
-				$ttip .= ', '.$item->$name;
+				$ttip .= ', '.$item->{$name};
 				if($i>($quantity + 6)) {
 					$ttip .= ',...';
 					break;
@@ -154,7 +154,7 @@ class ShopFunctions {
 		$list = substr ($list, 2);
 		$ttip = substr ($ttip, 2);
 
-		return '<span class="hasTip" title="'.$ttip.'" >' . $list . '</span>';
+		return '<span class="hasTooltip" title="'.$ttip.'" >' . $list . '</span>';
 	}
 
 	/**
@@ -166,10 +166,10 @@ class ShopFunctions {
 	 * @param bool $multiple if the select list should allow multiple selections
 	 * @return string HTML select option list
 	 */
-	static public function renderVendorList ($vendorId=false, $name = 'virtuemart_vendor_id', $sendForm = false) {
+	static public function renderVendorList ($vendorId=false, $name = 'virtuemart_vendor_id', $sendForm = false, $multiple = false) {
 
 		$view = vRequest::getCmd('view',false);
-		
+
 		if($vendorId === false){
 			if(vmAccess::manager('managevendors')){
 				$vendorId = strtolower (JFactory::getApplication()->getUserStateFromRequest ('com_virtuemart.'.$view.'.virtuemart_vendor_id', 'virtuemart_vendor_id', vmAccess::getVendorId(), 'int'));
@@ -189,18 +189,21 @@ class ShopFunctions {
 			}
 			return '<span type="text" size="14" class="inputbox" readonly="">' . $vendor . '</span>';
 		} else {
-			return self::renderVendorFullVendorList($vendorId, false, $name, $sendForm);
+			return self::renderVendorFullVendorList($vendorId, $multiple, $name, $sendForm);
 		}
 
 	}
 
 	static public function renderVendorFullVendorList($vendorId, $multiple = false, $name = 'virtuemart_vendor_id', $sendForm = true){
 
-		$db = JFactory::getDBO ();
+		static $vendors = false;
+		if(!$vendors){
+			$db = JFactory::getDBO ();
 
-		$q = 'SELECT `virtuemart_vendor_id`,`vendor_name` FROM #__virtuemart_vendors ORDER BY `vendor_name` ASC';
-		$db->setQuery ($q);
-		$vendors = $db->loadAssocList ();
+			$q = 'SELECT `virtuemart_vendor_id`,`vendor_name` FROM #__virtuemart_vendors ORDER BY `vendor_name` ASC';
+			$db->setQuery ($q);
+			$vendors = $db->loadAssocList ();
+		}
 
 		$attrs = array();
 
@@ -216,12 +219,6 @@ class ShopFunctions {
 		}
 
 		if($sendForm){
-			$j = 'jQuery(document).ready(function() {
-jQuery(".changeSendForm")
-	.off("change",Virtuemart.sendCurrForm)
-    .on("change",Virtuemart.sendCurrForm);
-})';
-			vmJsApi::addJScript('sendFormChange',$j);
 			$attrs['class'] .= ' changeSendForm';
 
 		}
@@ -367,26 +364,22 @@ jQuery(".changeSendForm")
 
 		$m = VmModel::getModel('shipmentmethod');
 		if(!$m){
-			return parent::getOptions();
+			return false;
 		}
+
+		$m->_noLimit = true;
 		$values = $m->getShipments();
+		$m->_noLimit = false;
 
 		$options = array();
 
 		$lvalue = 'virtuemart_shipmentmethod_id';
 		$ltext = 'shipment_name';
 
-		$lvalue = 'virtuemart_shipmentmethod_id';
-		$ltext = 'shipment_name';
-
 		foreach ($values as $v) {
-			$options[] = JHtml::_('select.option', $v->$lvalue, $v->$ltext);
+			$options[] = JHtml::_('select.option', $v->{$lvalue}, $v->{$ltext});
 		}
 
-		// Merge any additional options in the XML definition.
-		//$options = array_merge(parent::getOptions(), $options);
-
-		//if(!is_array($this->value))$this->value = array($this->value);
 		$name = $idTag = 'virtuemart_shipmentmethod_ids';
 		$attrs['multiple'] = 'multiple';
 		$name .= '[]';
@@ -438,6 +431,10 @@ jQuery(".changeSendForm")
 	static function renderWeightUnitList ($name, $selected) {
 
 		$weight_unit_default = self::getWeightUnit ();
+
+		//In case a unit got stored, which is not in the default list, we add the unit here, else we would lose the information
+		if ((!empty($selected)) && (!in_array($selected, $weight_unit_default))) $weight_unit_default[$selected] = $selected;
+
 		foreach ($weight_unit_default as  $key => $value) {
 			$wu_list[] = JHtml::_ ('select.option', $key, $value, $name);
 		}
@@ -450,8 +447,10 @@ jQuery(".changeSendForm")
 
 		$weight_unit_default = explode(',',VmConfig::get('norm_units', 'KG,100G,M,SM,CUBM,L,100ML,P'));
 
+		if ((!empty($selected)) && (!in_array($selected, $weight_unit_default))) $weight_unit_default[] = $selected;
+
 		foreach ($weight_unit_default as  $value) {
-			$wu_list[] = JHtml::_ ('select.option', strtoupper(trim($value)), vmText::_('COM_VIRTUEMART_UNIT_SYMBOL_'.strtoupper(trim($value))), $name);
+			$wu_list[] = JHtml::_ ('select.option', trim($value), vmText::_('COM_VIRTUEMART_UNIT_SYMBOL_'.strtoupper(trim($value))), $name);
 		}
 		$listHTML = JHtml::_ ('Select.genericlist', $wu_list, $name, '', $name, 'text', $selected);
 		return $listHTML;
@@ -626,12 +625,11 @@ jQuery(".changeSendForm")
 		$hash = crc32(implode('.',$selectedCategories).':'.$cid.':'.$level.implode('.',$disabledFields));
 		if (empty(self::$categoryTree[$hash])) {
 
-			$app = JFactory::getApplication ();
 			$cache = VmConfig::getCache ('com_virtuemart_cats');
 			$cache->setCaching (1);
 
 			$vendorId = vmAccess::isSuperVendor();
-			self::$categoryTree[$hash] = $cache->call (array('ShopFunctions', 'categoryListTreeLoop'), $selectedCategories, $cid, $level, $disabledFields,$app->isSite(),$vendorId,VmConfig::$vmlang);
+			self::$categoryTree[$hash] = $cache->call (array('ShopFunctions', 'categoryListTreeLoop'), $selectedCategories, $cid, $level, $disabledFields,VmConfig::isSite(),$vendorId,VmConfig::$vmlang);
 
 			//self::$categoryTree[$hash] = ShopFunctions::categoryListTreeLoop($selectedCategories, $cid, $level, $disabledFields,$app->isSite(),$vendorId,VmConfig::$vmlang);
 		}
@@ -652,7 +650,7 @@ jQuery(".changeSendForm")
 	 * @return string 	$category_tree HTML: Category tree list
 	 */
 	static public function categoryListTreeLoop ($selectedCategories = array(), $cid = 0, $level = 0, $disabledFields = array(), $isSite, $vendorId, $vmlang,$categoryParentName='') {
-
+		vmSetStartTime('categoryListTreeLoop');
 		static $categoryTree = '';
 		if($level==0) {
 			$categoryTree = '';
@@ -664,30 +662,28 @@ jQuery(".changeSendForm")
 
 		$categoryModel->_noLimit = TRUE;
 
-		$records = $categoryModel->getCategories ($isSite, $cid,false,'',$vendorId);
-
+		//$records = $categoryModel->getCategories ($isSite, $cid, false, '', $vendorId);
+		$records = $categoryModel->getChildCategoryList($vendorId, $cid );
 		$selected = "";
 		if (!empty($records)) {
 			foreach ($records as $key => $category) {
 
-				$childId = $category->category_child_id;
-
-				if ($childId != $cid) {
-					if (in_array ($childId, $selectedCategories)) {
+				if ($category->virtuemart_category_id != $cid) {
+					if (in_array ($category->virtuemart_category_id, $selectedCategories)) {
 						$selected = 'selected=\"selected\"';
 					} else {
 						$selected = '';
 					}
 
 					$disabled = '';
-					if (in_array ($childId, $disabledFields)) {
+					if (in_array ($category->virtuemart_category_id, $disabledFields)) {
 						$disabled = 'disabled="disabled"';
 					}
 
 					if ($disabled != '' && stristr ($_SERVER['HTTP_USER_AGENT'], 'msie')) {
 						//IE7 suffers from a bug, which makes disabled option fields selectable
 					} else {
-						$categoryTree .= '<option ' . $selected . ' ' . $disabled . ' value="' . $childId . '">';
+						$categoryTree .= '<option ' . $selected . ' ' . $disabled . ' value="' . $category->virtuemart_category_id . '">';
 						$categoryName = $category->category_name;
 						if(VmConfig::get('full_catname_tree',0)) {
 							if (!empty($categoryParentName)) {
@@ -700,13 +696,13 @@ jQuery(".changeSendForm")
 					}
 				}
 
-				if ($categoryModel->hasChildren ($childId)) {
-					self::categoryListTreeLoop ($selectedCategories, $childId, $level, $disabledFields,$isSite, $vendorId, $vmlang, $categoryName);
+				if ($category->has_children) {
+					self::categoryListTreeLoop ($selectedCategories, $category->virtuemart_category_id, $level, $disabledFields,$isSite, $vendorId, $vmlang, $categoryName);
 				}
 
 			}
 		}
-
+		vmTime('categoryListTreeLoop','categoryListTreeLoop');
 		return $categoryTree;
 	}
 
@@ -900,13 +896,14 @@ jQuery(".changeSendForm")
 	static public function getEnumeratedCategories ($onlyPublished = TRUE, $withParentId = FALSE, $parentId = 0, $name = '', $attribs = '', $key = '', $text = '', $selected = NULL) {
 
 		$categoryModel = VmModel::getModel ('category');
-
+		$categoryModel->_noLimit = true;
 		$categories = $categoryModel->getCategories ($onlyPublished, $parentId);
-
+		$categoryModel->_noLimit = false;
 		foreach ($categories as $index => $cat) {
 			$cat->category_name = $cat->ordering . '. ' . $cat->category_name;
 			$categories[$index] = $cat;
 		}
+
 		return JHtml::_ ('Select.genericlist', $categories, $name, $attribs, $key, $text, $selected, $name);
 	}
 
@@ -1200,6 +1197,7 @@ jQuery(".changeSendForm")
 	static function checkPath($path, $for){
 
 		if(empty($path)) return false;
+		if($path==VMPATH_ROOT) return false;
 
 		if(!JFolder::exists( $path )){
 			$created = JFolder::create( $path, 0755);
@@ -1243,22 +1241,27 @@ jQuery(".changeSendForm")
 	 */
 	static function checkSafePathBase($sPath=0){
 
-		static $safePath = null;
-		if(isset($safePath)) {
-			return $safePath;
+		static $safePathReady = null;
+
+		if(isset($safePathReady) and $sPath==0) {
+			vmdebug('checkSafePathBase return cached '.$safePathReady);
+			return $safePathReady;
 		}
 
 		$safePath = $sPath==0 ? VmConfig::get('forSale_path',0):$sPath;
 
-		if(VmConfig::$installed==false or vRequest::getInt('nosafepathcheck',false) or vRequest::getWord('view')== 'updatesmigration') {
+		if(VmConfig::$installed==false or vRequest::getInt('nosafepathcheck',false) or vRequest::getWord('view')== 'updatesmigration') { vmdebug('checkSafePathBase for not executed'.$safePath);
 			return 0;
 		}
 
 		$safePath = JPath::clean($safePath);
+		if($safePath == VMPATH_ROOT){
+			$safePath = 0;
+			vmdebug('checkSafePathBase JPath::clean result in VMPATH_ROOT return 0');
+		}
 
 		$warn = false;
 		$uri = JFactory::getURI();
-
 
 		if(empty($safePath)){
 			$warn = 'EMPTY';
@@ -1289,6 +1292,8 @@ jQuery(".changeSendForm")
 			}
 
 		}
+		if($sPath==0) $safePathReady = $safePath;
+
 
 		return $safePath;
 	}
@@ -1301,7 +1306,7 @@ jQuery(".changeSendForm")
 	 */
 	static function checkSafePath($sPath=0){
 		static $safePath = null;
-		if(isset($safePath)) {
+		if(isset($safePath) and $sPath==0) {
 			return $safePath;
 		}
 
@@ -1464,7 +1469,8 @@ jQuery(".changeSendForm")
 	static public function renderMetaEdit($obj){
 
 		$options = array(
-			''	=>	vmText::_('JGLOBAL_INDEX_FOLLOW'),
+			''	=>	vmText::_('COM_VIRTUEMART_DRDOWN_NONE'),
+			'index, follow'	=>	vmText::_('JGLOBAL_INDEX_FOLLOW'),
 			'noindex, follow'	=>	vmText::_('JGLOBAL_NOINDEX_FOLLOW'),
 			'index, nofollow'	=>	vmText::_('JGLOBAL_INDEX_NOFOLLOW'),
 			'noindex, nofollow'	=>	vmText::_('JGLOBAL_NOINDEX_NOFOLLOW'),

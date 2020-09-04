@@ -59,6 +59,8 @@ class AdminUIHelper {
 			VmJsApi::chosenDropDowns();
 		}
 
+		JHtml::_('bootstrap.tooltip');
+
 		vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/jquery.coookie.js');
 		vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/vm2admin.js');
 
@@ -320,7 +322,7 @@ class AdminUIHelper {
 		$moduleId = vRequest::getInt ( 'module_id', 0 );
 		$menuItems = AdminUIHelper::_getAdminMenu ( $moduleId );
 		$app = JFactory::getApplication();
-		$isSite = $app->isSite();
+		$isSite = VmConfig::isSiteByApp();
 		?>
 		<div id="admin-ui-menu" class="admin-ui-menu">
 			<?php

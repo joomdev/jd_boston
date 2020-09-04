@@ -13,26 +13,15 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: edit_shopper.php 9821 2018-04-16 18:04:39Z Milbo $
+ * @version $Id: edit_shopper.php 10163 2019-10-09 07:09:10Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!$this->userDetails->user_is_vendor){ ?>
-<div class="buttonBar-right">
-	<button class="button" type="submit" onclick="javascript:return myValidator(userForm, true);" ><?php echo $this->button_lbl ?></button>
-	&nbsp;
-	<button class="button" type="reset" onclick="window.location.href='<?php echo JRoute::_('index.php?option=com_virtuemart&view=user', FALSE); ?>'" ><?php echo vmText::_('COM_VIRTUEMART_CANCEL'); ?></button>
-</div>
-<?php }
-if( $this->userDetails->virtuemart_user_id!=0) {
-    echo $this->loadTemplate('vmshopper');
-}
-
 echo $this->loadTemplate('address_userfields');
 
-if ($this->userDetails->JUser->get('id') ) {
+if ($this->userDetails->virtuemart_user_id ) {
   echo $this->loadTemplate('address_addshipto');
 }
 

@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: product_edit_customer.php 9982 2018-11-02 21:32:43Z kkmediaproduction $
+ * @version $Id: product_edit_customer.php 10233 2019-12-11 14:48:13Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die('Restricted access');
@@ -43,7 +43,7 @@ $i = 0;
 			<div id="notify_particulars" style="padding-left:20px;">
 				<div><input type="checkbox" name="notification_template" id="notification_template" value="1" CHECKED>
 					<label for="notification_template">
-						<span class="hasTip" title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_USE_NOTIFY_TEMPLATE_TIP'); ?>">
+						<span class="hasTooltip" title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_USE_NOTIFY_TEMPLATE_TIP'); ?>">
 						<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_USE_NOTIFY_TEMPLATE'); ?></span>
 					</label>
 				</div>
@@ -81,7 +81,7 @@ $i = 0;
 	<tr class="row<?php echo $i?>">
 		<td width="21%" valign="top">
 			<div id="customer-mail-list">
-				<span class="hasTip" title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_ORDER_ITEM_STATUS_TIP'); ?>">
+				<span class="hasTooltip" title="<?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_ORDER_ITEM_STATUS_TIP'); ?>">
 				<strong><?php echo vmText::_ ('COM_VIRTUEMART_PRODUCT_EMAIL_ORDER_ITEM_STATUS') ?></strong>
 				</span><br/>
 				<?php echo $this->lists['OrderStatus'];?>

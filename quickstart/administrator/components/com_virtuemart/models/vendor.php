@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: vendor.php 10137 2019-09-12 10:55:57Z Milbo $
+ * @version $Id: vendor.php 10221 2019-12-09 16:19:30Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -122,7 +122,7 @@ class VirtueMartModelVendor extends VmModel {
 		//return $this->_data;
 
 
-		$hash = md5($keyword.'.'.VmLanguage::$currLangTag);
+		$hash = trim($keyword.'.'.VmLanguage::$currLangTag);
 		if(!isset($vends[$hash])){
 			$vends[$hash] = $this->exeSortSearchListQuery(0,$select,$joins,$whereString,'GROUP BY virtuemart_vendor_id',$ordering );
 			$venTab = $this->getTable('vendors');
@@ -145,9 +145,11 @@ class VirtueMartModelVendor extends VmModel {
 	 */
 	static function getUserIdByVendorId ($vendorId) {
 
-		//this function is used static, needs its own db
+		static $uIds = array();
 		if (empty($vendorId)) {
 			return;
+		} else if(isset($uIds[$vendorId])) {
+			return $uIds[$vendorId];
 		} else {
 			$db = JFactory::getDBO ();
 			$query = 'SELECT `virtuemart_user_id` FROM `#__virtuemart_vmusers` WHERE `virtuemart_vendor_id`=' . (int)$vendorId;
@@ -155,9 +157,12 @@ class VirtueMartModelVendor extends VmModel {
 			$result = $db->loadResult ();
 			$err = $db->getErrorMsg ();
 			if (!empty($err)) {
+				$uIds[$vendorId] = 0;
 				vmError ('getUserIdByVendorId ' . $err, 'Failed to retrieve user id by vendor');
+			} else {
+				$uIds[$vendorId] = (int)$result;
 			}
-			return (isset($result) ? $result : 0);
+			return $uIds[$vendorId];
 		}
 	}
 

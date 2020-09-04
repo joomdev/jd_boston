@@ -42,9 +42,9 @@ if ($DownDate > $DownCalcDate) {
 $stockog = 'OutofStock';
 $stockhandle = VmConfig::get ('stockhandle', 'none');
 $finalstk = 0;
-if ($stockhandle == 'disableit' or $stockhandle == 'disableadd' or $stockhandle == 'none') {
+if ($stockhandle == 'none') {
 	$stockog = 'InStock';
-} elseif ($product->product_parent_id == 0) {
+} elseif ($stockhandle == 'disableit_children' and $product->product_parent_id == 0) {
 	$prodmodel = VmModel::getModel ('product');
 	$children = $prodmodel->getProductChilds($product->virtuemart_product_id);
 	$finalstk = '0';
@@ -64,12 +64,12 @@ if (!empty($document->getMetaData('description'))) {
 }
 if (empty($description)){
 	if (!empty($product->product_s_desc)){
-		$description = htmlspecialchars(strip_tags($product->product_s_desc));
+		$description = $product->product_s_desc;
 	} else {
-		$description = htmlspecialchars(strip_tags($product->product_desc));
+		$description = $product->product_desc;
 	}
 }
-
+$description = str_replace('"','\"',htmlspecialchars(strip_tags($description)));
 ?>
 
 <script type="application/ld+json">

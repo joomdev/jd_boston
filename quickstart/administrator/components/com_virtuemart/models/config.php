@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: config.php 10135 2019-09-12 10:50:05Z Milbo $
+ * @version $Id: config.php 10286 2020-03-11 12:12:29Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -381,7 +381,7 @@ class VirtueMartModelConfig extends VmModel {
 		vRequest::vmCheckToken();
 
 		if(!vmAccess::manager('config')){
-			vmWarn('Insufficient permissions to delete product');
+			vmWarn('Insufficient permissions to store the config');
 			return false;
 		}
 
@@ -423,6 +423,12 @@ class VirtueMartModelConfig extends VmModel {
 				unset($config->_params[$urlkey]);
 				continue;
 			}
+
+			if(DS!='/' and strpos($url,DS)!==false){
+				$url = str_replace(DS,'/',$url);
+				vmInfo('Corrected safe path, replaced '.DS.' by /');
+			}
+
 			if(strrpos($url,'/')!=($length-1)){
 				$config->set($urlkey,$url.'/');
 				vmInfo('Corrected media url '.$urlkey.' added missing /');
@@ -493,8 +499,8 @@ class VirtueMartModelConfig extends VmModel {
 
 		$active_langs = $data['active_languages'];
 		if(empty($active_langs)){
-			$active_langs = vmLanguage::getShopDefaultSiteLangTagByJoomla();
-			$active_langs = (array)strtolower(strtr($active_langs,'-','_'));
+			$active_langs = (array) vmLanguage::getShopDefaultSiteLangTagByJoomla();
+			//$active_langs = (array)strtolower(strtr($active_langs,'-','_'));
 		}
 		$active_langs[] = $defl;
 		$active_langs = array_unique($active_langs);
@@ -734,14 +740,12 @@ class VirtueMartModelConfig extends VmModel {
 
 			$config = VmConfig::loadConfig();
 			$config->set('dangeroustools',0);
+			
+			if($raw = VirtueMartModelConfig::storeConfig( $config->toString() )){
+				//self::$_jpConfig->_raw = $raw;
+				VmConfig::loadConfig(true);
+			}
 
-			$data['virtuemart_config_id'] = 1;
-			$data['config'] = $config->toString();
-
-			$confTable = $this->getTable('configs');
-			$confTable->bindChecknStore($data);
-
-			VmConfig::loadConfig(true);
 			if(VmConfig::get('dangeroustools',false)){
 				$link = JURI::root() . 'administrator/index.php?option=com_virtuemart&view=config';
 				$lang = vmText::sprintf('COM_VIRTUEMART_SYSTEM_DANGEROUS_TOOL_STILL_ENABLED',vmText::_('COM_VIRTUEMART_ADMIN_CFG_DANGEROUS_TOOLS'),$link);

@@ -57,7 +57,7 @@ class VmTemplate {
 		if(self::$_home[$client_id]) return self::$_home[$client_id];
 		$app = JFactory::getApplication();
 
-		if(!$client_id and $app->isSite()){
+		if(!$client_id and VmConfig::isSiteByApp()){
 			$template = $app->getTemplate(true);
 			$template = get_object_vars($template);
 		} else {
@@ -132,7 +132,7 @@ class VmTemplate {
 			}
 		}
 
-		if( (!empty($template) and $template!='default') or JFactory::getApplication()->isAdmin()){
+		if( (!empty($template) and $template!='default') or !vmConfig::isSiteByApp()){
 			self::setTemplate( $template );
 		}
 
@@ -211,7 +211,7 @@ class VmTemplate {
 
 		if(is_dir( VMPATH_ROOT .'/templates/'.$template )) {
 			$app = JFactory::getApplication();
-			if($app->isSite()) $app->setTemplate($template,$registry);
+			if(VmConfig::isSiteByApp()) $app->setTemplate($template,$registry);
 
 		} else {
 			vmError( 'The chosen template couldnt be found on the filesystem: '.VMPATH_ROOT.'/templates/'.$template );

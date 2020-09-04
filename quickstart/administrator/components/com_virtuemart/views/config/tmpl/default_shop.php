@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: default_shop.php 10152 2019-09-19 14:40:28Z Milbo $
+ * @version $Id: default_shop.php 10277 2020-03-03 18:11:31Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -52,13 +52,13 @@ defined('_JEXEC') or die('Restricted access');?>
         </tr>
         <tr>
             <td class="key">
-                <span class="hasTip" title="<?php echo htmlentities(vmText::_('COM_VM_MEMBER_ACCESSNBR_TIP'))?>'"><?php echo vmText::_('COM_VM_MEMBER_ACCESSNBR')?></span>
+                <span class="hasTooltip" title="<?php echo htmlentities(vmText::_('COM_VM_MEMBER_ACCESSNBR_TIP'))?>'"><?php echo vmText::_('COM_VM_MEMBER_ACCESSNBR')?></span>
             </td>
             <td>
                 <?php echo VmHTML::input('member_access_number',VmConfig::get('member_access_number',''),'', '',55); ?>
             </td>
             <td>
-                <span class="hasTip" title="<?php echo htmlentities(vmText::sprintf($host,'COM_VM_MEMBER_AGREEMENT_TIP',VmConfig::$vmlangTag,vmVersion::$RELEASE))?>'"><?php echo vmText::_('COM_VM_MEMBER_AGREEMENT')?></span>
+                <span class="hasTooltip" title="<?php echo htmlentities(vmText::sprintf($host,'COM_VM_MEMBER_AGREEMENT_TIP',VmConfig::$vmlangTag,vmVersion::$RELEASE))?>'"><?php echo vmText::_('COM_VM_MEMBER_AGREEMENT')?></span>
             </td>
         </tr>
          <?php
@@ -73,7 +73,7 @@ defined('_JEXEC') or die('Restricted access');?>
 	<?php echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_ENABLE_ENGLISH','enableEnglish',VmConfig::get('enableEnglish',1)); ?>
         <tr>
             <td class="key">
-					<span class="hasTip" title="<?php echo vmText::_('COM_VM_CFG_SHOPLANG_TIP'); ?>">
+					<span class="hasTooltip" title="<?php echo vmText::_('COM_VM_CFG_SHOPLANG_TIP'); ?>">
 						<?php echo vmText::sprintf('COM_VM_CFG_SHOPLANG',VmConfig::$jDefLang); ?>
 					</span>
             </td>
@@ -84,7 +84,7 @@ defined('_JEXEC') or die('Restricted access');?>
         </tr>
 	    <tr>
 			<td class="key">
-					<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_MULTILANGUE_TIP'); ?>">
+					<span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_MULTILANGUE_TIP'); ?>">
 						<?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_MULTILANGUE'); ?>
 					</span>
 			</td>
@@ -118,6 +118,7 @@ defined('_JEXEC') or die('Restricted access');?>
 			);
 			echo VmHTML::row('radiolist','COM_VIRTUEMART_ADMIN_CFG_ENABLE_DEBUG','debug_enable',VmConfig::get('debug_enable','none'), $optDebug);
 		    echo VmHTML::row('checkbox','COM_VM_CFG_ENABLE_DEBUG_METHODS','debug_enable_methods',VmConfig::get('debug_enable_methods',0));
+		    echo VmHTML::row('checkbox','COM_VM_CFG_ENABLE_DEBUG_ROUTER','debug_enable_router',VmConfig::get('debug_enable_router',0));
 			echo VmHTML::row('radiolist','COM_VIRTUEMART_CFG_DEV','vmdev',VmConfig::get('vmdev',0), $optDebug);
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_DANGEROUS_TOOLS','dangeroustools',VmConfig::get('dangeroustools',0));
 			echo VmHTML::row('input','COM_VIRTUEMART_REV_PROXY_VAR','revproxvar',VmConfig::get('revproxvar',''));
@@ -136,7 +137,9 @@ defined('_JEXEC') or die('Restricted access');?>
 			// 				'all'	=> vmText::_('COM_VIRTUEMART_ADMIN_CFG_ENABLE_DEBUG_ALL')
 		);
 		echo VmHTML::row('radiolist','COM_VIRTUEMART_CFG_MULTIX_CART','multixcart',VmConfig::get('multixcart',0), $optMultiX);
-
+		echo VmHTML::row('checkbox','COM_VM_USE_OPTIMISED_PRODUCT_SQL','optimisedProductSql',VmConfig::get('optimisedProductSql',1));
+		echo VmHTML::row('checkbox','COM_VM_USE_OPTIMISED_CALC_SQL','optimisedCalcSql',VmConfig::get('optimisedCalcSql',1));
+		echo VmHTML::row('checkbox','COM_VM_USE_OPTIMISED_CAT_SQL','optimisedCatSql',VmConfig::get('optimisedCatSql',1));
 		?>
 
 	</table>

@@ -35,8 +35,8 @@ class VmTableData extends VmTable {
 
 		if($this->_cryptedFields){
 			foreach($this->_cryptedFields as $field){
-				if(isset($this->$field)){
-					$this->$field = vmCrypt::encrypt($this->$field);
+				if(isset($this->{$field})){
+					$this->{$field} = vmCrypt::encrypt($this->{$field});
 				}
 			}
 		}
@@ -50,24 +50,24 @@ class VmTableData extends VmTable {
 		if($tblKey == $pKey){
 			//vmdebug('VmTableData '.get_class($this). ' need not to be a vmtabledata $tblKey == $pKey');
 
-			if(!empty($this->$tblKey)){
+			if(!empty($this->{$tblKey})){
 				$_qry = 'SELECT `'.$this->_tbl_key.'` '
 				. 'FROM `'.$this->_tbl.'` '
-				. 'WHERE `'.$this->_tbl_key.'` = "' . $this->$tblKey.'" ';
+				. 'WHERE `'.$this->_tbl_key.'` = "' . $this->{$tblKey}.'" ';
 				$this->_db->setQuery($_qry);
 				$res = $this->_db->loadResult();
 			}
 
 		} else {
-			if(!empty($this->$pKey)){
+			if(!empty($this->{$pKey})){
 				$_qry = 'SELECT `'.$this->_tbl_key.'` '
 				. 'FROM `'.$this->_tbl.'` '
-				. 'WHERE `'.$this->_pkey.'` = "' . $this->$pKey.'" ';
+				. 'WHERE `'.$this->_pkey.'` = "' . $this->{$pKey}.'" ';
 				$this->_db->setQuery($_qry);
-				//Yes, overwriting $this->$tblKey is correct !
-				$this->$tblKey = $this->_db->loadResult();
+				//Yes, overwriting $this->{$tblKey} is correct !
+				$this->{$tblKey} = $this->_db->loadResult();
 			}
-			if ( !empty($this->$tblKey) ) {
+			if ( !empty($this->{$tblKey}) ) {
 				$res = true;
 			}
 		}
@@ -79,14 +79,14 @@ class VmTableData extends VmTable {
 		if($res){
 			$returnCode = $this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
 		} else {
-			$p = $this->$tblKey;
+			$p = $this->{$tblKey};
 			$returnCode = $this->_db->insertObject($this->_tbl, $this, $this->_tbl_key);
 			if($returnCode and !empty($this->_hashName)){
 				$oldH= $this->{$this->_hashName};
-				if($p!=$this->$tblKey and !in_array($tblKey,$this->_omittedHashFields)){
+				if($p!=$this->{$tblKey} and !in_array($tblKey,$this->_omittedHashFields)){
 					$this->hashEntry();
 					$ok = $this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
-					vmdebug('VmTableData Updated entry with correct hash ',$this->_tbl_key,$p,$this->$tblKey,$oldH,$this->{$this->_hashName});
+					vmdebug('VmTableData Updated entry with correct hash ',$this->_tbl_key,$p,$this->{$tblKey},$oldH,$this->{$this->_hashName});
 				}
 			}
 		}
@@ -94,7 +94,7 @@ class VmTableData extends VmTable {
 		//reset Params
 		if(isset($this->_tmpParams) and is_array($this->_tmpParams)){
 			foreach($this->_tmpParams as $k => $v){
-				$this->$k = $v;
+				$this->{$k} = $v;
 			}
 		}
 		$this->_tmpParams = false;

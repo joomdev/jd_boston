@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: product_edit_dimensions.php 9821 2018-04-16 18:04:39Z Milbo $
+* @version $Id: product_edit_dimensions.php 10233 2019-12-11 14:48:13Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -54,7 +54,7 @@ defined('_JEXEC') or die('Restricted access');?>
    
     <tr class="row0">
 		<th style="text-align:right;">
-        <span class="hasTip" title="<?php echo vmText::sprintf('COM_VIRTUEMART_PRODUCT_PACKAGING_DESCRIPTION',vmText::_('COM_VIRTUEMART_UNIT_NAME_L'),vmText::_('COM_VIRTUEMART_PRODUCT_UNIT'),vmText::_('COM_VIRTUEMART_UNIT_NAME_100ML')); ?>">
+        <span class="hasTooltip" title="<?php echo vmText::sprintf('COM_VIRTUEMART_PRODUCT_PACKAGING_DESCRIPTION',vmText::_('COM_VIRTUEMART_UNIT_NAME_L'),vmText::_('COM_VIRTUEMART_PRODUCT_UNIT'),vmText::_('COM_VIRTUEMART_UNIT_NAME_100ML')); ?>">
         <?php echo vmText::_('COM_VIRTUEMART_PRODUCT_PACKAGING') ?>
          </span>
 		</th>
@@ -65,7 +65,7 @@ defined('_JEXEC') or die('Restricted access');?>
     </tr>
     <tr class="row1">
 		<th style="text-align:right;">
-                <span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_BOX_DESCRIPTION'); ?>">
+                <span class="hasTooltip" title="<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_BOX_DESCRIPTION'); ?>">
                 <?php echo vmText::_('COM_VIRTUEMART_PRODUCT_BOX') ?>
                 </span></th>
       <td>

@@ -16,8 +16,7 @@ $_prefix = $viewData['prefix'];
 $field = $viewData['field'];
 $tos = $field['value'];
 
-$app = JFactory::getApplication();
-if($app->isSite()){
+if(VmConfig::isSiteByApp()){
 	vmJsApi::popup('#full-tos','#terms-of-service');
 
 	$cart = VirtuemartCart::getCart();
@@ -35,7 +34,7 @@ if(!empty($field['required'])){
 }
 echo VmHtml::checkbox ($_prefix.$field['name'], $tos, 1, 0, 'class="'.$class.'"', 'tos');
 
-if ( $app->isSite() ) {
+if ( VmConfig::isSiteByApp() ) {
 ?>
 <div class="terms-of-service">
 	<label for="tos">

@@ -14,7 +14,7 @@ defined ('_JEXEC') or die();
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 10121 2019-09-09 08:12:44Z Milbo $
+* @version $Id: default.php 10233 2019-12-11 14:48:13Z Milbo $
 */
 
 AdminUIHelper::startAdminArea($this);
@@ -34,10 +34,10 @@ $option = vRequest::getCmd('option');
 				<?php echo $this->displayDefaultViewSearch('COM_VIRTUEMART_NAME','searchMedia') .' '. $this->lists['search_type'].' '. $this->lists['search_role']; ?>
 			 </td>
 			  <td align="left" style="width:10%;min-width:60px">
-				  <?php echo VmHtml::checkbox('missing',vRequest::getInt('missing',0),1,0); echo '<span class="hasTip" title="'.vmText::_('COM_VM_MEDIA_MISSING_TIP').'" style="vertical-align:middle;padding:4px 0 0;">'.vmText::_('COM_VM_MEDIA_MISSING').'</span>'?>
+				  <?php echo VmHtml::checkbox('missing',vRequest::getInt('missing',0),1,0); echo '<span class="hasTooltip" title="'.vmText::_('COM_VM_MEDIA_MISSING_TIP').'" style="vertical-align:middle;padding:4px 0 0;">'.vmText::_('COM_VM_MEDIA_MISSING').'</span>'?>
 			  </td>
               <td align="left" style="width:10%;min-width:60px">
-				  <?php echo VmHtml::checkbox('findUnusedMedias',vRequest::getInt('findUnusedMedias',0),1,0); echo '<span class="hasTip" title="'.vmText::_('COM_VM_MEDIA_UNUSED_TIP').'" style="vertical-align:middle;padding:4px 0 0;">'.vmText::_('COM_VM_MEDIA_UNUSED').'</span>'?>
+				  <?php echo VmHtml::checkbox('findUnusedMedias',vRequest::getInt('findUnusedMedias',0),1,0); echo '<span class="hasTooltip" title="'.vmText::_('COM_VM_MEDIA_UNUSED_TIP').'" style="vertical-align:middle;padding:4px 0 0;">'.vmText::_('COM_VM_MEDIA_UNUSED').'</span>'?>
               </td>
               <td>
 				  <?php echo $this->lists['vendors'] ?>
@@ -77,7 +77,7 @@ $productfileslist = $this->files;
 			if($productfile->file_is_forSale){
 				$fullSizeFilenamePath = $productfile->file_url_folder.$productfile->file_name.'.'.$productfile->file_extension;
 				$fullSizeFilenamePath = vRequest::filterPath($fullSizeFilenamePath);
-			} else if(strpos($productfile->file_url,'//')===0){
+			} else if( substr( $productfile->file_url, 0, 2) == "//" ){
 				$fullSizeFilenamePath = $productfile->file_url;
 			} else {
 				$fullSizeFilenamePath = VMPATH_ROOT.DS.$productfile->file_url_folder.$productfile->file_name.'.'.$productfile->file_extension;
@@ -116,12 +116,11 @@ $productfileslist = $this->files;
 				<?php
 
 
-					if(file_exists($fullSizeFilenamePath) or strpos($fullSizeFilenamePath,'//')===0){
+					if(file_exists($fullSizeFilenamePath) or substr( $fullSizeFilenamePath, 0, 2) == "//" ){
 						echo $productfile->displayMediaThumb();
 					} else {
 						$file_url = $productfile->theme_url.'assets/images/vmgeneral/'.VmConfig::get('no_image_found');
 						$file_alt = vmText::_('COM_VIRTUEMART_NO_IMAGE_SET').' '.$productfile->file_description;
-						vmdebug('check path $file_url',$file_url,$fullSizeFilenamePath);
 						echo $productfile->displayIt($file_url, $file_alt,'',false);
 					}
 

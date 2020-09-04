@@ -13,23 +13,13 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default_tools.php 9911 2018-08-22 09:14:05Z Milbo $
+* @version $Id: default_tools.php 10270 2020-02-19 14:25:44Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!VmConfig::get('dangeroustools', false)){
-	$uri = JFactory::getURI();
-	$link = $uri->root() . 'administrator/index.php?option=com_virtuemart&view=config';
-	?>
 
-	<div class="vmquote" style="text-align:left;margin-left:20px;">
-	<span style="font-weight:bold;color:green;"> <?php echo vmText::sprintf('COM_VIRTUEMART_SYSTEM_DANGEROUS_TOOL_ENABLED_JS',vmText::_('COM_VIRTUEMART_ADMIN_CFG_DANGEROUS_TOOLS'),$link) ?></span>
-	</div>
-
-	<?php
-}
 
 ?>
 
@@ -85,10 +75,12 @@ if(!VmConfig::get('dangeroustools', false)){
         <td align="center">
 			<?php echo $this->renderTaskButton('optimizeDatabase','COM_VIRTUEMART_OPTIMIZE_DATABASE'); ?>
         </td>
-    </tr>
-    <tr>
 
+        <td align="center">
+			<?php echo $this->renderTaskButton('reset_Has_x_Fields','COM_VIRTUEMART_RESET_HASX_FIELDS'); ?>
+        </td>
     </tr>
+
 </table>
 
     <form action="index.php" method="post" name="adminForm" enctype="multipart/form-data" >
@@ -113,6 +105,20 @@ if(!VmConfig::get('dangeroustools', false)){
         <input type="hidden" name="view" value="updatesmigration" />
 		<?php echo JHtml::_( 'form.token' ); ?>
     </form>
+
+<?php
+    if(!VmConfig::get('dangeroustools', false)){
+        $uri = JFactory::getURI();
+        $link = $uri->root() . 'administrator/index.php?option=com_virtuemart&view=config';
+        ?>
+
+        <div class="vmquote" style="text-align:left;margin-left:20px;">
+            <span style="font-weight:bold;color:green;"> <?php echo vmText::sprintf('COM_VIRTUEMART_SYSTEM_DANGEROUS_TOOL_ENABLED_JS',vmText::_('COM_VIRTUEMART_ADMIN_CFG_DANGEROUS_TOOLS'),$link) ?></span>
+        </div>
+
+        <?php
+    }
+?>
 
 <table>
     <tr><td align="left" colspan="4"><?php echo vmText::_('COM_VIRTUEMART_UPDATE_MIGRATION_TOOLS_WARNING'); ?></td></tr>

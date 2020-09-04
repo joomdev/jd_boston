@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: media.php 10121 2019-09-09 08:12:44Z Milbo $
+ * @version $Id: media.php 10296 2020-04-07 13:02:12Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -90,7 +90,7 @@ class VirtueMartModelMedia extends VmModel {
 				if(!empty($id)){
 					if (!isset($_medias[$id])) {
 						$data->load((int)$id);
-						if($app->isSite()){
+						if(VmConfig::isSite()){
 							if($data->published==0){
 								$_medias[$id] = $this->createVoidMedia($type,$mime);
 								continue;
@@ -98,7 +98,7 @@ class VirtueMartModelMedia extends VmModel {
 						}
 						$file_type 	= empty($data->file_type)? $type:$data->file_type;
 						$mime		= empty($data->file_mimetype)? $mime:$data->file_mimetype;
-						if($app->isSite()){
+						if(VmConfig::isSite()){
 							$selectedLangue = explode(",", $data->file_lang);
 							$lang =  vmLanguage::getLanguage();
 							if(in_array($lang->getTag(), $selectedLangue) || $data->file_lang == '') {
@@ -139,7 +139,7 @@ class VirtueMartModelMedia extends VmModel {
 			$data->file_class = '';
 			$data->file_mimetype = '';
 			$data->file_type = '';
-			$data->file_url = '';
+			$data->file_url = '.jpg';	//handle as image
 			$data->file_url_thumb = '';
 			$data->published = 0;
 			$data->file_is_downloadable = 0;
@@ -299,10 +299,12 @@ class VirtueMartModelMedia extends VmModel {
 		$sec = 0;
 		$idc = 0;
 		$this->_limitStart = 0;	//Else a user have to click on the first page to get all orphaned
+		$data = array();
 		while($idc<$limits[1] and $sec<1000){
 			$ids = $this->getFiles(false, false, $virtuemart_product_id, $cat_id, array(), $this->_limit * 2);
 			if(!empty($ids)){
 				$medias = $this->createMediaByIds($ids);
+
 				foreach($medias as $m){
 					if($m->file_is_forSale){
 						$fSizeFnamePath = $m->file_url_folder.$m->file_name.'.'.$m->file_extension;
@@ -417,11 +419,13 @@ LEFT JOIN #__virtuemart_vendor_medias as vm ON pm.virtuemart_media_id = m.virtue
 
 		//set the relations
 		$table = $this->getTable($type.'_medias');
-		//vmdebug('my data before storing media',$data);
-		// Bind the form fields to the country table
-		$table->bindChecknStore($data);
 
-		return $table->virtuemart_media_id;
+		$table->bind($data); //There was a special reason for the double bind?
+
+		// Bind the media to the product
+		return  $table->bindChecknStore($data);
+
+		//return $table->virtuemart_media_id;
 
 	}
 
@@ -456,7 +460,7 @@ LEFT JOIN #__virtuemart_vendor_medias as vm ON pm.virtuemart_media_id = m.virtue
 			$data['published'] = $data['media_published'];
 		}
 
-		if(strpos($data['file_url'],'//')===0 and !vmAccess::manager('media.remote')){
+		if( substr( $data['file_url'], 0, 2) == "//" and !vmAccess::manager('media.remote')){
 			vmWarn('You are not allowed to add/edit remote medias');
 			return $table->virtuemart_media_id;
 		}

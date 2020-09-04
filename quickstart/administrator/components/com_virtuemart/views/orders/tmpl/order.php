@@ -12,7 +12,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: order.php 10099 2019-08-20 06:24:30Z Milbo $
+ * @version $Id: order.php 10178 2019-10-16 10:42:44Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -544,7 +544,9 @@ vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/orders.j
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
 				<td  align="right" style="padding-right: 5px;">&nbsp;</td>
 				<td   align="right" style="padding-right: 5px;"><?php
-				echo $this->currency->priceDisplay($this->orderbt->coupon_discount);  ?></td>
+				    echo $this->currency->priceDisplay($this->orderbt->coupon_discount);  ?>
+                    <input class='orderEdit' type="text" size="8" name="coupon_discount" value="<?php echo $this->orderbt->coupon_discount; ?>"/>
+				</td>
 			</tr>
 			<?php
 				//}

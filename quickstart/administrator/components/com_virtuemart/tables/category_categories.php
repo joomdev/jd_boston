@@ -21,6 +21,8 @@ defined('_JEXEC') or die();
 class TableCategory_categories extends VmTableData {
 
 	var $category_parent_id = 0;
+	var $ordering = 0;
+
 
 	/**
 	 * @author Max Milbers

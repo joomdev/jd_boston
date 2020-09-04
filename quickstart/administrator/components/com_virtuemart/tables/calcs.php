@@ -61,6 +61,12 @@ class TableCalcs extends VmTable
 	var $ordering	= 0;
     var $published 		        = 0;
 
+	var $has_categories = null;
+	var $has_shoppergroups = null;
+	var $has_manufacturers = null;
+	var $has_countries = null;
+	var $has_states = null;
+
 
 	function __construct(&$db){
 		parent::__construct('#__virtuemart_calcs', 'virtuemart_calc_id', $db);

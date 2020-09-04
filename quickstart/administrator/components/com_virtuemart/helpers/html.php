@@ -43,6 +43,7 @@ class VmHtml{
 			while(isset(self::$_usedId[$id.$c])){
 				$c++;
 			}
+			//vmdebug(' ensureUniqueId new id',$id.$c, self::$_usedId );
 			$id = $id.$c;
 		}
 		self::$_usedId[$id] = 1;
@@ -102,25 +103,37 @@ class VmHtml{
 		$passedArgs = func_get_args();
 		array_shift( $passedArgs );//remove function
 		array_shift( $passedArgs );//remove label
-			$args = array();
-			foreach ($passedArgs as $k => $v) {
-			    $args[] = &$passedArgs[$k];
-			}
+		$args = array();
+		foreach ($passedArgs as $k => $v) {
+			$args[] = &$passedArgs[$k];
+		}
+
 		$lang =vmLanguage::getLanguage();
+
+		$tip = '';
 		if($lang->hasKey($label.'_TIP')){
-			$label = '<span class="hasTip" title="'.htmlentities(vmText::_($label.'_TIP')).'">'.vmText::_($label).'</span>' ;
+			$tip = $label.'_TIP' ;
 		} //Fallback
 		else if($lang->hasKey($label.'_EXPLAIN')){
-			$label = '<span class="hasTip" title="'.htmlentities(vmText::_($label.'_EXPLAIN')).'">'.vmText::_($label).'</span>' ;
-		} else {
-			$label = vmText::_($label);
+			$tip = $label.'_EXPLAIN' ;
 		}
+		if($tip!=='') {
+			$tip = 'class="key hasTooltip" title="'.htmlentities(vmText::_($tip)).'"';
+		} else {
+			$tip = 'class="key"';
+		}
+
+		$label = vmText::_($label);
+
 		if ($func[1]=="checkbox" OR $func[1]=="input") {
 			$label = "\n\t" . '<label for="' . $args[0] . '" id="' . $args[0] . '-lbl"  >'.$label."</label>";
+		} else {
+			$label = '<span >'.$label.'</span>';
 		}
+
 		$html = '
 		<tr>
-			<td class="key">
+			<td '.$tip.' >
 				'.$label.'
 			</td>
 			<td>';
@@ -567,7 +580,7 @@ class VmHtml{
 					$checked = 'checked="checked"';
 				}
 			}
-			$id = $name.$key;
+			$id = self::ensureUniqueId(str_replace(array('[',']'),'',$name.$key)) ;
 			$html .= "\n\t" . '<label for="' . $id . '" id="' . $id . '-lbl" class="radio">';
 			$html .= "\n\t\n\t" . '<input type="radio" name="' . $name . '" id="' . $id . '" value="' . htmlspecialchars($key, ENT_QUOTES) . '" '.$checked.' ' . $extra. ' />' . $val;
 			$html .= "\n\t" . "</label>".$separator."\n";

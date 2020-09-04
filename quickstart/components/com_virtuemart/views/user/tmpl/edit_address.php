@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: edit_address.php 10079 2019-07-01 17:09:55Z StefanSTS $
+ * @version $Id: edit_address.php 10163 2019-10-09 07:09:10Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined ('_JEXEC') or die('Restricted access');
@@ -126,7 +126,7 @@ echo shopFunctionsF::getLoginForm (TRUE, FALSE, $url);
 	// end of captcha addition
 
 	renderControlButtons($this,$rview);
-	if ($this->userDetails->JUser->get ('id')) {
+	if ($this->userDetails->virtuemart_user_id) {
 		echo $this->loadTemplate ('addshipto');
 	} ?>
 	<input type="hidden" name="option" value="com_virtuemart"/>

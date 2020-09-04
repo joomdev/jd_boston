@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: view.html.php 10122 2019-09-09 08:46:36Z Milbo $
+ * @version $Id: view.html.php 10279 2020-03-03 18:16:05Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -375,13 +375,13 @@ class VirtueMartViewProductdetails extends VmView {
 
 			foreach ($productDisplayTypes as $productDisplayType) {
 
-				if(empty($this->$productDisplayType)){
+				if(empty($this->{$productDisplayType})){
 					continue;
-				} else if (!is_array($this->$productDisplayType)){
-					$this->$productDisplayType = array($this->$productDisplayType);
+				} else if (!is_array($this->{$productDisplayType})){
+					$this->{$productDisplayType} = array($this->{$productDisplayType});
 				}
 
-				foreach( $this->$productDisplayType as $k=>$productDisplay ) {
+				foreach( $this->{$productDisplayType} as $k=>$productDisplay ) {
 
 					if(empty($productDisplay)){
 						continue;
@@ -408,17 +408,25 @@ class VirtueMartViewProductdetails extends VmView {
 				$category->category_template = VmConfig::get('categorytemplate');
 			}
 
-			shopFunctionsF::setVmTemplate($this, $category->category_template, 0, $category->category_product_layout, $product->layout);
+			if(vRequest::getCmd( 'layout', 'default' )=='notify') $this->setLayout('notify'); //Added by Seyi Awofadeju to catch notify layout
+
+			$layout = $this->getLayout();
+			if($layout === 'default'){
+				$layout = '';
+			}
+			if ( ($layout === 'default' || empty($layout)) and !empty($product->layout) ) {
+				$layout = $product->layout;
+			}
+			VmTemplate::setVmTemplate($this, $category->category_template, 0, $category->category_product_layout, $layout);
 
 			VirtueMartModelProduct::addProductToRecent($virtuemart_product_id);
 
-			if(vRequest::getCmd( 'layout', 'default' )=='notify') $this->setLayout('notify'); //Added by Seyi Awofadeju to catch notify layout
 			vmLanguage::loadJLang('com_virtuemart');
 
 			vmJsApi::chosenDropDowns();
 
 //This must be loaded after the customfields are rendered (they may need to overwrite the handlers)
-			if (VmConfig::get ('jdynupdate', TRUE) or $app->isAdmin()) {
+			if (VmConfig::get ('jdynupdate', TRUE) or !VmConfig::isSite()) {
 				vmJsApi::jDynUpdate();
 			}
 

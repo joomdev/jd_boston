@@ -107,7 +107,7 @@ class VirtueMartControllerVendor extends JControllerLegacy
 
 	function checkCaptcha($retUrl){
 
-		if(JFactory::getUser()->guest==1 and VmConfig::get ('reg_captcha')){
+		if(JFactory::getUser()->guest==1 and VmConfig::get ('ask_captcha')){
 
 			$filled = vRequest::getVar ('g-recaptcha-response',false);
 			if(!$filled){

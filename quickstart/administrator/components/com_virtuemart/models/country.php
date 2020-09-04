@@ -14,7 +14,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: country.php 10058 2019-05-17 13:42:16Z Milbo $
+* @version $Id: country.php 10214 2019-11-27 20:16:32Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -70,8 +70,8 @@ class VirtueMartModelCountry extends VmModel {
 	static public function getCountryFieldByID ($id, $fld = 'country_name') {
 
 		$c = self::getCountry($id);
-		if($c and isset($c->$fld)){
-			return $c->$fld;
+		if($c and isset($c->{$fld})){
+			return $c->{$fld};
 		} else {
 			return false;
 		}

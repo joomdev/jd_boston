@@ -54,6 +54,7 @@ $option = vRequest::getCmd('option');
 		<th width="20"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /></th>
 		<th><?php echo $this->sort('pr.created_on', 'COM_VIRTUEMART_DATE') ; ?></th>
 		<th><?php echo $this->sort('product_name') ; ?></th>
+		<th width="20%"><?php echo vmText::_('COM_VIRTUEMART_REVIEW_LANGUAGE') ; ?></th>
 		<th><?php echo $this->sort('vote', 'COM_VIRTUEMART_RATE_NOM') ; ?></th>
 		<th width="20"><?php echo $this->sort('published') ; ?></th>
 	</tr>
@@ -78,6 +79,28 @@ $option = vRequest::getCmd('option');
 				<!-- Product name TODO Add paren_id in LINK ? not existing here -->
 				<?php $link = 'index.php?option='.$option.'&view=product&task=edit&virtuemart_product_id='.$review->virtuemart_product_id ?>
 				<td><?php echo JHtml::_('link', JRoute::_($link), $review->product_name, array('title' => vmText::_('COM_VIRTUEMART_EDIT').' '.htmlentities($review->product_name))); ?></td>
+				<!-- Stars language -->
+				<td width="20%" class="review_language_td_<?php echo $key?>"><?php				
+				$modelConfig = VmModel::getModel('config');
+				$activeVMLangs = $modelConfig->getActiveVmLanguages();
+
+				echo '<select name="review_language" style="max-width: 100px;" id="sel-review-'.$review->virtuemart_rating_review_id.'" data-rating-review-id="'.$review->virtuemart_rating_review_id.'" class="review_language_select">';
+				echo '<option  value="">'.vmText::_('COM_VIRTUEMART_NO_SPECIFIC_LANGUAGE_SELECTED').'</option >';
+				foreach ($activeVMLangs as $key => $activeVMLang) {
+				    
+				    $selected = '';
+				    
+				    $activeVMLang = strtolower(str_replace('-', '_', $activeVMLang));
+				    
+				    if($review->review_language == $activeVMLang)  $selected = 'selected="selected"';
+				    echo '<option  value="'.$activeVMLang.'::'.$review->virtuemart_rating_id.'" '.$selected.'>'.$activeVMLang.'</option >';
+				    
+				}
+				
+				
+				echo '</select>';
+				
+				?></td>		
 				<!-- Stars rating -->
 				<td align="center">
 					
@@ -116,5 +139,32 @@ $option = vRequest::getCmd('option');
 	<input type="hidden" name="virtuemart_product_id" value="<?php echo vRequest::getVar('virtuemart_product_id', 0); ?>" />
 	<?php echo $this->addStandardHiddenToForm(null,'listreviews'); ?>
 </form>
-<?php AdminUIHelper::endAdminArea(); ?>
+<?php 
+$js = "
+jQuery('.review_language_select').change(function () {
+    var ratingReviewId = jQuery(this).data('rating-review-id');
+    //jQuery('#button'+this.id).remove();
+    //jQuery( '<button type=\"submit\" id=\"button'+this.id+'\" class=\"btn update-review-lang\">Save</button>' ).insertAfter( 'select#'+this.id );
+    var selLang = jQuery('#'+this.id).find(':selected').text();
+    jQuery.ajax({
+        type: 'POST',
+        url: 'index.php?option=com_virtuemart&view=ratings&task=updateReviewLang&format=json',
+        data: {
+            ratingReviewId: ratingReviewId,
+            selLang: selLang
+        }
+        }).done(function(data) {
+    
+           jQuery( '<span class=\"review-msg-'+data.id+'\" style=\"color: green; font-weight: bold;\"> '+data.msg+' </span>' ).insertAfter('#sel-review-'+data.id );
+           jQuery('.review-msg-'+data.id).delay(1000).fadeOut(500);
+    
+    });
+    
+});
+    
+    
+";
+vmJsApi::addJScript('provmtools', $js);
+AdminUIHelper::endAdminArea(); 
+?>
 

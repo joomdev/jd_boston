@@ -13,7 +13,7 @@
 * to the GNU General Public License, and as distributed it includes or
 * is derivative of works licensed under the GNU General Public License or
 * other free or open source software licenses.
-* @version $Id: default.php 9821 2018-04-16 18:04:39Z Milbo $
+* @version $Id: default.php 10274 2020-03-03 17:55:10Z Milbo $
 */
 
 // Check to ensure this file is included in Joomla!
@@ -69,9 +69,15 @@ AdminUIHelper::startAdminArea($this);
 			if(empty($row->shipment_name)){
 				$row->shipment_name = vmText::sprintf('COM_VM_TRANSLATION_MISSING','virtuemart_shipment_id',$row->virtuemart_shipmentmethod_id);
 			}
+
+//			quorvia display shipment method color style
+			$colorStyle = '';
+			if (!empty($row->display_color)) {
+				$colorStyle = 'style="background-color:' . $row->display_color.'"';
+			}
 	?>
 			<tr class="row<?php echo $k; ?>">
-				<td class="admin-checkbox">
+				<td class="admin-checkbox" <?php echo $colorStyle ?>>
 					<?php echo $checked; ?>
 				</td>
 				<td align="left">

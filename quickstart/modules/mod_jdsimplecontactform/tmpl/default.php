@@ -2,7 +2,7 @@
 /**
  * @package   JD Simple Contact Form
  * @author    JoomDev https://www.joomdev.com
- * @copyright Copyright (C) 2009 - 2019 JoomDev.
+ * @copyright Copyright (C) 2009 - 2020 JoomDev.
  * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 or Later
  */
 // no direct access
@@ -43,7 +43,7 @@ if (!empty($message)) {
                ModJDSimpleContactFormHelper::renderForm($params, $module);
 
                if ($captcha) {
-                  $captchaType = JFactory::getConfig()->get('captcha');
+                  $captchaType = $params->get('captchaPlugins') == "" ? JFactory::getConfig()->get('captcha') : $params->get('captchaPlugins');
                   JPluginHelper::importPlugin('captcha', $captchaType);
                   $dispatcher = JEventDispatcher::getInstance();
                   $dispatcher->trigger('onInit', 'jdscf_recaptcha_' . $module->id);
@@ -76,7 +76,27 @@ if (!empty($message)) {
                         <div id='recaptcha' class="g-recaptcha" data-sitekey="<?php echo $plugin_params->get('public_key', ''); ?>"  data-size="invisible"></div>
                      <?php
                      }
-                  } 
+                  } elseif ( !empty($captchaType) ) {
+                     // Display captcha plugin fields
+                     if (!empty($plugin)) {
+                        $plugin_params = new JRegistry($plugin->params);
+                        $captchaHtml = $dispatcher->trigger('onDisplay', array('jdscf_recaptcha_' . $module->id, 'jdscf_recaptcha_' . $module->id));
+                        if (!empty($captchaHtml)) {
+                           ?>
+                           <div class="jdscf-col-md-12">
+                              <div class="form-group">
+                                 <?php
+                                 foreach ($captchaHtml as $cHtml) {
+                                    // Add captcha generated html to page
+                                    echo $cHtml;
+                                 }
+                                 ?>
+                              </div>
+                           </div>
+                        <?php
+                        }
+                     }
+                  }
                }
             ?>
             

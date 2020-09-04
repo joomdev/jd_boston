@@ -7,15 +7,15 @@
  * @package    VirtueMart
  * @subpackage CreditCard
  * @author RickG
- * @author Valerie Isaksen
+ * @author Valerie Isaksen, Max Milbers
  * @link https://virtuemart.net
- * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2019 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: creditcard.php 9831 2018-05-07 13:45:33Z Milbo $
+ * @version $Id: creditcard.php 10289 2020-03-12 10:36:52Z Milbo $
  */
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
@@ -81,9 +81,9 @@ class Creditcard {
 	static function _strtonum($string) {
 		$nstr = "";
 		for ($i = 0; $i < strlen($string); $i++) {
-			if (!is_numeric($string{$i}))
+			if (!is_numeric($string[$i]))
 				continue;
-			$nstr = "$nstr" . $string{$i};
+			$nstr = "$nstr" . $string[$i];
 		}
 		return $nstr;
 	}
@@ -129,7 +129,8 @@ class Creditcard {
 		$tmp = 0;
 
 		//Add the numbers not doubled earlier ( odd placement )
-		for ($i = 0; $i <= strlen($card_temp); $i = $i + 2) {
+		$l = strlen($card_temp);
+		for ($i = 0; $i < $l; $i = $i + 2) {
 			$tmp = substr($card_temp, $i, 1) + $tmp;
 		}
 

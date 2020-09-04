@@ -98,7 +98,7 @@ $js .= '$(\'#field_type\').change(function () {
 	});
 	$(\'#custom_jplugin_id\').change(function () {
 	var $id = $(this).val();
-	$(\'#plugin-Container\').load( \'index.php?option=com_virtuemart&view=custom&task=viewJson&format=json&custom_jplugin_id=\'+$id , function() {
+	$(\'#plugin-Container\').load( \'index.php?option=com_virtuemart&view=custom&format=json&custom_jplugin_id=\'+$id , function() {
 	$(this).find("[title]").vm2admin(\'tips\',tip_image) });
 
 	});

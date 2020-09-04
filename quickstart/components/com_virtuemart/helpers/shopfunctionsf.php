@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: shopfunctionsf.php 10082 2019-07-04 06:12:42Z Milbo $
+ * @version $Id: shopfunctionsf.php 10278 2020-03-03 18:13:26Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -81,8 +81,9 @@ class shopFunctionsF {
 	}
 
 	static public function isFEmanager ($task = 0) {
-		if(JFactory::getUser()->guest) return false;
-		return vmAccess::manager($task);
+
+        return vmAccess::isFEmanager($task);
+
 	}
 
 	/**
@@ -155,16 +156,11 @@ class shopFunctionsF {
 		vmJsApi::jQuery();
 		vmJsApi::chosenDropDowns();
 
-		//$sorted_countries = array();
 		$countries_list=array();
 		$lang = vmLanguage::getLanguage();
 		$prefix="COM_VIRTUEMART_COUNTRY_";
-		foreach ($countries as  $country) {
-			$country_string = $lang->hasKey($prefix.$country->country_3_code) ?   vmText::_($prefix.$country->country_3_code)  : $country->country_name;
-			$countries_list[$country->virtuemart_country_id] = new stdClass();;
-			$countries_list[$country->virtuemart_country_id]->$optKey = $country->virtuemart_country_id;
-			$countries_list[$country->virtuemart_country_id]->$optText = $country_string;
-		}
+
+		$countries_list = shopfunctionsF::kSortUmlaut($countries, $prefix, 'country_3_code', 'country_name', $optKey, $optText);
 
 		if ($required != 0) {
 			$attrs['class'] .= ' required';
@@ -187,6 +183,31 @@ class shopFunctionsF {
 
 		return JHtml::_ ('select.genericlist', $countries_list, $name, $attrs, $optKey, $optText, $countryId, $idTag);
 	}
+
+    static function kSortUmlaut($objArray, $prefix, $code, $name, $optKey, $optText){
+
+		$lang = vmLanguage::getLanguage();
+		$aSearch   = array("Ä","ä","Ö","ö","Ü","ü","ß","-");
+		$aReplace  = array("Ae","ae","Oe","oe","Ue","ue","ss"," ");
+		$ret = array();
+		foreach ($objArray as  $obj) {
+			$trValue = $lang->hasKey($prefix.$obj->country_3_code) ?   vmText::_($prefix.$obj->{$code})  : $obj->{$name};
+
+			$ckey = 0;
+			if($obj->ordering){
+				$ckey = $obj->ordering;
+			} else {
+				$ckey = str_replace($aSearch, $aReplace, $trValue);// $country_string;
+			}
+			//vmdebug('we had here '.$ckey,$objArray[$ckey]);
+			$ret[$ckey] = new stdClass();;
+			$ret[$ckey]->{$optKey} = $obj->virtuemart_country_id;
+			$ret[$ckey]->{$optText} = $trValue;
+		}
+
+		ksort($ret);
+		return $ret;
+    }
 
 	/**
 	 * Render a simple state list
@@ -715,7 +736,7 @@ class shopFunctionsF {
 
 		$template = VmTemplate::loadVmTemplateStyle();
 		VmTemplate::setTemplate($template);
-		if($template){
+		if($template and VmConfig::get('useLayoutOverrides',1)){
 			if(is_array($template) and isset($template['template'])){
 				$view->addTemplatePath( VMPATH_ROOT .'/templates/'.$template['template'].'/html/com_virtuemart/'.$viewName );
 			} else {
@@ -724,7 +745,7 @@ class shopFunctionsF {
 		}
 
 		foreach( $vars as $key => $val ) {
-			$view->$key = $val;
+			$view->{$key} = $val;
 		}
 
 		return $view;
@@ -828,15 +849,6 @@ class shopFunctionsF {
 			}
 		}
 
-		$mediaToSend = array();
-		if(isset($view->mediaToSend)) {
-			foreach( (array)$view->mediaToSend as $media ) {
-				$mailer->addAttachment( $media );
-			}
-			$mediaToSend = $view->mediaToSend;
-			$view->mediaToSend = array();
-		}
-
 		// set proper sender
 		$sender = array();
 		if(!empty($view->vendorEmail) and VmConfig::get( 'useVendorEmail', 0 )) {
@@ -852,23 +864,39 @@ class shopFunctionsF {
 				$sender = array( $config->get( 'mailfrom' ), $config->get( 'fromname' ) );
 			}
 		}
-		$mailer->setSender( $sender );
 
 		$mailer->setSender($sender);
+
+		$mediaToSend = array();
+		if(isset($view->mediaToSend)) {
+			foreach( (array)$view->mediaToSend as $media ) {
+				$mailer->addAttachment( $media );
+			}
+			$mediaToSend = $view->mediaToSend;
+			$view->mediaToSend = array();
+		}
+
+		$dispatcher = JDispatcher::getInstance();
+		$dispatcher->trigger('plgVmOnSendVmEmail',array(&$view,&$mailer,$noVendorMail));
+
 		$debug_email = VmConfig::get('debug_mail', false);
 		if (VmConfig::get('debug_mail', false) == '1') {
 			$debug_email = 'debug_email';
-
 		}
+
 		if ($debug_email) {
 			if (!is_array($recipient)) {
 				$recipient = array($recipient);
 			}
+			$no = '';
+			if ($debug_email == 'debug_email') {
+				$no = 'no';
+			}
+			$msg = 'Debug mail active, '.$no.' mail sent. The mail to send subject ' . $subject . ' to "' . implode(' ', $recipient) . '" from ' . $sender[0] . ' ' . $sender[1] . ' ' . vmText::$language->getTag() . '<br>' . $body;
 			if (VmConfig::showDebug()) {
-
-				vmdebug('Debug mail active, no mail sent. The mail to send subject ' . $subject . ' to "' . implode(' ', $recipient) . '" from ' . $sender[0] . ' ' . $sender[1] . ' ' . vmText::$language->getTag() . '<br>' . $body, $mediaToSend);
+				vmdebug($msg, $mediaToSend);
 			} else {
-				vmInfo('Debug mail active, no mail sent. The mail to send subject ' . $subject . ' to "' . implode(' ', $recipient) . '" from ' . $sender[0] . ' ' . $sender[1] . '<br>' . $body);
+				vmInfo($msg);
 			}
 			if ($debug_email == 'debug_email') {
 				return true;
@@ -958,7 +986,7 @@ class shopFunctionsF {
 	}
 
 	static public function vmSubstr($str,$s,$e = null){
-		if(function_exists( 'mb_strlen' )) {
+		if(function_exists( 'mb_substr' )) {
 			return mb_substr( $str, $s, $e );
 		} else {
 			return substr( $str, $s, $e );
@@ -1047,7 +1075,7 @@ class shopFunctionsF {
 	// add content plugin //
 		$dispatcher = JDispatcher::getInstance ();
 		JPluginHelper::importPlugin ('content');
-		$article->text = $article->$field;
+		$article->text = $article->{$field};
 
 		jimport ('joomla.registry.registry');
 		$params = new JRegistry('');
@@ -1066,7 +1094,7 @@ class shopFunctionsF {
 		$res = $dispatcher->trigger ('onContentAfterDisplay', array('com_virtuemart.'.$context, &$article, &$params, 0));
 		$article->event->afterDisplayContent = trim (implode ("\n", $res));
 
-		$article->$field = $article->text;
+		$article->{$field} = $article->text;
 	}
 
 	static public function mask_string($cc, $mask_char='X'){
@@ -1112,9 +1140,11 @@ class shopFunctionsF {
 			}
 			$path = $sPath.self::getInvoiceFolderName().DS.self::getInvoiceName($orderInfo->invoiceNumber).'.pdf';
 			//$path .= preg_replace('/[^A-Za-z0-9_\-\.]/', '_', 'vm'.$layout.'_'.$orderInfo->invoiceNumber.'.pdf');
-			if(file_exists($path)){
+			
+			if(file_exists( $path )) {
 				$link = JURI::root(true).'/index.php?option=com_virtuemart&view=invoice&layout=invoice&format=pdf&tmpl=component&order_number='.$orderInfo->order_number.'&order_pass='.$orderInfo->order_pass;
-				$pdf_link = "<a href=\"javascript:void window.open('".$link."', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
+				$pdf_link = "<a class='button invoice' href=\"javascript:void window.open('".$link."', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
+				$pdf_link .= $orderInfo->invoiceNumber.' ';
 				$pdf_link .= JHtml::_('image',$icon, vmText::_($descr), NULL, true);
 				$pdf_link .= '</a>';
 				$html = $pdf_link;
@@ -1223,10 +1253,10 @@ class shopFunctionsF {
                         foreach($taxBill as $tax){
 							$sum = $order['details']['BT']->order_salesPrice;
 							$t1 = $tax->calc_value * 0.01 * $tax->subTotal/$sum;
-							$toAdd = $t1 * $order['details']['BT']->$keyN ;
+							$toAdd = $t1 * $order['details']['BT']->{$keyN} ;
 							//vmdebug('ShipPay Rules $t1 '.$tax->calc_value * 0.01.' * '. $tax->subTotal.'/'.$sum.' = '.$t1);
 							//vmdebug('ShipPay Rules $toAdd '.$t1.' * '. $order['details']['BT']->$keyN. ' = '.$toAdd. ' on '.$taxBill[$tax->virtuemart_calc_id]->calc_amount);
-							$taxBill[$tax->virtuemart_calc_id]->calc_amount += $t1 * $order['details']['BT']->$keyN ;
+							$taxBill[$tax->virtuemart_calc_id]->calc_amount += $t1 * $order['details']['BT']->{$keyN} ;
 
 							//vmdebug('ShipPay Rules '.$t1.' * '. $order['details']['BT']->$keyN.'='.$t1 * $order['details']['BT']->$keyN);
                         }

@@ -62,16 +62,22 @@ class TableShipmentmethods extends VmTable {
      * @param JDataBase $db
      */
     function __construct(&$db) {
-	parent::__construct('#__virtuemart_shipmentmethods', 'virtuemart_shipmentmethod_id', $db);
-	// we can have several time the same shipment name. It is the vendor problem to set up correctly his shipment rate.
-	// $this->setUniqueName('shipment_name');
-	$this->setObligatoryKeys('shipment_jplugin_id');
-	$this->setObligatoryKeys('shipment_name');
-	$this->setLoggable();
-	$this->setTranslatable(array('shipment_name', 'shipment_desc'));
-	$this->setSlug('shipment_name');
-        $this->setTableShortCut('shipm');
+		parent::__construct('#__virtuemart_shipmentmethods', 'virtuemart_shipmentmethod_id', $db);
+		// we can have several time the same shipment name. It is the vendor problem to set up correctly his shipment rate.
+		// $this->setUniqueName('shipment_name');
+		$this->setObligatoryKeys('shipment_jplugin_id');
+		$this->setObligatoryKeys('shipment_name');
+		$this->setLoggable();
+		$this->setTranslatable(array('shipment_name', 'shipment_desc'));
+		$this->setSlug('shipment_name');
+		$this->setTableShortCut('shipm');
+
+		$varsToPushParam = array('display_color' => array('','char'));
+
+		$this->setParameterable('shipment_params',$varsToPushParam);
+
     }
+
 
 }
 
